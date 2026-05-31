@@ -109,8 +109,14 @@ Exécution : pipeline appelé après la collecte ; résultats stockés dans
   - croisement cadastre/DVF : bâti présent à faible valeur/m² ou ancien.
 - **Dédoublonnage inter-sources** : empreinte (géo arrondie + tranche prix + surface)
   → regroupement, un bien canonique + ses occurrences par portail.
-- **Score d'investissement** : combinaison `ecart_prix_pct` (vs comparables),
-  bonus constructible/AU, malus risques/PEB/aérien → note 0–100.
+- **Score d'investissement hiérarchique** (`services/scoring.py`) : piliers
+  thématiques → sous-piliers, agrégation bottom-up, tolérante aux données partielles.
+  Piliers : Prix & opportunité (affaire vs marché, négociation), Foncier &
+  constructibilité (zonage/AU, terrain), Cadre & nature (qualité, exception,
+  authenticité), Risques & nuisances (naturels, proximité, aérien/PEB), État &
+  travaux, Accessibilité & services (train, gare, fibre). Détail explicable
+  (score/poids/contribution par niveau + statut ok/pending/n-a). Schéma exposé via
+  `GET /api/scoring/schema`.
 - **Suivi baisse de prix** : table `PriceHistory` ; à chaque revue, si le prix
   change on historise et on lève un `flag_baisse_prix`.
 

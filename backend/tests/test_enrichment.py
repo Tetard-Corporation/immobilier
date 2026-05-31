@@ -96,7 +96,10 @@ def test_enrich_calcule_ecart_prix():
         )
         enrich_listing(item)
         assert item.flags["ecart_prix_pct"] == -40.0  # 120 €/m² vs 200 secteur
-        assert any(c["key"] == "affaire" for c in item.flags["score_details"])
+        # 'affaire' est désormais un sous-pilier de 'prix' et doit être évalué (ok).
+        prix = next(p for p in item.flags["score_details"] if p["key"] == "prix")
+        affaire = next(s for s in prix["subpillars"] if s["key"] == "affaire")
+        assert affaire["status"] == "ok"
     finally:
         reset_providers(None)
 

@@ -23,11 +23,15 @@ def annotate(item: "NormalizedListing") -> "NormalizedListing":
     flags.update(classify(*texts))
     flags.update(classify_quality(*texts))
 
-    # Score d'investissement (recalculé à partir des flags + signaux d'enrichissement).
-    has_text = bool(item.description or item.adresse)
-    result = compute_score(flags, has_text=has_text)
+    # Score d'investissement (piliers/sous-piliers), recalculé à partir des flags.
+    ctx = {
+        "has_text": bool(item.description or item.adresse),
+        "surface_terrain": item.surface_terrain,
+        "type_bien": item.type_bien,
+    }
+    result = compute_score(flags, ctx)
     flags["score"] = result.score
-    flags["score_details"] = result.components
+    flags["score_details"] = result.pillars
 
     item.flags = flags
     return item

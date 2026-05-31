@@ -47,6 +47,14 @@ def filters_schema() -> dict:
     return get_filter_schema()
 
 
+@router.get("/scoring/schema")
+def scoring_schema_route() -> dict:
+    """Structure des piliers/sous-piliers du score d'investissement (poids inclus)."""
+    from ..services.scoring import scoring_schema
+
+    return scoring_schema()
+
+
 @router.get("/enrichment/status")
 def enrichment_status() -> list[dict]:
     """État des providers d'enrichissement (zonage, risques, relief, trajet train)."""

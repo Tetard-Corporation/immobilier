@@ -55,10 +55,14 @@ def enrich_listing(item):
     # risques, PEB, comparables...) maintenant disponibles.
     from ..services.scoring import compute_score
 
-    has_text = bool(item.description or item.adresse)
-    result = compute_score(flags, has_text=has_text)
+    ctx = {
+        "has_text": bool(item.description or item.adresse),
+        "surface_terrain": item.surface_terrain,
+        "type_bien": item.type_bien,
+    }
+    result = compute_score(flags, ctx)
     flags["score"] = result.score
-    flags["score_details"] = result.components
+    flags["score_details"] = result.pillars
 
     item.flags = flags
     return item
