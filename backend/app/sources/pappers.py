@@ -66,10 +66,24 @@ def criteria_to_params(c: SearchCriteria, default_bases: list[str]) -> dict:
         if value is not None:
             params[target] = value
 
-    if c.types_local:
-        params["type_local_vente"] = ",".join(c.types_local)
-    if c.natures_vente:
-        params["nature_vente"] = ",".join(c.natures_vente)
+    # Vocabulaire source-agnostique -> type_local / nature_vente Pappers.
+    types_local = set(c.types_local or [])
+    natures_vente = set(c.natures_vente or [])
+    _PT_TO_LOCAL = {
+        "maison": "maison",
+        "appartement": "appartement",
+        "local_commercial": "local_industriel_commercial_ou_assimile",
+    }
+    for pt in c.property_types or []:
+        if pt in _PT_TO_LOCAL:
+            types_local.add(_PT_TO_LOCAL[pt])
+        elif pt == "terrain":
+            natures_vente.add("vente_terrain_batir")
+
+    if types_local:
+        params["type_local_vente"] = ",".join(sorted(types_local))
+    if natures_vente:
+        params["nature_vente"] = ",".join(sorted(natures_vente))
     if c.dpe_classes:
         params["classe_bilan_dpe"] = ",".join(c.dpe_classes)
 

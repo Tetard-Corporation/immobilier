@@ -5,6 +5,9 @@ from __future__ import annotations
 from ..schemas import SearchCriteria
 from ..sources.base import NormalizedListing
 
+# Vocabulaire de type de bien, source-agnostique (chaque source le mappe).
+PROPERTY_TYPES = ["terrain", "maison", "appartement", "immeuble", "local_commercial", "parking"]
+
 # Valeurs d'énumération issues de la spec Pappers Immobilier.
 TYPES_LOCAL = ["appartement", "maison", "dependance", "local_industriel_commercial_ou_assimile"]
 NATURES_VENTE = [
@@ -63,9 +66,15 @@ def get_filter_schema() -> dict:
                 "label": "Type de bien",
                 "fields": [
                     {
+                        "name": "property_types",
+                        "type": "multiselect",
+                        "label": "Type de bien",
+                        "options": PROPERTY_TYPES,
+                    },
+                    {
                         "name": "types_local",
                         "type": "multiselect",
-                        "label": "Type de local",
+                        "label": "Type de local (Pappers)",
                         "options": TYPES_LOCAL,
                     },
                     {
@@ -96,6 +105,15 @@ def get_filter_schema() -> dict:
                         "label": "Classe énergie",
                         "options": DPE_CLASSES,
                     },
+                ],
+            },
+            {
+                "key": "etat",
+                "label": "État / opportunité",
+                "fields": [
+                    {"name": "ruine", "type": "boolean", "label": "Terrain à ruines"},
+                    {"name": "a_renover", "type": "boolean", "label": "À rénover"},
+                    {"name": "price_decreased", "type": "boolean", "label": "Baisse de prix"},
                 ],
             },
             {
@@ -142,9 +160,18 @@ def matches(listing: NormalizedListing, c: SearchCriteria) -> bool:
     if not _in_range(listing.nb_pieces, c.nb_pieces_min, c.nb_pieces_max):
         return False
 
+    if c.property_types and (listing.type_bien not in c.property_types):
+        return False
     if c.types_local and (listing.type_bien not in c.types_local):
         return False
     if c.dpe_classes and (listing.dpe_classe not in c.dpe_classes):
+        return False
+
+    if c.ruine and not listing.flags.get("ruine"):
+        return False
+    if c.a_renover and not listing.flags.get("a_renover"):
+        return False
+    if c.price_decreased and not listing.flags.get("price_decreased"):
         return False
 
     if c.date_vente_min and (listing.date_mutation or "") < c.date_vente_min:

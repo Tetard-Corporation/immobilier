@@ -39,7 +39,13 @@ class SearchCriteria(BaseModel):
     nb_pieces_min: int | None = None
     nb_pieces_max: int | None = None
 
-    # Type de bien / nature de mutation
+    # Type de bien (vocabulaire source-agnostique : voir filters.PROPERTY_TYPES)
+    property_types: list[str] | None = Field(
+        default=None,
+        description="terrain, maison, appartement, immeuble, local_commercial, parking",
+    )
+
+    # Type de local Pappers (contrôle fin, optionnel)
     types_local: list[str] | None = Field(
         default=None,
         description="appartement, maison, dependance, local_industriel_commercial_ou_assimile",
@@ -59,6 +65,13 @@ class SearchCriteria(BaseModel):
 
     # DPE
     dpe_classes: list[str] | None = Field(default=None, description="A, B, C, D, E, F, G")
+
+    # État du bien
+    ruine: bool | None = Field(default=None, description="Ne garder que les terrains à ruines.")
+    a_renover: bool | None = Field(default=None, description="Ne garder que les biens à rénover.")
+    price_decreased: bool | None = Field(
+        default=None, description="Ne garder que les annonces en baisse de prix."
+    )
 
     # Bases Pappers à inclure (override du défaut). Impacte la consommation de crédits.
     bases: list[str] | None = None
@@ -94,6 +107,11 @@ class ListingOut(BaseModel):
     date_mutation: str | None = None
     dpe_classe: str | None = None
     url: str | None = None
+    description: str | None = None
+    flag_ruine: bool = False
+    flag_a_renover: bool = False
+    price_decreased: bool = False
+    canonical_id: str | None = None
     prix_m2_terrain: float | None = None
     is_new: bool | None = None
 

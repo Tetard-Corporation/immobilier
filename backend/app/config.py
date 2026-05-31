@@ -26,6 +26,10 @@ class Settings(BaseSettings):
     max_pages_per_run: int = 5
     cache_ttl_seconds: int = 3600
 
+    # Scraping
+    proxy_url: str = ""
+    scraper_rate_limit_ms: int = 2000
+
     # Divers
     http_timeout_seconds: int = 20
     cors_origins: str = "http://localhost:5173,http://localhost:3000"

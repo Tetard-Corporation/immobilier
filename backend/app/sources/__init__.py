@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from .base import ListingSource, NormalizedListing, SearchResult
+from .bienici import BienIciSource
 from .mock import MockSource
 from .pappers import PappersSource
 
@@ -10,7 +11,11 @@ _registry: dict[str, ListingSource] | None = None
 
 
 def _build_registry() -> dict[str, ListingSource]:
-    return {"pappers": PappersSource(), "mock": MockSource()}
+    return {
+        "pappers": PappersSource(),
+        "bienici": BienIciSource(),
+        "mock": MockSource(),
+    }
 
 
 def get_registry() -> dict[str, ListingSource]:

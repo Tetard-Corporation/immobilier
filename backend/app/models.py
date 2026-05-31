@@ -103,12 +103,33 @@ class Listing(Base):
     date_mutation: Mapped[str | None] = mapped_column(String(20), nullable=True)
     dpe_classe: Mapped[str | None] = mapped_column(String(4), nullable=True)
     url: Mapped[str | None] = mapped_column(String(400), nullable=True)
+    description: Mapped[str | None] = mapped_column(Text, nullable=True)
+
+    # Classification & aide à la décision
+    flag_ruine: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    flag_a_renover: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    price_decreased: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    # Empreinte de dédoublonnage inter-sources (biens identiques regroupés).
+    canonical_id: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
 
     raw: Mapped[dict] = mapped_column(JSON, nullable=False, default=dict)
     first_seen_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utcnow)
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=_utcnow, onupdate=_utcnow
     )
+
+
+class PriceHistory(Base):
+    """Historique de prix d'un bien, pour détecter les baisses/re-publications."""
+
+    __tablename__ = "price_history"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    listing_id: Mapped[int] = mapped_column(
+        ForeignKey("listings.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    prix: Mapped[float] = mapped_column(Float, nullable=False)
+    observed_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utcnow)
 
 
 class SearchRun(Base):

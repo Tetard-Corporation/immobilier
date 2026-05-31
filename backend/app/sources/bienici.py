@@ -1,0 +1,166 @@
+"""Connecteur Bien'ici (groupe Aviv) via son API JSON interne.
+
+Bien'ici expose `realEstateAds.json?filters=<json>` (annonces structurées) et
+`res.bienici.com/suggest.json?q=<lieu>` (résolution géographique).
+
+Filtres poussés côté serveur (validés empiriquement) : type de bien, prix, surface,
+pagination. Le filtrage géographique fin et l'état (ruine/à rénover) sont appliqués
+côté client sur les annonces normalisées.
+"""
+
+from __future__ import annotations
+
+import json
+
+from ..schemas import SearchCriteria
+from ..services.classify import classify
+from ..services.filters import matches
+from .base import NormalizedListing, SearchResult
+from .scraper import ScraperSource
+
+_SUGGEST_URL = "https://res.bienici.com/suggest.json"
+
+# Vocabulaire app -> propertyType Bien'ici.
+_PROPERTY_MAP = {
+    "terrain": "terrain",
+    "maison": "house",
+    "appartement": "flat",
+    "immeuble": "building",
+    "local_commercial": "shop",
+    "parking": "parking",
+}
+# Inverse pour la normalisation (programme = lotissement/neuf, assimilé terrain).
+_PROPERTY_MAP_REV = {
+    "house": "maison",
+    "flat": "appartement",
+    "building": "immeuble",
+    "shop": "local_commercial",
+    "parking": "parking",
+    "terrain": "terrain",
+    "programme": "terrain",
+}
+
+
+def _scalar(value):
+    """Bien'ici renvoie parfois une fourchette [min, max] ; on prend la borne basse."""
+    if isinstance(value, list):
+        nums = [v for v in value if isinstance(v, (int, float))]
+        return min(nums) if nums else None
+    return value if isinstance(value, (int, float)) else None
+
+
+class BienIciSource(ScraperSource):
+    name = "bienici"
+    label = "Bien'ici"
+    base_url = "https://www.bienici.com"
+
+    # -- géo ----------------------------------------------------------------- #
+    def _resolve_zone(self, query: str) -> dict | None:
+        try:
+            resp = self._get(_SUGGEST_URL, params={"q": query})
+            data = resp.json()
+        except Exception:
+            return None
+        items = data if isinstance(data, list) else data.get("items", [])
+        return items[0] if items else None
+
+    def _build_filters(self, c: SearchCriteria) -> dict:
+        property_types = c.property_types or ["terrain", "maison", "appartement"]
+        bi_types = sorted({_PROPERTY_MAP.get(t, "house") for t in property_types})
+        filters: dict[str, object] = {
+            "size": min(max(c.par_page, 1), 100),
+            "from": (max(c.page, 1) - 1) * min(max(c.par_page, 1), 100),
+            "filterType": "buy",
+            "propertyType": bi_types,
+            "onTheMarket": [True],
+            "sortBy": "publicationDate",
+            "sortOrder": "desc",
+        }
+        if c.prix_min is not None:
+            filters["minPrice"] = c.prix_min
+        if c.prix_max is not None:
+            filters["maxPrice"] = c.prix_max
+        # `minArea`/`maxArea` filtre la surface (≈ terrain pour les terrains).
+        area_min = c.surface_terrain_min if c.surface_terrain_min is not None else c.surface_bati_min
+        area_max = c.surface_terrain_max if c.surface_terrain_max is not None else c.surface_bati_max
+        if area_min is not None:
+            filters["minArea"] = area_min
+        if area_max is not None:
+            filters["maxArea"] = area_max
+        if c.nb_pieces_min is not None:
+            filters["minRooms"] = c.nb_pieces_min
+        if c.price_decreased:
+            filters["priceHasDecreased"] = [True]
+        return filters
+
+    # -- normalisation ------------------------------------------------------- #
+    @staticmethod
+    def _normalize(ad: dict) -> NormalizedListing:
+        ad_id = str(ad.get("id") or ad.get("reference") or "")
+        blur = ad.get("blurInfo") or {}
+        pos = blur.get("position") or blur.get("centroid") or {}
+        district = ad.get("district") or {}
+        title = ad.get("title")
+        description = ad.get("description")
+        flags = classify(title, description)
+        flags["price_decreased"] = bool(ad.get("priceHasDecreased"))
+
+        type_bien = _PROPERTY_MAP_REV.get(ad.get("propertyType"), ad.get("propertyType"))
+
+        return NormalizedListing(
+            source="bienici",
+            external_id=ad_id,
+            type_bien=type_bien,
+            prix=_scalar(ad.get("price")),
+            surface_terrain=_scalar(ad.get("landSurfaceArea")),
+            surface_bati=_scalar(ad.get("surfaceArea")),
+            nb_pieces=_scalar(ad.get("roomsQuantity")),
+            adresse=ad.get("title"),
+            commune=ad.get("city"),
+            code_postal=ad.get("postalCode"),
+            code_commune=district.get("code_insee") or district.get("insee_code"),
+            departement=ad.get("departmentCode"),
+            latitude=pos.get("lat"),
+            longitude=pos.get("lon"),
+            parcelle=None,
+            date_mutation=(ad.get("publicationDate") or ad.get("modificationDate") or "")[:10] or None,
+            dpe_classe=(ad.get("energyClassification") or None),
+            url=f"https://www.bienici.com/annonce/{ad_id}" if ad_id else None,
+            description=description,
+            flags=flags,
+            raw=ad,
+        )
+
+    # -- API ----------------------------------------------------------------- #
+    def search(self, criteria: SearchCriteria) -> SearchResult:
+        filters = self._build_filters(criteria)
+
+        # Géo : on tente de cibler une zone (réduit le volume). À défaut, filtrage client.
+        geo_query = (
+            criteria.code_postal or criteria.code_commune or criteria.departement or criteria.region
+        )
+        zone = self._resolve_zone(geo_query) if geo_query else None
+        # Bien'ici attend les identifiants NUMÉRIQUES de zone (champ `zoneIds`),
+        # pas l'`id` haché renvoyé par le suggest.
+        if zone and zone.get("zoneIds"):
+            filters["zoneIdsByTypes"] = {"zoneIds": list(zone["zoneIds"])}
+
+        resp = self._get("/realEstateAds.json", params={"filters": json.dumps(filters)})
+        data = resp.json()
+        ads = data.get("realEstateAds") or []
+        server_total = data.get("total")
+
+        items = [self._normalize(ad) for ad in ads]
+        # Filtrage côté client (géo précise, état, surfaces bâti, etc.).
+        filtered = [it for it in items if matches(it, criteria)]
+        total = server_total if len(filtered) == len(items) else None
+        return SearchResult(items=filtered, total=total, curseur_suivant=None, credits_estimes=0)
+
+    def get(self, external_id: str, bases: list[str] | None = None) -> NormalizedListing | None:
+        try:
+            resp = self._get(f"/realEstateAd.json", params={"id": external_id})
+        except Exception:
+            return None
+        data = resp.json()
+        ad = data if isinstance(data, dict) and data.get("id") else None
+        return self._normalize(ad) if ad else None

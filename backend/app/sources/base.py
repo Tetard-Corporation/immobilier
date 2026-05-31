@@ -30,6 +30,9 @@ class NormalizedListing:
     date_mutation: str | None = None
     dpe_classe: str | None = None
     url: str | None = None
+    description: str | None = None
+    # Drapeaux calculés : {"ruine": bool, "a_renover": bool, "price_decreased": bool}
+    flags: dict = field(default_factory=dict)
     raw: dict = field(default_factory=dict)
 
     @property

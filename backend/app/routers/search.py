@@ -16,10 +16,11 @@ router = APIRouter(tags=["search"])
 def search(
     criteria: SearchCriteria,
     source: str | None = Query(default=None, description="Nom de source ('auto' par défaut)."),
+    dedupe: bool = Query(default=False, description="Fusionner les biens en double."),
     db: Session = Depends(get_db),
 ) -> SearchResultOut:
     try:
-        return run_search(db, source, criteria)
+        return run_search(db, source, criteria, dedupe_results=dedupe)
     except RuntimeError as exc:
         raise HTTPException(status_code=409, detail=str(exc)) from exc
     except KeyError as exc:
