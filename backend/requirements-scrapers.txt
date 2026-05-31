@@ -1,0 +1,5 @@
+# Dépendances optionnelles pour les sources protégées (Leboncoin, SeLoger, PAP)
+# nécessitant un navigateur headless. À installer dans l'environnement d'exécution :
+#   pip install -r requirements-scrapers.txt
+#   playwright install chromium
+playwright==1.49.1

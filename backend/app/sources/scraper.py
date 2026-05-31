@@ -76,8 +76,15 @@ class ScraperSource(ListingSource):
         head = text[:2000].lower()
         return any(marker in head for marker in _BLOCK_MARKERS)
 
+    def _check_blocked(self, resp: httpx.Response) -> None:
+        if resp.status_code in (403, 429) or self._looks_blocked(resp.text):
+            raise ScraperBlocked(
+                f"{self.label} a renvoyé un blocage (HTTP {resp.status_code}). "
+                "Configurer PROXY_URL et/ou activer le mode headless."
+            )
+
     def _get(self, path: str, *, params: dict | None = None, headers: dict | None = None) -> httpx.Response:
-        cache_key = f"{path}?{sorted((params or {}).items())}"
+        cache_key = f"GET {path}?{sorted((params or {}).items())}"
         now = time.time()
         cached = self._cache.get(cache_key)
         if cached and now - cached[0] < self._settings.cache_ttl_seconds:
@@ -85,11 +92,54 @@ class ScraperSource(ListingSource):
 
         self._respect_rate_limit()
         resp = self._get_client().get(path, params=params, headers=headers)
-        if resp.status_code in (403, 429) or self._looks_blocked(resp.text):
-            raise ScraperBlocked(
-                f"{self.label} a renvoyé un blocage (HTTP {resp.status_code}). "
-                "Configurer PROXY_URL ou activer le mode headless."
-            )
+        self._check_blocked(resp)
         resp.raise_for_status()
         self._cache[cache_key] = (now, resp)
         return resp
+
+    def _post(self, path: str, *, json_body: dict, headers: dict | None = None) -> httpx.Response:
+        """POST JSON (API internes type Leboncoin). Mêmes garde-fous anti-blocage."""
+        import json as _json
+
+        cache_key = f"POST {path} {_json.dumps(json_body, sort_keys=True)}"
+        now = time.time()
+        cached = self._cache.get(cache_key)
+        if cached and now - cached[0] < self._settings.cache_ttl_seconds:
+            return cached[1]  # type: ignore[return-value]
+
+        self._respect_rate_limit()
+        resp = self._get_client().post(path, json=json_body, headers=headers)
+        self._check_blocked(resp)
+        resp.raise_for_status()
+        self._cache[cache_key] = (now, resp)
+        return resp
+
+    def _fetch_headless(self, url: str, *, wait_selector: str | None = None) -> str:
+        """Récupère le HTML via un navigateur headless (Playwright) + proxy éventuel.
+
+        Playwright est une dépendance optionnelle : `pip install playwright &&
+        playwright install chromium`.
+        """
+        try:
+            from playwright.sync_api import sync_playwright
+        except ImportError as exc:  # pragma: no cover - dépend de l'environnement
+            raise ScraperBlocked(
+                "Mode headless requis mais Playwright absent : "
+                "`pip install playwright && playwright install chromium`."
+            ) from exc
+
+        proxy = {"server": self._settings.proxy_url} if self._settings.proxy_url else None
+        self._respect_rate_limit()
+        with sync_playwright() as p:  # pragma: no cover - nécessite un navigateur
+            browser = p.chromium.launch(headless=True, proxy=proxy)
+            try:
+                page = browser.new_page(user_agent=_DEFAULT_HEADERS["User-Agent"])
+                page.goto(url, wait_until="domcontentloaded", timeout=self._settings.http_timeout_seconds * 1000)
+                if wait_selector:
+                    page.wait_for_selector(wait_selector, timeout=self._settings.http_timeout_seconds * 1000)
+                content = page.content()
+            finally:
+                browser.close()
+        if self._looks_blocked(content):
+            raise ScraperBlocked(f"{self.label} : page de blocage même en headless (proxy requis).")
+        return content

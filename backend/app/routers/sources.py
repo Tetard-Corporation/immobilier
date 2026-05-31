@@ -13,6 +13,7 @@ router = APIRouter(tags=["meta"])
 _NOTES = {
     "pappers": "API officielle Pappers Immobilier. Nécessite PAPPERS_API_KEY.",
     "bienici": "Annonces Bien'ici (scraping API JSON). Géo fine filtrée côté client.",
+    "leboncoin": "Annonces Leboncoin (API finder). Protégé Datadome : requiert PROXY_URL.",
     "mock": "Jeu de données de démonstration (aucune clé requise).",
 }
 

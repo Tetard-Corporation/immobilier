@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from .base import ListingSource, NormalizedListing, SearchResult
 from .bienici import BienIciSource
+from .leboncoin import LeboncoinSource
 from .mock import MockSource
 from .pappers import PappersSource
 
@@ -14,6 +15,7 @@ def _build_registry() -> dict[str, ListingSource]:
     return {
         "pappers": PappersSource(),
         "bienici": BienIciSource(),
+        "leboncoin": LeboncoinSource(),
         "mock": MockSource(),
     }
 

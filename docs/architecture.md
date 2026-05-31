@@ -55,12 +55,18 @@ supérieure à Jinka :
 
 | Connecteur | Mode collecte | Notes |
 |---|---|---|
-| `pappers` | API officielle | ✅ déjà implémenté (données foncières/DVF) |
-| `mock` | fixtures | ✅ déjà implémenté (dev/tests) |
-| `pap` | HTTP léger | particulier à particulier, anti-bot faible |
-| `terrains_specialises` | HTTP léger | Terrains.fr, Terrain-construction, Ouest-France Immo |
-| `leboncoin` | headless + proxies | Datadome, gros volume |
-| `seloger` | headless + proxies | groupe Aviv (SeLoger/Bien'ici/Logic-Immo) |
+| `pappers` | API officielle | ✅ implémenté (données foncières/DVF) |
+| `bienici` | API JSON | ✅ implémenté et vérifié en live (annonces) |
+| `mock` | fixtures | ✅ implémenté (dev/tests) |
+| `leboncoin` | API JSON + proxy | ✅ implémenté (parsing testé). ⚠️ Datadome → requiert `PROXY_URL` en live |
+| `pap` | HTTP/headless | Cloudflare (403 sans proxy) — à implémenter |
+| `seloger` | headless + proxies | Datadome — à implémenter |
+| `paruvendu` | HTTP léger | accessible (200) — candidat bonus réel |
+
+**Constat de terrain (sondages)** : Leboncoin, SeLoger et PAP renvoient un blocage
+anti-bot (Datadome / Cloudflare) sans proxy ; Bien'ici et Paruvendu sont accessibles.
+Le mode headless (Playwright, dépendance optionnelle) + `PROXY_URL` sont en place dans
+`ScraperSource` pour les débloquer dans l'environnement d'exécution.
 
 Base commune `ScraperSource` : gestion `httpx` **ou** Playwright selon la source,
 rate-limiting, backoff, cache disque, `User-Agent`/headers réalistes, proxy
@@ -131,7 +137,8 @@ poussent en amont (ex. Pappers).
   pipeline + champs dérivés + filtres `constructible/risques/aérien`. *(commence ici)*
 - **Lot B — Scoring + classification ruines + suivi prix** (sur données enrichies).
 - **Lot C — Scraper PAP & sites spécialisés terrains** (HTTP léger) + dédoublonnage.
-- **Lot D — Scrapers Leboncoin & SeLoger** (headless + proxies).
+- **Lot D — Scrapers durs** (headless + proxies) : ✅ infra headless/proxy + Leboncoin ;
+  reste PAP, SeLoger (et Paruvendu en bonus) — nécessitent une validation live via proxy.
 - **Lot E — Agrégation multi-sources** (source `all`) dans recherches fréquentes.
 - **Lot F — Tests d'intégration, durcissement, doc.**
 - *(Front : phase ultérieure.)*
