@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import httpx
 from fastapi import APIRouter, Depends, HTTPException, Query
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
@@ -37,7 +38,9 @@ def search(
         return run_search(
             db, source, criteria, dedupe_results=dedupe, sort_by_score=(sort == "score"), enrich=enrich
         )
-    except RuntimeError as exc:
+    except RuntimeError as exc:  # ex. ScraperBlocked (anti-bot)
         raise HTTPException(status_code=409, detail=str(exc)) from exc
-    except KeyError as exc:
+    except KeyError as exc:  # source inconnue
         raise HTTPException(status_code=404, detail=str(exc)) from exc
+    except httpx.HTTPError as exc:  # erreur réseau côté source
+        raise HTTPException(status_code=502, detail=f"Source indisponible : {exc}") from exc

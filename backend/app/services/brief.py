@@ -11,7 +11,7 @@ import json
 import re
 
 from ..config import get_settings
-from .geo import CITY_COORDS, resolve_city
+from .geo import CITY_COORDS
 from .preferences import PREFERENCE_KINDS
 
 _SYSTEM = f"""Tu convertis un brief immobilier en français en préférences de recherche pondérées.

@@ -159,7 +159,7 @@ class BienIciSource(ScraperSource):
 
     def get(self, external_id: str, bases: list[str] | None = None) -> NormalizedListing | None:
         try:
-            resp = self._get(f"/realEstateAd.json", params={"id": external_id})
+            resp = self._get("/realEstateAd.json", params={"id": external_id})
         except Exception:
             return None
         data = resp.json()
