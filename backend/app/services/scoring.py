@@ -117,8 +117,9 @@ def _travaux(flags, ctx):
 def _train(flags, ctx):
     t = flags.get("rail_time_min")
     if t is None:
-        return None, "pending", "trajet train (clé Navitia)"
-    return _clamp(1 - t / 180), "ok", f"{t} min en train"
+        return None, "pending", "trajet train indisponible"
+    suffixe = " (estimé)" if flags.get("rail_time_estime") else ""
+    return _clamp(1 - t / 180), "ok", f"{t} min en train{suffixe}"
 
 
 def _gare(flags, ctx):

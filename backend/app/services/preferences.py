@@ -148,7 +148,8 @@ def _eval_one(item, kind: str, params: dict):
             return None, "pending", "provider non branché"
         val = flags[key]
         if kind == "rail_time_from":
-            return _clamp(1 - val / params.get("max_minutes", 180)), "ok", f"{val} min"
+            suffixe = " (estimé)" if flags.get("rail_time_estime") else ""
+            return _clamp(1 - val / params.get("max_minutes", 180)), "ok", f"{val} min{suffixe}"
         if kind == "fiber":
             return (1.0 if val else 0.0), "ok", "fibre" if val else "pas de fibre"
         if kind == "relief_mountain":

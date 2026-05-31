@@ -86,7 +86,7 @@ class EnrichmentProvider(ABC):
 | `gpu_zonage` | API Carto GPU (apicarto.ign.fr) | `zone_urba` (U/AU/A/N), `constructible`, `est_zone_au` | ✅ live (sans clé) |
 | `georisques` | api.georisques.gouv.fr | `risques` (argile, inondation, radon, séisme…) | ✅ live (sans clé) |
 | `relief` | altimétrie IGN (data.geopf.fr) | `altitude`, `montagne` | ✅ live (sans clé) |
-| `rail_time` | Navitia (api.navitia.io) | `rail_time_min` depuis une ville d'origine | ✅ codé, **requiert `NAVITIA_API_KEY`** |
+| `rail_time` | estimation (sans clé) ou Navitia/SNCF (clé option.) | `rail_time_min` depuis une ville d'origine | ✅ live **sans clé** (estimation) ; horaires réels si clé |
 | `aeronautique` | PEB + servitudes T4/T5 (GPU/SUP) | `peb_zone` (A–D) | à venir |
 | `fibre` | Arcep (open data THD) | `fibre` (bool) | à venir |
 | `hiking` | OSM (sentiers) | `randonnee` (bool) | à venir |
@@ -152,8 +152,8 @@ poussent en amont (ex. Pappers).
 - **Lot A — Enrichissement open data** : 🟡 en cours. `EnrichmentProvider` + pipeline +
   colonnes dérivées + filtres (`constructible_only`, `zones_urba`, `exclure_risques`,
   `altitude`). Providers live (sans clé) : `gpu_zonage`, `georisques`, `relief`, `pollution`,
-  `socio` (gabarit), `dvf_comparables` (geo-dvf → composante « affaire »). Clé **gratuite** :
-  `rail_time` (Navitia). Restent :
+  `socio` (gabarit), `dvf_comparables` (geo-dvf → composante « affaire »). `rail_time` fonctionne **sans clé** (estimation à vol d'oiseau) ; une clé
+  Navitia/SNCF (B2B) reste optionnelle pour les horaires réels. Restent :
   `aeronautique` (PEB/servitudes — données GPU lacunaires), `fibre` (Arcep — pas d'API
   point), `hiking` (OSM — Overpass injoignable depuis l'environnement de build).
 - **Lot B — Score d'investissement** : ✅ implémenté. Moteur pondéré et **explicable**

@@ -44,9 +44,16 @@ def test_rail_parse_minutes():
     assert RailTimeProvider._parse_minutes({"journeys": []}) is None
 
 
-def test_rail_indisponible_sans_cle():
-    # Aucune clé Navitia dans les tests.
-    assert RailTimeProvider().available is False
+def test_rail_disponible_sans_cle_estimation():
+    from app.services.geo import resolve_city
+
+    prov = RailTimeProvider()
+    # Plus aucune clé requise : estimation à vol d'oiseau depuis l'origine.
+    assert prov.available is True
+    paris = resolve_city("Paris")
+    proche = prov._approx_minutes(paris, 48.9, 2.4)   # tout près de Paris
+    loin = prov._approx_minutes(paris, 43.6, 1.44)     # Toulouse
+    assert proche < loin
     assert {p["name"] for p in provider_status()} == {
         "gpu_zonage", "georisques", "relief", "pollution", "socio", "rail_time", "dvf_comparables"
     }
