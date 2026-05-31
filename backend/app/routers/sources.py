@@ -14,6 +14,8 @@ _NOTES = {
     "pappers": "API officielle Pappers Immobilier. Nécessite PAPPERS_API_KEY.",
     "bienici": "Annonces Bien'ici (scraping API JSON). Géo fine filtrée côté client.",
     "leboncoin": "Annonces Leboncoin (API finder). Protégé Datadome : requiert PROXY_URL.",
+    "pap": "Annonces PAP (de particulier à particulier). Cloudflare : requiert headless/proxy.",
+    "seloger": "Annonces SeLoger. Protégé Datadome : requiert headless/proxy.",
     "mock": "Jeu de données de démonstration (aucune clé requise).",
 }
 

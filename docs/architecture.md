@@ -59,8 +59,8 @@ supérieure à Jinka :
 | `bienici` | API JSON | ✅ implémenté et vérifié en live (annonces) |
 | `mock` | fixtures | ✅ implémenté (dev/tests) |
 | `leboncoin` | API JSON + proxy | ✅ implémenté (parsing testé). ⚠️ Datadome → requiert `PROXY_URL` en live |
-| `pap` | HTTP/headless | Cloudflare (403 sans proxy) — à implémenter |
-| `seloger` | headless + proxies | Datadome — à implémenter |
+| `pap` | HTTP/headless + JSON-LD | ✅ implémenté (parsing testé). ⚠️ Cloudflare → headless/proxy en live |
+| `seloger` | headless + JSON-LD | ✅ implémenté (parsing testé). ⚠️ Datadome → headless/proxy en live |
 | `paruvendu` | HTTP léger | accessible (200) — candidat bonus réel |
 
 **Constat de terrain (sondages)** : Leboncoin, SeLoger et PAP renvoient un blocage
@@ -137,8 +137,11 @@ poussent en amont (ex. Pappers).
   pipeline + champs dérivés + filtres `constructible/risques/aérien`. *(commence ici)*
 - **Lot B — Scoring + classification ruines + suivi prix** (sur données enrichies).
 - **Lot C — Scraper PAP & sites spécialisés terrains** (HTTP léger) + dédoublonnage.
-- **Lot D — Scrapers durs** (headless + proxies) : ✅ infra headless/proxy + Leboncoin ;
-  reste PAP, SeLoger (et Paruvendu en bonus) — nécessitent une validation live via proxy.
+- **Lot D — Scrapers durs** (headless + proxies) : ✅ infra headless/proxy + Leboncoin,
+  PAP, SeLoger (parsing testé offline) — nécessitent une validation live via proxy.
+  (Paruvendu, réel et accessible, reste un bonus optionnel.)
+- **Lot E — Newsletters d'agences** (ingestion email IMAP + extraction LLM) +
+  scraping de sites d'agences locales. *(à venir, fort ROI off-market)*
 - **Lot E — Agrégation multi-sources** (source `all`) dans recherches fréquentes.
 - **Lot F — Tests d'intégration, durcissement, doc.**
 - *(Front : phase ultérieure.)*
