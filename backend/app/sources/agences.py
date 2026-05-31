@@ -26,6 +26,7 @@ def normalized_from_listing(row: Listing) -> NormalizedListing:
         surface_terrain=row.surface_terrain,
         surface_bati=row.surface_bati,
         nb_pieces=row.nb_pieces,
+        nb_chambres=row.nb_chambres,
         adresse=row.adresse,
         commune=row.commune,
         code_postal=row.code_postal,

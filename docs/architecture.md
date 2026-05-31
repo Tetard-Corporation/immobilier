@@ -146,6 +146,13 @@ poussent en amont (ex. Pappers).
 - **Lot D — Scrapers durs** (headless + proxies) : ✅ infra headless/proxy + Leboncoin,
   PAP, SeLoger (parsing testé offline) — nécessitent une validation live via proxy.
   (Paruvendu, réel et accessible, reste un bonus optionnel.)
+- **Lot F — Filtre avancé par préférences (ranking)** : ✅ implémenté. Régime
+  ranking pur (aucune exclusion) ; `match_score` + détail par préférence. Préférences
+  géo (corridor, proximité gare via open data bundlé, autour d'une ville), budget/SCI,
+  chambres, terrain, travaux légers, sans vis-à-vis, nature/authentique. Critères
+  dépendant d'un provider (trajet train Navitia, fibre Arcep, relief IGN, rando OSM)
+  définis et en `pending` jusqu'au branchement (Lot A). **Parseur de brief NL**
+  (IA Claude + repli heuristique) → préférences éditables.
 - **Lot E — Newsletters d'agences** (ingestion email IMAP + extraction LLM Haiku +
   repli heuristique) + scraping de sites d'agences locales : ✅ implémenté.
   Source `agences` (inbound) alimentée par un job de scheduler, branchée sur le

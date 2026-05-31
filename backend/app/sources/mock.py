@@ -57,6 +57,7 @@ def _build_dataset() -> list[NormalizedListing]:
                     surface_terrain=float(surface_terrain),
                     surface_bati=sbati,
                     nb_pieces=pieces,
+                    nb_chambres=(max(pieces - 2, 1) if pieces else None),
                     adresse=f"{idx} rue de l'Exemple {cp} {commune}",
                     commune=commune,
                     code_postal=cp,

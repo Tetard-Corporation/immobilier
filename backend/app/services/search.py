@@ -9,6 +9,7 @@ from ..models import Listing, PriceHistory
 from ..schemas import ListingOut, SearchCriteria, SearchResultOut
 from ..sources import NormalizedListing, resolve_source
 from .dedup import dedupe, fingerprint
+from .preferences import evaluate as evaluate_preferences
 
 
 def upsert_listing(db: Session, item: NormalizedListing) -> Listing:
@@ -30,6 +31,7 @@ def upsert_listing(db: Session, item: NormalizedListing) -> Listing:
         surface_terrain=item.surface_terrain,
         surface_bati=item.surface_bati,
         nb_pieces=item.nb_pieces,
+        nb_chambres=item.nb_chambres,
         adresse=item.adresse,
         commune=item.commune,
         code_postal=item.code_postal,
@@ -88,6 +90,7 @@ def to_listing_out(item: NormalizedListing, *, db_id: int | None = None, is_new:
         surface_terrain=item.surface_terrain,
         surface_bati=item.surface_bati,
         nb_pieces=item.nb_pieces,
+        nb_chambres=item.nb_chambres,
         adresse=item.adresse,
         commune=item.commune,
         code_postal=item.code_postal,
@@ -132,8 +135,17 @@ def run_search(
     out_items: list[ListingOut] = []
     for item in items:
         row = upsert_listing(db, item)
-        out_items.append(to_listing_out(item, db_id=row.id))
+        out = to_listing_out(item, db_id=row.id)
+        if criteria.preferences:
+            match, details = evaluate_preferences(item, criteria.preferences)
+            out.match_score = match
+            out.match_details = details
+        out_items.append(out)
     db.commit()
+
+    # Régime ranking : classement par match_score décroissant.
+    if criteria.preferences:
+        out_items.sort(key=lambda o: o.match_score if o.match_score is not None else -1, reverse=True)
     return SearchResultOut(
         source=source.name,
         total=result.total,

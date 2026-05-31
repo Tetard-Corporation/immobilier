@@ -20,8 +20,9 @@ ISOLE = "isole"
 SANS_VIS_A_VIS = "sans_vis_a_vis"
 ARBORE = "arbore"
 ENSOLEILLE = "ensoleille"
+AUTHENTIQUE = "authentique"
 
-FEATURES = [VUE, FORET, EAU, CALME, ISOLE, SANS_VIS_A_VIS, ARBORE, ENSOLEILLE]
+FEATURES = [VUE, FORET, EAU, CALME, ISOLE, SANS_VIS_A_VIS, ARBORE, ENSOLEILLE, AUTHENTIQUE]
 _STRONG = {VUE, FORET, EAU, ISOLE}
 
 # Nuisances négatives.
@@ -82,6 +83,21 @@ _POSITIVE_KEYWORDS: dict[str, list[str]] = {
     SANS_VIS_A_VIS: ["sans vis-a-vis", "aucun vis-a-vis", "sans aucun vis-a-vis"],
     ARBORE: ["arbore", "verdoyant", "paysager", "parc arbore", "terrain arbore", "joliment plante"],
     ENSOLEILLE: ["plein sud", "exposition sud", "tres ensoleille", "tres lumineux", "baigne de lumiere"],
+    AUTHENTIQUE: [
+        "authentique",
+        "de caractere",
+        "plein de charme",
+        "beaucoup de cachet",
+        "du cachet",
+        "pierres apparentes",
+        "poutres apparentes",
+        "cheminee",
+        "colombages",
+        "batisse de caractere",
+        "corps de ferme",
+        "longere",
+        "mas en pierre",
+    ],
 }
 
 _NEGATIVE_KEYWORDS: dict[str, list[str]] = {

@@ -20,6 +20,12 @@ mais avec des **filtres avancés**, des **jeux de filtres réutilisables**, des
   - `mock` — jeu de données de démo (dev/tests, hors-ligne).
 - **Recherche multi-critères** normalisée (localisation, prix, surfaces terrain/bâti,
   type de bien, DPE, état : ruine / à rénover / baisse de prix).
+- **Filtre avancé par préférences pondérées (ranking)** : aucune exclusion, un
+  `match_score` classe les biens. Préférences géo (corridor entre villes, proximité
+  gare via open data, autour d'une ville), budget/SCI, chambres, terrain, travaux
+  légers, sans vis-à-vis, nature d'exception, authentique. Critères `pending` prêts à
+  s'activer (trajet train, fibre, relief, randonnées). **Parseur de brief en langage
+  naturel** (`POST /api/brief/parse`, IA Claude + repli heuristique).
 - **Jeux de filtres** (`FilterSet`) réutilisables.
 - **Recherches fréquentes** (`SavedSearch`) + scheduler + **détection des nouveautés**
   (badge in-app, marquage « tout vu », historique des runs).

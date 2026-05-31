@@ -19,6 +19,7 @@ class NormalizedListing:
     surface_terrain: float | None = None
     surface_bati: float | None = None
     nb_pieces: int | None = None
+    nb_chambres: int | None = None
     adresse: str | None = None
     commune: str | None = None
     code_postal: str | None = None

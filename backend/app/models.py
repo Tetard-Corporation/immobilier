@@ -90,6 +90,7 @@ class Listing(Base):
     surface_terrain: Mapped[float | None] = mapped_column(Float, nullable=True)
     surface_bati: Mapped[float | None] = mapped_column(Float, nullable=True)
     nb_pieces: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    nb_chambres: Mapped[int | None] = mapped_column(Integer, nullable=True)
 
     adresse: Mapped[str | None] = mapped_column(String(300), nullable=True)
     commune: Mapped[str | None] = mapped_column(String(150), nullable=True)

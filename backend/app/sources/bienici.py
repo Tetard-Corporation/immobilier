@@ -115,6 +115,7 @@ class BienIciSource(ScraperSource):
             surface_terrain=_scalar(ad.get("landSurfaceArea")),
             surface_bati=_scalar(ad.get("surfaceArea")),
             nb_pieces=_scalar(ad.get("roomsQuantity")),
+            nb_chambres=_scalar(ad.get("bedroomsQuantity")),
             adresse=ad.get("title"),
             commune=ad.get("city"),
             code_postal=ad.get("postalCode"),

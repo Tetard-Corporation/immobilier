@@ -51,6 +51,39 @@ def test_search_mock_score_min(client):
     assert r.json()["results"] == []  # aucun bien ne dépasse 100
 
 
+def test_search_preferences_ranking(client):
+    r = client.post(
+        "/api/search?source=mock",
+        json={
+            "property_types": ["terrain", "maison"],
+            "preferences": [
+                {"kind": "nature_exception", "weight": 2},
+                {"kind": "has_terrain", "weight": 1},
+                {"kind": "budget", "params": {"budget_max": 200000}},
+            ],
+        },
+    )
+    assert r.status_code == 200
+    results = r.json()["results"]
+    assert len(results) >= 2
+    assert all(item["match_score"] is not None for item in results)
+    assert all(item["match_details"] for item in results)
+    scores = [item["match_score"] for item in results]
+    assert scores == sorted(scores, reverse=True)  # classé par match_score
+
+
+def test_brief_parse_endpoint(client):
+    r = client.post(
+        "/api/brief/parse",
+        json={"text": "Sur l'axe Paris Marseille, sans vis à vis, fibre, au moins 6 chambres, 150000€ d'apports"},
+    )
+    assert r.status_code == 200
+    body = r.json()
+    assert body["parser"] == "heuristic"
+    kinds = {p["kind"] for p in body["preferences"]}
+    assert {"near_corridor", "no_vis_a_vis", "fiber", "chambres_min", "budget"} <= kinds
+
+
 def test_filter_set_crud(client):
     created = client.post(
         "/api/filter-sets",

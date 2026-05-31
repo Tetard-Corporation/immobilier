@@ -10,10 +10,27 @@ from pydantic import BaseModel, ConfigDict, Field
 # --------------------------------------------------------------------------- #
 # Critères de recherche (communs à toutes les sources)
 # --------------------------------------------------------------------------- #
+class Preference(BaseModel):
+    """Préférence pondérée (régime ranking) : ne filtre pas, augmente le match_score.
+
+    `kind` ∈ preferences.PREFERENCE_KINDS ; `params` dépend du kind.
+    """
+
+    model_config = ConfigDict(extra="forbid")
+
+    kind: str
+    weight: float = 1.0
+    params: dict = Field(default_factory=dict)
+    label: str | None = None
+
+
 class SearchCriteria(BaseModel):
     """Critères normalisés, indépendants de la source de données."""
 
     model_config = ConfigDict(extra="forbid")
+
+    # Préférences pondérées (classement) — voir services/preferences.py.
+    preferences: list[Preference] | None = None
 
     # Localisation
     code_postal: str | None = None
@@ -35,9 +52,10 @@ class SearchCriteria(BaseModel):
     surface_bati_min: float | None = None
     surface_bati_max: float | None = None
 
-    # Pièces
+    # Pièces / chambres
     nb_pieces_min: int | None = None
     nb_pieces_max: int | None = None
+    nb_chambres_min: int | None = None
 
     # Type de bien (vocabulaire source-agnostique : voir filters.PROPERTY_TYPES)
     property_types: list[str] | None = Field(
@@ -116,6 +134,7 @@ class ListingOut(BaseModel):
     surface_terrain: float | None = None
     surface_bati: float | None = None
     nb_pieces: int | None = None
+    nb_chambres: int | None = None
     adresse: str | None = None
     commune: str | None = None
     code_postal: str | None = None
@@ -137,6 +156,8 @@ class ListingOut(BaseModel):
     price_decreased: bool = False
     score: float | None = None
     score_details: list = []
+    match_score: float | None = None
+    match_details: list = []
     canonical_id: str | None = None
     prix_m2_terrain: float | None = None
     is_new: bool | None = None

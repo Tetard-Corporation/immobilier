@@ -187,6 +187,8 @@ def matches(listing: NormalizedListing, c: SearchCriteria) -> bool:
         return False
     if not _in_range(listing.nb_pieces, c.nb_pieces_min, c.nb_pieces_max):
         return False
+    if c.nb_chambres_min is not None and (listing.nb_chambres or 0) < c.nb_chambres_min:
+        return False
 
     if c.property_types and (listing.type_bien not in c.property_types):
         return False
