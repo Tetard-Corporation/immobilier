@@ -2,6 +2,10 @@
 
 from __future__ import annotations
 
+import functools
+
+import httpx
+
 from .base import EnrichmentProvider
 from .dvf import DvfComparablesProvider
 from .georisques import GeorisquesProvider
@@ -39,10 +43,41 @@ def provider_status() -> list[dict]:
     return [{"name": p.name, "available": p.available} for p in get_providers()]
 
 
+@functools.lru_cache(maxsize=2048)
+def _geocode(commune: str | None, code_postal: str | None) -> tuple[float, float] | None:
+    """Géocodage de secours (commune/CP -> coordonnées) via la BAN, pour les sources
+    sans latitude/longitude (Paruvendu, newsletters d'agences...)."""
+    q = " ".join(p for p in (commune, code_postal) if p).strip()
+    if not q:
+        return None
+    try:
+        resp = httpx.get(
+            "https://api-adresse.data.gouv.fr/search/",
+            params={"q": q, "type": "municipality", "limit": 1},
+            timeout=15,
+        )
+        resp.raise_for_status()
+        feats = resp.json().get("features") or []
+        if feats:
+            lon, lat = feats[0]["geometry"]["coordinates"]
+            return float(lat), float(lon)
+    except (httpx.HTTPError, KeyError, ValueError, IndexError):
+        return None
+    return None
+
+
 def enrich_listing(item):
-    """Enrichit un bien géolocalisé via les providers disponibles, recalcule le score."""
+    """Enrichit un bien via les providers disponibles, recalcule le score.
+
+    Si le bien n'a pas de coordonnées, on tente un géocodage de secours
+    (commune/CP) pour pouvoir tout de même l'enrichir.
+    """
     if item.latitude is None or item.longitude is None:
-        return item
+        coords = _geocode(item.commune, item.code_postal)
+        if coords:
+            item.latitude, item.longitude = coords
+        else:
+            return item
     flags = dict(item.flags or {})
     for provider in get_providers():
         if not provider.available:
