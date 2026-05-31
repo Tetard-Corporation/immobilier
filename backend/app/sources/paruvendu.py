@@ -27,9 +27,8 @@ _SLUG = {
 
 _CARD_START = re.compile(r'<div\s+class="blocAnnonce')
 _ID = re.compile(r'data-id="(\d+)"')
-_HREF = re.compile(r'href="(/immobilier/[^"]+)"')
-# Vraie page d'annonce = lien /immobilier/.../<id numérique long> (≠ page catégorie).
-_DETAIL_HREF = re.compile(r'/immobilier/[a-z0-9-]+/\d{6,}[A-Za-z0-9]*')
+# Vraie page d'annonce = /immobilier/<segments>/<id numérique long> (≠ page catégorie).
+_DETAIL_HREF = re.compile(r'/immobilier/(?:[a-z0-9-]+/)+\d{6,}[A-Za-z0-9]*')
 _TITLE = re.compile(r'<a[^>]*\btitle="([^"]*)"')
 _PRICE = re.compile(r"(\d[\d\s  ]{2,})\s*(?:€|&euro;|&#8364;)")
 _SURFACE = re.compile(r"(\d[\d\s  ]*)\s*m(?:²|&sup2;|\s*2|&#178;)", re.I)
