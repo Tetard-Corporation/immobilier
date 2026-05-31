@@ -1,0 +1,2617 @@
+openapi: 3.0.0
+info:
+    description: |
+        L'API de Pappers Immobilier vous permet de récupérer des informations sur les parcelles cadastrales et leurs bases associées (propriétaires, ventes, bâtiments occupants, etc...).
+
+        Vous devez indiquer votre clé d'API dans les requêtes, soit via le header `api-key`, soit (déconseillé) en utilisant le paramètre query `api_token`.
+
+        L'URL d'accès à l'API est https://api-immobilier.pappers.fr/v1/
+    version: 1.0.0
+    title: Pappers Immobilier API
+    contact:
+        name: 'Support technique Pappers'
+        email: support@pappers.fr
+servers:
+    - url: https://api-immobilier.pappers.fr/v1/
+
+security:
+    - apiKey: []
+
+paths:
+    /parcelles/{numero_parcelle}:
+        get:
+            tags:
+                - Parcelles
+            summary: 'Récupère une parcelle cadastrale.'
+            description: |
+                Cette route permet de récupérer les informations disponibles sur la parcelle cadastrale `numero_parcelle`.
+
+                Le paramètre `bases` permet de sélectionner les informations souhaitées dans le retour (propriétaires, ventes, bâtiments occupants, etc...).
+            operationId: parcelle
+            parameters:
+                - name: numero_parcelle
+                  in: path
+                  required: true
+                  description: 'Numéro de parcelle cadastrale.'
+                  schema:
+                      type: string
+                      example: 75101000AG0006
+                - $ref: '#/components/parameters/par_page'
+                - $ref: '#/components/parameters/page'
+                - $ref: '#/components/parameters/curseur'
+                - $ref: '#/components/parameters/bases'
+                - $ref: '#/components/parameters/champs_supplementaires'
+                - $ref: '#/components/parameters/adresse'
+                - $ref: '#/components/parameters/code_postal'
+                - $ref: '#/components/parameters/code_commune'
+                - $ref: '#/components/parameters/region'
+                - $ref: '#/components/parameters/departement'
+                - $ref: '#/components/parameters/latitude'
+                - $ref: '#/components/parameters/longitude'
+                - $ref: '#/components/parameters/distance'
+                - $ref: '#/components/parameters/type_syndic_copropriete'
+                - $ref: '#/components/parameters/siret_syndic_professionnel_copropriete'
+                - $ref: '#/components/parameters/nom_copropriete'
+                - $ref: '#/components/parameters/nombre_lots_copropriete_min'
+                - $ref: '#/components/parameters/nombre_lots_copropriete_max'
+                - $ref: '#/components/parameters/nombre_coproprietes_min'
+                - $ref: '#/components/parameters/nombre_coproprietes_max'
+                - $ref: '#/components/parameters/siren_proprietaire'
+                - $ref: '#/components/parameters/tranche_effectif_proprietaire_min'
+                - $ref: '#/components/parameters/tranche_effectif_proprietaire_max'
+                - $ref: '#/components/parameters/categorie_juridique_proprietaire'
+                - $ref: '#/components/parameters/code_naf_proprietaire'
+                - $ref: '#/components/parameters/denomination_proprietaire'
+                - $ref: '#/components/parameters/nombre_proprietaires_min'
+                - $ref: '#/components/parameters/nombre_proprietaires_max'
+                - $ref: '#/components/parameters/siren_occupant'
+                - $ref: '#/components/parameters/tranche_effectif_occupant_min'
+                - $ref: '#/components/parameters/tranche_effectif_occupant_max'
+                - $ref: '#/components/parameters/categorie_juridique_occupant'
+                - $ref: '#/components/parameters/code_naf_occupant'
+                - $ref: '#/components/parameters/denomination_occupant'
+                - $ref: '#/components/parameters/nature_vente'
+                - $ref: '#/components/parameters/nombre_occupants_min'
+                - $ref: '#/components/parameters/nombre_occupants_max'
+                - $ref: '#/components/parameters/nature_vente'
+                - $ref: '#/components/parameters/type_local_vente'
+                - $ref: '#/components/parameters/date_vente_min'
+                - $ref: '#/components/parameters/date_vente_max'
+                - $ref: '#/components/parameters/prix_vente_min'
+                - $ref: '#/components/parameters/prix_vente_max'
+                - $ref: '#/components/parameters/surface_bati_vente_min'
+                - $ref: '#/components/parameters/surface_bati_vente_max'
+                - $ref: '#/components/parameters/surface_terrain_vente_min'
+                - $ref: '#/components/parameters/surface_terrain_vente_max'
+                - $ref: '#/components/parameters/nombre_pieces_vente_min'
+                - $ref: '#/components/parameters/nombre_pieces_vente_max'
+                - $ref: '#/components/parameters/nombre_ventes_min'
+                - $ref: '#/components/parameters/nombre_ventes_max'
+                - $ref: '#/components/parameters/annee_construction_batiment_min'
+                - $ref: '#/components/parameters/annee_construction_batiment_max'
+                - $ref: '#/components/parameters/nombre_logements_batiment_min'
+                - $ref: '#/components/parameters/nombre_logements_batiment_max'
+                - $ref: '#/components/parameters/surface_batiment_min'
+                - $ref: '#/components/parameters/surface_batiment_max'
+                - $ref: '#/components/parameters/nature_batiment'
+                - $ref: '#/components/parameters/usage_batiment'
+                - $ref: '#/components/parameters/nombre_batiments_min'
+                - $ref: '#/components/parameters/nombre_batiments_max'
+                - $ref: '#/components/parameters/classe_bilan_dpe'
+                - $ref: '#/components/parameters/type_installation_chauffage_dpe'
+                - $ref: '#/components/parameters/type_energie_chauffage_dpe'
+                - $ref: '#/components/parameters/prix_fonds_de_commerce_min'
+                - $ref: '#/components/parameters/prix_fonds_de_commerce_max'
+                - $ref: '#/components/parameters/date_fonds_de_commerce_min'
+                - $ref: '#/components/parameters/date_fonds_de_commerce_max'
+                - $ref: '#/components/parameters/code_naf_fonds_de_commerce'
+                - $ref: '#/components/parameters/nombre_fonds_de_commerce_min'
+                - $ref: '#/components/parameters/nombre_fonds_de_commerce_max'
+                - $ref: '#/components/parameters/statut_permis'
+                - $ref: '#/components/parameters/date_autorisation_permis_min'
+                - $ref: '#/components/parameters/date_autorisation_permis_max'
+                - $ref: '#/components/parameters/nombre_permis_min'
+                - $ref: '#/components/parameters/nombre_permis_max'
+
+            responses:
+                '200':
+                    description: Parcelle trouvée. Le retour contient un objet décrivant la parcelle.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ParcelleFiche'
+                '400':
+                    description: Paramètres de la requête incorrects.
+                '401':
+                    description: Clé API incorrecte.
+                '404':
+                    description: Parcelle inexistante.
+    /parcelles:
+        get:
+            tags:
+                - Parcelles
+            summary: 'Recherche des parcelles cadastrales.'
+            description: |
+                Cette route permet de récupérer les informations disponibles sur les parcelles cadastrales ciblées.
+
+                Le paramètre `bases` permet de sélectionner les informations souhaitées dans le retour (propriétaires, ventes, bâtiments occupants, etc...).
+
+                Tous les paramètres sont optionnels et servent à filtrer la recherche.
+
+                Pour parcourir l'ensemble des résultats, deux solutions sont possibles :
+
+                - La pagination (paramètres `page` et `par_page`), limitée aux 400 premiers résultats ;
+                - Les curseurs (paramètres `curseur` et `par_curseur`).
+            operationId: parcelles
+            parameters:
+                - $ref: '#/components/parameters/par_page'
+                - $ref: '#/components/parameters/page'
+                - $ref: '#/components/parameters/curseur'
+                - $ref: '#/components/parameters/bases'
+                - $ref: '#/components/parameters/champs_supplementaires'
+                - $ref: '#/components/parameters/parcelle_cadastrale'
+                - $ref: '#/components/parameters/adresse'
+                - $ref: '#/components/parameters/code_postal'
+                - $ref: '#/components/parameters/code_commune'
+                - $ref: '#/components/parameters/region'
+                - $ref: '#/components/parameters/departement'
+                - $ref: '#/components/parameters/latitude'
+                - $ref: '#/components/parameters/longitude'
+                - $ref: '#/components/parameters/distance'
+                - $ref: '#/components/parameters/type_syndic_copropriete'
+                - $ref: '#/components/parameters/siret_syndic_professionnel_copropriete'
+                - $ref: '#/components/parameters/nom_copropriete'
+                - $ref: '#/components/parameters/nombre_lots_copropriete_min'
+                - $ref: '#/components/parameters/nombre_lots_copropriete_max'
+                - $ref: '#/components/parameters/siren_proprietaire'
+                - $ref: '#/components/parameters/tranche_effectif_proprietaire_min'
+                - $ref: '#/components/parameters/tranche_effectif_proprietaire_max'
+                - $ref: '#/components/parameters/categorie_juridique_proprietaire'
+                - $ref: '#/components/parameters/code_naf_proprietaire'
+                - $ref: '#/components/parameters/denomination_proprietaire'
+                - $ref: '#/components/parameters/siren_occupant'
+                - $ref: '#/components/parameters/tranche_effectif_occupant_min'
+                - $ref: '#/components/parameters/tranche_effectif_occupant_max'
+                - $ref: '#/components/parameters/categorie_juridique_occupant'
+                - $ref: '#/components/parameters/code_naf_occupant'
+                - $ref: '#/components/parameters/denomination_occupant'
+                - $ref: '#/components/parameters/nature_vente'
+                - $ref: '#/components/parameters/type_local_vente'
+                - $ref: '#/components/parameters/date_vente_min'
+                - $ref: '#/components/parameters/date_vente_max'
+                - $ref: '#/components/parameters/prix_vente_min'
+                - $ref: '#/components/parameters/prix_vente_max'
+                - $ref: '#/components/parameters/surface_bati_vente_min'
+                - $ref: '#/components/parameters/surface_bati_vente_max'
+                - $ref: '#/components/parameters/surface_terrain_vente_min'
+                - $ref: '#/components/parameters/surface_terrain_vente_max'
+                - $ref: '#/components/parameters/nombre_pieces_vente_min'
+                - $ref: '#/components/parameters/nombre_pieces_vente_max'
+                - $ref: '#/components/parameters/annee_construction_batiment_min'
+                - $ref: '#/components/parameters/annee_construction_batiment_max'
+                - $ref: '#/components/parameters/nombre_logements_batiment_min'
+                - $ref: '#/components/parameters/nombre_logements_batiment_max'
+                - $ref: '#/components/parameters/surface_batiment_min'
+                - $ref: '#/components/parameters/surface_batiment_max'
+                - $ref: '#/components/parameters/nature_batiment'
+                - $ref: '#/components/parameters/usage_batiment'
+                - $ref: '#/components/parameters/classe_bilan_dpe'
+                - $ref: '#/components/parameters/type_installation_chauffage_dpe'
+                - $ref: '#/components/parameters/type_energie_chauffage_dpe'
+                - $ref: '#/components/parameters/prix_fonds_de_commerce_min'
+                - $ref: '#/components/parameters/prix_fonds_de_commerce_max'
+                - $ref: '#/components/parameters/date_fonds_de_commerce_min'
+                - $ref: '#/components/parameters/date_fonds_de_commerce_max'
+                - $ref: '#/components/parameters/code_naf_fonds_de_commerce'
+                - $ref: '#/components/parameters/statut_permis'
+                - $ref: '#/components/parameters/date_autorisation_permis_min'
+                - $ref: '#/components/parameters/date_autorisation_permis_max'
+
+            responses:
+                '200':
+                    description: Parcelle trouvée. Le retour contient un objet décrivant la parcelle.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ParcelleFiche'
+                '400':
+                    description: Paramètres de la requête incorrects.
+                '401':
+                    description: Clé API incorrecte.
+                '404':
+                    description: Parcelle inexistante.
+
+components:
+    parameters:
+        bases:
+            name: bases
+            in: query
+            description: "Bases de données souhaitées dans le retour. Il est possible d’indiquer plusieurs bases en les séparant par des virgules. Si aucune base n’est spécifiée, seules les informations sur la parcelle seront retournées (1 crédit). Coût par base : `ventes` 2 crédits, `proprietaires` 2 crédits, `occupants` 2 crédits, `permis` 1 crédit, `fonds_de_commerce` 1 crédit, `batiments` 1 crédit, `dpe` 1 crédit, `coproprietes` 1 crédit, `amenagements` 1 crédit, `documents_urbanisme` 1 crédit."
+            required: false
+            schema:
+                type: string
+                enum: [proprietaires, ventes, batiments, dpe, occupants, permis, fonds_de_commerce, coproprietes, amenagements, documents_urbanisme]
+                example: ventes, proprietaires
+        par_page:
+            name: par_page
+            in: query
+            description: 'Nombre de résultats affichés sur une page. Valeur par défaut : `10`.'
+            required: false
+            schema:
+                type: integer
+                example: 20
+        page:
+            name: page
+            in: query
+            description: 'Page de résultats. Valeur par défaut : `1`.'
+            required: false
+            schema:
+                type: integer
+                example: 1
+        curseur:
+            name: curseur
+            in: query
+            description: "Curseur servant à parcourir l'ensemble des résultats (alternativement à la pagination qui est limitée à 400 résultats maximum). Doit valoir `*` pour la première requête, et doit pour les requêtes suivantes reprendre la valeur `curseurSuivant` retournée par la dernière réponse."
+            required: false
+            schema:
+                type: string
+                example: '*'
+        champs_supplementaires:
+            name: champs_supplementaires
+            in: query
+            description: |
+                Liste des champs supplémentaires à inclure dans le retour. Certains champs peuvent entraîner une consommation de jetons supplémentaires.
+
+                Champs supplémentaires disponibles :
+                - `tous` : 3 jetons supplémentaires
+                - `bounding_box` : 1 jeton supplémentaire
+                - `arpente` : gratuit
+                - `adresse` : 1 jeton supplémentaire
+                - `ventes.code_type_local` : gratuit
+                - `ventes.nature_culture` : gratuit
+                - `ventes.ancienne_parcelle_cadastrale` : gratuit
+                - `proprietaires.parcelles` : 1 jeton supplémentaire
+                - `proprietaires.personnes_physiques` : 1 jeton supplémentaire
+                - `proprietaires.representants_personnes_morales` : 1 jeton supplémentaire
+                - `occupants.categorie_juridique` : gratuit
+                - `occupants.personnes_physiques` : 1 jeton supplémentaire
+                - `occupants.representants_personnes_morales` : 1 jeton supplémentaire
+                - `permis.zone_operatoire` : gratuit
+                - `permis.complet` : 1 jeton supplémentaire
+
+                Champs de contact :
+                - `occupants.emails` : 3 crédits supplémentaires
+                - `occupants.telephones` : 3 crédits supplémentaires
+                - `occupants.sites_internet` : 1 crédit supplémentaire
+                - `occupants.lien_x` : 3 crédits supplémentaires
+                - `occupants.lien_linkedin` : 3 crédits supplémentaires
+                - `occupants.lien_facebook` : 3 crédits supplémentaires
+                - `coproprietes.syndic_professionnel.emails` : 3 crédits supplémentaires
+                - `coproprietes.syndic_professionnel.telephones` : 3 crédits supplémentaires
+                - `coproprietes.syndic_professionnel.sites_internet` : 1 crédit supplémentaire
+                - `coproprietes.syndic_professionnel.lien_x` : 3 crédits supplémentaires
+                - `coproprietes.syndic_professionnel.lien_linkedin` : 3 crédits supplémentaires
+                - `coproprietes.syndic_professionnel.lien_facebook` : 3 crédits supplémentaires
+                - `coproprietes.representant_legal.emails` : 3 crédits supplémentaires
+                - `coproprietes.representant_legal.telephones` : 3 crédits supplémentaires
+                - `coproprietes.representant_legal.sites_internet` : 1 crédit supplémentaire
+                - `coproprietes.representant_legal.lien_x` : 3 crédits supplémentaires
+                - `coproprietes.representant_legal.lien_linkedin` : 3 crédits supplémentaires
+                - `coproprietes.representant_legal.lien_facebook` : 3 crédits supplémentaires
+                - `proprietaires.emails` : 3 crédits supplémentaires
+                - `proprietaires.telephones` : 3 crédits supplémentaires
+                - `proprietaires.sites_internet` : 1 crédit supplémentaire
+                - `proprietaires.lien_x` : 3 crédits supplémentaires
+                - `proprietaires.lien_linkedin` : 3 crédits supplémentaires
+                - `proprietaires.lien_facebook` : 3 crédits supplémentaires
+                - `fonds_de_commerce.acheteur.emails` : 3 crédits supplémentaires
+                - `fonds_de_commerce.acheteur.telephones` : 3 crédits supplémentaires
+                - `fonds_de_commerce.acheteur.sites_internet` : 1 crédit supplémentaire
+                - `fonds_de_commerce.acheteur.lien_x` : 3 crédits supplémentaires
+                - `fonds_de_commerce.acheteur.lien_linkedin` : 3 crédits supplémentaires
+                - `fonds_de_commerce.acheteur.lien_facebook` : 3 crédits supplémentaires
+                - `fonds_de_commerce.precedent_proprietaire.emails` : 3 crédits supplémentaires
+                - `fonds_de_commerce.precedent_proprietaire.telephones` : 3 crédits supplémentaires
+                - `fonds_de_commerce.precedent_proprietaire.sites_internet` : 1 crédit supplémentaire
+                - `fonds_de_commerce.precedent_proprietaire.lien_x` : 3 crédits supplémentaires
+                - `fonds_de_commerce.precedent_proprietaire.lien_linkedin` : 3 crédits supplémentaires
+                - `fonds_de_commerce.precedent_proprietaire.lien_facebook` : 3 crédits supplémentaires
+                - `fonds_de_commerce.precedent_exploitant.emails` : 3 crédits supplémentaires
+                - `fonds_de_commerce.precedent_exploitant.telephones` : 3 crédits supplémentaires
+                - `fonds_de_commerce.precedent_exploitant.sites_internet` : 1 crédit supplémentaire
+                - `fonds_de_commerce.precedent_exploitant.lien_x` : 3 crédits supplémentaires
+                - `fonds_de_commerce.precedent_exploitant.lien_linkedin` : 3 crédits supplémentaires
+                - `fonds_de_commerce.precedent_exploitant.lien_facebook` : 3 crédits supplémentaires
+                - `personnes_physiques.emails` : 7 crédits supplémentaires
+                - `emails` : 3 crédits supplémentaires (toutes les bases)
+                - `telephones` : 3 crédits supplémentaires (toutes les bases)
+                - `sites_internet` : 1 crédit supplémentaire (toutes les bases)
+                - `lien_x` : 3 crédits supplémentaires (toutes les bases)
+                - `lien_linkedin` : 3 crédits supplémentaires (toutes les bases)
+                - `lien_facebook` : 3 crédits supplémentaires (toutes les bases)
+
+            required: false
+            schema:
+                type: string
+                example: tous
+        parcelle_cadastrale:
+            name: parcelle_cadastrale
+            in: query
+            description: 'Numéro de parcelle cadastrale.'
+            required: false
+            schema:
+                type: string
+                example: 75101000AG0006
+        adresse:
+            name: adresse
+            in: query
+            description: 'Adresse.'
+            required: false
+            schema:
+                type: string
+                example: 10 Rue Ordener 75018 Paris
+        code_postal:
+            name: code_postal
+            in: query
+            description: 'Code postal.'
+            required: false
+            schema:
+                type: string
+                example: 75001
+        code_commune:
+            name: code_commune
+            in: query
+            description: 'Code commune.'
+            required: false
+            schema:
+                type: string
+                example: 75101
+        region:
+            name: region
+            in: query
+            description: Code de la région de l'un des établissements de la parcelle, selon la [nomenclature Insee](https://www.insee.fr/fr/information/4316069#titre-bloc-18). Il est possible d'indiquer plusieurs codes régions en les séparant par des virgules.
+            required: false
+            schema:
+                type: string
+                example: 11
+        departement:
+            name: departement
+            in: query
+            description: "Numéro de département. Il est possible d'indiquer plusieurs départements en les séparant par des virgules."
+            required: false
+            schema:
+                type: string
+                example: 93
+        latitude:
+            name: latitude
+            in: query
+            description: 'Latitude. La latitude, la longitude et la distance doivent être renseignées ensemble.'
+            required: false
+            schema:
+                type: number
+                example: 48.86
+        longitude:
+            name: longitude
+            in: query
+            description: 'Longitude. La latitude, la longitude et la distance doivent être renseignées ensemble.'
+            required: false
+            schema:
+                type: number
+                example: 2.35
+        distance:
+            name: distance
+            in: query
+            description: 'Distance en mètres. La latitude, la longitude et la distance doivent être renseignées ensemble.'
+            required: false
+            schema:
+                type: integer
+                example: 20
+        type_syndic_copropriete:
+            name: type_syndic_copropriete
+            in: query
+            description: 'Type de syndic de copropriété.'
+            required: false
+            schema:
+                type: string
+                enum: [professionnel, benevole]
+                example: professionnel
+        siret_syndic_professionnel_copropriete:
+            name: siret_syndic_professionnel_copropriete
+            in: query
+            description: 'SIRET du syndic professionnel de copropriété.'
+            required: false
+            schema:
+                type: string
+                example: 96550338600074
+        nom_copropriete:
+            name: nom_copropriete
+            in: query
+            description: 'Nom de la copropriété.'
+            required: false
+            schema:
+                type: string
+                example: enedis
+        nombre_lots_copropriete_min:
+            name: nombre_lots_copropriete_min
+            in: query
+            description: 'Nombre de lots minimum de la copropriété.'
+            required: false
+            schema:
+                type: integer
+                example: 1
+        nombre_lots_copropriete_max:
+            name: nombre_lots_copropriete_max
+            in: query
+            description: 'Nombre de lots maximum de la copropriété.'
+            required: false
+            schema:
+                type: integer
+                example: 2
+        nombre_coproprietes_min:
+            name: nombre_coproprietes_min
+            in: query
+            description: 'Nombre de copropriété minimum.'
+            required: false
+            schema:
+                type: integer
+                example: 0
+        nombre_coproprietes_max:
+            name: nombre_coproprietes_max
+            in: query
+            description: 'Nombre de copropriété maximum.'
+            required: false
+            schema:
+                type: integer
+                example: 1
+
+        siren_proprietaire:
+            name: siren_proprietaire
+            in: query
+            description: 'SIREN du propriétaire.'
+            required: false
+            schema:
+                type: string
+                example: 444608442
+        tranche_effectif_proprietaire_min:
+            name: tranche_effectif_proprietaire_min
+            in: query
+            description: "Tranche d'effectifs minimale de l'entreprise, selon la [nomenclature Sirene](https://www.sirene.fr/sirene/public/variable/tefen).\n\n**Note** : 00 ou NN donneront les mêmes résultats et veulent dire non employeur"
+            required: false
+            schema:
+                type: string
+                example: 01
+        tranche_effectif_proprietaire_max:
+            name: tranche_effectif_proprietaire_max
+            in: query
+            description: "Tranche d'effectifs maximale de l'entreprise, selon la [nomenclature Sirene](https://www.sirene.fr/sirene/public/variable/tefen).\n\n**Note** : 00 ou NN donneront les mêmes résultats et veulent dire non employeur"
+            required: false
+            schema:
+                type: string
+                example: 02
+        categorie_juridique_proprietaire:
+            name: categorie_juridique_proprietaire
+            in: query
+            description: "Catégorie juridique de l'entreprise, selon la [nomenclature Insee](https://www.insee.fr/fr/information/2028129). \n\n**Note** : Le code correspond à celui de l'INSEE, à l'exception des SASU qui auront comme code 5720 et les EURL qui auront comme code 5498."
+            required: false
+            schema:
+                type: string
+                example: 6540
+        code_naf_proprietaire:
+            name: code_naf_proprietaire
+            in: query
+            description: Code NAF de l'entreprise. Il est possible d'indiquer plusieurs codes NAF en les séparant par des virgules.
+            required: false
+            schema:
+                type: string
+                example: 52.10B
+        denomination_proprietaire:
+            name: denomination_proprietaire
+            in: query
+            description: "Dénomination de l'entreprise."
+            required: false
+            schema:
+                type: string
+                example: enedis
+        nombre_proprietaires_min:
+            name: nombre_proprietaires_min
+            in: query
+            description: 'Nombre de proprietaires minimum.'
+            required: false
+            schema:
+                type: integer
+                example: 0
+        nombre_proprietaires_max:
+            name: nombre_proprietaires_max
+            in: query
+            description: 'Nombre de proprietaires maximum.'
+            required: false
+            schema:
+                type: integer
+                example: 1
+        siren_occupant:
+            name: siren_occupant
+            in: query
+            description: "SIREN de l'occupant."
+            required: false
+            schema:
+                type: string
+                example: 444608442
+        tranche_effectif_occupant_min:
+            name: tranche_effectif_occupant_min
+            in: query
+            description: "Tranche d'effectifs minimale de l'entreprise, selon la [nomenclature Sirene](https://www.sirene.fr/sirene/public/variable/tefen).\n\n**Note** : 00 ou NN donneront les mêmes résultats et veulent dire non employeur"
+            required: false
+            schema:
+                type: string
+                example: 01
+        tranche_effectif_occupant_max:
+            name: tranche_effectif_occupant_max
+            in: query
+            description: "Tranche d'effectifs maximale de l'entreprise, selon la [nomenclature Sirene](https://www.sirene.fr/sirene/public/variable/tefen).\n\n**Note** : 00 ou NN donneront les mêmes résultats et veulent dire non employeur"
+            required: false
+            schema:
+                type: string
+                example: 02
+        categorie_juridique_occupant:
+            name: categorie_juridique_occupant
+            in: query
+            description: "Catégorie juridique de l'entreprise, selon la [nomenclature Insee](https://www.insee.fr/fr/information/2028129). \n\n**Note** : Le code correspond à celui de l'INSEE, à l'exception des SASU qui auront comme code 5720 et les EURL qui auront comme code 5498."
+            required: false
+            schema:
+                type: string
+                example: 6540
+        code_naf_occupant:
+            name: code_naf_occupant
+            in: query
+            description: Code NAF de l'entreprise. Il est possible d'indiquer plusieurs codes NAF en les séparant par des virgules.
+            required: false
+            schema:
+                type: string
+                example: 52.10B
+        denomination_occupant:
+            name: denomination_occupant
+            in: query
+            description: "Dénomination de l'entreprise."
+            required: false
+            schema:
+                type: string
+                example: enedis
+        nombre_occupants_min:
+            name: nombre_occupants_min
+            in: query
+            description: "Nombre d'occupants minimum de la parcelle."
+            required: false
+            schema:
+                type: integer
+                example: 0
+
+        nombre_occupants_max:
+            name: nombre_occupants_max
+            in: query
+            description: "Nombre d'occupants maximum de la parcelle."
+            required: false
+            schema:
+                type: integer
+                example: 2
+
+        nature_vente:
+            name: nature_vente
+            in: query
+            description: 'Nature de la mutation.'
+            required: false
+            schema:
+                type: string
+                enum: [vente, echange, adjudication, expropriation, vente_futur_achevement, vente_terrain_batir]
+                example: vente
+        type_local_vente:
+            name: type_local_vente
+            in: query
+            description: 'Type de local.'
+            required: false
+            schema:
+                type: string
+                enum: [appartement, maison, dependance, local_industriel_commercial_ou_assimile]
+                example: maison
+        date_vente_min:
+            name: date_vente_min
+            in: query
+            description: 'Date de mutation minimale, au format AAAA-MM-JJ.'
+            required: false
+            schema:
+                type: string
+                example: 2020-01-01
+        date_vente_max:
+            name: date_vente_max
+            in: query
+            description: 'Date de mutation maximale, au format AAAA-MM-JJ.'
+            required: false
+            schema:
+                type: string
+                example: 2024-01-01
+        prix_vente_min:
+            name: prix_vente_min
+            in: query
+            description: 'Prix de vente minimum.'
+            required: false
+            schema:
+                type: integer
+                example: 0
+        prix_vente_max:
+            name: prix_vente_max
+            in: query
+            description: 'Prix de vente maximum.'
+            required: false
+            schema:
+                type: integer
+                example: 100000
+        surface_bati_vente_min:
+            name: surface_bati_vente_min
+            in: query
+            description: 'Surface du bâti minimale.'
+            required: false
+            schema:
+                type: integer
+                example: 50
+        surface_bati_vente_max:
+            name: surface_bati_vente_max
+            in: query
+            description: 'Surface du bâti maximale.'
+            required: false
+            schema:
+                type: integer
+                example: 100
+        surface_terrain_vente_min:
+            name: surface_terrain_vente_min
+            in: query
+            description: 'Surface du terrain minimale.'
+            required: false
+            schema:
+                type: integer
+                example: 0
+        surface_terrain_vente_max:
+            name: surface_terrain_vente_max
+            in: query
+            description: 'Surface du terrain maximale.'
+            required: false
+            schema:
+                type: integer
+                example: 100
+        nombre_pieces_vente_min:
+            name: nombre_pieces_vente_min
+            in: query
+            description: 'Nombre de pièces minimum.'
+            required: false
+            schema:
+                type: integer
+                example: 0
+        nombre_pieces_vente_max:
+            name: nombre_pieces_vente_max
+            in: query
+            description: 'Nombre de pièces maximum.'
+            required: false
+            schema:
+                type: integer
+                example: 1
+        nombre_ventes_min:
+            name: nombre_ventes_min
+            in: query
+            description: 'Nombre de ventes minimum de la parcelle.'
+            required: false
+            schema:
+                type: integer
+                example: 0
+        nombre_ventes_max:
+            name: nombre_ventes_max
+            in: query
+            description: 'Nombre de ventes maximum de la parcelle.'
+            required: false
+            schema:
+                type: integer
+                example: 2
+
+        annee_construction_batiment_min:
+            name: annee_construction_batiment_min
+            in: query
+            description: 'Année de construction minimale du bâtiment.'
+            required: false
+            schema:
+                type: integer
+                example: 1900
+        annee_construction_batiment_max:
+            name: annee_construction_batiment_max
+            in: query
+            description: 'Année de construction maximale du bâtiment.'
+            required: false
+            schema:
+                type: integer
+                example: 1990
+        nombre_logements_batiment_min:
+            name: nombre_logements_batiment_min
+            in: query
+            description: 'Nombre de logements minimum du bâtiment.'
+            required: false
+            schema:
+                type: integer
+                example: 0
+        nombre_logements_batiment_max:
+            name: nombre_logements_batiment_max
+            in: query
+            description: 'Nombre de logements maximum du bâtiment.'
+            required: false
+            schema:
+                type: integer
+                example: 100
+        surface_batiment_min:
+            name: surface_batiment_min
+            in: query
+            description: 'Surface du bâtiment minimale.'
+            required: false
+            schema:
+                type: integer
+                example: 0
+        surface_batiment_max:
+            name: surface_batiment_max
+            in: query
+            description: 'Surface du bâtiment maximale.'
+            required: false
+            schema:
+                type: integer
+                example: 1000
+        nature_batiment:
+            name: nature_batiment
+            in: query
+            description: 'Nature du bâtiment.'
+            required: false
+            schema:
+                type: string
+                enum:
+                    [
+                        indifferenciee,
+                        silo,
+                        industriel_agricole_ou_commercial,
+                        monument,
+                        chapelle,
+                        chateau,
+                        tour_donjon,
+                        fort_blockhaus_casemate,
+                        eglise,
+                        moulin_a_vent,
+                        arene_ou_theatre_antique,
+                        arc_de_triomphe,
+                        tribune
+                    ]
+                example: indifferenciee
+        usage_batiment:
+            name: usage_batiment
+            in: query
+            description: 'Usage du bâtiment.'
+            required: false
+            schema:
+                type: string
+                enum:
+                    [
+                        tertiaire_et_autres,
+                        indifferencie,
+                        annexe,
+                        residentiel,
+                        residentiel_individuel,
+                        residentiel_collectif,
+                        commercial_et_services,
+                        agricole,
+                        industriel,
+                        sportif,
+                        religieux,
+                        dependance,
+                        secondaire
+                    ]
+                example: residentiel
+        nombre_batiments_min:
+            name: nombre_batiments_min
+            in: query
+            description: 'Nombre de batiments minimum.'
+            required: false
+            schema:
+                type: integer
+                example: 0
+        nombre_batiments_max:
+            name: nombre_batiments_max
+            in: query
+            description: 'Nombre de batiments maximum.'
+            required: false
+            schema:
+                type: integer
+                example: 1
+        classe_bilan_dpe:
+            name: classe_bilan_dpe
+            in: query
+            description: 'Classe du bilan DPE.'
+            required: false
+            schema:
+                type: string
+                enum: [A, B, C, D, E, F, G]
+                example: A
+        type_installation_chauffage_dpe:
+            name: type_installation_chauffage_dpe
+            in: query
+            description: "Type d'installation de chauffage."
+            required: false
+            schema:
+                type: string
+                enum: [individuel, collectif]
+                example: collectif
+        type_energie_chauffage_dpe:
+            name: type_energie_chauffage_dpe
+            in: query
+            description: "Type d'énergie de chauffage."
+            required: false
+            schema:
+                type: string
+                enum: [gaz, electricite, fioul, bois, gpl_butane_propane, solaire, charbon, reseau_de_chaleur]
+                example: gaz
+
+        prix_fonds_de_commerce_min:
+            name: prix_fonds_de_commerce_min
+            in: query
+            description: 'Prix de fonds de commerce minimum.'
+            required: false
+            schema:
+                type: integer
+                example: 150000
+        prix_fonds_de_commerce_max:
+            name: prix_fonds_de_commerce_max
+            in: query
+            description: 'Prix de fonds de commerce maximum.'
+            required: false
+            schema:
+                type: integer
+                example: 200000
+        date_fonds_de_commerce_min:
+            name: date_fonds_de_commerce_min
+            in: query
+            description: 'Date de fonds de commerce minimale, au format AAAA-MM-JJ.'
+            required: false
+            schema:
+                type: string
+                example: 2024-09-01
+        date_fonds_de_commerce_max:
+            name: date_fonds_de_commerce_max
+            in: query
+            description: 'Date de fonds de commerce maximale, au format AAAA-MM-JJ.'
+            required: false
+            schema:
+                type: string
+                example: 2024-09-01
+        code_naf_fonds_de_commerce:
+            name: code_naf_fonds_de_commerce
+            in: query
+            description: Code NAF du fonds de commerce. Il est possible d'indiquer plusieurs codes NAF en les séparant par des virgules.
+            required: false
+            schema:
+                type: string
+                example: 52.10B
+        nombre_fonds_de_commerce_min:
+            name: nombre_fonds_de_commerce_min
+            in: query
+            description: 'Nombre de fond de commerce minimum.'
+            required: false
+            schema:
+                type: integer
+                example: 0
+        nombre_fonds_de_commerce_max:
+            name: nombre_fonds_de_commerce_max
+            in: query
+            description: 'Nombre de fond de commerce maximum.'
+            required: false
+            schema:
+                type: integer
+                example: 1
+
+        statut_permis:
+            name: statut_permis
+            in: query
+            description: 'Statut du permis.'
+            required: false
+            schema:
+                type: string
+                enum: [autorise, commence, termine, annule]
+                example: autorise
+        date_autorisation_permis_min:
+            name: date_autorisation_permis_min
+            in: query
+            description: "Date d'autorisation de permis minimale, au format AAAA-MM-JJ."
+            required: false
+            schema:
+                type: string
+                example: 2022-01-02
+        date_autorisation_permis_max:
+            name: date_autorisation_permis_max
+            in: query
+            description: "Date d'autorisation de permis maximale, au format AAAA-MM-JJ."
+            required: false
+            schema:
+                type: string
+                example: 2023-01-02
+        nombre_permis_min:
+            name: nombre_permis_min
+            in: query
+            description: 'Nombre de permis minimum.'
+            required: false
+            schema:
+                type: integer
+                example: 0
+        nombre_permis_max:
+            name: nombre_permis_max
+            in: query
+            description: 'Nombre de permis maximum.'
+            required: false
+            schema:
+                type: integer
+                example: 1
+
+    schemas:
+        ParcelleBase:
+            type: object
+            properties:
+                numero:
+                    type: string
+                    example: '31555826AE0158'
+                    description: Numéro de parcelle cadastrale.
+                section:
+                    type: string
+                    example: 'AE'
+                    description: Section de la parcelle cadastrale.
+                prefixe:
+                    type: string
+                    example: '826'
+                    description: Préfixe de la parcelle cadastrale.
+                numero_plan:
+                    type: string
+                    example: '158'
+                    description: Numéro de plan de la parcelle cadastrale.
+                adresse:
+                    type: string
+                    example: '16 PLACE SAINT PIERRE 31000 TOULOUSE'
+                    description: Adresse de la parcelle cadastrale.
+                sources_adresse:
+                    type: array
+                    items:
+                        type: string
+                    example: ['gouv', 'ventes', 'proprietaires', 'coproprietes', 'occupants', 'permis', 'fonds_de_commerce']
+                    description: Liste des sources de l'adresse de la parcelle cadastrale. Uniquement présent si demandé dans les champs supplémentaires ('adresse').
+                autres_adresses:
+                    type: array
+                    description: "Autres adresses de la parcelle cadastrale. Uniquement présent si demandé dans les champs supplémentaires ('adresse')."
+                    items:
+                        type: object
+                        properties:
+                            adresse:
+                                type: string
+                                example: '17 PLACE SAINT PIERRE, 31000 TOULOUSE'
+                                description: Adresse de la parcelle cadastrale.
+                            sources:
+                                type: array
+                                items:
+                                    type: string
+                                example: ['occupants']
+                                description: Liste des sources de l'adresse de la parcelle cadastrale.
+                code_commune:
+                    type: string
+                    example: '31555'
+                    description: Code de la commune de la parcelle cadastrale.
+                commune:
+                    type: string
+                    example: 'TOULOUSE'
+                    description: Nom de la commune de la parcelle cadastrale.
+                code_region:
+                    type: string
+                    example: '76'
+                    description: Code de la région de la parcelle cadastrale. Uniquement présent si demandé dans les champs supplémentaires ('adresse').
+                region:
+                    type: string
+                    example: 'OCCITANIE'
+                    description: Nom de la région de la parcelle cadastrale. Uniquement présent si demandé dans les champs supplémentaires ('adresse').
+                code_departement:
+                    type: string
+                    example: '31'
+                    description: Code du département de la parcelle cadastrale. Uniquement présent si demandé dans les champs supplémentaires ('adresse').
+                departement:
+                    type: string
+                    example: 'HAUTE-GARONNE'
+                    description: Nom du département de la parcelle cadastrale. Uniquement présent si demandé dans les champs supplémentaires ('adresse').
+                codes_postaux:
+                    type: array
+                    items:
+                        type: string
+                    example: ['31300', '31500', '31200', '31400', '31000', '31100']
+                    description: Liste des codes postaux de la parcelle cadastrale. Uniquement présent si demandé dans les champs supplémentaires ('adresse').
+                contenance:
+                    type: number
+                    example: 250
+                    description: Contenance de la parcelle cadastrale en m².
+                arpente:
+                    type: boolean
+                    example: true
+                    description: Indique si la parcelle cadastrale est arpentée. Uniquement présent si demandé dans les champs supplémentaires ('arpente').
+                top_left:
+                    type: object
+                    description: "Uniquement présent si demandé dans les champs supplémentaires ('bounding_box')."
+                    properties:
+                        lat:
+                            type: number
+                            example: 43.6039347
+                            description: Latitude du coin supérieur gauche de la parcelle cadastrale.
+                        lon:
+                            type: number
+                            example: 1.4348255
+                            description: Longitude du coin supérieur gauche de la parcelle cadastrale. .
+                bottom_right:
+                    type: object
+                    description: "Uniquement présent si demandé dans les champs supplémentaires ('bounding_box')."
+                    properties:
+                        latitude:
+                            type: number
+                            example: 43.603667
+                            description: Latitude du coin inférieur droit de la parcelle cadastrale. .
+                        longitude:
+                            type: number
+                            example: 1.435247
+                            description: Longitude du coin inférieur droit de la parcelle cadastrale. .
+                geometrie:
+                    type: object
+                    description: Géométrie de la parcelle cadastrale. Uniquement présent si demandé dans les champs supplémentaires ('bounding_box').
+                    properties:
+                        type:
+                            type: string
+                            example: 'Polygon'
+                            description: Type de géométrie de la parcelle cadastrale.
+                        coordinates:
+                            type: array
+                            items:
+                                type: array
+                                items:
+                                    type: array
+                                    items:
+                                        type: number
+                            example:
+                                [
+                                    [
+                                        [1.4348255, 43.6038197],
+                                        [1.4348717, 43.60381],
+                                        [1.4348481, 43.6037801],
+                                        [1.4348957, 43.6037479],
+                                        [1.434954, 43.6037156],
+                                        [1.4350487, 43.603667],
+                                        [1.4351887, 43.6038037],
+                                        [1.4352124, 43.6038272],
+                                        [1.435247, 43.603861],
+                                        [1.4352165, 43.6039212],
+                                        [1.4351344, 43.6039144],
+                                        [1.4350983, 43.6039113],
+                                        [1.4350816, 43.6039134],
+                                        [1.4350483, 43.6039176],
+                                        [1.435038, 43.6039189],
+                                        [1.4350312, 43.6039198],
+                                        [1.4349205, 43.6039342],
+                                        [1.4349079, 43.6039347],
+                                        [1.4348485, 43.603929],
+                                        [1.4348255, 43.6038197]
+                                    ]
+                                ]
+                            description: Coordonnées de la géométrie de la parcelle cadastrale. Uniquement présent si demandé dans les champs supplémentaires ('bounding_box').
+        Vente:
+            type: object
+            properties:
+                id:
+                    type: string
+                    example: '2021-478556'
+                    description: Identifiant unique de la vente ou de la mutation.
+                date:
+                    type: string
+                    format: date
+                    example: '2021-09-14'
+                    description: Date de la vente ou de la mutation au format AAAA-MM-JJ.
+                nature:
+                    type: string
+                    enum: [vente, echange, adjudication, expropriation, vente_futur_achevement, vente_terrain_batir]
+                    example: vente
+                    description: Nature de la mutation.
+                valeur_fonciere:
+                    type: number
+                    example: 979000
+                    description: Valeur foncière de la vente ou de la mutation.
+                code_type_local:
+                    type: string
+                    example: '4'
+                    description: Code du type de local. Uniquement présent si demandé dans les champs supplémentaires.
+                type_local:
+                    type: string
+                    enum: [appartement, maison, dependance, local_industriel_commercial_ou_assimile]
+                    example: 'maison'
+                    description: Type de local.
+                surface_reelle_bati:
+                    type: number
+                    example: 30
+                    description: Surface réelle du bâti en m².
+                surface_terrain:
+                    type: number
+                    format: nullable
+                    example: 200
+                    description: Surface du terrain en m².
+                nombre_pieces:
+                    type: integer
+                    example: 3
+                    description: Nombre de pièces.
+                code_nature_culture:
+                    type: string
+                    format: nullable
+                    example: 'AB'
+                    description: Code de la nature de culture. Uniquement présent si demandé dans les champs supplémentaires.
+                nature_culture:
+                    type: string
+                    format: nullable
+                    example: 'terrains a bâtir'
+                    description: Nature de culture. Uniquement présent si demandé dans les champs supplémentaires.
+                code_nature_culture_speciale:
+                    type: string
+                    format: nullable
+                    example: ''
+                    description: Code de la nature de culture spéciale. Uniquement présent si demandé dans les champs supplémentaires.
+                nature_culture_speciale:
+                    type: string
+                    format: nullable
+                    example: 'POTAG'
+                    description: Nature de culture spéciale. Uniquement présent si demandé dans les champs supplémentaires.
+                ancienne_parcelle_cadastrale:
+                    type: string
+                    format: nullable
+                    example: '31555826AE0158'
+                    description: Ancienne parcelle cadastrale. Uniquement présent si demandé dans les champs supplémentaires.
+                nombre_lots:
+                    type: integer
+                    example: 1
+                    description: Nombre de lots.
+                lots:
+                    type: array
+                    items:
+                        type: object
+                        properties:
+                            numero:
+                                type: string
+                                example: '110'
+                                description: Numéro du lot.
+                            surface_carrez:
+                                type: number
+                                format: nullable
+                                example: 30
+                                description: Surface Carrez du lot.
+                adresse:
+                    type: string
+                    example: '16 PLACE SAINT PIERRE 31000 TOULOUSE'
+                    description: Adresse de la vente ou de la mutation. Uniquement présent si demandé dans les champs supplémentaires.
+        Copropriete:
+            type: object
+            properties:
+                nom:
+                    type: string
+                    example: 'PRINTEMPS BIS'
+                    description: Nom de la copropriété.
+                numero_immatriculation:
+                    type: string
+                    example: 'AE8212490'
+                    description: Numéro d'immatriculation de la copropriété.
+                numero_immatriculation_principal:
+                    type: string
+                    example: 'NA'
+                    description: Numéro d'immatriculation principal de la copropriété.
+                mandat_en_cours:
+                    type: string
+                    example: 'MANDAT EN COURS'
+                    description: Mandat en cours de la copropriété.
+                nombre_total_lots:
+                    type: integer
+                    example: 36
+                    description: Nombre total de lots de la copropriété.
+                nombre_total_lots_a_usage_habitation_bureaux_commerces:
+                    type: integer
+                    example: 15
+                    description: Nombre total de lots à usage d'habitation, bureaux ou commerces de la copropriété.
+                nombre_lots_a_usage_habitation:
+                    type: integer
+                    example: 15
+                    description: Nombre de lots à usage d'habitation de la copropriété.
+                nombre_lots_stationnement:
+                    type: integer
+                    example: 6
+                    description: Nombre de lots de stationnement de la copropriété.
+                periode_construction:
+                    enum: [AVANT_1949, DE_1949_A_1960, DE_1961_A_1974, DE_1975_A_1993, DE_1994_A_2000, DE_2001_A_2010, A_COMPTER_DE_2011]
+                    example: DE_1961_A_1974
+                    description: Période de construction de la copropriété.
+                type_syndic:
+                    enum: [professionnel, benevole]
+                    example: professionnel
+                    description: Type de syndic de copropriété.
+                syndic_professionnel:
+                    type: object
+                    properties:
+                        siret:
+                            type: string
+                            example: '75363299100018'
+                            description: SIRET du syndic professionnel de copropriété.
+                        nom_entreprise:
+                            type: string
+                            example: 'SARL CARRE-IMMO'
+                            description: Nom de l'entreprise du syndic professionnel de copropriété.
+                syndicat_cooperatif:
+                    type: boolean
+                    example: false
+                    description: Indique si la copropriété est un syndicat coopératif.
+                syndicat_principal_ou_syndicat_secondaire:
+                    type: string
+                    enum: [principal, secondaire]
+                    example: principal
+                    description: Indique si la copropriété est un syndicat principal ou secondaire.
+                representant_legal:
+                    type: object
+                    properties:
+                        siret:
+                            type: string
+                            example: '75363299100018'
+                            description: SIRET du représentant légal de la copropriété.
+                        nom_entreprise:
+                            type: string
+                            example: 'FLORENCE CARRE IMMO'
+                            description: Nom de l'entreprise du représentant légal de la copropriété.
+                date_immatriculation:
+                    type: string
+                    format: date
+                    example: '2019-02-28'
+                    description: Date d'immatriculation de la copropriété au format AAAA-MM-JJ.
+                date_reglement_copropriete:
+                    type: string
+                    format: date
+                    example: '1961-01-05'
+                    description: Date de règlement de copropriété de la copropriété au format AAAA-MM-JJ.
+                residence_service:
+                    type: boolean
+                    example: false
+                    description: Indique si la copropriété est une résidence service.
+                appartenances:
+                    type: object
+                    properties:
+                        action_coeur_de_ville:
+                            type: boolean
+                            example: false
+                            description: Indique si la copropriété appartient à l'action coeur de ville.
+                        petites_villes_de_demain:
+                            type: boolean
+                            example: false
+                            description: Indique si la copropriété appartient aux petites villes de demain.
+                        copropriete_aidee:
+                            type: boolean
+                            example: false
+                            description: Indique si la copropriété appartient à la copropriété aidée.
+                        quartier_prioritaire:
+                            type: object
+                            format: nullable
+                            description: Quartier prioritaire de la copropriété.
+                            properties:
+                                nom_2024:
+                                    type: string
+                                    example: 'QUARTIER AUDE'
+                                    description: Nom du quartier prioritaire de la copropriété en 2024.
+                                code_2024:
+                                    type: string
+                                    example: 'QN01101I'
+                                    description: Code du quartier prioritaire de la copropriété en 2024.
+                                nom_2015:
+                                    type: string
+                                    example: 'QUARTIER AUDE'
+                                    description: Nom du quartier prioritaire de la copropriété en 2015.
+                                code_2015:
+                                    type: string
+                                    example: 'QP011001'
+                                    description: Code du quartier prioritaire de la copropriété en 2015.
+                rattachements_syndicat:
+                    type: object
+                    properties:
+                        nombre_asl:
+                            type: integer
+                            example: 0
+                            description: Nombre d'ASL rattachées au syndicat de copropriété.
+                        nombre_aful:
+                            type: integer
+                            example: 0
+                            description: Nombre d'AFUL rattachées au syndicat de copropriété.
+                        nombre_unions_syndicats:
+                            type: integer
+                            example: 0
+                            description: Nombre d'unions de syndicats rattachées au syndicat de copropriété.
+                autres_parcelles:
+                    type: array
+                    items:
+                        type: string
+                    example: ['31555803AC0001']
+                    description: Liste des autres parcelles cadastrales de la copropriété.
+                nombre_parcelles_cadastrales:
+                    type: integer
+                    example: 1
+                    description: Nombre de parcelles cadastrales de la copropriété.
+                date_mise_a_jour_rnic:
+                    type: string
+                    format: date
+                    example: '2024-04-02'
+                    description: Date de mise à jour du RNIC de la copropriété au format AAAA-MM-JJ.
+                date_derniere_maj:
+                    type: string
+                    format: date
+                    example: '2023-07-11'
+                    description: Date de dernière mise à jour de la copropriété au format AAAA-MM-JJ.
+                date_fin_dernier_mandat:
+                    type: string
+                    format: date
+                    example: '2024-06-30'
+                    description: Date de fin du dernier mandat de la copropriété au format AAAA-MM-JJ.
+                adresse:
+                    type: string
+                    example: "1 ALLEE DES NYMPHEAS 31240 L'UNION"
+                    description: Adresse de la copropriété. Uniquement présent si demandé dans les champs supplémentaires.
+        Batiment:
+            type: object
+            properties:
+                parcelle_principale:
+                    type: boolean
+                    example: true
+                    description: Indique si le bâtiment est la parcelle principale.
+                batiment_groupe_id:
+                    type: string
+                    example: 'bdnb-bg-4GWE-QB2D-J21P'
+                    description: Identifiant du groupe de bâtiments.
+                code_epci:
+                    type: string
+                    example: '200054781'
+                    description: Code EPCI du bâtiment.
+                surface:
+                    type: number
+                    example: 536
+                    description: Surface du bâtiment en m².
+                code_iris:
+                    type: string
+                    example: '920400504'
+                    description: Code IRIS du bâtiment.
+                natures:
+                    type: string
+                    enum:
+                        [
+                            'Indifférenciée',
+                            'Silo',
+                            'Industriel, agricole ou commercial',
+                            'Monument',
+                            'Chapelle',
+                            'Château',
+                            'Tour, donjon',
+                            'Fort, blockhaus, casemate',
+                            'Église',
+                            'Moulin à vent',
+                            'Arène ou théâtre antique',
+                            'Arc de triomphe',
+                            'Tribune'
+                        ]
+                    example: Indifférenciée
+                    description: Liste des natures du bâtiment.
+                usages:
+                    type: string
+                    enum:
+                        [
+                            'Tertiaire et autres',
+                            'Indifférencié',
+                            'Annexe',
+                            'Résidentiel',
+                            'Résidentiel individuel',
+                            'Résidentiel collectif',
+                            'Commercial et services',
+                            'Agricole',
+                            'Industriel',
+                            'Sportif',
+                            'Religieux',
+                            'Dépendance',
+                            'Secondaire'
+                        ]
+                    example: Résidentiel
+                    description: Liste des usages du bâtiment.
+                etat:
+                    type: string
+                    example: 'En service'
+                    description: État du bâtiment.
+                hauteur_moyenne:
+                    type: number
+                    example: 21
+                    description: Hauteur moyenne du bâtiment en m.
+                hauteur_max:
+                    type: number
+                    example: 21
+                    description: Hauteur maximale du bâtiment en m.
+                altitude_moyenne_du_sol:
+                    type: number
+                    example: 34
+                    description: Altitude moyenne du sol du bâtiment en m.
+                zone_activite_nature:
+                    type: string
+                    example: 'Zone industrielle'
+                    description: "Nature de la zone d'activité du bâtiment."
+                zone_activite_nature_detaillee:
+                    type: string
+                    example: "Parc d'activités tertiaires"
+                    description: "Nature détaillée de la zone d'activité du bâtiment."
+                zone_activite_toponyme:
+                    type: string
+                    example: "Parc d'Activités Technopolis"
+                    description: "Toponyme de la zone d'activité du bâtiment."
+                annee_construction:
+                    type: integer
+                    example: 1990
+                    description: Année de construction du bâtiment.
+                materiaux_mur:
+                    type: string
+                    example: 'INDETERMINE'
+                    description: Matériaux des murs du bâtiment.
+                materiaux_toit:
+                    type: string
+                    example: 'INDETERMINE'
+                    description: Matériaux du toit du bâtiment.
+                nombre_logements:
+                    type: integer
+                    example: 1
+                    description: Nombre de logements du bâtiment.
+        Dpe:
+            type: object
+            properties:
+                batiment_groupe_id:
+                    type: string
+                    example: 'bdnb-bg-AN4L-MX4E-Q8GU'
+                    description: Identifiant du groupe de bâtiments.
+                identifiant_dpe:
+                    type: string
+                    example: '2131E0008370D'
+                    description: Identifiant du DPE.
+                code_departement_insee:
+                    type: string
+                    example: '31'
+                    description: Code du département INSEE.
+                arrete_2021:
+                    type: boolean
+                    example: true
+                    description: Indique si le DPE est de l'arrêté 2021.
+                type_dpe:
+                    type: string
+                    example: 'dpe arrêté 2021 3cl logement'
+                    description: Type de DPE.
+                type_batiment_dpe:
+                    type: string
+                    example: 'appartement'
+                    description: Type de bâtiment du DPE.
+                periode_construction_dpe:
+                    type: string
+                    example: 'avant 1948'
+                    description: Période de construction du DPE.
+                annee_construction_dpe:
+                    type: integer
+                    example: null
+                    description: Année de construction du DPE.
+                version:
+                    type: string
+                    example: '1'
+                    description: Version du DPE.
+                date_etablissement_dpe:
+                    type: string
+                    format: date
+                    example: '2021-07-05'
+                    description: "Date d'établissement du DPE au format AAAA-MM-JJ."
+                date_reception_dpe:
+                    type: string
+                    format: date
+                    example: '2021-07-05'
+                    description: Date de réception du DPE au format AAAA-MM-JJ.
+                nombre_niveau_logement:
+                    type: integer
+                    example: 1
+                    description: Nombre de niveaux du logement.
+                nombre_niveau_immeuble:
+                    type: integer
+                    example: null
+                    description: "Nombre de niveaux de l'immeuble."
+                surface_habitable_immeuble:
+                    type: number
+                    example: null
+                    description: "Surface habitable de l'immeuble."
+                surface_habitable_logement:
+                    type: number
+                    example: null
+                    description: Surface habitable du logement.
+                conso_5_usages_ep_m2:
+                    type: number
+                    example: 259
+                    description: "Consommation d'énergie primaire en énergie finale en kWhEP/m²."
+                conso_5_usages_ef_m2:
+                    type: number
+                    example: 113
+                    description: "Consommation d'énergie finale en énergie finale en kWhEP/m²."
+                emission_ges_5_usages_m2:
+                    type: number
+                    example: 8
+                    description: Émission de gaz à effet de serre en kgCO2/m².
+                classe_bilan_dpe:
+                    type: string
+                    enum: [A, B, C, D, E, F, G]
+                    example: E
+                    description: Classe du bilan DPE.
+                classe_emission_ges:
+                    type: string
+                    enum: [A, B, C, D, E, F, G]
+                    example: B
+                    description: "Classe d'émission de gaz à effet de serre."
+                classe_conso_energie_arrete_2012:
+                    type: string
+                    example: ''
+                    description: "Classe de consommation d'énergie de l'arrêté 2012."
+                classe_emission_ges_arrete_2012:
+                    type: string
+                    example: ''
+                    description: "Classe d'émission de gaz à effet de serre de l'arrêté 2012."
+                conso_3_usages_ep_m2_arrete_2012:
+                    type: number
+                    example: null
+                    description: "Consommation d'énergie primaire en énergie finale de l'arrêté 2012 en kWhEP/m²."
+                emission_ges_3_usages_ep_m2_arrete_2012:
+                    type: number
+                    example: null
+                    description: "Émission de gaz à effet de serre de l'arrêté 2012 en kgCO2/m²."
+                type_installation_chauffage:
+                    type: string
+                    example: ''
+                    description: "Type d'installation de chauffage."
+                type_energie_chauffage:
+                    type: string
+                    example: ''
+                    description: "Type d'énergie de chauffage."
+                type_generateur_chauffage:
+                    type: string
+                    example: ''
+                    description: Type de générateur de chauffage.
+                type_generateur_chauffage_anciennete:
+                    type: string
+                    example: ''
+                    description: Ancienneté du générateur de chauffage.
+                type_energie_chauffage_appoint:
+                    type: string
+                    example: ''
+                    description: "Type d'énergie de chauffage d'appoint."
+                type_generateur_chauffage_appoint:
+                    type: string
+                    example: ''
+                    description: "Type de générateur de chauffage d'appoint."
+                type_generateur_chauffage_anciennete_appoint:
+                    type: string
+                    example: ''
+                    description: "Ancienneté du générateur de chauffage d'appoint."
+                chauffage_solaire:
+                    type: boolean
+                    example: false
+                    description: Indique si le chauffage est solaire.
+                nb_generateur_chauffage:
+                    type: integer
+                    example: null
+                    description: Nombre de générateurs de chauffage.
+                nb_installation_chauffage:
+                    type: integer
+                    example: null
+                    description: "Nombre d'installations de chauffage."
+                type_energie_climatisation:
+                    type: string
+                    example: ''
+                    description: "Type d'énergie de climatisation."
+                type_generateur_climatisation:
+                    type: string
+                    example: ''
+                    description: Type de générateur de climatisation.
+                type_generateur_climatisation_anciennete:
+                    type: string
+                    example: ''
+                    description: Ancienneté du générateur de climatisation.
+                type_installation_ecs:
+                    type: string
+                    example: ''
+                    description: "Type d'installation d'ECS."
+                type_energie_ecs:
+                    type: string
+                    example: ''
+                    description: "Type d'énergie d'ECS."
+                type_generateur_ecs:
+                    type: string
+                    example: ''
+                    description: "Type de générateur d'ECS."
+                type_generateur_ecs_anciennete:
+                    type: string
+                    example: ''
+                    description: "Ancienneté du générateur d'ECS."
+                type_energie_ecs_appoint:
+                    type: string
+                    example: ''
+                    description: "Type d'énergie d'ECS d'appoint."
+                type_generateur_ecs_appoint:
+                    type: string
+                    example: ''
+                    description: "Type de générateur d'ECS d'appoint."
+                type_generateur_ecs_anciennete_appoint:
+                    type: string
+                    example: ''
+                    description: "Ancienneté du générateur d'ECS d'appoint."
+                ecs_solaire:
+                    type: boolean
+                    example: false
+                    description: "Indique si l'ECS est solaire."
+                nb_generateur_ecs:
+                    type: integer
+                    example: null
+                    description: "Nombre de générateurs d'ECS."
+                nb_installation_ecs:
+                    type: integer
+                    example: null
+                    description: "Nombre d'installations d'ECS."
+                plusieurs_facade_exposee:
+                    type: boolean
+                    example: false
+                    description: Indique si plusieurs façades sont exposées.
+                type_ventilation:
+                    type: string
+                    example: ''
+                    description: Type de ventilation.
+                type_production_energie_renouvelable:
+                    type: string
+                    example: ''
+                    description: "Type de production d'énergie renouvelable."
+                type_vitrage:
+                    type: string
+                    example: ''
+                    description: Type de vitrage.
+                type_materiaux_menuiserie:
+                    type: string
+                    example: ''
+                    description: Type de matériaux de menuiserie.
+                type_gaz_lame:
+                    type: string
+                    example: ''
+                    description: Type de gaz lame.
+                type_fermeture:
+                    type: string
+                    example: ''
+                    description: Type de fermeture.
+                epaisseur_lame:
+                    type: number
+                    example: null
+                    description: Épaisseur de lame.
+                vitrage_vir:
+                    type: boolean
+                    example: false
+                    description: Indique si le vitrage est vir.
+                surface_vitree_nord:
+                    type: number
+                    example: null
+                    description: Surface vitrée nord.
+                surface_vitree_sud:
+                    type: number
+                    example: null
+                    description: Surface vitrée sud.
+                surface_vitree_ouest:
+                    type: number
+                    example: null
+                    description: Surface vitrée ouest.
+                surface_vitree_est:
+                    type: number
+                    example: null
+                    description: Surface vitrée est.
+                surface_vitree_horizontal:
+                    type: number
+                    example: null
+                    description: Surface vitrée horizontale.
+                traversant:
+                    type: string
+                    example: ''
+                    description: Traversant.
+                u_baie_vitree:
+                    type: number
+                    example: null
+                    description: U baie vitrée.
+                uw:
+                    type: number
+                    example: null
+                    description: UW.
+                facteur_solaire_baie_vitree:
+                    type: number
+                    example: null
+                    description: Facteur solaire baie vitrée.
+                presence_balcon:
+                    type: boolean
+                    example: false
+                    description: Indique si un balcon est présent.
+                l_orientation_baie_vitree:
+                    type: string
+                    example: ''
+                    description: "L'orientation de la baie vitrée."
+                pourcentage_surface_baie_vitree_exterieur:
+                    type: number
+                    example: null
+                    description: Pourcentage de surface de baie vitrée extérieur.
+                type_isolation_mur_exterieur:
+                    type: string
+                    example: ''
+                    description: "Type d'isolation de mur extérieur."
+                epaisseur_isolation_mur_exterieur_estim:
+                    type: number
+                    example: null
+                    description: "Épaisseur d'isolation de mur extérieur estimée."
+                materiaux_structure_mur_exterieur:
+                    type: string
+                    example: ''
+                    description: Matériaux de structure de mur extérieur.
+                epaisseur_structure_mur_exterieur:
+                    type: string
+                    example: ''
+                    description: Épaisseur de structure de mur extérieur.
+                surface_mur_totale:
+                    type: number
+                    example: null
+                    description: Surface mur totale.
+                surface_mur_exterieur:
+                    type: number
+                    example: null
+                    description: Surface mur extérieur.
+                surface_mur_deperditif:
+                    type: number
+                    example: null
+                    description: Surface mur déperditif.
+                u_mur_exterieur:
+                    type: number
+                    example: null
+                    description: U mur extérieur.
+                l_local_non_chauffe_mur:
+                    type: number
+                    example: null
+                    description: L local non chauffé mur.
+                local_non_chauffe_principal_mur:
+                    type: string
+                    example: ''
+                    description: Local non chauffé principal mur.
+                l_orientation_mur_exterieur:
+                    type: string
+                    example: ''
+                    description: "L'orientation de mur extérieur."
+                type_isolation_plancher_bas:
+                    type: string
+                    example: ''
+                    description: "Type d'isolation de plancher bas."
+                type_plancher_bas_deperditif:
+                    type: string
+                    example: ''
+                    description: Type de plancher bas déperditif.
+                surface_plancher_bas_totale:
+                    type: number
+                    example: null
+                    description: Surface de plancher bas totale.
+                surface_plancher_bas_deperditif:
+                    type: number
+                    example: null
+                    description: Surface de plancher bas déperditif.
+                u_plancher_bas_final_deperditif:
+                    type: number
+                    example: null
+                    description: U plancher bas final déperditif.
+                u_plancher_bas_brut_deperditif:
+                    type: number
+                    example: null
+                    description: U plancher bas brut.
+                l_local_non_chauffe_plancher_bas:
+                    type: number
+                    example: null
+                    description: L local non chauffé plancher bas.
+                local_non_chauffe_principal_plancher_bas:
+                    type: string
+                    example: ''
+                    description: Local non chauffé principal plancher bas.
+                type_adjacence_principal_plancher_bas:
+                    type: string
+                    example: ''
+                    description: "Type d'adjacence principal plancher bas."
+                type_isolation_plancher_haut:
+                    type: string
+                    example: ''
+                    description: "Type d'isolation de plancher haut."
+                type_plancher_haut_deperditif:
+                    type: string
+                    example: ''
+                    description: Type de plancher haut déperditif.
+                surface_plancher_haut_totale:
+                    type: number
+                    example: null
+                    description: Surface de plancher haut totale.
+                surface_plancher_haut_deperditif:
+                    type: number
+                    example: null
+                    description: Surface de plancher haut déperditif.
+                u_plancher_haut_deperditif:
+                    type: number
+                    example: null
+                    description: U plancher haut déperditif.
+                l_local_non_chauffe_plancher_haut:
+                    type: number
+                    example: null
+                    description: L local non chauffé plancher haut.
+                local_non_chauffe_principal_plancher_haut:
+                    type: string
+                    example: ''
+                    description: Local non chauffé principal plancher haut.
+                type_adjacence_principal_plancher_haut:
+                    type: string
+                    example: ''
+                    description: "Type d'adjacence principal plancher haut."
+                type_porte:
+                    type: string
+                    example: ''
+                    description: Type de porte.
+                surface_porte:
+                    type: number
+                    example: null
+                    description: Surface de porte.
+                u_porte:
+                    type: number
+                    example: null
+                    description: U porte.
+                classe_inertie:
+                    type: string
+                    example: 'Légère'
+                    description: "Classe d'inertie."
+                deperdition_mur:
+                    type: number
+                    example: null
+                    description: Déperdition de mur.
+                deperdition_baie_vitree:
+                    type: number
+                    example: null
+                    description: Déperdition de baie vitrée.
+                deperdition_plancher_bas:
+                    type: number
+                    example: null
+                    description: Déperdition de plancher bas.
+                deperdition_plancher_haut:
+                    type: number
+                    example: null
+                    description: Déperdition de plancher haut.
+                deperdition_pont_thermique:
+                    type: number
+                    example: null
+                    description: Déperdition de pont thermique.
+                deperdition_porte:
+                    type: number
+                    example: null
+                    description: Déperdition de porte.
+                parcelle_cadastrale:
+                    type: string
+                    example: '31555826AE0158'
+                    description: Parcelle cadastrale.
+                date_etablissement_dpe_formatee:
+                    type: string
+                    format: date
+                    example: '05/07/2021'
+                    description: "Date d'établissement du DPE formatée."
+                date_reception_dpe_formatee:
+                    type: string
+                    format: date
+                    example: '05/07/2021'
+                    description: Date de réception du DPE formatée.
+                base_batiment_type_dpe:
+                    type: string
+                    enum: [individuel, collectif]
+                    example: 'individuel'
+                    description: Type de DPE du bâtiment.
+        Proprietaire:
+            type: object
+            properties:
+                siren:
+                    type: string
+                    example: '914727615'
+                    description: SIREN du propriétaire.
+                date_creation:
+                    type: string
+                    format: date
+                    example: '2022-04-18'
+                    description: Date de création du propriétaire au format AAAA-MM-JJ.
+                nom_entreprise:
+                    type: string
+                    example: 'ESINEY EMMA SING IMMO NEGRENEYS'
+                    description: Nom de l'entreprise du propriétaire.
+                tranche_effectifs:
+                    type: string
+                    format: nullable
+                    example: null
+                    description: Tranche d'effectifs du propriétaire.
+                annee_effectifs:
+                    type: string
+                    format: nullable
+                    example: null
+                    description: Année des effectifs du propriétaire.
+                categorie_juridique:
+                    type: string
+                    example: '6540'
+                    description: Catégorie juridique du propriétaire.
+                activite_principale:
+                    type: string
+                    example: '68.20B'
+                    description: Activité principale du propriétaire.
+                employeur:
+                    type: boolean
+                    example: true
+                    description: Indique si le propriétaire est employeur.
+                cessation_activite:
+                    type: boolean
+                    example: false
+                    description: Indique si le propriétaire a cessé son activité.
+                locaux:
+                    type: array
+                    description: Liste des locaux du propriétaire.
+                    items:
+                        type: object
+                        properties:
+                            numero_parcelle:
+                                type: string
+                                example: '31555803AC0001'
+                                description: Numéro de parcelle.
+                            code_droit:
+                                type: string
+                                example: 'P'
+                                description: Code de droit.
+                            batiment:
+                                type: string
+                                example: 'A'
+                                description: Bâtiment.
+                            entree:
+                                type: string
+                                example: '01'
+                                description: Entrée.
+                            niveau:
+                                type: string
+                                example: '00'
+                                description: Niveau.
+                            porte:
+                                type: string
+                                example: '03001'
+                                description: Porte.
+                            numero_voie:
+                                type: string
+                                example: '128'
+                                description: Numéro de voie.
+                            nature_voie:
+                                type: string
+                                example: 'RUE'
+                                description: Nature de voie.
+                            nom_voie:
+                                type: string
+                                example: 'DE NEGRENEYS'
+                                description: Nom de voie.
+                            departement:
+                                type: string
+                                example: '31'
+                                description: Département.
+                            adresse:
+                                type: string
+                                example: '128 RUE DE NEGRENEYS 31000 TOULOUSE'
+                                description: Adresse. Unique si demandé dans les champs supplémentaires.
+                parcelles:
+                    type: array
+                    description: Liste des parcelles du propriétaire. Uniquement présent si demandé dans les champs supplémentaires ('proprietaires.parcelles').
+                    items:
+                        type: object
+                        properties:
+                            numero_parcelle:
+                                type: string
+                                example: '31555824AB0182'
+                                description: Numéro de parcelle.
+                            departement:
+                                type: string
+                                example: '31'
+                                description: Département.
+                            code_direction:
+                                type: string
+                                example: '0'
+                                description: Code de direction.
+                            code_commune:
+                                type: string
+                                example: '555'
+                                description: Code de commune.
+                            nom_commune:
+                                type: string
+                                example: 'TOULOUSE'
+                                description: Nom de commune.
+                            indice_repetition:
+                                type: string
+                                example: ''
+                                description: Indice de répétition.
+                            code_voie_majic:
+                                type: string
+                                example: '2970'
+                                description: Code de voie MAJIC.
+                            code_voie_rivoli:
+                                type: string
+                                example: '8408'
+                                description: Code de voie Rivoli.
+                            nature_voie:
+                                type: string
+                                example: 'RUE'
+                                description: Nature de voie.
+                            nom_voie:
+                                type: string
+                                example: 'DU TAUR'
+                                description: Nom de voie.
+                            numero_voie:
+                                type: string
+                                example: '64'
+                                description: Numéro de voie.
+                            contenance:
+                                type: number
+                                example: 611
+                                description: Contenance.
+                            suf:
+                                type: string
+                                example: ''
+                                description: Suf.
+                            nature_culture:
+                                type: string
+                                example: 'S'
+                                description: Nature de culture.
+                            contenance_suf:
+                                type: number
+                                example: 611
+                                description: Contenance suf.
+                            code_droit:
+                                type: string
+                                example: 'S'
+                                description: Code de droit.
+                            numero_majic:
+                                type: string
+                                example: 'PBCLTN'
+                                description: Numéro MAJIC.
+                            groupe_personne:
+                                type: string
+                                example: '0'
+                                description: Groupe de personne.
+                            adresse:
+                                type: string
+                                example: '64 RUE DU TAUR 31000 TOULOUSE'
+                                description: Adresse. Unique si demandé dans les champs supplémentaires.
+                personnes_physiques:
+                    type: array
+                    description: Liste des personnes physiques du propriétaire. Uniquement présent si demandé dans les champs supplémentaires ('proprietaires.personnes_physiques').
+                    items:
+                        $ref: '#/components/schemas/PersonnePhysique'
+                representants_personnes_morales:
+                    type: array
+                    description: Liste des représentants personnes morales du propriétaire. Uniquement présent si demandé dans les champs supplémentaires ('proprietaires.representants_personnes_morales').
+                    items:
+                        $ref: '#/components/schemas/RepresentantPersonneMorale'
+        PersonnePhysique:
+            type: object
+            properties:
+                nom_patronymique:
+                    type: string
+                    example: 'Hau'
+                    description: Nom patronymique.
+                nom_usage:
+                    type: string
+                    example: null
+                    description: Nom d'usage.
+                prenoms:
+                    type: string
+                    example: 'Sing-sheng Edmond'
+                    description: Prénoms.
+                nom_complet:
+                    type: string
+                    example: 'Sing-sheng Hau'
+                    description: Nom complet.
+                nationalite:
+                    type: string
+                    example: 'Française'
+                    description: Nationalité.
+                beneficiaire_representant_legal:
+                    type: boolean
+                    example: false
+                    description: Indique si le propriétaire est bénéficiaire représentant légal.
+                detention_part_totale:
+                    type: string
+                    example: '51'
+                    description: Part totale détenue.
+                detention_part_directe:
+                    type: boolean
+                    example: false
+                    description: Indique si la part est détenue directement.
+                detention_part_indirecte:
+                    type: boolean
+                    example: false
+                    description: Indique si la part est détenue indirectement.
+                detention_vote_directe:
+                    type: boolean
+                    example: false
+                    description: Indique si le vote est détenu directement.
+                detention_vote_indirecte:
+                    type: boolean
+                    example: false
+                    description: Indique si le vote est détenu indirectement.
+                detention_vote_total:
+                    type: string
+                    example: '51'
+                    description: Vote total détenu.
+                date_de_naissance:
+                    type: string
+                    format: date
+                    example: '1998-08'
+                    description: Date de naissance au format AAAA-MM.
+                date_de_naissance_formatee:
+                    type: string
+                    example: '08/1998'
+                    description: Date de naissance formatée.
+                identifier:
+                    type: string
+                    example: 'hausing 19980801'
+                    description: Identifiant.
+                qualite:
+                    type: string
+                    example: 'Gérant'
+                    description: Qualité.
+                qualites:
+                    type: array
+                    items:
+                        type: string
+                    example: ['Gérant']
+                    description: Liste des qualités.
+                dirigeant:
+                    type: boolean
+                    example: true
+                    description: Indique si le propriétaire est dirigeant.
+                beneficiaire:
+                    type: boolean
+                    example: true
+                    description: Indique si le propriétaire est bénéficiaire.
+        RepresentantPersonneMorale:
+            type: object
+            properties:
+                siren:
+                    type: string
+                    example: '914727615'
+                    description: SIREN du représentant.
+                denomination:
+                    type: string
+                    example: 'ESINEY EMMA SING IMMO NEGRENEYS'
+                    description: Dénomination du représentant.
+                nom_entreprise:
+                    type: string
+                    example: 'ESINEY EMMA SING IMMO NEGRENEYS'
+                    description: Nom de l'entreprise du représentant.
+                sigle_denomination_completion:
+                    type: string
+                    example: ''
+                    description: Sigle de la dénomination complétion.
+                qualite:
+                    type: string
+                    example: 'Autre'
+                    description: Qualité.
+                qualites:
+                    type: array
+                    items:
+                        type: string
+                    example: ['Autre']
+                    description: Liste des qualités.
+                forme_juridique:
+                    type: string
+                    example: ''
+                    description: Forme juridique.
+                forme_juridique_code:
+                    type: string
+                    example: ''
+                    description: Code de forme juridique.
+        Occupant:
+            type: object
+            properties:
+                siren:
+                    type: string
+                    example: '511489015'
+                    description: SIREN de l'occupant.
+                siret:
+                    type: string
+                    example: '51148901500038'
+                    description: SIRET de l'occupant.
+                fiabilite_appartenance_parcelle:
+                    type: string
+                    enum: [faible, moyenne, haute]
+                    example: 'haute'
+                    description: Fiabilité d'appartenance à la parcelle.
+                date_entree_lieux:
+                    type: string
+                    format: date
+                    example: '2014-05-20'
+                    description: Date d'entrée aux lieux au format AAAA-MM-JJ.
+                tranche_effectifs_etablissement:
+                    type: string
+                    example: '03'
+                    description: Tranche d'effectifs de l'établissement.
+                annee_effectifs_etablissement:
+                    type: integer
+                    example: 2021
+                    description: Année des effectifs de l'établissement.
+                activite_principale_etablissement:
+                    type: string
+                    example: '47.11D'
+                    description: Activité principale de l'établissement.
+                nomenclature_activite_principale_etablissement:
+                    type: string
+                    example: 'NAFRev2'
+                    description: Nomenclature de l'activité principale de l'établissement.
+                categorie_juridique:
+                    type: string
+                    example: '5499'
+                    description: Catégorie juridique de l'occupant. Unique si demandé dans les champs supplémentaires ('occupants.categorie_juridique').
+                enseigne:
+                    type: string
+                    example: 'CARREFOUR CITY'
+                    description: Enseigne de l'occupant.
+                cessation_activite:
+                    type: boolean
+                    example: false
+                    description: Indique si l'occupant a cessé son activité.
+                etablissement_ferme:
+                    type: boolean
+                    example: false
+                    description: Indique si l'établissement est fermé.
+                date_sortie_lieux:
+                    type: string
+                    format: date
+                    example: '2024-03-30'
+                    description: Date de sortie des lieux au format AAAA-MM-JJ.
+                nom_entreprise:
+                    type: string
+                    example: 'TEVALY'
+                adresse:
+                    type: string
+                    example: '1 RUE DE LA CROIX BLANCHE'
+                    description: Adresse de l'occupant.
+        FondsDeCommerce:
+            type: object
+            properties:
+                activite:
+                    type: string
+                    example: 'Travail temporaire, recrutement, placement de personnel.'
+                    description: Activité du fonds de commerce.
+                prix:
+                    type: number
+                    example: 130000.00
+                    description: Prix du fonds de commerce.
+                devise:
+                    type: string
+                    example: '€'
+                    description: Devise du prix du fonds de commerce.
+                categorie_vente:
+                    type: string
+                    example: "Achat d'un établissement secondaire ou complémentaire par une personne morale"
+                    description: Catégorie de vente du fonds de commerce.
+                origine_fonds:
+                    type: string
+                    example: 'Etablissement secondaire acquis par achat au prix stipulé de 130000 EUR'
+                    description: Origine du fonds de commerce.
+                commentaires:
+                    type: string
+                    example: Prix global.
+                    description: Commentaires sur le fonds de commerce.
+                date_debut_activite:
+                    type: string
+                    format: date
+                    example: '2012-04-02'
+                    description: "Date de début d'activité du fonds de commerce."
+                annonce_bodacc:
+                    type: object
+                    properties:
+                        numero_parution:
+                            type: integer
+                            example: 20120080
+                            description: "Numéro de parution de l'annonce BODACC."
+                        numero:
+                            type: integer
+                            example: 253
+                            description: "Numéro de l'annonce BODACC."
+                        date:
+                            type: string
+                            format: date
+                            example: '2012-04-24'
+                            description: "Date de l'annonce BODACC."
+                acheteur:
+                    type: object
+                    properties:
+                        siren:
+                            type: string
+                            example: '303215503'
+                            description: "SIREN de l'acheteur."
+                        nom_entreprise:
+                            type: string
+                            example: 'SFRH GROUPE HOLDING'
+                            description: "Nom de l'entreprise de l'acheteur."
+                        categorie_juridique:
+                            type: string
+                            example: '5710'
+                            description: "Catégorie juridique de l'acheteur."
+                        activite_principale:
+                            type: string
+                            example: '64.20Z'
+                            description: "Activité principale de l'acheteur."
+                        nomenclature_activite_principale:
+                            type: string
+                            example: 'NAFRev2'
+                            description: "Nomenclature de l'activité principale de l'acheteur."
+                        cessation_activite:
+                            type: boolean
+                            example: true
+                            description: "Indique si l'acheteur a cessé son activité."
+                precedent_proprietaire:
+                    type: object
+                    properties:
+                        siren:
+                            type: string
+                            example: '488687179'
+                            description: SIREN du précédent propriétaire.
+                        nom_entreprise:
+                            type: string
+                            example: 'JOB ONE'
+                            description: "Nom de l'entreprise du précédent propriétaire."
+                        categorie_juridique:
+                            type: string
+                            example: '5710'
+                            description: Catégorie juridique du précédent propriétaire.
+                        activite_principale:
+                            type: string
+                            example: '78.20Z'
+                            description: Activité principale du précédent propriétaire.
+                        nomenclature_activite_principale:
+                            type: string
+                            example: 'NAFRev2'
+                            description: "Nomenclature de l'activité principale du précédent propriétaire."
+                        cessation_activite:
+                            type: boolean
+                            example: true
+                            description: Indique si le précédent propriétaire a cessé son activité.
+                precedent_exploitant:
+                    type: object
+                    nullable: true
+                    properties:
+                        siren:
+                            type: string
+                            example: null
+                            description: SIREN du précédent exploitant.
+                        nom_entreprise:
+                            type: string
+                            example: 'null null'
+                            description: "Nom de l'entreprise du précédent exploitant."
+                        categorie_juridique:
+                            type: string
+                            example: null
+                            description: Catégorie juridique du précédent exploitant.
+                        activite_principale:
+                            type: string
+                            example: null
+                            description: Activité principale du précédent exploitant.
+                        nomenclature_activite_principale:
+                            type: string
+                            example: null
+                            description: "Nomenclature de l'activité principale du précédent exploitant."
+                        cessation_activite:
+                            type: boolean
+                            example: null
+                            description: Indique si le précédent exploitant a cessé son activité.
+                fiabilite_appartenance_parcelle:
+                    type: string
+                    enum: [faible, moyenne, haute]
+                    example: 'haute'
+                    description: "Fiabilité d'appartenance à la parcelle."
+                adresse:
+                    type: string
+                    example: '1 RUE DE LA CROIX BLANCHE'
+                    description: Adresse du fonds de commerce. Unique si demandé dans les champs supplémentaires.
+        Permis:
+            type: object
+            properties:
+                numero:
+                    type: string
+                    example: '03155522M0007'
+                    description: Numéro du permis.
+                etat:
+                    type: string
+                    enum: ['autorise', 'commence', 'termine', 'annule']
+                    example: 'Autorisé'
+                    description: État du permis.
+                type:
+                    type: string
+                    enum: ['permis_d_amenager', 'permis_de_construire_locaux', 'permis_de_construire_logements', 'permis_de_demolir']
+                    example: 'permis_d_amenager'
+                    description: Type de permis.
+                date_autorisation:
+                    type: string
+                    format: date
+                    example: '2022-06-01'
+                    description: Date d'autorisation du permis.
+                annee_depot:
+                    type: string
+                    example: '2022'
+                    description: Année de dépôt du permis.
+                demandeur:
+                    type: object
+                    properties:
+                        siren:
+                            type: string
+                            example: '903547446'
+                            description: SIREN du demandeur.
+                        siret:
+                            type: string
+                            example: '90354744600018'
+                            description: SIRET du demandeur.
+                        code_naf:
+                            type: string
+                            example: '68.10Z'
+                            description: Code NAF du demandeur.
+                        categorie_juridique:
+                            type: string
+                            example: '5710'
+                            description: Catégorie juridique du demandeur.
+                        code_postal:
+                            type: string
+                            example: '31100'
+                            description: Code postal du demandeur.
+                        denomination:
+                            type: string
+                            example: 'LUSSAN INVEST'
+                            description: Dénomination du demandeur.
+                        commune:
+                            type: string
+                            example: 'TOULOUSE'
+                            description: Commune du demandeur.
+                recours_architecte:
+                    type: boolean
+                    example: true
+                    description: Indique si un recours architecte est présent.
+                autres_parcelles:
+                    type: array
+                    items:
+                        type: string
+                    example: ['31555AC0001', '31555AC0528']
+                    description: Autres parcelles.
+                superficie_terrain:
+                    type: number
+                    example: 1023
+                    description: Superficie du terrain.
+                zone_operatoire:
+                    type: string
+                    example: 'Hors zones ou inconnue'
+                    description: Zone opératoire. Uniquement présent si demandé dans les champs supplémentaires ('permis.zone_operatoire').
+                adresse:
+                    type: string
+                    example: '1 RUE GEORGES OHNET 31000 TOULOUSE'
+                    description: Adresse du terrain. Unique si demandé dans les champs supplémentaires.
+        Amenagement:
+            type: object
+            properties:
+                type:
+                    type: string
+                    example: 'piscine'
+                    description: Type d'aménagement détecté sur la parcelle.
+                code:
+                    type: integer
+                    example: 65
+                    description: Code numérique du type d'aménagement.
+                surface:
+                    type: number
+                    example: 35.0089
+                    description: Surface de l'aménagement en m².
+                date_observation:
+                    type: string
+                    format: date
+                    example: '2020-06-29'
+                    description: Date d'observation de l'aménagement au format AAAA-MM-JJ.
+        DocumentUrbanisme:
+            type: object
+            properties:
+                id:
+                    type: string
+                    example: 'db96217bcd9403c3d3c1cb3460f6c440'
+                    description: Identifiant unique du document d'urbanisme.
+                titre:
+                    type: string
+                    example: "Plan Local d'Urbanisme (PLU) de la commune de RUEIL-MALMAISON"
+                    description: Titre complet du document d'urbanisme.
+                nom:
+                    type: string
+                    example: '92063_PLU_20250212'
+                    description: Nom technique du document d'urbanisme.
+                statut:
+                    type: string
+                    example: 'document.production'
+                    description: Statut du document d'urbanisme.
+                type:
+                    type: string
+                    enum: ['PLU', 'POS', 'CC', 'SCoT', 'SUP', 'PSMV', 'RNU']
+                    example: 'PLU'
+                    description: Type de document d'urbanisme.
+                statut_legal:
+                    type: string
+                    enum: ['APPROVED', 'SUBMITTED', 'OPPOSABLE', 'ANNULE']
+                    example: 'APPROVED'
+                    description: Statut légal du document d'urbanisme.
+                zones:
+                    type: array
+                    items:
+                        type: object
+                    description: Liste des zones du document d'urbanisme applicables à la parcelle.
+        ParcelleFiche:
+            allOf:
+                - $ref: '#/components/schemas/ParcelleBase'
+                - type: object
+                  properties:
+                      ventes:
+                          type: array
+                          description: "Liste des transactions (prix, date, nature de mutation) de la parcelle cadastrale. Coût : 2 crédits."
+                          items:
+                              $ref: '#/components/schemas/Vente'
+                      batiments:
+                          type: array
+                          description: "Liste des bâtiments de la parcelle cadastrale. Coût : 1 crédit."
+                          items:
+                              $ref: '#/components/schemas/Batiment'
+                      dpe:
+                          type: array
+                          description: "Liste des DPE de la parcelle cadastrale. Coût : 1 crédit."
+                          items:
+                              $ref: '#/components/schemas/Dpe'
+                      fonds_de_commerce:
+                          type: array
+                          description: "Liste des fonds de commerce (transaction, acquéreur, vendeur) de la parcelle cadastrale. Coût : 1 crédit."
+                          items:
+                              $ref: '#/components/schemas/FondsDeCommerce'
+                      occupants:
+                          type: array
+                          description: "Liste des occupants (fiches et données sociétés) de la parcelle cadastrale. Coût : 2 crédits."
+                          items:
+                              $ref: '#/components/schemas/Occupant'
+                      proprietaires:
+                          type: array
+                          description: "Liste des propriétaires (fiches et données sociétés) de la parcelle cadastrale. Coût : 2 crédits."
+                          items:
+                              $ref: '#/components/schemas/Proprietaire'
+                      coproprietes:
+                          type: array
+                          description: "Liste des copropriétés (fiches et données sociétés) de la parcelle cadastrale. Coût : 1 crédit."
+                          items:
+                              $ref: '#/components/schemas/Copropriete'
+                      permis:
+                          type: array
+                          description: "Liste des permis de construire de la parcelle cadastrale. Coût : 1 crédit."
+                          items:
+                              $ref: '#/components/schemas/Permis'
+                      amenagements:
+                          type: array
+                          description: "Liste des aménagements de la parcelle cadastrale. Coût : 1 crédit."
+                          items:
+                              $ref: '#/components/schemas/Amenagement'
+                      documents_urbanisme:
+                          type: array
+                          description: "Liste des documents d'urbanisme applicables à la parcelle cadastrale. Coût : 1 crédit."
+                          items:
+                              $ref: '#/components/schemas/DocumentUrbanisme'
+
+    securitySchemes:
+        apiKey:
+            description: Clé API fournie dans votre espace membre.
+            type: apiKey
+            name: api-key
+            in: header

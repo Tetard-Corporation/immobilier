@@ -1,0 +1,14 @@
+[project]
+name = "immobilier-engine"
+version = "0.1.0"
+description = "Moteur de prospection foncière/immobilière (données Pappers Immobilier)"
+requires-python = ">=3.11"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+filterwarnings = ["ignore::DeprecationWarning"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
