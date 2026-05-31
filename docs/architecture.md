@@ -90,7 +90,7 @@ class EnrichmentProvider(ABC):
 | `aeronautique` | PEB + servitudes T4/T5 (GPU/SUP) | `peb_zone` (A–D) | à venir |
 | `fibre` | Arcep (open data THD) | `fibre` (bool) | à venir |
 | `hiking` | OSM (sentiers) | `randonnee` (bool) | à venir |
-| `dvf_comparables` | Pappers / DVF | `prix_m2_secteur`, `ecart_prix_pct` | à venir |
+| `dvf_comparables` | Pappers (ventes/DVF) | `prix_m2_secteur`, `ecart_prix_pct` | ✅ codé, **requiert `PAPPERS_API_KEY`** |
 
 Pipeline : `enrich_listing(item)` fusionne les champs des providers disponibles dans
 `item.flags`, **recalcule le score**, et fait passer les préférences correspondantes de
@@ -143,9 +143,10 @@ poussent en amont (ex. Pappers).
 
 - **Lot A — Enrichissement open data** : 🟡 en cours. `EnrichmentProvider` + pipeline +
   colonnes dérivées + filtres (`constructible_only`, `zones_urba`, `exclure_risques`,
-  `altitude`). Providers live : `gpu_zonage`, `georisques`, `relief`. `rail_time`
-  (Navitia) prêt pour clé. Restent : `aeronautique` (PEB), `fibre` (Arcep), `hiking`
-  (OSM), `dvf_comparables`.
+  `altitude`). Providers live (sans clé) : `gpu_zonage`, `georisques`, `relief`. Prêts pour clé :
+  `rail_time` (Navitia), `dvf_comparables` (Pappers → composante « affaire »). Restent :
+  `aeronautique` (PEB/servitudes — données GPU lacunaires), `fibre` (Arcep — pas d'API
+  point), `hiking` (OSM — Overpass injoignable depuis l'environnement de build).
 - **Lot B — Score d'investissement** : ✅ implémenté. Moteur pondéré et **explicable**
   (détail des contributions), tolérant aux données partielles — fonctionne dès
   maintenant (état, nature, nuisances, baisse de prix) et intègre automatiquement les

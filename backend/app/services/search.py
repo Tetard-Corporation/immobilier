@@ -59,6 +59,8 @@ def upsert_listing(db: Session, item: NormalizedListing) -> Listing:
         altitude=flags.get("altitude"),
         rail_time_min=flags.get("rail_time_min"),
         risques=flags.get("risques") or [],
+        prix_m2_secteur=flags.get("prix_m2_secteur"),
+        ecart_prix_pct=flags.get("ecart_prix_pct"),
         canonical_id=fingerprint(item),
         raw=item.raw,
     )
@@ -124,6 +126,8 @@ def to_listing_out(item: NormalizedListing, *, db_id: int | None = None, is_new:
         altitude=(item.flags or {}).get("altitude"),
         rail_time_min=(item.flags or {}).get("rail_time_min"),
         risques=(item.flags or {}).get("risques") or [],
+        prix_m2_secteur=(item.flags or {}).get("prix_m2_secteur"),
+        ecart_prix_pct=(item.flags or {}).get("ecart_prix_pct"),
         price_decreased=bool((item.flags or {}).get("price_decreased")),
         canonical_id=fingerprint(item),
         prix_m2_terrain=item.prix_m2_terrain,

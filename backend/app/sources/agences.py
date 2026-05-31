@@ -55,6 +55,8 @@ def normalized_from_listing(row: Listing) -> NormalizedListing:
             "altitude": row.altitude,
             "rail_time_min": row.rail_time_min,
             "risques": row.risques or [],
+            "prix_m2_secteur": row.prix_m2_secteur,
+            "ecart_prix_pct": row.ecart_prix_pct,
         },
         raw=row.raw or {},
     )

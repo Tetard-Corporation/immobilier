@@ -47,7 +47,9 @@ def test_rail_parse_minutes():
 def test_rail_indisponible_sans_cle():
     # Aucune clé Navitia dans les tests.
     assert RailTimeProvider().available is False
-    assert {p["name"] for p in provider_status()} == {"gpu_zonage", "georisques", "relief", "rail_time"}
+    assert {p["name"] for p in provider_status()} == {
+        "gpu_zonage", "georisques", "relief", "rail_time", "dvf_comparables"
+    }
 
 
 def test_enrich_listing_fusionne_et_recalcule_score():
@@ -69,6 +71,34 @@ def test_enrich_listing_fusionne_et_recalcule_score():
         assert item.flags["score"] is not None  # score recalculé avec l'enrichissement
     finally:
         reset_providers(None)  # restaure les providers réels
+
+
+def test_dvf_median_et_indispo_sans_cle():
+    from app.enrichment.dvf import DvfComparablesProvider, prix_m2_median
+
+    assert prix_m2_median([(100000, 500), (200000, 1000), (150000, 750)]) == 200.0
+    assert prix_m2_median([(100000, 500)]) is None  # < 3 ventes
+    assert DvfComparablesProvider().available is False  # pas de clé Pappers en test
+
+
+def test_enrich_calcule_ecart_prix():
+    class _Dvf(EnrichmentProvider):
+        name = "dvf"
+
+        def _fetch(self, lat, lon):
+            return {"prix_m2_secteur": 200.0}
+
+    reset_providers([_Dvf()])
+    try:
+        item = NormalizedListing(
+            source="x", external_id="1", type_bien="terrain", prix=120000, surface_terrain=1000,
+            latitude=45.0, longitude=4.0, description="Terrain", flags={},
+        )
+        enrich_listing(item)
+        assert item.flags["ecart_prix_pct"] == -40.0  # 120 €/m² vs 200 secteur
+        assert any(c["key"] == "affaire" for c in item.flags["score_details"])
+    finally:
+        reset_providers(None)
 
 
 def test_enrich_sans_geoloc_ne_fait_rien():

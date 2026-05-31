@@ -172,6 +172,8 @@ class ListingOut(BaseModel):
     altitude: float | None = None
     rail_time_min: int | None = None
     risques: list = []
+    prix_m2_secteur: float | None = None
+    ecart_prix_pct: float | None = None
     canonical_id: str | None = None
     prix_m2_terrain: float | None = None
     is_new: bool | None = None

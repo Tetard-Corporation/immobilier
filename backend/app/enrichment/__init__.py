@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from .base import EnrichmentProvider
+from .dvf import DvfComparablesProvider
 from .georisques import GeorisquesProvider
 from .gpu import GpuZonageProvider
 from .rail import RailTimeProvider
@@ -14,7 +15,13 @@ _registry: list[EnrichmentProvider] | None = None
 def get_providers() -> list[EnrichmentProvider]:
     global _registry
     if _registry is None:
-        _registry = [GpuZonageProvider(), GeorisquesProvider(), ReliefProvider(), RailTimeProvider()]
+        _registry = [
+            GpuZonageProvider(),
+            GeorisquesProvider(),
+            ReliefProvider(),
+            RailTimeProvider(),
+            DvfComparablesProvider(),
+        ]
     return _registry
 
 
@@ -37,6 +44,12 @@ def enrich_listing(item):
         if not provider.available:
             continue
         flags.update(provider.enrich(item.latitude, item.longitude))
+
+    # Écart de prix du bien vs prix au m² du secteur (composante "affaire" du score).
+    secteur = flags.get("prix_m2_secteur")
+    surface = item.surface_terrain or item.surface_bati
+    if secteur and item.prix and surface:
+        flags["ecart_prix_pct"] = round((item.prix / surface - secteur) / secteur * 100, 1)
 
     # Recalcule le score d'investissement avec les nouvelles composantes (constructible,
     # risques, PEB, comparables...) maintenant disponibles.

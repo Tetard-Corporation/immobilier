@@ -126,6 +126,8 @@ class Listing(Base):
     altitude: Mapped[float | None] = mapped_column(Float, nullable=True)
     rail_time_min: Mapped[int | None] = mapped_column(Integer, nullable=True)
     risques: Mapped[list] = mapped_column(JSON, nullable=False, default=list)
+    prix_m2_secteur: Mapped[float | None] = mapped_column(Float, nullable=True)
+    ecart_prix_pct: Mapped[float | None] = mapped_column(Float, nullable=True)
     # Empreinte de dédoublonnage inter-sources (biens identiques regroupés).
     canonical_id: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
 
