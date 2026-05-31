@@ -123,7 +123,7 @@ def test_enrich_calcule_ecart_prix():
         name = "dvf"
 
         def _fetch(self, lat, lon):
-            return {"prix_m2_secteur": 200.0}
+            return {"prix_m2_secteur_terrain": 200.0}  # bien de type terrain
 
     reset_providers([_Dvf()])
     try:

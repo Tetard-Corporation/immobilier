@@ -49,10 +49,13 @@ def enrich_listing(item):
             continue
         flags.update(provider.enrich(item.latitude, item.longitude))
 
-    # Écart de prix du bien vs prix au m² du secteur (composante "affaire" du score).
-    secteur = flags.get("prix_m2_secteur")
-    surface = item.surface_terrain or item.surface_bati
+    # Écart de prix vs secteur : on compare bâti à bâti, terrain à terrain.
+    if item.type_bien == "terrain":
+        secteur, surface = flags.get("prix_m2_secteur_terrain"), item.surface_terrain
+    else:
+        secteur, surface = flags.get("prix_m2_secteur_bati"), item.surface_bati
     if secteur and item.prix and surface:
+        flags["prix_m2_secteur"] = secteur
         flags["ecart_prix_pct"] = round((item.prix / surface - secteur) / secteur * 100, 1)
 
     # Recalcule le score d'investissement avec les nouvelles composantes (constructible,

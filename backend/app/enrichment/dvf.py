@@ -36,7 +36,7 @@ def prix_m2_median(pairs: list[tuple[float | None, float | None]]) -> float | No
 
 @functools.lru_cache(maxsize=256)
 def _commune_rows(base_url: str, year: str, dept: str, insee: str, timeout: int) -> tuple:
-    """Mutations 'Vente' d'une commune : tuple de (prix, surface, lat, lon). Caché."""
+    """Mutations 'Vente' d'une commune : tuple de (prix, surface_bati, surface_terrain, lat, lon)."""
     url = f"{base_url}/{year}/communes/{dept}/{insee}.csv"
     try:
         resp = httpx.get(url, timeout=timeout, follow_redirects=True)
@@ -44,6 +44,13 @@ def _commune_rows(base_url: str, year: str, dept: str, insee: str, timeout: int)
         return ()
     if resp.status_code != 200:
         return ()
+
+    def _f(v):
+        try:
+            return float(v or 0)
+        except ValueError:
+            return 0.0
+
     rows = []
     for rec in csv.DictReader(io.StringIO(resp.text)):
         if rec.get("nature_mutation") != "Vente":
@@ -52,18 +59,8 @@ def _commune_rows(base_url: str, year: str, dept: str, insee: str, timeout: int)
             vf = float(rec["valeur_fonciere"])
         except (KeyError, ValueError, TypeError):
             continue
-        surface = 0.0
-        for col in ("surface_terrain", "surface_reelle_bati"):
-            try:
-                surface = float(rec.get(col) or 0) or surface
-            except ValueError:
-                pass
-        try:
-            lat = float(rec.get("latitude") or 0)
-            lon = float(rec.get("longitude") or 0)
-        except ValueError:
-            lat = lon = 0.0
-        rows.append((vf, surface, lat, lon))
+        rows.append((vf, _f(rec.get("surface_reelle_bati")), _f(rec.get("surface_terrain")),
+                     _f(rec.get("latitude")), _f(rec.get("longitude"))))
     return tuple(rows)
 
 
@@ -88,8 +85,17 @@ class DvfComparablesProvider(EnrichmentProvider):
                 break
         if not rows:
             return {}
-        # Privilégie les ventes proches du point (~1,5 km) ; sinon toute la commune.
-        near = [(vf, s) for (vf, s, la, lo) in rows if la and lo and haversine_km(lat, lon, la, lo) <= 1.5]
-        pairs = near if len(near) >= 5 else [(vf, s) for (vf, s, _, _) in rows]
-        m2 = prix_m2_median(pairs)
-        return {"prix_m2_secteur": m2} if m2 is not None else {}
+        # Ventes proches du point (~1,5 km) en priorité, sinon toute la commune.
+        near = [r for r in rows if r[3] and r[4] and haversine_km(lat, lon, r[3], r[4]) <= 1.5]
+        used = near if len(near) >= 5 else rows
+        # Comparables séparés bâti vs terrain (on ne mélange pas les deux marchés).
+        bati = [(vf, sb) for (vf, sb, st, _, _) in used if sb > 0]
+        terrain = [(vf, st) for (vf, sb, st, _, _) in used if sb == 0 and st > 0]
+        out = {}
+        m2_bati = prix_m2_median(bati)
+        m2_terrain = prix_m2_median(terrain)
+        if m2_bati is not None:
+            out["prix_m2_secteur_bati"] = m2_bati
+        if m2_terrain is not None:
+            out["prix_m2_secteur_terrain"] = m2_terrain
+        return out
