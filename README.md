@@ -74,6 +74,20 @@ cd backend && source .venv/bin/activate && pytest
 Les tests tournent **sans réseau ni clé** (source mock + fixtures). Le connecteur
 Bien'ici est testé sur sa logique de normalisation/filtres (offline).
 
+## Données socio (population jeune / orientation politique)
+
+Le critère `population_jeune` / `orientation_gauche` s'appuie sur `backend/data/communes_socio.csv`. Pour le peupler à l'échelle nationale :
+
+```bash
+cd backend
+# part_gauche (présidentielle 2022 T1, open data) — téléchargement auto
+python scripts/build_socio_dataset.py
+# + âge médian via un CSV INSEE (optionnel)
+python scripts/build_socio_dataset.py --age-csv age_median.csv --age-code-col CODGEO --age-value-col AGEMED
+```
+
+`part_gauche` et `age_median` sont indépendamment optionnels (la préférence correspondante reste `pending` si absente).
+
 ## Configuration
 
 Voir [`backend/.env.example`](backend/.env.example). Points clés :

@@ -20,17 +20,28 @@ _DEFAULT_PATH = os.path.join(
 
 
 @functools.lru_cache(maxsize=1)
-def _load(path: str) -> dict[str, tuple[float, float]]:
-    data: dict[str, tuple[float, float]] = {}
+def _load(path: str) -> dict[str, tuple[float | None, float | None]]:
+    """Charge le jeu de données. age_median et part_gauche sont indépendamment optionnels."""
+    data: dict[str, tuple[float | None, float | None]] = {}
     if not os.path.exists(path):
         return data
+
+    def _f(v):
+        v = (v or "").strip()
+        return float(v) if v else None
+
     with open(path, encoding="utf-8") as fh:
         rows = (line for line in fh if not line.lstrip().startswith("#"))
         for row in csv.DictReader(rows):
-            try:
-                data[row["code_insee"].strip()] = (float(row["age_median"]), float(row["part_gauche"]))
-            except (KeyError, ValueError, AttributeError):
+            code = (row.get("code_insee") or "").strip()
+            if not code:
                 continue
+            try:
+                age, gauche = _f(row.get("age_median")), _f(row.get("part_gauche"))
+            except ValueError:
+                continue
+            if age is not None or gauche is not None:
+                data[code] = (age, gauche)
     return data
 
 
@@ -49,13 +60,16 @@ def _clamp(x: float) -> float:
     return max(0.0, min(1.0, x))
 
 
-def socio_scores(age_median: float, part_gauche: float) -> dict:
-    return {
-        "age_median": age_median,
-        "part_gauche": round(part_gauche, 3),
-        "pop_jeune_score": round(_clamp(1 - (age_median - 30) / 25), 3),
-        "orientation_gauche_score": round(_clamp(part_gauche), 3),
-    }
+def socio_scores(age_median: float | None, part_gauche: float | None) -> dict:
+    """Construit les champs disponibles (âge et/ou orientation, indépendamment)."""
+    out: dict = {}
+    if age_median is not None:
+        out["age_median"] = age_median
+        out["pop_jeune_score"] = round(_clamp(1 - (age_median - 30) / 25), 3)
+    if part_gauche is not None:
+        out["part_gauche"] = round(part_gauche, 3)
+        out["orientation_gauche_score"] = round(_clamp(part_gauche), 3)
+    return out
 
 
 class SocioProvider(EnrichmentProvider):

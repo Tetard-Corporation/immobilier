@@ -65,6 +65,10 @@ def test_socio_scores_et_dataset():
     s = socio_scores(38.0, 0.55)
     assert s["pop_jeune_score"] > 0.6  # 38 ans -> plutôt jeune
     assert s["orientation_gauche_score"] == 0.55
+    # tolérance aux valeurs manquantes (ex. part_gauche seule depuis le script)
+    partiel = socio_scores(None, 0.4)
+    assert partiel == {"part_gauche": 0.4, "orientation_gauche_score": 0.4}
+    assert socio_scores(40.0, None).keys() == {"age_median", "pop_jeune_score"}
     # le gabarit embarqué est chargé et ignore les lignes de commentaire
     data = _load(__import__("app.enrichment.socio", fromlist=["_DEFAULT_PATH"])._DEFAULT_PATH)
     assert "75056" in data  # Paris présent dans le gabarit
