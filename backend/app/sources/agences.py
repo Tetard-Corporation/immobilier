@@ -57,6 +57,9 @@ def normalized_from_listing(row: Listing) -> NormalizedListing:
             "risques": row.risques or [],
             "prix_m2_secteur": row.prix_m2_secteur,
             "ecart_prix_pct": row.ecart_prix_pct,
+            "pollution_eau_score": row.pollution_eau_score,
+            "eau_potable_conforme": row.eau_potable_conforme,
+            "pollutions": row.pollutions or [],
         },
         raw=row.raw or {},
     )

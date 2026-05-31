@@ -89,6 +89,17 @@ def _nuisances_proximite(flags, ctx):
     return _clamp(1 - 0.25 * len(n)), "ok", ", ".join(n) if n else "aucune nuisance signalée"
 
 
+def _pollution_eau(flags, ctx):
+    s = flags.get("pollution_eau_score")
+    if s is None:
+        return None, "pending", "qualité eau Hub'Eau (enrich)"
+    pol = flags.get("pollutions") or []
+    detail = "eau conforme" if flags.get("eau_potable_conforme") else "eau NON conforme"
+    if pol:
+        detail += " — " + ", ".join(pol)
+    return s, "ok", detail
+
+
 def _aerien(flags, ctx):
     peb = flags.get("peb_zone")
     if peb is None:
@@ -143,9 +154,10 @@ PILLARS = [
         ("authenticite", "Authenticité / cachet", 0.2, _authenticite),
     ]),
     ("risques", "Risques & nuisances", 0.15, [
-        ("risques_naturels", "Risques naturels/techno", 0.45, _risques_naturels),
-        ("nuisances_proximite", "Nuisances de proximité", 0.35, _nuisances_proximite),
-        ("aerien", "Nuisances aériennes (PEB)", 0.20, _aerien),
+        ("risques_naturels", "Risques naturels/techno", 0.30, _risques_naturels),
+        ("pollution_eau", "Pollution / qualité de l'eau", 0.30, _pollution_eau),
+        ("nuisances_proximite", "Nuisances de proximité", 0.25, _nuisances_proximite),
+        ("aerien", "Nuisances aériennes (PEB)", 0.15, _aerien),
     ]),
     ("etat", "État & travaux", 0.10, [
         ("travaux", "Niveau de travaux", 1.0, _travaux),

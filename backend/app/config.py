@@ -38,6 +38,8 @@ class Settings(BaseSettings):
     navitia_api_key: str = ""
     navitia_url: str = "https://api.navitia.io/v1"
     navitia_origin: str = "Paris"  # ville d'origine pour le temps de trajet train
+    ban_reverse_url: str = "https://api-adresse.data.gouv.fr/reverse/"
+    hubeau_eau_potable_url: str = "https://hubeau.eaufrance.fr/api/v1/qualite_eau_potable/resultats_dis"
 
     @property
     def navitia_configured(self) -> bool:

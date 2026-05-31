@@ -108,6 +108,7 @@ class SearchCriteria(BaseModel):
     constructible_only: bool | None = Field(default=None, description="Ne garder que les biens constructibles.")
     zones_urba: list[str] | None = Field(default=None, description="Zones d'urbanisme (U, AU, A, N).")
     exclure_risques: list[str] | None = Field(default=None, description="Risques à exclure (inondation, ...).")
+    eau_conforme_only: bool | None = Field(default=None, description="Ne garder que les communes à eau potable conforme.")
     altitude_min: float | None = None
     altitude_max: float | None = None
 
@@ -174,6 +175,9 @@ class ListingOut(BaseModel):
     risques: list = []
     prix_m2_secteur: float | None = None
     ecart_prix_pct: float | None = None
+    pollution_eau_score: float | None = None
+    eau_potable_conforme: bool | None = None
+    pollutions: list = []
     canonical_id: str | None = None
     prix_m2_terrain: float | None = None
     is_new: bool | None = None

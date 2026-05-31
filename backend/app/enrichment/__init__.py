@@ -6,6 +6,7 @@ from .base import EnrichmentProvider
 from .dvf import DvfComparablesProvider
 from .georisques import GeorisquesProvider
 from .gpu import GpuZonageProvider
+from .pollution import PollutionProvider
 from .rail import RailTimeProvider
 from .relief import ReliefProvider
 
@@ -19,6 +20,7 @@ def get_providers() -> list[EnrichmentProvider]:
             GpuZonageProvider(),
             GeorisquesProvider(),
             ReliefProvider(),
+            PollutionProvider(),
             RailTimeProvider(),
             DvfComparablesProvider(),
         ]

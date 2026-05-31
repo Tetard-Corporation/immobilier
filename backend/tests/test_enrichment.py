@@ -48,8 +48,24 @@ def test_rail_indisponible_sans_cle():
     # Aucune clé Navitia dans les tests.
     assert RailTimeProvider().available is False
     assert {p["name"] for p in provider_status()} == {
-        "gpu_zonage", "georisques", "relief", "rail_time", "dvf_comparables"
+        "gpu_zonage", "georisques", "relief", "pollution", "rail_time", "dvf_comparables"
     }
+
+
+def test_pollution_analyse_resultats():
+    from app.enrichment.pollution import analyse_resultats
+
+    rows = [
+        {"code_prelevement": "A", "conclusion_conformite_prelevement": "Eau conforme aux exigences",
+         "libelle_parametre": "pH", "resultat_numerique": 7.2, "limite_qualite_parametre": "<=9"},
+        {"code_prelevement": "B", "conclusion_conformite_prelevement": "Eau non conforme aux limites",
+         "libelle_parametre": "Total pesticides", "resultat_numerique": 0.6, "limite_qualite_parametre": "<=0,5 µg/L"},
+    ]
+    out = analyse_resultats(rows)
+    assert out["eau_potable_conforme"] is False
+    assert out["pollution_eau_score"] == 0.5  # 1 prélèvement conforme sur 2
+    assert "pesticides" in out["pollutions"]
+    assert analyse_resultats([]) == {}
 
 
 def test_enrich_listing_fusionne_et_recalcule_score():

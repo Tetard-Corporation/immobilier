@@ -145,6 +145,7 @@ def get_filter_schema() -> dict:
                     {"name": "zones_urba", "type": "multiselect", "label": "Zone PLU", "options": ["U", "AU", "A", "N"]},
                     {"name": "exclure_risques", "type": "multiselect", "label": "Exclure risques",
                      "options": ["inondation", "retraitGonflementArgile", "seisme", "radon", "remonteeNappe", "mouvementTerrain"]},
+                    {"name": "eau_conforme_only", "type": "boolean", "label": "Eau potable conforme"},
                     {"name": "altitude_min", "type": "number", "label": "Altitude min (m)"},
                     {"name": "altitude_max", "type": "number", "label": "Altitude max (m)"},
                 ],
@@ -235,6 +236,8 @@ def matches(listing: NormalizedListing, c: SearchCriteria) -> bool:
     if c.zones_urba and listing.flags.get("zone_urba") and listing.flags["zone_urba"] not in c.zones_urba:
         return False
     if c.exclure_risques and set(c.exclure_risques) & set(listing.flags.get("risques") or []):
+        return False
+    if c.eau_conforme_only and listing.flags.get("eau_potable_conforme") is False:
         return False
     alt = listing.flags.get("altitude")
     if c.altitude_min is not None and alt is not None and alt < c.altitude_min:

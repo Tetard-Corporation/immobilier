@@ -128,6 +128,9 @@ class Listing(Base):
     risques: Mapped[list] = mapped_column(JSON, nullable=False, default=list)
     prix_m2_secteur: Mapped[float | None] = mapped_column(Float, nullable=True)
     ecart_prix_pct: Mapped[float | None] = mapped_column(Float, nullable=True)
+    pollution_eau_score: Mapped[float | None] = mapped_column(Float, nullable=True)
+    eau_potable_conforme: Mapped[bool | None] = mapped_column(Boolean, nullable=True)
+    pollutions: Mapped[list] = mapped_column(JSON, nullable=False, default=list)
     # Empreinte de dédoublonnage inter-sources (biens identiques regroupés).
     canonical_id: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
 
