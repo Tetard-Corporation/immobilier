@@ -62,6 +62,7 @@ supérieure à Jinka :
 | `pap` | HTTP/headless + JSON-LD | ✅ implémenté (parsing testé). ⚠️ Cloudflare → headless/proxy en live |
 | `seloger` | headless + JSON-LD | ✅ implémenté (parsing testé). ⚠️ Datadome → headless/proxy en live |
 | `paruvendu` | HTTP léger | accessible (200) — candidat bonus réel |
+| `agences` | **inbound** : IMAP + sites | ✅ implémenté. Newsletters d'agences (extraction LLM Haiku + repli heuristique) + scraping de sites d'agences. Zéro risque ToS. |
 
 **Constat de terrain (sondages)** : Leboncoin, SeLoger et PAP renvoient un blocage
 anti-bot (Datadome / Cloudflare) sans proxy ; Bien'ici et Paruvendu sont accessibles.
@@ -140,8 +141,10 @@ poussent en amont (ex. Pappers).
 - **Lot D — Scrapers durs** (headless + proxies) : ✅ infra headless/proxy + Leboncoin,
   PAP, SeLoger (parsing testé offline) — nécessitent une validation live via proxy.
   (Paruvendu, réel et accessible, reste un bonus optionnel.)
-- **Lot E — Newsletters d'agences** (ingestion email IMAP + extraction LLM) +
-  scraping de sites d'agences locales. *(à venir, fort ROI off-market)*
+- **Lot E — Newsletters d'agences** (ingestion email IMAP + extraction LLM Haiku +
+  repli heuristique) + scraping de sites d'agences locales : ✅ implémenté.
+  Source `agences` (inbound) alimentée par un job de scheduler, branchée sur le
+  pipeline (classification, dédoublonnage, nouveautés). Zéro risque ToS (opt-in).
 - **Lot E — Agrégation multi-sources** (source `all`) dans recherches fréquentes.
 - **Lot F — Tests d'intégration, durcissement, doc.**
 - *(Front : phase ultérieure.)*

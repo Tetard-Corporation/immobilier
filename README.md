@@ -13,6 +13,10 @@ mais avec des **filtres avancés**, des **jeux de filtres réutilisables**, des
 - **Sources pluggables** (`ListingSource`) :
   - `pappers` — API officielle Pappers Immobilier (données foncières/DVF). Clé requise.
   - `bienici` — annonces Bien'ici (API JSON). Aucune clé ; géo fine filtrée côté client.
+  - `bienici` / `leboncoin` / `pap` / `seloger` — annonces de portails (scraping ;
+    Leboncoin/PAP/SeLoger nécessitent un proxy + navigateur headless en live).
+  - `agences` — **newsletters d'agences (IMAP) + sites d'agences** : ingestion inbound,
+    extraction par l'API Claude (Haiku) avec repli heuristique. Zéro risque ToS.
   - `mock` — jeu de données de démo (dev/tests, hors-ligne).
 - **Recherche multi-critères** normalisée (localisation, prix, surfaces terrain/bâti,
   type de bien, DPE, état : ruine / à rénover / baisse de prix).

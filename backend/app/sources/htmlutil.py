@@ -110,6 +110,25 @@ def realestate_fields(obj: dict) -> dict | None:
     }
 
 
+_TAG_RE = re.compile(r"<[^>]+>")
+_A_RE = re.compile(r'<a\b[^>]*href=["\']([^"\']+)["\'][^>]*>(.*?)</a>', re.S | re.I)
+_SCRIPT_STYLE_RE = re.compile(r"<(script|style)\b.*?</\1>", re.S | re.I)
+
+
+def html_to_text(html: str | None) -> str:
+    """Convertit du HTML en texte lisible, en conservant les URLs des liens.
+
+    Réduit fortement le nombre de tokens avant envoi au LLM.
+    """
+    if not html:
+        return ""
+    text = _SCRIPT_STYLE_RE.sub(" ", html)
+    text = _A_RE.sub(lambda m: f"{m.group(2)} ({m.group(1)})", text)
+    text = _TAG_RE.sub(" ", text)
+    text = _html.unescape(text)
+    return re.sub(r"[ \t]*\n[ \t\n]*", "\n", re.sub(r"[ \t]+", " ", text)).strip()
+
+
 def select(html: str, css: str):
     """Repli CSS via selectolax (dépendance optionnelle). Liste de nœuds."""
     try:

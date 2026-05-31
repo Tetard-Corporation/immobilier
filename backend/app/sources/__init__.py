@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from .agences import AgencesSource
 from .base import ListingSource, NormalizedListing, SearchResult
 from .bienici import BienIciSource
 from .leboncoin import LeboncoinSource
@@ -20,6 +21,7 @@ def _build_registry() -> dict[str, ListingSource]:
         "leboncoin": LeboncoinSource(),
         "pap": PapSource(),
         "seloger": SeLogerSource(),
+        "agences": AgencesSource(),
         "mock": MockSource(),
     }
 

@@ -3,3 +3,7 @@
 #   pip install -r requirements-scrapers.txt
 #   playwright install chromium
 playwright==1.49.1
+# parsing HTML (repli CSS) pour les scrapers
+selectolax==0.3.27
+# extraction LLM des newsletters d'agences (source "agences")
+anthropic==0.69.0

@@ -30,6 +30,25 @@ class Settings(BaseSettings):
     proxy_url: str = ""
     scraper_rate_limit_ms: int = 2000
 
+    # Source "agences" (newsletters email + sites d'agences)
+    anthropic_api_key: str = ""
+    extract_model: str = "claude-haiku-4-5"
+    agences_config_path: str = "agences.yaml"
+    imap_host: str = ""
+    imap_user: str = ""
+    imap_password: str = ""
+    imap_folder: str = "INBOX"
+    imap_use_ssl: bool = True
+    agences_ingest_interval_minutes: int = 30
+
+    @property
+    def llm_extract_available(self) -> bool:
+        return bool(self.anthropic_api_key.strip())
+
+    @property
+    def imap_configured(self) -> bool:
+        return bool(self.imap_host.strip() and self.imap_user.strip())
+
     # Divers
     http_timeout_seconds: int = 20
     cors_origins: str = "http://localhost:5173,http://localhost:3000"

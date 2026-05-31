@@ -2,9 +2,12 @@
 
 from __future__ import annotations
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session
 
+from ..db import get_db
 from ..schemas import SourceInfo
+from ..services.agences_ingest import ingest as ingest_agences
 from ..services.filters import get_filter_schema
 from ..sources import default_source_name, get_registry
 
@@ -16,6 +19,7 @@ _NOTES = {
     "leboncoin": "Annonces Leboncoin (API finder). Protégé Datadome : requiert PROXY_URL.",
     "pap": "Annonces PAP (de particulier à particulier). Cloudflare : requiert headless/proxy.",
     "seloger": "Annonces SeLoger. Protégé Datadome : requiert headless/proxy.",
+    "agences": "Newsletters d'agences (IMAP) + sites d'agences. Ingestion inbound.",
     "mock": "Jeu de données de démonstration (aucune clé requise).",
 }
 
@@ -40,3 +44,9 @@ def list_sources() -> list[SourceInfo]:
 @router.get("/filters/schema")
 def filters_schema() -> dict:
     return get_filter_schema()
+
+
+@router.post("/agences/ingest")
+def trigger_agences_ingest(db: Session = Depends(get_db)) -> dict:
+    """Déclenche manuellement l'ingestion des newsletters/sites d'agences."""
+    return ingest_agences(db)
