@@ -1,0 +1,178 @@
+"""Schémas Pydantic (entrées/sorties de l'API)."""
+
+from __future__ import annotations
+
+from datetime import datetime
+
+from pydantic import BaseModel, ConfigDict, Field
+
+
+# --------------------------------------------------------------------------- #
+# Critères de recherche (communs à toutes les sources)
+# --------------------------------------------------------------------------- #
+class SearchCriteria(BaseModel):
+    """Critères normalisés, indépendants de la source de données."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    # Localisation
+    code_postal: str | None = None
+    code_commune: str | None = None
+    departement: str | None = None
+    region: str | None = None
+    adresse: str | None = None
+    latitude: float | None = None
+    longitude: float | None = None
+    distance: int | None = Field(default=None, description="Rayon en mètres autour du point.")
+
+    # Prix
+    prix_min: float | None = None
+    prix_max: float | None = None
+
+    # Surfaces
+    surface_terrain_min: float | None = None
+    surface_terrain_max: float | None = None
+    surface_bati_min: float | None = None
+    surface_bati_max: float | None = None
+
+    # Pièces
+    nb_pieces_min: int | None = None
+    nb_pieces_max: int | None = None
+
+    # Type de bien / nature de mutation
+    types_local: list[str] | None = Field(
+        default=None,
+        description="appartement, maison, dependance, local_industriel_commercial_ou_assimile",
+    )
+    natures_vente: list[str] | None = Field(
+        default=None,
+        description="vente, vente_terrain_batir, vente_futur_achevement, echange, adjudication...",
+    )
+
+    # Dates de mutation
+    date_vente_min: str | None = Field(default=None, description="AAAA-MM-JJ")
+    date_vente_max: str | None = Field(default=None, description="AAAA-MM-JJ")
+
+    # Bâtiment
+    annee_construction_min: int | None = None
+    annee_construction_max: int | None = None
+
+    # DPE
+    dpe_classes: list[str] | None = Field(default=None, description="A, B, C, D, E, F, G")
+
+    # Bases Pappers à inclure (override du défaut). Impacte la consommation de crédits.
+    bases: list[str] | None = None
+
+    # Pagination
+    page: int = 1
+    par_page: int = Field(default=20, ge=1, le=100)
+    curseur: str | None = None
+
+
+# --------------------------------------------------------------------------- #
+# Résultats de recherche
+# --------------------------------------------------------------------------- #
+class ListingOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int | None = None
+    source: str
+    external_id: str
+    type_bien: str | None = None
+    prix: float | None = None
+    surface_terrain: float | None = None
+    surface_bati: float | None = None
+    nb_pieces: int | None = None
+    adresse: str | None = None
+    commune: str | None = None
+    code_postal: str | None = None
+    code_commune: str | None = None
+    departement: str | None = None
+    latitude: float | None = None
+    longitude: float | None = None
+    parcelle: str | None = None
+    date_mutation: str | None = None
+    dpe_classe: str | None = None
+    url: str | None = None
+    prix_m2_terrain: float | None = None
+    is_new: bool | None = None
+
+
+class SearchResultOut(BaseModel):
+    source: str
+    total: int | None = None
+    page: int
+    par_page: int
+    curseur_suivant: str | None = None
+    credits_estimes: int = 0
+    results: list[ListingOut]
+
+
+# --------------------------------------------------------------------------- #
+# Sources
+# --------------------------------------------------------------------------- #
+class SourceInfo(BaseModel):
+    name: str
+    label: str
+    available: bool
+    is_default: bool
+    note: str | None = None
+
+
+# --------------------------------------------------------------------------- #
+# Filter sets
+# --------------------------------------------------------------------------- #
+class FilterSetIn(BaseModel):
+    name: str
+    description: str | None = None
+    criteria: SearchCriteria
+
+
+class FilterSetOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    name: str
+    description: str | None = None
+    criteria: dict
+    created_at: datetime
+    updated_at: datetime
+
+
+# --------------------------------------------------------------------------- #
+# Saved searches
+# --------------------------------------------------------------------------- #
+class SavedSearchIn(BaseModel):
+    name: str
+    source: str = "auto"
+    criteria: SearchCriteria | None = None
+    filter_set_id: int | None = None
+    frequency_minutes: int = 0
+    enabled: bool = True
+
+
+class SavedSearchOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    name: str
+    source: str
+    criteria: dict
+    filter_set_id: int | None = None
+    frequency_minutes: int
+    enabled: bool
+    last_run_at: datetime | None = None
+    created_at: datetime
+    updated_at: datetime
+    nb_new: int = 0
+
+
+class SearchRunOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    ran_at: datetime
+    nb_results: int
+    nb_new: int
+    credits_estimes: int
+    error: str | None = None
