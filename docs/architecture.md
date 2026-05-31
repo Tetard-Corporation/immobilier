@@ -90,7 +90,7 @@ class EnrichmentProvider(ABC):
 | `aeronautique` | PEB + servitudes T4/T5 (GPU/SUP) | `peb_zone` (A–D) | à venir |
 | `fibre` | Arcep (open data THD) | `fibre` (bool) | à venir |
 | `hiking` | OSM (sentiers) | `randonnee` (bool) | à venir |
-| `dvf_comparables` | Pappers (ventes/DVF) | `prix_m2_secteur`, `ecart_prix_pct` | ✅ codé, **requiert `PAPPERS_API_KEY`** |
+| `dvf_comparables` | **geo-dvf** (files.data.gouv.fr) | `prix_m2_secteur`, `ecart_prix_pct` | ✅ live (open data, **sans clé**) |
 | `pollution` | Hub'Eau (eau potable) + BAN | `pollution_eau_score`, `eau_potable_conforme`, `pollutions` (pesticides/nitrates/PFAS) | ✅ live (sans clé) |
 | `socio` | INSEE âge + résultats électoraux (jeu local) | `age_median`, `part_gauche` -> préférences `population_jeune`/`orientation_gauche` | ✅ codé (gabarit à compléter) |
 
@@ -151,8 +151,9 @@ poussent en amont (ex. Pappers).
 
 - **Lot A — Enrichissement open data** : 🟡 en cours. `EnrichmentProvider` + pipeline +
   colonnes dérivées + filtres (`constructible_only`, `zones_urba`, `exclure_risques`,
-  `altitude`). Providers live (sans clé) : `gpu_zonage`, `georisques`, `relief`. Prêts pour clé :
-  `rail_time` (Navitia), `dvf_comparables` (Pappers → composante « affaire »). Restent :
+  `altitude`). Providers live (sans clé) : `gpu_zonage`, `georisques`, `relief`, `pollution`,
+  `socio` (gabarit), `dvf_comparables` (geo-dvf → composante « affaire »). Clé **gratuite** :
+  `rail_time` (Navitia). Restent :
   `aeronautique` (PEB/servitudes — données GPU lacunaires), `fibre` (Arcep — pas d'API
   point), `hiking` (OSM — Overpass injoignable depuis l'environnement de build).
 - **Lot B — Score d'investissement** : ✅ implémenté. Moteur pondéré et **explicable**

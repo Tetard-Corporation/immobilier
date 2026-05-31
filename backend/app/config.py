@@ -41,6 +41,8 @@ class Settings(BaseSettings):
     ban_reverse_url: str = "https://api-adresse.data.gouv.fr/reverse/"
     hubeau_eau_potable_url: str = "https://hubeau.eaufrance.fr/api/v1/qualite_eau_potable/resultats_dis"
     socio_dataset_path: str = "data/communes_socio.csv"
+    dvf_base_url: str = "https://files.data.gouv.fr/geo-dvf/latest/csv"
+    dvf_years: str = "2024,2023,2025,2022"
 
     @property
     def navitia_configured(self) -> bool:

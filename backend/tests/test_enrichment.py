@@ -100,12 +100,12 @@ def test_enrich_listing_fusionne_et_recalcule_score():
         reset_providers(None)  # restaure les providers réels
 
 
-def test_dvf_median_et_indispo_sans_cle():
+def test_dvf_median_et_gratuit():
     from app.enrichment.dvf import DvfComparablesProvider, prix_m2_median
 
     assert prix_m2_median([(100000, 500), (200000, 1000), (150000, 750)]) == 200.0
     assert prix_m2_median([(100000, 500)]) is None  # < 3 ventes
-    assert DvfComparablesProvider().available is False  # pas de clé Pappers en test
+    assert DvfComparablesProvider().available is True  # geo-dvf : open data, sans clé
 
 
 def test_enrich_calcule_ecart_prix():

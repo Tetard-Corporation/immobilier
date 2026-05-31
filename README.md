@@ -28,7 +28,7 @@ mais avec des **filtres avancés**, des **jeux de filtres réutilisables**, des
   naturel** (`POST /api/brief/parse`, IA Claude + repli heuristique).
 - **Enrichissement open data** (`?enrich=true`) : zonage PLU/constructibilité + zones AU
   (GPU/IGN), risques (Géorisques), altitude/relief (IGN) — sans clé ; temps de trajet
-  train (Navitia, clé requise), **qualité de l'eau/pollution** (Hub'Eau : pesticides,
+  train (Navitia, clé **gratuite**), **qualité de l'eau/pollution** (Hub'Eau : pesticides,
   nitrates, PFAS), **profil socio** (âge médian, orientation politique → préférences
   `population_jeune`/`orientation_gauche`). Alimente filtres, préférences et score.
   État via `GET /api/enrichment/status`.
