@@ -1,7 +1,7 @@
 from app.schemas import Preference
 from app.services.brief import _heuristic_parse, parse_brief
 from app.services.gares import nearest_gare
-from app.services.geo import distance_to_corridor_km, haversine_km, resolve_city
+from app.services.geo import distance_to_corridor_km, resolve_city
 from app.services.preferences import evaluate
 from app.sources.base import NormalizedListing
 

@@ -1,9 +1,8 @@
 """Tests des providers d'enrichissement (parsing offline via httpx.MockTransport)."""
 
 import httpx
-import pytest
 
-from app.enrichment import enrich_listing, get_providers, provider_status, reset_providers
+from app.enrichment import enrich_listing, provider_status, reset_providers
 from app.enrichment.base import EnrichmentProvider
 from app.enrichment.georisques import GeorisquesProvider
 from app.enrichment.gpu import GpuZonageProvider
