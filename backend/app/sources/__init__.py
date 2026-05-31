@@ -9,6 +9,7 @@ from .leboncoin import LeboncoinSource
 from .mock import MockSource
 from .pap import PapSource
 from .pappers import PappersSource
+from .paruvendu import ParuvenduSource
 from .seloger import SeLogerSource
 
 _registry: dict[str, ListingSource] | None = None
@@ -21,6 +22,7 @@ def _build_registry() -> dict[str, ListingSource]:
         "leboncoin": LeboncoinSource(),
         "pap": PapSource(),
         "seloger": SeLogerSource(),
+        "paruvendu": ParuvenduSource(),
         "agences": AgencesSource(),
         "mock": MockSource(),
     }

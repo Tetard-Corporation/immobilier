@@ -19,6 +19,7 @@ _NOTES = {
     "leboncoin": "Annonces Leboncoin (API finder). Protégé Datadome : requiert PROXY_URL.",
     "pap": "Annonces PAP (de particulier à particulier). Cloudflare : requiert headless/proxy.",
     "seloger": "Annonces SeLoger. Protégé Datadome : requiert headless/proxy.",
+    "paruvendu": "Annonces Paruvendu (HTML rendu serveur, accessible sans proxy).",
     "agences": "Newsletters d'agences (IMAP) + sites d'agences. Ingestion inbound.",
     "mock": "Jeu de données de démonstration (aucune clé requise).",
 }

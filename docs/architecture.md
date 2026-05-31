@@ -61,7 +61,7 @@ supérieure à Jinka :
 | `leboncoin` | API JSON + proxy | ✅ implémenté (parsing testé). ⚠️ Datadome → requiert `PROXY_URL` en live |
 | `pap` | HTTP/headless + JSON-LD | ✅ implémenté (parsing testé). ⚠️ Cloudflare → headless/proxy en live |
 | `seloger` | headless + JSON-LD | ✅ implémenté (parsing testé). ⚠️ Datadome → headless/proxy en live |
-| `paruvendu` | HTTP léger | accessible (200) — candidat bonus réel |
+| `paruvendu` | HTTP (rendu serveur) | ✅ implémenté et vérifié en live (cartes blocAnnonce) |
 | `agences` | **inbound** : IMAP + sites | ✅ implémenté. Newsletters d'agences (extraction LLM Haiku + repli heuristique) + scraping de sites d'agences. Zéro risque ToS. |
 
 **Constat de terrain (sondages)** : Leboncoin, SeLoger et PAP renvoient un blocage
