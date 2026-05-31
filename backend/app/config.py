@@ -30,6 +30,19 @@ class Settings(BaseSettings):
     proxy_url: str = ""
     scraper_rate_limit_ms: int = 2000
 
+    # Enrichissement (Lot A)
+    enrich_on_search: bool = False
+    gpu_api_url: str = "https://apicarto.ign.fr/api/gpu"
+    georisques_api_url: str = "https://www.georisques.gouv.fr/api/v1"
+    ign_alti_url: str = "https://data.geopf.fr/altimetrie/1.0/calcul/alti/rest/elevation.json"
+    navitia_api_key: str = ""
+    navitia_url: str = "https://api.navitia.io/v1"
+    navitia_origin: str = "Paris"  # ville d'origine pour le temps de trajet train
+
+    @property
+    def navitia_configured(self) -> bool:
+        return bool(self.navitia_api_key.strip())
+
     # Source "agences" (newsletters email + sites d'agences)
     anthropic_api_key: str = ""
     extract_model: str = "claude-haiku-4-5"

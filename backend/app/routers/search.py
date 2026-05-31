@@ -30,11 +30,12 @@ def search(
     source: str | None = Query(default=None, description="Nom de source ('auto' par défaut)."),
     dedupe: bool = Query(default=False, description="Fusionner les biens en double."),
     sort: str | None = Query(default=None, description="'score' pour trier par score décroissant."),
+    enrich: bool = Query(default=False, description="Enrichir (zonage, risques, relief, train)."),
     db: Session = Depends(get_db),
 ) -> SearchResultOut:
     try:
         return run_search(
-            db, source, criteria, dedupe_results=dedupe, sort_by_score=(sort == "score")
+            db, source, criteria, dedupe_results=dedupe, sort_by_score=(sort == "score"), enrich=enrich
         )
     except RuntimeError as exc:
         raise HTTPException(status_code=409, detail=str(exc)) from exc

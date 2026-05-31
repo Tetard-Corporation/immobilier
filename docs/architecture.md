@@ -81,13 +81,21 @@ class EnrichmentProvider(ABC):
     def enrich(self, listing: NormalizedListing) -> dict: ...   # champs fusionnés
 ```
 
-| Provider | Source de données | Champs produits |
-|---|---|---|
-| `gpu_zonage` | API Carto GPU (apicarto.ign.fr) | `zone_urba` (U/AU/A/N), `libelle`, `constructible` (bool), `est_zone_au` (bool) |
-| `georisques` | api.georisques.gouv.fr | `risques` (argile, inondation, radon, PPRN, séisme…) |
-| `aeronautique` | PEB + servitudes T4/T5 (GPU/SUP) | `peb_zone` (A–D), `sous_servitude_aero` (bool), `couloir_aerien` (bool) |
-| `dvf_comparables` | Pappers / DVF | `prix_m2_secteur`, `ecart_prix_pct` |
-| `cadastre` | API Carto cadastre | `contenance`, `parcelle`, géométrie (compléter les annonces) |
+| Provider | Source de données | Champs produits | Statut |
+|---|---|---|---|
+| `gpu_zonage` | API Carto GPU (apicarto.ign.fr) | `zone_urba` (U/AU/A/N), `constructible`, `est_zone_au` | ✅ live (sans clé) |
+| `georisques` | api.georisques.gouv.fr | `risques` (argile, inondation, radon, séisme…) | ✅ live (sans clé) |
+| `relief` | altimétrie IGN (data.geopf.fr) | `altitude`, `montagne` | ✅ live (sans clé) |
+| `rail_time` | Navitia (api.navitia.io) | `rail_time_min` depuis une ville d'origine | ✅ codé, **requiert `NAVITIA_API_KEY`** |
+| `aeronautique` | PEB + servitudes T4/T5 (GPU/SUP) | `peb_zone` (A–D) | à venir |
+| `fibre` | Arcep (open data THD) | `fibre` (bool) | à venir |
+| `hiking` | OSM (sentiers) | `randonnee` (bool) | à venir |
+| `dvf_comparables` | Pappers / DVF | `prix_m2_secteur`, `ecart_prix_pct` | à venir |
+
+Pipeline : `enrich_listing(item)` fusionne les champs des providers disponibles dans
+`item.flags`, **recalcule le score**, et fait passer les préférences correspondantes de
+`pending` à `ok`. Opt-in via `?enrich=true` (ou `ENRICH_ON_SEARCH`), avec cache par
+coordonnées arrondies. État des providers : `GET /api/enrichment/status`.
 
 Exécution : pipeline appelé après la collecte ; résultats stockés dans
 `Listing.enrichment` (JSON) + colonnes dérivées indexables (`constructible`,
@@ -133,9 +141,11 @@ poussent en amont (ex. Pappers).
 
 ## 6. Feuille de route (lots)
 
-- **Lot A — Enrichissement open data** (faible risque, forte valeur)
-  `EnrichmentProvider` + `gpu_zonage`, `georisques`, `aeronautique`, `dvf_comparables`,
-  pipeline + champs dérivés + filtres `constructible/risques/aérien`. *(commence ici)*
+- **Lot A — Enrichissement open data** : 🟡 en cours. `EnrichmentProvider` + pipeline +
+  colonnes dérivées + filtres (`constructible_only`, `zones_urba`, `exclure_risques`,
+  `altitude`). Providers live : `gpu_zonage`, `georisques`, `relief`. `rail_time`
+  (Navitia) prêt pour clé. Restent : `aeronautique` (PEB), `fibre` (Arcep), `hiking`
+  (OSM), `dvf_comparables`.
 - **Lot B — Score d'investissement** : ✅ implémenté. Moteur pondéré et **explicable**
   (détail des contributions), tolérant aux données partielles — fonctionne dès
   maintenant (état, nature, nuisances, baisse de prix) et intègre automatiquement les

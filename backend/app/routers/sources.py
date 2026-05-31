@@ -47,6 +47,14 @@ def filters_schema() -> dict:
     return get_filter_schema()
 
 
+@router.get("/enrichment/status")
+def enrichment_status() -> list[dict]:
+    """État des providers d'enrichissement (zonage, risques, relief, trajet train)."""
+    from ..enrichment import provider_status
+
+    return provider_status()
+
+
 @router.post("/agences/ingest")
 def trigger_agences_ingest(db: Session = Depends(get_db)) -> dict:
     """Déclenche manuellement l'ingestion des newsletters/sites d'agences."""

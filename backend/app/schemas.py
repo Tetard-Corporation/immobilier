@@ -104,6 +104,13 @@ class SearchCriteria(BaseModel):
     )
     nature_score_min: int | None = Field(default=None, description="Score nature minimal.")
 
+    # Enrichissement (Lot A) — actifs si la recherche est lancée avec enrich
+    constructible_only: bool | None = Field(default=None, description="Ne garder que les biens constructibles.")
+    zones_urba: list[str] | None = Field(default=None, description="Zones d'urbanisme (U, AU, A, N).")
+    exclure_risques: list[str] | None = Field(default=None, description="Risques à exclure (inondation, ...).")
+    altitude_min: float | None = None
+    altitude_max: float | None = None
+
     # Aide à la décision
     score_min: float | None = Field(default=None, description="Score d'investissement minimal (0-100).")
 
@@ -158,6 +165,13 @@ class ListingOut(BaseModel):
     score_details: list = []
     match_score: float | None = None
     match_details: list = []
+    # Enrichissement (Lot A)
+    constructible: bool | None = None
+    est_zone_au: bool | None = None
+    zone_urba: str | None = None
+    altitude: float | None = None
+    rail_time_min: int | None = None
+    risques: list = []
     canonical_id: str | None = None
     prix_m2_terrain: float | None = None
     is_new: bool | None = None

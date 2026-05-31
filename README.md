@@ -26,6 +26,10 @@ mais avec des **filtres avancés**, des **jeux de filtres réutilisables**, des
   légers, sans vis-à-vis, nature d'exception, authentique. Critères `pending` prêts à
   s'activer (trajet train, fibre, relief, randonnées). **Parseur de brief en langage
   naturel** (`POST /api/brief/parse`, IA Claude + repli heuristique).
+- **Enrichissement open data** (`?enrich=true`) : zonage PLU/constructibilité + zones AU
+  (GPU/IGN), risques (Géorisques), altitude/relief (IGN) — sans clé ; temps de trajet
+  train (Navitia, clé requise). Alimente filtres, préférences et score. État via
+  `GET /api/enrichment/status`.
 - **Jeux de filtres** (`FilterSet`) réutilisables.
 - **Recherches fréquentes** (`SavedSearch`) + scheduler + **détection des nouveautés**
   (badge in-app, marquage « tout vu », historique des runs).

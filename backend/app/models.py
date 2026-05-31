@@ -118,6 +118,14 @@ class Listing(Base):
     # Score d'investissement (0–100) + détail explicable des contributions.
     score: Mapped[float | None] = mapped_column(Float, nullable=True, index=True)
     score_details: Mapped[list] = mapped_column(JSON, nullable=False, default=list)
+
+    # Enrichissement (Lot A) : données officielles géolocalisées.
+    constructible: Mapped[bool | None] = mapped_column(Boolean, nullable=True)
+    est_zone_au: Mapped[bool | None] = mapped_column(Boolean, nullable=True)
+    zone_urba: Mapped[str | None] = mapped_column(String(10), nullable=True)
+    altitude: Mapped[float | None] = mapped_column(Float, nullable=True)
+    rail_time_min: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    risques: Mapped[list] = mapped_column(JSON, nullable=False, default=list)
     # Empreinte de dédoublonnage inter-sources (biens identiques regroupés).
     canonical_id: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
 

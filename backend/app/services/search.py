@@ -5,6 +5,7 @@ from __future__ import annotations
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from ..config import get_settings
 from ..models import Listing, PriceHistory
 from ..schemas import ListingOut, SearchCriteria, SearchResultOut
 from ..sources import NormalizedListing, resolve_source
@@ -52,6 +53,12 @@ def upsert_listing(db: Session, item: NormalizedListing) -> Listing:
         nature_exception=bool(flags.get("nature_exception")),
         score=flags.get("score"),
         score_details=flags.get("score_details") or [],
+        constructible=flags.get("constructible"),
+        est_zone_au=flags.get("est_zone_au"),
+        zone_urba=flags.get("zone_urba"),
+        altitude=flags.get("altitude"),
+        rail_time_min=flags.get("rail_time_min"),
+        risques=flags.get("risques") or [],
         canonical_id=fingerprint(item),
         raw=item.raw,
     )
@@ -111,6 +118,12 @@ def to_listing_out(item: NormalizedListing, *, db_id: int | None = None, is_new:
         nature_exception=bool((item.flags or {}).get("nature_exception")),
         score=(item.flags or {}).get("score"),
         score_details=(item.flags or {}).get("score_details") or [],
+        constructible=(item.flags or {}).get("constructible"),
+        est_zone_au=(item.flags or {}).get("est_zone_au"),
+        zone_urba=(item.flags or {}).get("zone_urba"),
+        altitude=(item.flags or {}).get("altitude"),
+        rail_time_min=(item.flags or {}).get("rail_time_min"),
+        risques=(item.flags or {}).get("risques") or [],
         price_decreased=bool((item.flags or {}).get("price_decreased")),
         canonical_id=fingerprint(item),
         prix_m2_terrain=item.prix_m2_terrain,
@@ -125,11 +138,16 @@ def run_search(
     *,
     dedupe_results: bool = False,
     sort_by_score: bool = False,
+    enrich: bool = False,
 ) -> SearchResultOut:
     """Recherche ad hoc : exécute, persiste les listings et renvoie le résultat normalisé."""
     source = resolve_source(source_name)
     result = source.search(criteria)
     items = dedupe(result.items) if dedupe_results else result.items
+    if enrich or get_settings().enrich_on_search:
+        from ..enrichment import enrich_listing
+
+        items = [enrich_listing(it) for it in items]
     if sort_by_score:
         items = sorted(items, key=lambda it: (it.flags or {}).get("score") or 0, reverse=True)
     out_items: list[ListingOut] = []

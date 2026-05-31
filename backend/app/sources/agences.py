@@ -49,6 +49,12 @@ def normalized_from_listing(row: Listing) -> NormalizedListing:
             "price_decreased": row.price_decreased,
             "score": row.score,
             "score_details": row.score_details or [],
+            "constructible": row.constructible,
+            "est_zone_au": row.est_zone_au,
+            "zone_urba": row.zone_urba,
+            "altitude": row.altitude,
+            "rail_time_min": row.rail_time_min,
+            "risques": row.risques or [],
         },
         raw=row.raw or {},
     )

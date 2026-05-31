@@ -138,6 +138,18 @@ def get_filter_schema() -> dict:
                 ],
             },
             {
+                "key": "urbanisme",
+                "label": "Urbanisme / environnement (enrichissement)",
+                "fields": [
+                    {"name": "constructible_only", "type": "boolean", "label": "Constructible uniquement"},
+                    {"name": "zones_urba", "type": "multiselect", "label": "Zone PLU", "options": ["U", "AU", "A", "N"]},
+                    {"name": "exclure_risques", "type": "multiselect", "label": "Exclure risques",
+                     "options": ["inondation", "retraitGonflementArgile", "seisme", "radon", "remonteeNappe", "mouvementTerrain"]},
+                    {"name": "altitude_min", "type": "number", "label": "Altitude min (m)"},
+                    {"name": "altitude_max", "type": "number", "label": "Altitude max (m)"},
+                ],
+            },
+            {
                 "key": "decision",
                 "label": "Aide à la décision",
                 "fields": [
@@ -215,6 +227,19 @@ def matches(listing: NormalizedListing, c: SearchCriteria) -> bool:
     if c.price_decreased and not listing.flags.get("price_decreased"):
         return False
     if c.score_min is not None and (listing.flags.get("score") or 0) < c.score_min:
+        return False
+
+    # Enrichissement (n'exclut que si la donnée est présente).
+    if c.constructible_only and listing.flags.get("constructible") is False:
+        return False
+    if c.zones_urba and listing.flags.get("zone_urba") and listing.flags["zone_urba"] not in c.zones_urba:
+        return False
+    if c.exclure_risques and set(c.exclure_risques) & set(listing.flags.get("risques") or []):
+        return False
+    alt = listing.flags.get("altitude")
+    if c.altitude_min is not None and alt is not None and alt < c.altitude_min:
+        return False
+    if c.altitude_max is not None and alt is not None and alt > c.altitude_max:
         return False
 
     if c.date_vente_min and (listing.date_mutation or "") < c.date_vente_min:
