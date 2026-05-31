@@ -5,6 +5,7 @@ from __future__ import annotations
 from ..schemas import SearchCriteria
 from ..sources.base import NormalizedListing
 from .classify import CONDITIONS
+from .quality import FEATURES
 
 # Vocabulaire de type de bien, source-agnostique (chaque source le mappe).
 PROPERTY_TYPES = ["terrain", "maison", "appartement", "immeuble", "local_commercial", "parking"]
@@ -123,6 +124,20 @@ def get_filter_schema() -> dict:
                 ],
             },
             {
+                "key": "nature",
+                "label": "Qualité / nature",
+                "fields": [
+                    {
+                        "name": "features",
+                        "type": "multiselect",
+                        "label": "Aménités",
+                        "options": FEATURES,
+                    },
+                    {"name": "nature_exception", "type": "boolean", "label": "Nature d'exception"},
+                    {"name": "nature_score_min", "type": "integer", "label": "Score nature min"},
+                ],
+            },
+            {
                 "key": "dates",
                 "label": "Dates de mutation",
                 "fields": [
@@ -179,6 +194,15 @@ def matches(listing: NormalizedListing, c: SearchCriteria) -> bool:
         return False
     if c.niveau_travaux_max is not None and (niveau is None or niveau > c.niveau_travaux_max):
         return False
+
+    feats = set(listing.flags.get("features") or [])
+    if c.features and not set(c.features) <= feats:
+        return False
+    if c.nature_exception and not listing.flags.get("nature_exception"):
+        return False
+    if c.nature_score_min is not None and (listing.flags.get("nature_score") or 0) < c.nature_score_min:
+        return False
+
     if c.price_decreased and not listing.flags.get("price_decreased"):
         return False
 

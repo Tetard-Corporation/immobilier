@@ -1,6 +1,7 @@
 """Tests du connecteur Bien'ici : normalisation et construction des filtres (offline)."""
 
 from app.schemas import SearchCriteria
+from app.services.enrich import annotate
 from app.sources.bienici import BienIciSource
 
 # Extrait représentatif d'une annonce telle que renvoyée par realEstateAds.json.
@@ -40,11 +41,14 @@ def test_normalisation_champs():
 
 
 def test_normalisation_flags():
+    # price_decreased est posé par la source ; le reste par l'annotation centralisée.
     item = BienIciSource._normalize(_AD)
+    assert item.flags["price_decreased"] is True
+    annotate(item)
     # "grange à rénover" => niveau "renover" (2), distinct d'une ruine.
     assert item.flags["condition"] == "renover"
     assert item.flags["niveau_travaux"] == 2
-    assert item.flags["price_decreased"] is True
+    assert item.flags["price_decreased"] is True  # préservé
 
 
 def test_build_filters_mappe_types_et_bornes():

@@ -105,9 +105,14 @@ class Listing(Base):
     url: Mapped[str | None] = mapped_column(String(400), nullable=True)
     description: Mapped[str | None] = mapped_column(Text, nullable=True)
 
-    # Classification & aide à la décision
+    # Classification : état du bâti
     condition: Mapped[str | None] = mapped_column(String(20), nullable=True)
     niveau_travaux: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    # Classification : qualité/nature du terrain
+    features: Mapped[list] = mapped_column(JSON, nullable=False, default=list)
+    nuisances: Mapped[list] = mapped_column(JSON, nullable=False, default=list)
+    nature_score: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    nature_exception: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     price_decreased: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     # Empreinte de dédoublonnage inter-sources (biens identiques regroupés).
     canonical_id: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)

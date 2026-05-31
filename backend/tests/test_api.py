@@ -25,6 +25,15 @@ def test_search_mock_filtre(client):
     assert all(item["departement"] == "GIRONDE" for item in data["results"])
 
 
+def test_search_mock_nature_exception(client):
+    r = client.post("/api/search?source=mock", json={"nature_exception": True})
+    assert r.status_code == 200
+    results = r.json()["results"]
+    assert len(results) >= 1
+    assert all(item["nature_exception"] for item in results)
+    assert all("vue" in item["features"] or "isole" in item["features"] for item in results)
+
+
 def test_filter_set_crud(client):
     created = client.post(
         "/api/filter-sets",

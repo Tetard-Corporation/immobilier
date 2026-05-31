@@ -74,6 +74,18 @@ class SearchCriteria(BaseModel):
     niveau_travaux_max: int | None = Field(
         default=None, description="Niveau de travaux maximal accepté (0=habitable ... 4=ruine)."
     )
+
+    # Qualité / nature du terrain
+    features: list[str] | None = Field(
+        default=None,
+        description="Aménités requises (toutes) : vue, foret, eau, calme, isole, "
+        "sans_vis_a_vis, arbore, ensoleille",
+    )
+    nature_exception: bool | None = Field(
+        default=None, description="Ne garder que les biens 'nature d'exception'."
+    )
+    nature_score_min: int | None = Field(default=None, description="Score nature minimal.")
+
     price_decreased: bool | None = Field(
         default=None, description="Ne garder que les annonces en baisse de prix."
     )
@@ -115,6 +127,10 @@ class ListingOut(BaseModel):
     description: str | None = None
     condition: str | None = None
     niveau_travaux: int | None = None
+    features: list[str] = []
+    nuisances: list[str] = []
+    nature_score: int = 0
+    nature_exception: bool = False
     price_decreased: bool = False
     canonical_id: str | None = None
     prix_m2_terrain: float | None = None

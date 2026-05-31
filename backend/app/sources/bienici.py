@@ -13,7 +13,7 @@ from __future__ import annotations
 import json
 
 from ..schemas import SearchCriteria
-from ..services.classify import classify
+from ..services.enrich import annotate
 from ..services.filters import matches
 from .base import NormalizedListing, SearchResult
 from .scraper import ScraperSource
@@ -100,10 +100,10 @@ class BienIciSource(ScraperSource):
         blur = ad.get("blurInfo") or {}
         pos = blur.get("position") or blur.get("centroid") or {}
         district = ad.get("district") or {}
-        title = ad.get("title")
         description = ad.get("description")
-        flags = classify(title, description)
-        flags["price_decreased"] = bool(ad.get("priceHasDecreased"))
+        # La classification (état, qualité/nature) est centralisée dans services.enrich ;
+        # ici on ne pose que les drapeaux propres à la source.
+        flags = {"price_decreased": bool(ad.get("priceHasDecreased"))}
 
         type_bien = _PROPERTY_MAP_REV.get(ad.get("propertyType"), ad.get("propertyType"))
 
@@ -150,8 +150,8 @@ class BienIciSource(ScraperSource):
         ads = data.get("realEstateAds") or []
         server_total = data.get("total")
 
-        items = [self._normalize(ad) for ad in ads]
-        # Filtrage côté client (géo précise, état, surfaces bâti, etc.).
+        items = [annotate(self._normalize(ad)) for ad in ads]
+        # Filtrage côté client (géo précise, état, qualité/nature, surfaces bâti, etc.).
         filtered = [it for it in items if matches(it, criteria)]
         total = server_total if len(filtered) == len(items) else None
         return SearchResult(items=filtered, total=total, curseur_suivant=None, credits_estimes=0)

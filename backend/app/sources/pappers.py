@@ -16,6 +16,7 @@ import httpx
 
 from ..config import Settings, get_settings
 from ..schemas import SearchCriteria
+from ..services.enrich import annotate
 from .base import ListingSource, NormalizedListing, SearchResult
 
 # Coût en crédits par base (cf. doc). 1 crédit de base pour la parcelle elle-même.
@@ -246,7 +247,7 @@ class PappersSource(ListingSource):
         params = criteria_to_params(criteria, self._settings.default_bases_list)
         data = self._request("/parcelles", params)
         parcelles, total, curseur = _extract_list(data)
-        items = [parse_parcelle(p) for p in parcelles]
+        items = [annotate(parse_parcelle(p)) for p in parcelles]
         return SearchResult(
             items=items,
             total=total,
