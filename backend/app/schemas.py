@@ -86,6 +86,9 @@ class SearchCriteria(BaseModel):
     )
     nature_score_min: int | None = Field(default=None, description="Score nature minimal.")
 
+    # Aide à la décision
+    score_min: float | None = Field(default=None, description="Score d'investissement minimal (0-100).")
+
     price_decreased: bool | None = Field(
         default=None, description="Ne garder que les annonces en baisse de prix."
     )
@@ -132,6 +135,8 @@ class ListingOut(BaseModel):
     nature_score: int = 0
     nature_exception: bool = False
     price_decreased: bool = False
+    score: float | None = None
+    score_details: list = []
     canonical_id: str | None = None
     prix_m2_terrain: float | None = None
     is_new: bool | None = None

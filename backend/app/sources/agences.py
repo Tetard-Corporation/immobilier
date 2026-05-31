@@ -46,6 +46,8 @@ def normalized_from_listing(row: Listing) -> NormalizedListing:
             "nature_score": row.nature_score,
             "nature_exception": row.nature_exception,
             "price_decreased": row.price_decreased,
+            "score": row.score,
+            "score_details": row.score_details or [],
         },
         raw=row.raw or {},
     )

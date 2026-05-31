@@ -34,6 +34,23 @@ def test_search_mock_nature_exception(client):
     assert all("vue" in item["features"] or "isole" in item["features"] for item in results)
 
 
+def test_search_mock_score_et_tri(client):
+    r = client.post("/api/search?source=mock&sort=score", json={"property_types": ["terrain"]})
+    assert r.status_code == 200
+    results = r.json()["results"]
+    assert len(results) >= 2
+    # chaque résultat porte un score + son détail explicable
+    assert all(item["score"] is not None for item in results)
+    assert all(item["score_details"] for item in results)
+    scores = [item["score"] for item in results]
+    assert scores == sorted(scores, reverse=True)
+
+
+def test_search_mock_score_min(client):
+    r = client.post("/api/search?source=mock", json={"score_min": 200})
+    assert r.json()["results"] == []  # aucun bien ne dépasse 100
+
+
 def test_filter_set_crud(client):
     created = client.post(
         "/api/filter-sets",

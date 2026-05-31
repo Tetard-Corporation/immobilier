@@ -11,6 +11,7 @@ from typing import TYPE_CHECKING
 
 from .classify import classify
 from .quality import classify_quality
+from .scoring import compute_score
 
 if TYPE_CHECKING:
     from ..sources.base import NormalizedListing
@@ -21,5 +22,12 @@ def annotate(item: "NormalizedListing") -> "NormalizedListing":
     texts = [item.description, item.adresse]
     flags.update(classify(*texts))
     flags.update(classify_quality(*texts))
+
+    # Score d'investissement (recalculé à partir des flags + signaux d'enrichissement).
+    has_text = bool(item.description or item.adresse)
+    result = compute_score(flags, has_text=has_text)
+    flags["score"] = result.score
+    flags["score_details"] = result.components
+
     item.flags = flags
     return item

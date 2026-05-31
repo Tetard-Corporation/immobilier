@@ -114,6 +114,9 @@ class Listing(Base):
     nature_score: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     nature_exception: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     price_decreased: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    # Score d'investissement (0–100) + détail explicable des contributions.
+    score: Mapped[float | None] = mapped_column(Float, nullable=True, index=True)
+    score_details: Mapped[list] = mapped_column(JSON, nullable=False, default=list)
     # Empreinte de dédoublonnage inter-sources (biens identiques regroupés).
     canonical_id: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
 

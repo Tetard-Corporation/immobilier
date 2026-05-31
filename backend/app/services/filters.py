@@ -138,6 +138,13 @@ def get_filter_schema() -> dict:
                 ],
             },
             {
+                "key": "decision",
+                "label": "Aide à la décision",
+                "fields": [
+                    {"name": "score_min", "type": "number", "label": "Score d'investissement min (0-100)"},
+                ],
+            },
+            {
                 "key": "dates",
                 "label": "Dates de mutation",
                 "fields": [
@@ -204,6 +211,8 @@ def matches(listing: NormalizedListing, c: SearchCriteria) -> bool:
         return False
 
     if c.price_decreased and not listing.flags.get("price_decreased"):
+        return False
+    if c.score_min is not None and (listing.flags.get("score") or 0) < c.score_min:
         return False
 
     if c.date_vente_min and (listing.date_mutation or "") < c.date_vente_min:

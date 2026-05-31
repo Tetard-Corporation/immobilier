@@ -23,7 +23,8 @@ mais avec des **filtres avancés**, des **jeux de filtres réutilisables**, des
 - **Jeux de filtres** (`FilterSet`) réutilisables.
 - **Recherches fréquentes** (`SavedSearch`) + scheduler + **détection des nouveautés**
   (badge in-app, marquage « tout vu », historique des runs).
-- **Aide à la décision** : classification ruines/à rénover, dédoublonnage inter-sources,
+- **Aide à la décision** : **score d'investissement** explicable (filtre `score_min`,
+  tri `sort=score`), classification ruines/à rénover, dédoublonnage inter-sources,
   suivi des baisses de prix.
 
 ## Démarrage (backend)

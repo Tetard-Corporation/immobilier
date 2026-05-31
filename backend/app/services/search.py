@@ -48,6 +48,8 @@ def upsert_listing(db: Session, item: NormalizedListing) -> Listing:
         nuisances=flags.get("nuisances") or [],
         nature_score=flags.get("nature_score") or 0,
         nature_exception=bool(flags.get("nature_exception")),
+        score=flags.get("score"),
+        score_details=flags.get("score_details") or [],
         canonical_id=fingerprint(item),
         raw=item.raw,
     )
@@ -104,6 +106,8 @@ def to_listing_out(item: NormalizedListing, *, db_id: int | None = None, is_new:
         nuisances=(item.flags or {}).get("nuisances") or [],
         nature_score=(item.flags or {}).get("nature_score") or 0,
         nature_exception=bool((item.flags or {}).get("nature_exception")),
+        score=(item.flags or {}).get("score"),
+        score_details=(item.flags or {}).get("score_details") or [],
         price_decreased=bool((item.flags or {}).get("price_decreased")),
         canonical_id=fingerprint(item),
         prix_m2_terrain=item.prix_m2_terrain,
@@ -112,12 +116,19 @@ def to_listing_out(item: NormalizedListing, *, db_id: int | None = None, is_new:
 
 
 def run_search(
-    db: Session, source_name: str | None, criteria: SearchCriteria, *, dedupe_results: bool = False
+    db: Session,
+    source_name: str | None,
+    criteria: SearchCriteria,
+    *,
+    dedupe_results: bool = False,
+    sort_by_score: bool = False,
 ) -> SearchResultOut:
     """Recherche ad hoc : exécute, persiste les listings et renvoie le résultat normalisé."""
     source = resolve_source(source_name)
     result = source.search(criteria)
     items = dedupe(result.items) if dedupe_results else result.items
+    if sort_by_score:
+        items = sorted(items, key=lambda it: (it.flags or {}).get("score") or 0, reverse=True)
     out_items: list[ListingOut] = []
     for item in items:
         row = upsert_listing(db, item)

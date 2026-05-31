@@ -136,7 +136,12 @@ poussent en amont (ex. Pappers).
 - **Lot A — Enrichissement open data** (faible risque, forte valeur)
   `EnrichmentProvider` + `gpu_zonage`, `georisques`, `aeronautique`, `dvf_comparables`,
   pipeline + champs dérivés + filtres `constructible/risques/aérien`. *(commence ici)*
-- **Lot B — Scoring + classification ruines + suivi prix** (sur données enrichies).
+- **Lot B — Score d'investissement** : ✅ implémenté. Moteur pondéré et **explicable**
+  (détail des contributions), tolérant aux données partielles — fonctionne dès
+  maintenant (état, nature, nuisances, baisse de prix) et intègre automatiquement les
+  composantes du Lot A (affaire vs comparables, constructible/AU, risques, PEB) quand
+  elles sont présentes. Filtre `score_min` + tri `sort=score`. (Classification ruines
+  et suivi prix déjà livrés au Lot C.)
 - **Lot C — Scraper PAP & sites spécialisés terrains** (HTTP léger) + dédoublonnage.
 - **Lot D — Scrapers durs** (headless + proxies) : ✅ infra headless/proxy + Leboncoin,
   PAP, SeLoger (parsing testé offline) — nécessitent une validation live via proxy.
