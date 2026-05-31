@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from ..schemas import SearchCriteria
 from ..sources.base import NormalizedListing
+from .classify import CONDITIONS
 
 # Vocabulaire de type de bien, source-agnostique (chaque source le mappe).
 PROPERTY_TYPES = ["terrain", "maison", "appartement", "immeuble", "local_commercial", "parking"]
@@ -111,8 +112,13 @@ def get_filter_schema() -> dict:
                 "key": "etat",
                 "label": "État / opportunité",
                 "fields": [
-                    {"name": "ruine", "type": "boolean", "label": "Terrain à ruines"},
-                    {"name": "a_renover", "type": "boolean", "label": "À rénover"},
+                    {
+                        "name": "conditions",
+                        "type": "multiselect",
+                        "label": "État / niveau de travaux",
+                        "options": CONDITIONS,
+                    },
+                    {"name": "niveau_travaux_max", "type": "integer", "label": "Travaux max (0–4)"},
                     {"name": "price_decreased", "type": "boolean", "label": "Baisse de prix"},
                 ],
             },
@@ -167,9 +173,11 @@ def matches(listing: NormalizedListing, c: SearchCriteria) -> bool:
     if c.dpe_classes and (listing.dpe_classe not in c.dpe_classes):
         return False
 
-    if c.ruine and not listing.flags.get("ruine"):
+    condition = listing.flags.get("condition")
+    niveau = listing.flags.get("niveau_travaux")
+    if c.conditions and condition not in c.conditions:
         return False
-    if c.a_renover and not listing.flags.get("a_renover"):
+    if c.niveau_travaux_max is not None and (niveau is None or niveau > c.niveau_travaux_max):
         return False
     if c.price_decreased and not listing.flags.get("price_decreased"):
         return False

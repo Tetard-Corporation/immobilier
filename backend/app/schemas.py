@@ -66,9 +66,14 @@ class SearchCriteria(BaseModel):
     # DPE
     dpe_classes: list[str] | None = Field(default=None, description="A, B, C, D, E, F, G")
 
-    # État du bien
-    ruine: bool | None = Field(default=None, description="Ne garder que les terrains à ruines.")
-    a_renover: bool | None = Field(default=None, description="Ne garder que les biens à rénover.")
+    # État / niveau de travaux (échelle : habitable, rafraichir, renover, gros_travaux, ruine)
+    conditions: list[str] | None = Field(
+        default=None,
+        description="Niveaux d'état à conserver : habitable, rafraichir, renover, gros_travaux, ruine",
+    )
+    niveau_travaux_max: int | None = Field(
+        default=None, description="Niveau de travaux maximal accepté (0=habitable ... 4=ruine)."
+    )
     price_decreased: bool | None = Field(
         default=None, description="Ne garder que les annonces en baisse de prix."
     )
@@ -108,8 +113,8 @@ class ListingOut(BaseModel):
     dpe_classe: str | None = None
     url: str | None = None
     description: str | None = None
-    flag_ruine: bool = False
-    flag_a_renover: bool = False
+    condition: str | None = None
+    niveau_travaux: int | None = None
     price_decreased: bool = False
     canonical_id: str | None = None
     prix_m2_terrain: float | None = None

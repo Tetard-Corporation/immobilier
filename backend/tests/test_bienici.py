@@ -41,8 +41,9 @@ def test_normalisation_champs():
 
 def test_normalisation_flags():
     item = BienIciSource._normalize(_AD)
-    assert item.flags["ruine"] is True
-    assert item.flags["a_renover"] is True
+    # "grange à rénover" => niveau "renover" (2), distinct d'une ruine.
+    assert item.flags["condition"] == "renover"
+    assert item.flags["niveau_travaux"] == 2
     assert item.flags["price_decreased"] is True
 
 

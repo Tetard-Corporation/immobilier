@@ -106,8 +106,8 @@ class Listing(Base):
     description: Mapped[str | None] = mapped_column(Text, nullable=True)
 
     # Classification & aide à la décision
-    flag_ruine: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
-    flag_a_renover: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    condition: Mapped[str | None] = mapped_column(String(20), nullable=True)
+    niveau_travaux: Mapped[int | None] = mapped_column(Integer, nullable=True)
     price_decreased: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     # Empreinte de dédoublonnage inter-sources (biens identiques regroupés).
     canonical_id: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
