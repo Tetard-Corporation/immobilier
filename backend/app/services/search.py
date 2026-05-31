@@ -64,6 +64,8 @@ def upsert_listing(db: Session, item: NormalizedListing) -> Listing:
         pollution_eau_score=flags.get("pollution_eau_score"),
         eau_potable_conforme=flags.get("eau_potable_conforme"),
         pollutions=flags.get("pollutions") or [],
+        age_median=flags.get("age_median"),
+        part_gauche=flags.get("part_gauche"),
         canonical_id=fingerprint(item),
         raw=item.raw,
     )
@@ -134,6 +136,8 @@ def to_listing_out(item: NormalizedListing, *, db_id: int | None = None, is_new:
         pollution_eau_score=(item.flags or {}).get("pollution_eau_score"),
         eau_potable_conforme=(item.flags or {}).get("eau_potable_conforme"),
         pollutions=(item.flags or {}).get("pollutions") or [],
+        age_median=(item.flags or {}).get("age_median"),
+        part_gauche=(item.flags or {}).get("part_gauche"),
         price_decreased=bool((item.flags or {}).get("price_decreased")),
         canonical_id=fingerprint(item),
         prix_m2_terrain=item.prix_m2_terrain,

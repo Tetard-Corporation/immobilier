@@ -54,14 +54,8 @@ def analyse_resultats(rows: list[dict]) -> dict:
 class PollutionProvider(EnrichmentProvider):
     name = "pollution"
 
-    def _reverse_commune(self, lat: float, lon: float) -> str | None:
-        resp = self._get_client().get(self._settings.ban_reverse_url, params={"lat": lat, "lon": lon})
-        resp.raise_for_status()
-        feats = resp.json().get("features") or []
-        return feats[0]["properties"].get("citycode") if feats else None
-
     def _fetch(self, lat: float, lon: float) -> dict:
-        code_commune = self._reverse_commune(lat, lon)
+        code_commune = self._reverse_citycode(lat, lon)
         if not code_commune:
             return {}
         resp = self._get_client().get(

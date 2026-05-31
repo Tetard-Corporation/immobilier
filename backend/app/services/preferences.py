@@ -24,6 +24,8 @@ PREFERENCE_KINDS = [
     "near_corridor",
     "near_gare",
     "near_city",
+    "population_jeune",
+    "orientation_gauche",
     # Dépendent d'un provider d'enrichissement (Lot A) :
     "rail_time_from",
     "fiber",
@@ -125,6 +127,19 @@ def _eval_one(item, kind: str, params: dict):
             return None, "n/a", "ville non résolue"
         dist = haversine_km(item.latitude, item.longitude, center[0], center[1])
         return _clamp(1 - dist / params.get("max_km", 50)), "ok", f"{round(dist)} km"
+
+    if kind == "population_jeune":
+        v = flags.get("pop_jeune_score")
+        if v is None:
+            return None, "pending", "données socio (enrich)"
+        age = flags.get("age_median")
+        return _clamp(v), "ok", f"âge médian {age}" if age else "population jeune"
+
+    if kind == "orientation_gauche":
+        v = flags.get("orientation_gauche_score")
+        if v is None:
+            return None, "pending", "données socio (enrich)"
+        return _clamp(v), "ok", f"part gauche {round(v * 100)}%"
 
     if kind in _PENDING_KINDS:
         # Lit le champ d'enrichissement s'il existe déjà ; sinon pending.

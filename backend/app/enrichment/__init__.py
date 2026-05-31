@@ -9,6 +9,7 @@ from .gpu import GpuZonageProvider
 from .pollution import PollutionProvider
 from .rail import RailTimeProvider
 from .relief import ReliefProvider
+from .socio import SocioProvider
 
 _registry: list[EnrichmentProvider] | None = None
 
@@ -21,6 +22,7 @@ def get_providers() -> list[EnrichmentProvider]:
             GeorisquesProvider(),
             ReliefProvider(),
             PollutionProvider(),
+            SocioProvider(),
             RailTimeProvider(),
             DvfComparablesProvider(),
         ]

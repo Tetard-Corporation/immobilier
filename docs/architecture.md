@@ -91,6 +91,8 @@ class EnrichmentProvider(ABC):
 | `fibre` | Arcep (open data THD) | `fibre` (bool) | à venir |
 | `hiking` | OSM (sentiers) | `randonnee` (bool) | à venir |
 | `dvf_comparables` | Pappers (ventes/DVF) | `prix_m2_secteur`, `ecart_prix_pct` | ✅ codé, **requiert `PAPPERS_API_KEY`** |
+| `pollution` | Hub'Eau (eau potable) + BAN | `pollution_eau_score`, `eau_potable_conforme`, `pollutions` (pesticides/nitrates/PFAS) | ✅ live (sans clé) |
+| `socio` | INSEE âge + résultats électoraux (jeu local) | `age_median`, `part_gauche` -> préférences `population_jeune`/`orientation_gauche` | ✅ codé (gabarit à compléter) |
 
 Pipeline : `enrich_listing(item)` fusionne les champs des providers disponibles dans
 `item.flags`, **recalcule le score**, et fait passer les préférences correspondantes de

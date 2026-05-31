@@ -60,6 +60,10 @@ def normalized_from_listing(row: Listing) -> NormalizedListing:
             "pollution_eau_score": row.pollution_eau_score,
             "eau_potable_conforme": row.eau_potable_conforme,
             "pollutions": row.pollutions or [],
+            "age_median": row.age_median,
+            "part_gauche": row.part_gauche,
+            "pop_jeune_score": round(max(0.0, min(1.0, 1 - (row.age_median - 30) / 25)), 3) if row.age_median is not None else None,
+            "orientation_gauche_score": row.part_gauche,
         },
         raw=row.raw or {},
     )

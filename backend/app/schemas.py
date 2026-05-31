@@ -178,6 +178,8 @@ class ListingOut(BaseModel):
     pollution_eau_score: float | None = None
     eau_potable_conforme: bool | None = None
     pollutions: list = []
+    age_median: float | None = None
+    part_gauche: float | None = None
     canonical_id: str | None = None
     prix_m2_terrain: float | None = None
     is_new: bool | None = None

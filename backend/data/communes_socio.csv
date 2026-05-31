@@ -1,0 +1,14 @@
+code_insee,age_median,part_gauche
+# GABARIT — valeurs ILLUSTRATIVES à remplacer par les données officielles :
+#  - age_median : INSEE (âge médian / structure par âge, par commune)
+#  - part_gauche : Ministère de l'Intérieur (résultats électoraux par commune,
+#    part cumulée des candidats/listes de gauche au 1er tour). Échelle 0..1.
+# Le provider 'socio' lit ce fichier (clé = code INSEE) ; commune absente => 'pending'.
+75056,38.5,0.55
+13055,41.0,0.40
+69123,39.0,0.48
+33063,40.0,0.52
+31555,38.0,0.50
+44109,39.5,0.47
+34172,41.5,0.45
+38185,38.5,0.49

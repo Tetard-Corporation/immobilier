@@ -96,6 +96,10 @@ def _heuristic_parse(text: str) -> list[dict]:
         prefs.append({"kind": "relief_mountain", "weight": 1, "params": {}, "label": "Relief / montagne"})
     if "randonn" in t:
         prefs.append({"kind": "hiking", "weight": 1, "params": {}, "label": "Randonnées"})
+    if "jeune" in t or "dynamique" in t:
+        prefs.append({"kind": "population_jeune", "weight": 1, "params": {}, "label": "Population jeune"})
+    if "gauche" in t or "progressiste" in t:
+        prefs.append({"kind": "orientation_gauche", "weight": 1, "params": {}, "label": "Orientation à gauche"})
     if "train" in t and ("paris" in t):
         prefs.append({"kind": "rail_time_from", "weight": 1.5, "params": {"ville": "Paris", "max_minutes": 180}, "label": "Trajet train depuis Paris"})
 

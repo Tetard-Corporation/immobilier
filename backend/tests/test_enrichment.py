@@ -48,8 +48,19 @@ def test_rail_indisponible_sans_cle():
     # Aucune clé Navitia dans les tests.
     assert RailTimeProvider().available is False
     assert {p["name"] for p in provider_status()} == {
-        "gpu_zonage", "georisques", "relief", "pollution", "rail_time", "dvf_comparables"
+        "gpu_zonage", "georisques", "relief", "pollution", "socio", "rail_time", "dvf_comparables"
     }
+
+
+def test_socio_scores_et_dataset():
+    from app.enrichment.socio import _load, socio_scores
+
+    s = socio_scores(38.0, 0.55)
+    assert s["pop_jeune_score"] > 0.6  # 38 ans -> plutôt jeune
+    assert s["orientation_gauche_score"] == 0.55
+    # le gabarit embarqué est chargé et ignore les lignes de commentaire
+    data = _load(__import__("app.enrichment.socio", fromlist=["_DEFAULT_PATH"])._DEFAULT_PATH)
+    assert "75056" in data  # Paris présent dans le gabarit
 
 
 def test_pollution_analyse_resultats():

@@ -49,6 +49,22 @@ def test_pending_quand_provider_absent():
     assert score is None  # aucune préférence évaluable -> pas de score
 
 
+def test_socio_preferences():
+    item_data = _listing(latitude=48.85, longitude=2.35, flags={"pop_jeune_score": 0.8, "orientation_gauche_score": 0.6})
+    p = [Preference(kind="population_jeune"), Preference(kind="orientation_gauche")]
+    score, details = evaluate(item_data, p)
+    assert score is not None and all(d["status"] == "ok" for d in details)
+    # sans données socio -> pending
+    item_vide = _listing(latitude=48.85, longitude=2.35, flags={})
+    _, det = evaluate(item_vide, p)
+    assert all(d["status"] == "pending" for d in det)
+
+
+def test_brief_jeune_gauche():
+    kinds = {p["kind"] for p in _heuristic_parse("commune jeune et à gauche, proche gare")}
+    assert {"population_jeune", "orientation_gauche", "near_gare"} <= kinds
+
+
 def test_corridor_preference_score():
     lyon = _listing(latitude=45.764, longitude=4.835, flags={})
     brest = _listing(latitude=48.39, longitude=-4.48, flags={})

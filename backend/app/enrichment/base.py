@@ -52,6 +52,13 @@ class EnrichmentProvider(ABC):
         self._cache[key] = (now, value)
         return value
 
+    def _reverse_citycode(self, lat: float, lon: float) -> str | None:
+        """Résout le code INSEE de la commune (reverse-geocoding BAN)."""
+        resp = self._get_client().get(self._settings.ban_reverse_url, params={"lat": lat, "lon": lon})
+        resp.raise_for_status()
+        feats = resp.json().get("features") or []
+        return feats[0]["properties"].get("citycode") if feats else None
+
     @abstractmethod
     def _fetch(self, lat: float, lon: float) -> dict:
         """Appel réseau + parsing. Doit renvoyer un dict (vide si rien)."""

@@ -131,6 +131,8 @@ class Listing(Base):
     pollution_eau_score: Mapped[float | None] = mapped_column(Float, nullable=True)
     eau_potable_conforme: Mapped[bool | None] = mapped_column(Boolean, nullable=True)
     pollutions: Mapped[list] = mapped_column(JSON, nullable=False, default=list)
+    age_median: Mapped[float | None] = mapped_column(Float, nullable=True)
+    part_gauche: Mapped[float | None] = mapped_column(Float, nullable=True)
     # Empreinte de dédoublonnage inter-sources (biens identiques regroupés).
     canonical_id: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
 
