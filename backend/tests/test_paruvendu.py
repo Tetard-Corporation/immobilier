@@ -18,7 +18,18 @@ def test_parse_card():
     assert item.surface_terrain == 4300
     assert item.departement == "71"
     assert "Priss" in item.commune
+    assert item.url.startswith("https://www.paruvendu.fr/immobilier/")
     assert item.url.endswith("/1282763849A1KIVHTE000")
+
+
+def test_skip_card_sans_page_detail():
+    # Carte "programme neuf" pointant vers une page catégorie (pas une annonce) -> ignorée.
+    card = (
+        '<div  class="blocAnnonce" data-id="999">'
+        '<a href="/immobilier/maison-neuve/gironde-33/" title="Maisons neuves">promo</a>'
+        "<span>200 000 &euro; Maison Gironde (33)</span></div>"
+    )
+    assert ParuvenduSource()._parse_card(card, "maison") is None
 
 
 def test_path_par_type():

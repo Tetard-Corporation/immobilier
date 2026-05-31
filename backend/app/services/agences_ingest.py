@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import hashlib
 import logging
+from urllib.parse import urljoin
 
 import httpx
 
@@ -80,7 +81,7 @@ def scrape_sites(site_urls: list[tuple[str, str]], settings=None) -> list[Normal
                             "surface_terrain": None,
                             "commune": f.get("city"),
                             "code_postal": f.get("postal_code"),
-                            "url": f.get("url") or url,
+                            "url": urljoin(url, f.get("url") or url),
                             "description": f.get("description") or f.get("name"),
                         },
                         agency,

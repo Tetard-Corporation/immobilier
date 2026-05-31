@@ -28,6 +28,8 @@ _SLUG = {
 _CARD_START = re.compile(r'<div\s+class="blocAnnonce')
 _ID = re.compile(r'data-id="(\d+)"')
 _HREF = re.compile(r'href="(/immobilier/[^"]+)"')
+# Vraie page d'annonce = lien /immobilier/.../<id numérique long> (≠ page catégorie).
+_DETAIL_HREF = re.compile(r'/immobilier/[a-z0-9-]+/\d{6,}[A-Za-z0-9]*')
 _TITLE = re.compile(r'<a[^>]*\btitle="([^"]*)"')
 _PRICE = re.compile(r"(\d[\d\s  ]{2,})\s*(?:€|&euro;|&#8364;)")
 _SURFACE = re.compile(r"(\d[\d\s  ]*)\s*m(?:²|&sup2;|\s*2|&#178;)", re.I)
@@ -71,7 +73,12 @@ class ParuvenduSource(ScraperSource):
         ad_id = _ID.search(card)
         if not ad_id:
             return None
-        href = _HREF.search(card)
+        # On exige une vraie page d'annonce (lien complet vers le détail), sinon on
+        # ignore la carte (ex. bloc "programme neuf" pointant vers une page catégorie).
+        detail = _DETAIL_HREF.search(card)
+        if not detail:
+            return None
+        href = detail.group(0)
         text = _html.unescape(_TAGS.sub(" ", card))
         text = re.sub(r"\s+", " ", text)
         title = _html.unescape(_TITLE.search(card).group(1)) if _TITLE.search(card) else ""
@@ -97,7 +104,7 @@ class ParuvenduSource(ScraperSource):
             adresse=loc.group(1).strip() if loc else (title or None),
             commune=loc.group(1).strip() if loc else None,
             departement=loc.group(2) if loc else None,
-            url=self.base_url + href.group(1) if href else None,
+            url=self.base_url + href,
             description=title or None,
             flags={},
             raw={"title": title, "text": text[:500]},
