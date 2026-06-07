@@ -5,7 +5,8 @@ window.APP_CONFIG = {
   // 1) Crée un projet gratuit sur https://supabase.com
   // 2) Settings → API : colle l'URL du projet et la clé "anon public"
   SUPABASE_URL: "https://vmgvreijzslrmyolejjo.supabase.co",
-  SUPABASE_ANON_KEY: "",   // ⚠️ À COLLER : Settings → API → "anon public" (publique, RLS)
+  // Clé "publishable" (publique, protégée par RLS) — utilisée comme apikey + Bearer.
+  SUPABASE_ANON_KEY: "sb_publishable_qa2Dmw3LM3HqWZ34OLC5qQ_nZteG52r",
 
   // 3) Les participants : c'est la liste du "Qui es-tu ?" en début de session.
   USERS: ["Henri", "Max", "Mathurin", "Juliette", "Léo", "Timothé"],
