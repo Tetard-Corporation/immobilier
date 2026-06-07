@@ -263,11 +263,7 @@ function renderMap(list) {
     if (b.latitude == null || b.longitude == null) return;
     pts.push([b.latitude, b.longitude]);
     const m = matchOf(b, currentSetId);
-    const mk = L.circleMarker([b.latitude, b.longitude], {
-      radius: 9, color: "#04210f", weight: 1,
-      fillColor: m != null && m >= 70 ? "#4ade80" : m != null && m >= 55 ? "#fbbf24" : "#38bdf8",
-      fillOpacity: .9,
-    });
+    const mk = L.marker([b.latitude, b.longitude], { icon: scoreIcon(m) });
     mk.bindPopup(
       `<b>${b.commune || "?"}</b> (${b.departement || "—"})<br>${euros(b.prix)}<br>` +
       `match ${fix1(m)} · invest ${fix1(b.score)}<br>` +
@@ -275,6 +271,23 @@ function renderMap(list) {
     mk.addTo(markerLayer);
   });
   if (pts.length) map.fitBounds(pts, { padding: [40, 40], maxZoom: 11 });
+}
+// Couleur graduée selon le score (cohérent partout : rouge -> orange -> ambre -> vert).
+function scoreColor(p) {
+  if (p == null) return "#64748b";
+  if (p >= 75) return "#4ade80";
+  if (p >= 60) return "#a3e635";
+  if (p >= 45) return "#fbbf24";
+  if (p >= 30) return "#fb923c";
+  return "#f87171";
+}
+// Marqueur = jauge circulaire (anneau de progression) du match, avec le score au centre.
+function scoreIcon(m) {
+  const pct = m == null ? 0 : Math.max(0, Math.min(100, m));
+  const col = scoreColor(m);
+  const html = `<div class="mapscore" style="background:conic-gradient(${col} ${pct * 3.6}deg, rgba(255,255,255,.18) ${pct * 3.6}deg)">`
+    + `<span>${m != null ? Math.round(m) : "–"}</span></div>`;
+  return L.divIcon({ className: "mapmarker", html, iconSize: [34, 34], iconAnchor: [17, 17], popupAnchor: [0, -16] });
 }
 window.__open = (id) => openModal((DATA.biens || []).find((b) => b.id === id));
 

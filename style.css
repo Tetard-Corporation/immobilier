@@ -82,7 +82,7 @@ select {
 }
 .card:hover .gnav { opacity: 1; }
 .gnav.prev { left: 8px; } .gnav.next { right: 8px; }
-.badges { position: absolute; top: 8px; left: 8px; display: flex; gap: 6px; }
+.badges { position: absolute; top: 8px; left: 8px; display: flex; gap: 6px; z-index: 2; }
 .fav-btn {
   position: absolute; top: 8px; right: 8px; z-index: 3;
   display: inline-flex; align-items: center; gap: 3px;
@@ -122,7 +122,7 @@ select {
 }
 .minimap { cursor: pointer; }
 .minimap .mm-hint {
-  position: absolute; right: 4px; bottom: 3px; font-size: 11px; color: #fff;
+  position: absolute; right: 4px; bottom: 3px; z-index: 2; font-size: 11px; color: #fff;
   background: rgba(0,0,0,.55); border-radius: 5px; padding: 0 4px; pointer-events: none;
 }
 .minimap-empty {
@@ -158,6 +158,17 @@ select {
 .mapview { position: fixed; inset: 0; top: 0; padding-top: 0; }
 #map { position: absolute; inset: 0; top: 0; }
 .leaflet-popup-content { font: 13px system-ui; }
+/* Marqueurs carte = jauge circulaire du score (anneau de progression) */
+.mapmarker { background: transparent; border: 0; }
+.mapscore {
+  width: 34px; height: 34px; border-radius: 50%; position: relative;
+  display: grid; place-items: center; box-shadow: 0 1px 5px rgba(0,0,0,.55);
+}
+.mapscore::before { content: ""; position: absolute; inset: 4px; border-radius: 50%; background: var(--card); }
+.mapscore span {
+  position: relative; z-index: 1; font-size: 12px; font-weight: 700; color: #fff;
+  font-variant-numeric: tabular-nums;
+}
 
 /* ---------- Modal ---------- */
 .modal { position: fixed; inset: 0; z-index: 2000; display: grid; place-items: center; }
