@@ -181,9 +181,22 @@ function miniMap(b) {
   </div>`;
 }
 function bindMiniMap(mm) {
-  const open = (e) => { e.preventDefault(); e.stopPropagation(); showBigMap(+mm.dataset.lat, +mm.dataset.lon); };
-  mm.addEventListener("pointerdown", open);
-  mm.addEventListener("click", (e) => { e.stopPropagation(); e.preventDefault(); }); // n'ouvre pas la fiche
+  // Appui MAINTENU (~350 ms) pour agrandir : un tap court ou un scroll ne déclenche rien.
+  let timer = null, sx = 0, sy = 0, opened = false;
+  const cancel = () => { if (timer) { clearTimeout(timer); timer = null; } };
+  mm.addEventListener("pointerdown", (e) => {
+    e.stopPropagation();
+    sx = e.clientX; sy = e.clientY; opened = false;
+    timer = setTimeout(() => { timer = null; opened = true; showBigMap(+mm.dataset.lat, +mm.dataset.lon); }, 350);
+  });
+  mm.addEventListener("pointermove", (e) => {
+    if (timer && (Math.abs(e.clientX - sx) > 8 || Math.abs(e.clientY - sy) > 8)) cancel(); // c'est un scroll
+  });
+  mm.addEventListener("pointerup", cancel);
+  mm.addEventListener("pointercancel", cancel);
+  mm.addEventListener("pointerleave", cancel);
+  // n'ouvre pas la fiche (clic = relâche d'un appui maintenu ou tap court)
+  mm.addEventListener("click", (e) => { if (opened) { e.stopPropagation(); e.preventDefault(); } });
   mm.addEventListener("contextmenu", (e) => e.preventDefault());
 }
 function showBigMap(lat, lon) {
@@ -237,66 +250,91 @@ function setMode(mode) {
 }
 
 // --- modal: tableau comparatif des scores -------------------------------
-function statusCls(s) { return s === "pending" ? "st-pending" : s === "ok" ? "" : "st-na"; }
 
-function pillarsTable(bien) {
-  const pillars = bien.score_details || [];
-  if (!pillars.length) return `<p class="detailtxt">Pas de détail de score d'investissement.</p>`;
-  let rows = "";
-  for (const p of pillars) {
-    rows += `<tr><th colspan="2" class="setcol-head">${p.label} — ${fix1(p.score)}/100
-      <span class="weighttag">(poids ${p.weight})</span></th></tr>`;
-    for (const sp of (p.subpillars || [])) {
-      const pct = sp.subscore != null ? Math.round(sp.subscore * 100) : 0;
-      rows += `<tr>
-        <td>${sp.label}<div class="detailtxt ${statusCls(sp.status)}">${sp.detail || sp.status}</div>
-          <div class="bar"><span style="width:${pct}%"></span></div></td>
-        <td class="num">${sp.subscore != null ? pct + "%" : "<span class='st-" + (sp.status==='pending'?'pending':'na') + "'>" + sp.status + "</span>"}
-          <div class="weighttag">×${sp.weight}</div></td>
-      </tr>`;
-    }
+// Construit les lignes d'une section (Match / Investissement / Risques) :
+// { globalKey, globalLabel, globalAlgo, rows:[{key,label,algo}] }.
+function sectionData(bien, section) {
+  if (section === "match") {
+    const set = SET_BY_ID[String(currentSetId)] || {};
+    const sb = (bien.scores_by_set || {})[String(currentSetId)] || {};
+    const algoBy = {};
+    for (const d of (sb.details || [])) algoBy[d.label || d.kind] = d;
+    const rows = (set.preferences || []).map((p) => {
+      const label = p.label || p.kind;
+      const d = algoBy[label];
+      const algo = d ? (d.subscore != null ? Math.round(d.subscore * 100) + "%" : d.status) : "—";
+      return { key: label, label, algo };
+    });
+    return { globalKey: Votes.OVERALL, globalLabel: `Score global (set ${set.name || "—"})`, globalAlgo: fix1(sb.match_score), rows };
   }
-  return `<table class="scores">${rows}</table>`;
+  if (section === "invest") {
+    const rows = (bien.score_details || []).map((p) => ({
+      key: "invest:" + (p.label || p.key), label: p.label || p.key,
+      algo: p.score != null ? fix1(p.score) : "—",
+    }));
+    return { globalKey: "invest__global", globalLabel: "Score global", globalAlgo: fix1(bien.score), rows };
+  }
+  // risques
+  const risks = (bien.risques || []).map((r) => (typeof r === "string" ? { label: r } : r));
+  const rows = risks.map((r) => {
+    const label = r.label || r.type || r.nom || JSON.stringify(r);
+    const algo = r.niveau != null ? String(r.niveau) : (r.level != null ? String(r.level) : "⚠️");
+    return { key: "risk:" + label, label, algo };
+  });
+  return {
+    globalKey: "risk__global",
+    globalLabel: risks.length ? "Risque global" : "Risque global (aucun signalé)",
+    globalAlgo: risks.length ? String(risks.length) : "0", rows,
+  };
 }
 
-// Tableau unique pour le SET SÉLECTIONNÉ : par critère, le score algo, TON vote
-// (étoiles, optionnel) et la moyenne du groupe.
-function criteriaTable(bien) {
-  const set = SET_BY_ID[String(currentSetId)];
-  if (!set || !(set.preferences || []).length) return "";
+// Tableau générique d'une section : colonnes = Algo + une par personne ;
+// lignes = score global puis un sous-critère par ligne. La colonne de l'utilisateur
+// courant est interactive (étoiles), les autres affichent leur note.
+function voteTable(bien, section) {
   const id = voteKey(bien);
-  const sb = (bien.scores_by_set || {})[String(currentSetId)] || {};
-  const algoBy = {};
-  for (const d of (sb.details || [])) algoBy[d.label || d.kind] = d;
+  const d = sectionData(bien, section);
+  const persons = Votes.users;
+  const head = `<tr><th>Critère</th><th class="num">Algo</th>${persons.map((u) =>
+    `<th class="num pcol${u === Votes.voter ? " me" : ""}">${u}</th>`).join("")}</tr>`;
+  const row = (key, label, algo, isGlobal) => {
+    const cells = persons.map((u) => {
+      if (u === Votes.voter) return `<td class="num">${starsWidget(id, "xs", key)}</td>`;
+      const e = Votes.forBien(id, key).byUser[u];
+      return `<td class="num">${e ? `<span class="ministars">${"★".repeat(e.stars)}</span>` : '<span class="detailtxt">·</span>'}</td>`;
+    }).join("");
+    const lab = isGlobal ? `<b>${label}</b>` : label;
+    const alg = isGlobal ? `<b>${algo}</b>` : algo;
+    return `<tr class="${isGlobal ? "global-row" : ""}"><td>${lab}</td><td class="num">${alg}</td>${cells}</tr>`;
+  };
+  const body = row(d.globalKey, d.globalLabel, d.globalAlgo, true) +
+    d.rows.map((r) => row(r.key, r.label, r.algo, false)).join("");
+  return `<div class="tablewrap"><table class="scores votegrid">${head}${body}</table></div>`;
+}
 
-  const rows = set.preferences.map((p) => {
-    const label = p.label || p.kind;
-    const d = algoBy[label];
-    let algoCell = "—";
-    if (d && d.subscore != null) algoCell = Math.round(d.subscore * 100) + "%";
-    else if (d) algoCell = `<span class="${statusCls(d.status)}">${d.status}</span>`;
-    const info = Votes.forBien(id, label);
-    const grp = info.count ? `${info.avg.toFixed(1)} <span class="weighttag">(${info.count})</span>` : "—";
-    const detailTxt = d && d.detail ? `<div class="detailtxt">${d.detail}</div>` : "";
-    return `<tr>
-      <td>${label}${detailTxt}</td>
-      <td class="num">${algoCell}</td>
-      <td class="num">${starsWidget(id, "sm", label)}</td>
-      <td class="num">${grp}</td>
-    </tr>`;
-  }).join("");
-
-  return `<div class="detailtxt" style="margin-bottom:6px">Match global ${set.name} : <b>${fix1(sb.match_score)}</b></div>
-    <table class="scores crit-tbl">
-      <tr><th>Critère</th><th class="num">Algo</th><th class="num">Ton vote</th><th class="num">Groupe</th></tr>
-      ${rows}
-    </table>`;
+// Section finale : tous les commentaires (note globale) + l'éditeur de l'utilisateur.
+function commentsSection(bien) {
+  const id = voteKey(bien);
+  const info = Votes.forBien(id);
+  const list = Votes.users.map((u) => {
+    const e = info.byUser[u];
+    if (!e || !e.comment) return "";
+    return `<div class="acomment"><b>${u}</b> <span style="color:#fbbf24">${"★".repeat(e.stars)}</span>
+      <div class="vcomment">“${escHtml(e.comment)}”</div></div>`;
+  }).filter(Boolean).join("") || `<p class="detailtxt">Aucun commentaire pour l'instant.</p>`;
+  const editor = Votes.voter ? `
+    <div class="comment-edit">
+      <textarea id="myComment" rows="2" placeholder="Ton commentaire (nécessite une note globale dans Match)">${escHtml(info.mineComment || "")}</textarea>
+      <div class="comment-actions"><span id="commentMsg" class="detailtxt"></span><button class="btn" id="saveComment">Enregistrer</button></div>
+    </div>` : "";
+  return `${editor}<div class="comments-list">${list}</div>`;
 }
 
 function openModal(bien) {
   if (!bien) return;
   openBien = bien;
   const card = $("#modalCard");
+  // Partie statique (en-tête + photos + description) construite une fois.
   card.innerHTML = `
     <button class="modal-close" id="mclose">×</button>
     <h2>${bien.commune || "?"} <span class="sub">(${bien.departement || "—"})</span></h2>
@@ -306,17 +344,10 @@ function openModal(bien) {
       ${bien.altitude != null ? Math.round(bien.altitude) + " m alt." : ""}</div>
     ${bien.is_favori ? `<div class="note">⭐ ${bien.favori_note || "favori"}</div>` : ""}
 
-    <div class="section-title">Note globale ⭐ <span class="detailtxt">(${Votes.backend === "supabase" ? "partagés" : "local"})</span></div>
-    ${votesBlock(bien)}
+    <div class="modal-gallery galwrap" style="position:relative">${gallery(bien)}</div>
+    ${bien.description ? `<p class="descr">${escHtml(htmlToText(bien.description))}</p>` : ""}
 
-    <div class="section-title">Critères <span class="detailtxt">— algo vs vos votes (set : ${(SET_BY_ID[String(currentSetId)] || {}).name || "—"})</span></div>
-    ${criteriaTable(bien)}
-
-    <div class="section-title">Score d'investissement (piliers)</div>
-    ${pillarsTable(bien)}
-
-    ${(bien.risques && bien.risques.length) ? `<div class="section-title">Risques</div>
-      <div class="chips">${bien.risques.map((r) => `<span class="chip">${typeof r === "string" ? r : (r.label || r.type || JSON.stringify(r))}</span>`).join("")}</div>` : ""}
+    <div id="modalDynamic"></div>
 
     <div class="modal-actions">
       ${bien.url ? `<a class="btn" href="${bien.url}" target="_blank" rel="noopener">Voir l'annonce ↗</a>` : ""}
@@ -325,24 +356,58 @@ function openModal(bien) {
   $("#modal").classList.remove("hidden");
   $("#mclose").addEventListener("click", closeModal);
   $("#mclose2").addEventListener("click", closeModal);
-  card.querySelectorAll(".star").forEach((st) =>
-    st.addEventListener("click", () => handleStar(st)));
+  // Galerie photo (flèches + points)
+  const gal = card.querySelector(".gallery");
+  card.querySelectorAll(".gnav").forEach((btn) =>
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      gal.scrollBy({ left: Number(btn.dataset.d) * gal.clientWidth, behavior: "smooth" });
+    }));
+  if (gal) gal.addEventListener("scroll", () => {
+    const i = Math.round(gal.scrollLeft / gal.clientWidth);
+    card.querySelectorAll(".dots i").forEach((dd, k) => dd.classList.toggle("on", k === i));
+  });
+  renderModalDynamic(bien);
+}
+
+// Partie dynamique (tableaux de votes + commentaires), re-rendue à chaque vote
+// sans toucher aux photos/description.
+function renderModalDynamic(bien) {
+  const host = $("#modalDynamic");
+  const pending = $("#myComment") ? $("#myComment").value : null;   // préserve la saisie en cours
+  host.innerHTML = `
+    <div class="section-title">Match <span class="detailtxt">— algo + ${Votes.backend === "supabase" ? "votes partagés" : "votes locaux"}</span></div>
+    ${voteTable(bien, "match")}
+    <div class="section-title">Investissement</div>
+    ${voteTable(bien, "invest")}
+    <div class="section-title">Risques</div>
+    ${voteTable(bien, "risk")}
+    <div class="section-title">Commentaires</div>
+    ${commentsSection(bien)}`;
+  if (pending != null && $("#myComment")) $("#myComment").value = pending;
+  host.querySelectorAll(".star").forEach((st) => st.addEventListener("click", () => handleStar(st)));
   const saveBtn = $("#saveComment");
   if (saveBtn) saveBtn.addEventListener("click", () => {
-    const val = $("#myComment").value.trim();
-    Votes.setComment(voteKey(bien), val).then((res) => {
+    Votes.setComment(voteKey(bien), $("#myComment").value.trim()).then((res) => {
       if (res && res.ok === false && res.reason === "no-stars") {
-        $("#commentMsg").textContent = "Donne d'abord une note ⭐ pour commenter.";
+        $("#commentMsg").textContent = "Donne d'abord une note globale (section Match) pour commenter.";
       }
     });
   });
 }
 function closeModal() { $("#modal").classList.add("hidden"); openBien = null; }
-function refreshModal() { if (openBien && !$("#modal").classList.contains("hidden")) openModal(openBien); }
+function refreshModal() { if (openBien && !$("#modal").classList.contains("hidden")) renderModalDynamic(openBien); }
 
 // ---------- Votes (étoiles) ----------
 const escAttr = (s) => String(s).replace(/&/g, "&amp;").replace(/"/g, "&quot;");
 const escHtml = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+// Convertit une description HTML (annonce) en texte : <br> -> saut de ligne, tags
+// supprimés, entités décodées. DOMParser n'exécute aucun script ni ne charge d'image.
+function htmlToText(html) {
+  const src = String(html).replace(/<br\s*\/?>/gi, "\n");
+  const doc = new DOMParser().parseFromString(src, "text/html");
+  return (doc.body.textContent || "").replace(/\n{3,}/g, "\n\n").trim();
+}
 function starsWidget(id, size, criterion) {
   const crit = criterion || Votes.OVERALL;
   const mine = Votes.forBien(id, crit).mine || 0;
@@ -356,29 +421,6 @@ function starsRow(b) {
     ? `<span class="vavg">moy ${info.avg.toFixed(1)} · ${info.count} vote${info.count > 1 ? "s" : ""}</span>`
     : `<span class="vavg detailtxt">non noté</span>`;
   return `<div class="voterow">${starsWidget(voteKey(b))} ${meta}</div>`;
-}
-function votesBlock(b) {
-  const id = voteKey(b);
-  const info = Votes.forBien(id);
-  const rows = Votes.users.map((u) => {
-    const e = info.byUser[u];
-    const cell = e ? `<span style="color:#fbbf24">${"★".repeat(e.stars)}</span><span class="detailtxt">${"☆".repeat(5 - e.stars)}</span>`
-                   : `<span class="detailtxt">—</span>`;
-    const com = (e && e.comment) ? `<div class="vcomment">“${escHtml(e.comment)}”</div>` : "";
-    return `<tr><td>${u}${u === Votes.voter ? ' <span class="weighttag">(toi)</span>' : ""}${com}</td><td class="num">${cell}</td></tr>`;
-  }).join("");
-  const myLabel = Votes.voter ? "Ta note" : "Choisis ton identité pour noter";
-  const editor = Votes.voter ? `
-    <div class="comment-edit">
-      <textarea id="myComment" rows="2" placeholder="Un mot sur ce bien ? (optionnel, avec ta note)">${escHtml(info.mineComment || "")}</textarea>
-      <div class="comment-actions"><span id="commentMsg" class="detailtxt"></span><button class="btn" id="saveComment">Enregistrer</button></div>
-    </div>` : "";
-  return `<div class="votewrap">
-    <div class="myvote"><span>${myLabel} :</span> ${starsWidget(id, "big")}</div>
-    ${editor}
-    <table class="scores votes-tbl"><tr><th>Qui</th><th class="num">Note</th></tr>${rows}
-      <tr><th>Moyenne</th><td class="num"><b>${info.avg != null ? info.avg.toFixed(1) : "—"}</b> (${info.count})</td></tr></table>
-  </div>`;
 }
 function handleStar(st) {
   if (!Votes.voter) { openIdentity(); return; }

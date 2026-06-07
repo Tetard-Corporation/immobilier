@@ -100,7 +100,7 @@ select {
 .minimap {
   position: relative; width: 104px; height: 92px; border-radius: 10px;
   overflow: hidden; border: 1px solid var(--line); cursor: zoom-in;
-  touch-action: none; user-select: none; -webkit-touch-callout: none; background: #0b0d11;
+  touch-action: pan-y; user-select: none; -webkit-touch-callout: none; background: #0b0d11;
 }
 .minimap .mm-hint {
   position: absolute; right: 4px; bottom: 3px; font-size: 11px; color: #fff;
@@ -186,9 +186,31 @@ table.scores td.num { text-align: right; font-variant-numeric: tabular-nums; whi
 .star:active { transform: scale(1.25); }
 .stars.big .star { font-size: 26px; }
 .stars.sm .star { font-size: 15px; }
+.stars.xs .star { font-size: 13px; }
+.stars.xs { white-space: nowrap; }
 .vavg { font-size: 12px; color: var(--muted); }
-table.crit-tbl td.num { white-space: nowrap; }
-table.crit-tbl .stars.sm { white-space: nowrap; }
+
+/* Tableaux de votes (Match / Investissement / Risques) */
+.tablewrap { overflow-x: auto; -webkit-overflow-scrolling: touch; margin-bottom: 4px; }
+table.votegrid { min-width: max-content; font-size: 12px; }
+table.votegrid th, table.votegrid td { padding: 6px 8px; }
+table.votegrid th.pcol.me { color: var(--accent); }
+table.votegrid th:first-child, table.votegrid td:first-child {
+  position: sticky; left: 0; background: var(--card); max-width: 150px;
+}
+table.votegrid tr.global-row td { background: rgba(56,189,248,.07); }
+.ministars { color: #fbbf24; font-size: 11px; letter-spacing: -1.5px; }
+
+/* Galerie + description dans la fiche */
+.modal-gallery { margin: 12px 0 6px; border-radius: 12px; overflow: hidden; }
+.descr {
+  color: var(--muted); font-size: 13px; white-space: pre-wrap;
+  margin: 8px 0 4px; max-height: 9.5em; overflow: auto;
+}
+/* Commentaires */
+.acomment { padding: 7px 0; border-bottom: 1px solid var(--line); font-size: 13px; }
+.acomment .vcomment { font-style: italic; margin-top: 2px; }
+.comments-list { margin-top: 6px; }
 
 .votewrap .myvote { margin: 6px 0 10px; display: flex; align-items: center; gap: 10px; }
 table.votes-tbl td, table.votes-tbl th { padding: 6px 9px; }
