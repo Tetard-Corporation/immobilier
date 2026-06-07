@@ -88,8 +88,9 @@ class EnrichmentProvider(ABC):
 | `relief` | altimétrie IGN (data.geopf.fr) | `altitude`, `montagne` | ✅ live (sans clé) |
 | `rail_time` | estimation (sans clé) ou Navitia/SNCF (clé option.) | `rail_time_min` depuis une ville d'origine | ✅ live **sans clé** (estimation) ; horaires réels si clé |
 | `aeronautique` | PEB + servitudes T4/T5 (GPU/SUP) | `peb_zone` (A–D) | à venir |
-| `fibre` | Arcep (open data THD) | `fibre` (bool) | à venir |
-| `hiking` | OSM (sentiers) | `randonnee` (bool) | à venir |
+| `fibre` | Arcep « Ma connexion internet » (FTTH par commune) | `fibre` (bool), `fibre_pct` | ✅ live (open data, sans clé) |
+| `hiking` | OSM/Overpass (sentiers + itinéraires) | `randonnee` (bool), `rando_count` | ✅ live (sans clé) |
+| `nuisance_sonore` | OSM/Overpass (autoroute/voie ferrée) | `dist_autoroute_m`, `dist_rail_m` (critère « calme ») | ✅ live (sans clé) |
 | `dvf_comparables` | **geo-dvf** (files.data.gouv.fr) | `prix_m2_secteur`, `ecart_prix_pct` | ✅ live (open data, **sans clé**) |
 | `pollution` | Hub'Eau (eau potable) + BAN | `pollution_eau_score`, `eau_potable_conforme`, `pollutions` (pesticides/nitrates/PFAS) | ✅ live (sans clé) |
 | `socio` | INSEE âge + résultats électoraux (jeu local) | `age_median`, `part_gauche` -> préférences `population_jeune`/`orientation_gauche` | ✅ codé (gabarit à compléter) |

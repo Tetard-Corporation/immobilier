@@ -9,8 +9,10 @@ import httpx
 from .base import EnrichmentProvider
 from .densite import DensiteProvider
 from .dvf import DvfComparablesProvider
+from .fibre import FibreProvider
 from .georisques import GeorisquesProvider
 from .gpu import GpuZonageProvider
+from .hiking import HikingProvider
 from .pollution import PollutionProvider
 from .rail import RailTimeProvider
 from .relief import ReliefProvider
@@ -31,6 +33,8 @@ def get_providers() -> list[EnrichmentProvider]:
             DensiteProvider(),
             RailTimeProvider(),
             DvfComparablesProvider(),
+            FibreProvider(),
+            HikingProvider(),
         ]
     return _registry
 

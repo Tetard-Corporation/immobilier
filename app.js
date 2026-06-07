@@ -167,13 +167,21 @@ function renderScroll(list) {
       const i = Math.round(gal.scrollLeft / gal.clientWidth);
       card.querySelectorAll(".dots i").forEach((d, k) => d.classList.toggle("on", k === i));
     });
-    // Feed : la note rapide n'enregistre PAS directement -> ouvre le popup (note + commentaire).
+    // Feed : cliquer une étoile pré-enregistre la note ET ouvre le popup (note + commentaire).
     const vr = card.querySelector(".voterow");
-    if (vr) vr.addEventListener("click", (e) => {
-      e.stopPropagation();
-      if (!Votes.voter) { openIdentity(); return; }
-      openCritPopup(b, "match", Votes.OVERALL);
-    });
+    if (vr) {
+      vr.querySelectorAll(".star").forEach((st) => st.addEventListener("click", (e) => {
+        e.stopPropagation();
+        if (!Votes.voter) { openIdentity(); return; }
+        openCritPopup(b, "match", Votes.OVERALL);
+        Votes.setMine(voteKey(b), Number(st.dataset.v), Votes.OVERALL);   // pré-enregistre
+      }));
+      vr.addEventListener("click", (e) => {
+        e.stopPropagation();
+        if (!Votes.voter) { openIdentity(); return; }
+        openCritPopup(b, "match", Votes.OVERALL);
+      });
+    }
     const mm = card.querySelector(".minimap[data-lat]");
     if (mm) bindMiniMap(mm);
     const fb = card.querySelector(".fav-btn");
@@ -433,10 +441,8 @@ function renderCritPopup() {
   card.querySelectorAll(".star").forEach((st) => st.addEventListener("click", () => handleStar(st)));
   const cs = document.getElementById("critSave");
   if (cs) cs.addEventListener("click", () => {
-    Votes.setComment(id, document.getElementById("critComment").value.trim(), key).then((res) => {
-      const ta = document.getElementById("critComment"); if (ta) ta.value = "";   // champ vidé = enregistré
-      const m = document.getElementById("critMsg"); if (m) m.textContent = (res && res.ok) ? "✓ Enregistré" : "Échec — réessaie";
-    });
+    Votes.setComment(id, document.getElementById("critComment").value.trim(), key);  // optimiste
+    closeCritPopup();   // Enregistrer -> ferme le popup
   });
 }
 function closeCritPopup() {

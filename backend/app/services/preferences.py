@@ -86,9 +86,15 @@ def _eval_one(item, kind: str, params: dict):
 
     if kind == "chambres_min":
         mn = params.get("min", 1)
-        if item.nb_chambres is None:
+        nb = item.nb_chambres
+        if nb is None:
             return None, "n/a", "nb chambres inconnu"
-        return (1.0 if item.nb_chambres >= mn else _clamp(item.nb_chambres / mn)), "ok", f"{item.nb_chambres} ch."
+        if nb >= mn:
+            sub = 1.0
+        else:
+            # En dessous du minimum -> MAUVAIS score (pénalité forte) : mn-1 ~0.3, mn-2 et moins ~0.
+            sub = _clamp(0.3 - (mn - nb - 1) * 0.3)
+        return sub, "ok", f"{nb} ch. (min {mn})"
 
     if kind == "has_terrain":
         if item.surface_terrain is None:
@@ -145,9 +151,9 @@ def _eval_one(item, kind: str, params: dict):
         res = nearest_gare(item.latitude, item.longitude)
         if res is None:
             return None, "n/a", "données gares indispo"
-        _, dist = res
+        nom, dist = res
         max_km = params.get("max_km", 10)
-        return _clamp(1 - dist / max_km), "ok", f"gare à {dist} km"
+        return _clamp(1 - dist / max_km), "ok", f"gare de {nom} à {dist} km"
 
     if kind == "near_city":
         if item.latitude is None or item.longitude is None:
@@ -156,7 +162,9 @@ def _eval_one(item, kind: str, params: dict):
         if not center or center[0] is None:
             return None, "n/a", "ville non résolue"
         dist = haversine_km(item.latitude, item.longitude, center[0], center[1])
-        return _clamp(1 - dist / params.get("max_km", 50)), "ok", f"{round(dist)} km"
+        ville = params.get("ville")
+        suffixe = f" de {ville}" if ville else ""
+        return _clamp(1 - dist / params.get("max_km", 50)), "ok", f"{round(dist)} km{suffixe}"
 
     if kind == "temps_acces":
         # Porte-à-porte depuis Paris (TGV vers le meilleur hub + voiture).
@@ -213,11 +221,16 @@ def _eval_one(item, kind: str, params: dict):
             suffixe = " (estimé)" if flags.get("rail_time_estime") else ""
             return _clamp(1 - val / params.get("max_minutes", 180)), "ok", f"{val} min{suffixe}"
         if kind == "fiber":
+            pct = flags.get("fibre_pct")
+            if pct is not None:
+                return _clamp(pct / 100), "ok", f"{pct}% des locaux éligibles fibre"
             return (1.0 if val else 0.0), "ok", "fibre" if val else "pas de fibre"
         if kind == "relief_mountain":
             return _clamp((val or 0) / params.get("ref_altitude", 600)), "ok", f"{val} m"
         if kind == "hiking":
-            return (1.0 if val else 0.3), "ok", ""
+            n = flags.get("rando_count")
+            detail = f"{n} sentiers/itinéraires à proximité" if n is not None else ("sentiers à proximité" if val else "peu de sentiers")
+            return (1.0 if val else 0.3), "ok", detail
 
     return None, "n/a", "inconnu"
 

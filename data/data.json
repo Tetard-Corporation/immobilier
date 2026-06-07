@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-07T15:03:20.358856+00:00",
+ "generated_at": "2026-06-07T15:24:42.282276+00:00",
  "sets": [
   {
    "id": 1,
@@ -18,10 +18,10 @@
     },
     {
      "kind": "chambres_min",
-     "label": "≥ 5 chambres",
-     "weight": 2,
+     "label": "≥ 4 chambres (min strict)",
+     "weight": 3,
      "params": {
-      "min": 5
+      "min": 4
      }
     },
     {
@@ -128,10 +128,10 @@
     },
     {
      "kind": "chambres_min",
-     "label": "≥ 5 chambres",
-     "weight": 2,
+     "label": "≥ 4 chambres (min strict)",
+     "weight": 3,
      "params": {
-      "min": 5
+      "min": 4
      }
     },
     {
@@ -472,7 +472,7 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 56.9,
+     "match_score": 53.0,
      "details": [
       {
        "kind": "budget",
@@ -493,15 +493,6 @@
        "contribution": 1.351
       },
       {
-       "kind": "chambres_min",
-       "label": "≥ 5 chambres",
-       "weight": 2.0,
-       "status": "ok",
-       "detail": "3 ch.",
-       "subscore": 0.6,
-       "contribution": 1.2
-      },
-      {
        "kind": "nature_exception",
        "label": "Nature d'exception",
        "weight": 2.0,
@@ -518,6 +509,24 @@
        "detail": "2910.0 m²",
        "subscore": 1.0,
        "contribution": 1.0
+      },
+      {
+       "kind": "fiber",
+       "label": "Fibre (télétravail)",
+       "weight": 1.0,
+       "status": "ok",
+       "detail": "91% des locaux éligibles fibre",
+       "subscore": 0.91,
+       "contribution": 0.91
+      },
+      {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 3.0,
+       "status": "ok",
+       "detail": "3 ch. (min 4)",
+       "subscore": 0.3,
+       "contribution": 0.9
       },
       {
        "kind": "no_vis_a_vis",
@@ -542,7 +551,7 @@
        "label": "Proche d'une gare",
        "weight": 1.0,
        "status": "ok",
-       "detail": "gare à 5.1 km",
+       "detail": "gare de Montelimar à 5.1 km",
        "subscore": 0.66,
        "contribution": 0.66
       },
@@ -554,6 +563,15 @@
        "detail": "",
        "subscore": 0.3,
        "contribution": 0.45
+      },
+      {
+       "kind": "hiking",
+       "label": "Randonnées",
+       "weight": 1.0,
+       "status": "ok",
+       "detail": "1 sentiers/itinéraires à proximité",
+       "subscore": 0.3,
+       "contribution": 0.3
       },
       {
        "kind": "relief_mountain",
@@ -580,27 +598,11 @@
        "status": "n/a",
        "detail": "état inconnu",
        "subscore": null
-      },
-      {
-       "kind": "fiber",
-       "label": "Fibre (télétravail)",
-       "weight": 1.0,
-       "status": "pending",
-       "detail": "provider non branché",
-       "subscore": null
-      },
-      {
-       "kind": "hiking",
-       "label": "Randonnées",
-       "weight": 1.0,
-       "status": "pending",
-       "detail": "provider non branché",
-       "subscore": null
       }
      ]
     },
     "2": {
-     "match_score": 55.8,
+     "match_score": 52.8,
      "details": [
       {
        "kind": "has_terrain",
@@ -630,15 +632,6 @@
        "contribution": 1.351
       },
       {
-       "kind": "chambres_min",
-       "label": "≥ 5 chambres",
-       "weight": 2.0,
-       "status": "ok",
-       "detail": "3 ch.",
-       "subscore": 0.6,
-       "contribution": 1.2
-      },
-      {
        "kind": "nature_exception",
        "label": "Nature d'exception",
        "weight": 2.0,
@@ -646,6 +639,24 @@
        "detail": "",
        "subscore": 0.6,
        "contribution": 1.2
+      },
+      {
+       "kind": "fiber",
+       "label": "Fibre (télétravail)",
+       "weight": 1.0,
+       "status": "ok",
+       "detail": "91% des locaux éligibles fibre",
+       "subscore": 0.91,
+       "contribution": 0.91
+      },
+      {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 3.0,
+       "status": "ok",
+       "detail": "3 ch. (min 4)",
+       "subscore": 0.3,
+       "contribution": 0.9
       },
       {
        "kind": "no_vis_a_vis",
@@ -670,7 +681,7 @@
        "label": "Proche d'une gare",
        "weight": 1.0,
        "status": "ok",
-       "detail": "gare à 5.1 km",
+       "detail": "gare de Montelimar à 5.1 km",
        "subscore": 0.66,
        "contribution": 0.66
       },
@@ -691,6 +702,15 @@
        "detail": "",
        "subscore": 0.3,
        "contribution": 0.45
+      },
+      {
+       "kind": "hiking",
+       "label": "Randonnées",
+       "weight": 1.0,
+       "status": "ok",
+       "detail": "1 sentiers/itinéraires à proximité",
+       "subscore": 0.3,
+       "contribution": 0.3
       },
       {
        "kind": "relief_mountain",
@@ -716,22 +736,6 @@
        "weight": 1.0,
        "status": "n/a",
        "detail": "état inconnu",
-       "subscore": null
-      },
-      {
-       "kind": "fiber",
-       "label": "Fibre (télétravail)",
-       "weight": 1.0,
-       "status": "pending",
-       "detail": "provider non branché",
-       "subscore": null
-      },
-      {
-       "kind": "hiking",
-       "label": "Randonnées",
-       "weight": 1.0,
-       "status": "pending",
-       "detail": "provider non branché",
        "subscore": null
       }
      ]
@@ -995,8 +999,17 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 74.2,
+     "match_score": 79.3,
      "details": [
+      {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 3.0,
+       "status": "ok",
+       "detail": "4 ch. (min 4)",
+       "subscore": 1.0,
+       "contribution": 3.0
+      },
       {
        "kind": "budget",
        "label": "Budget (apport 150000€)",
@@ -1014,15 +1027,6 @@
        "detail": "",
        "subscore": 1.0,
        "contribution": 2.0
-      },
-      {
-       "kind": "chambres_min",
-       "label": "≥ 5 chambres",
-       "weight": 2.0,
-       "status": "ok",
-       "detail": "4 ch.",
-       "subscore": 0.8,
-       "contribution": 1.6
       },
       {
        "kind": "temps_acces",
@@ -1061,6 +1065,24 @@
        "contribution": 1.0
       },
       {
+       "kind": "hiking",
+       "label": "Randonnées",
+       "weight": 1.0,
+       "status": "ok",
+       "detail": "155 sentiers/itinéraires à proximité",
+       "subscore": 1.0,
+       "contribution": 1.0
+      },
+      {
+       "kind": "fiber",
+       "label": "Fibre (télétravail)",
+       "weight": 1.0,
+       "status": "ok",
+       "detail": "97% des locaux éligibles fibre",
+       "subscore": 0.97,
+       "contribution": 0.97
+      },
+      {
        "kind": "no_vis_a_vis",
        "label": "Sans vis-à-vis",
        "weight": 1.5,
@@ -1074,16 +1096,16 @@
        "label": "Calme (loin autoroute/voie ferrée)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "autoroute 536 m · voie ferrée 558 m",
-       "subscore": 0.42,
-       "contribution": 0.84
+       "detail": "autoroute 523 m · voie ferrée 558 m",
+       "subscore": 0.404,
+       "contribution": 0.807
       },
       {
        "kind": "near_gare",
        "label": "Proche d'une gare",
        "weight": 1.0,
        "status": "ok",
-       "detail": "gare à 3.5 km",
+       "detail": "gare de Valence Ville à 3.5 km",
        "subscore": 0.767,
        "contribution": 0.767
       },
@@ -1104,28 +1126,21 @@
        "detail": "116.3 m",
        "subscore": 0.194,
        "contribution": 0.194
-      },
-      {
-       "kind": "fiber",
-       "label": "Fibre (télétravail)",
-       "weight": 1.0,
-       "status": "pending",
-       "detail": "provider non branché",
-       "subscore": null
-      },
-      {
-       "kind": "hiking",
-       "label": "Randonnées",
-       "weight": 1.0,
-       "status": "pending",
-       "detail": "provider non branché",
-       "subscore": null
       }
      ]
     },
     "2": {
-     "match_score": 70.0,
+     "match_score": 74.7,
      "details": [
+      {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 3.0,
+       "status": "ok",
+       "detail": "4 ch. (min 4)",
+       "subscore": 1.0,
+       "contribution": 3.0
+      },
       {
        "kind": "feature",
        "label": "Vue panoramique",
@@ -1152,15 +1167,6 @@
        "detail": "",
        "subscore": 1.0,
        "contribution": 2.0
-      },
-      {
-       "kind": "chambres_min",
-       "label": "≥ 5 chambres",
-       "weight": 2.0,
-       "status": "ok",
-       "detail": "4 ch.",
-       "subscore": 0.8,
-       "contribution": 1.6
       },
       {
        "kind": "temps_acces",
@@ -1190,6 +1196,24 @@
        "contribution": 1.0
       },
       {
+       "kind": "hiking",
+       "label": "Randonnées",
+       "weight": 1.0,
+       "status": "ok",
+       "detail": "155 sentiers/itinéraires à proximité",
+       "subscore": 1.0,
+       "contribution": 1.0
+      },
+      {
+       "kind": "fiber",
+       "label": "Fibre (télétravail)",
+       "weight": 1.0,
+       "status": "ok",
+       "detail": "97% des locaux éligibles fibre",
+       "subscore": 0.97,
+       "contribution": 0.97
+      },
+      {
        "kind": "no_vis_a_vis",
        "label": "Sans vis-à-vis",
        "weight": 1.5,
@@ -1203,16 +1227,16 @@
        "label": "Calme (loin autoroute/voie ferrée)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "autoroute 536 m · voie ferrée 558 m",
-       "subscore": 0.42,
-       "contribution": 0.84
+       "detail": "autoroute 523 m · voie ferrée 558 m",
+       "subscore": 0.404,
+       "contribution": 0.807
       },
       {
        "kind": "near_gare",
        "label": "Proche d'une gare",
        "weight": 1.0,
        "status": "ok",
-       "detail": "gare à 3.5 km",
+       "detail": "gare de Valence Ville à 3.5 km",
        "subscore": 0.767,
        "contribution": 0.767
       },
@@ -1242,22 +1266,6 @@
        "detail": "116.3 m",
        "subscore": 0.194,
        "contribution": 0.194
-      },
-      {
-       "kind": "fiber",
-       "label": "Fibre (télétravail)",
-       "weight": 1.0,
-       "status": "pending",
-       "detail": "provider non branché",
-       "subscore": null
-      },
-      {
-       "kind": "hiking",
-       "label": "Randonnées",
-       "weight": 1.0,
-       "status": "pending",
-       "detail": "provider non branché",
-       "subscore": null
       }
      ]
     }
@@ -1517,23 +1525,23 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 62.7,
+     "match_score": 68.1,
      "details": [
+      {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 3.0,
+       "status": "ok",
+       "detail": "6 ch. (min 4)",
+       "subscore": 1.0,
+       "contribution": 3.0
+      },
       {
        "kind": "budget",
        "label": "Budget (apport 150000€)",
        "weight": 2.0,
        "status": "ok",
        "detail": "≤ budget 600000€",
-       "subscore": 1.0,
-       "contribution": 2.0
-      },
-      {
-       "kind": "chambres_min",
-       "label": "≥ 5 chambres",
-       "weight": 2.0,
-       "status": "ok",
-       "detail": "6 ch.",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -1565,6 +1573,24 @@
        "contribution": 1.0
       },
       {
+       "kind": "hiking",
+       "label": "Randonnées",
+       "weight": 1.0,
+       "status": "ok",
+       "detail": "108 sentiers/itinéraires à proximité",
+       "subscore": 1.0,
+       "contribution": 1.0
+      },
+      {
+       "kind": "fiber",
+       "label": "Fibre (télétravail)",
+       "weight": 1.0,
+       "status": "ok",
+       "detail": "98% des locaux éligibles fibre",
+       "subscore": 0.98,
+       "contribution": 0.98
+      },
+      {
        "kind": "no_vis_a_vis",
        "label": "Sans vis-à-vis",
        "weight": 1.5,
@@ -1587,7 +1613,7 @@
        "label": "Proche d'une gare",
        "weight": 1.0,
        "status": "ok",
-       "detail": "gare à 3.6 km",
+       "detail": "gare de La Voulte-sur-Rhone à 3.6 km",
        "subscore": 0.76,
        "contribution": 0.76
       },
@@ -1625,43 +1651,27 @@
        "status": "n/a",
        "detail": "surface terrain inconnue",
        "subscore": null
-      },
-      {
-       "kind": "fiber",
-       "label": "Fibre (télétravail)",
-       "weight": 1.0,
-       "status": "pending",
-       "detail": "provider non branché",
-       "subscore": null
-      },
-      {
-       "kind": "hiking",
-       "label": "Randonnées",
-       "weight": 1.0,
-       "status": "pending",
-       "detail": "provider non branché",
-       "subscore": null
       }
      ]
     },
     "2": {
-     "match_score": 56.5,
+     "match_score": 62.0,
      "details": [
+      {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 3.0,
+       "status": "ok",
+       "detail": "6 ch. (min 4)",
+       "subscore": 1.0,
+       "contribution": 3.0
+      },
       {
        "kind": "budget",
        "label": "Budget (apport 150000€)",
        "weight": 2.0,
        "status": "ok",
        "detail": "≤ budget 600000€",
-       "subscore": 1.0,
-       "contribution": 2.0
-      },
-      {
-       "kind": "chambres_min",
-       "label": "≥ 5 chambres",
-       "weight": 2.0,
-       "status": "ok",
-       "detail": "6 ch.",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -1693,6 +1703,24 @@
        "contribution": 1.0
       },
       {
+       "kind": "hiking",
+       "label": "Randonnées",
+       "weight": 1.0,
+       "status": "ok",
+       "detail": "108 sentiers/itinéraires à proximité",
+       "subscore": 1.0,
+       "contribution": 1.0
+      },
+      {
+       "kind": "fiber",
+       "label": "Fibre (télétravail)",
+       "weight": 1.0,
+       "status": "ok",
+       "detail": "98% des locaux éligibles fibre",
+       "subscore": 0.98,
+       "contribution": 0.98
+      },
+      {
        "kind": "no_vis_a_vis",
        "label": "Sans vis-à-vis",
        "weight": 1.5,
@@ -1715,7 +1743,7 @@
        "label": "Proche d'une gare",
        "weight": 1.0,
        "status": "ok",
-       "detail": "gare à 3.6 km",
+       "detail": "gare de La Voulte-sur-Rhone à 3.6 km",
        "subscore": 0.76,
        "contribution": 0.76
       },
@@ -1761,22 +1789,6 @@
        "weight": 3.0,
        "status": "n/a",
        "detail": "surface terrain inconnue",
-       "subscore": null
-      },
-      {
-       "kind": "fiber",
-       "label": "Fibre (télétravail)",
-       "weight": 1.0,
-       "status": "pending",
-       "detail": "provider non branché",
-       "subscore": null
-      },
-      {
-       "kind": "hiking",
-       "label": "Randonnées",
-       "weight": 1.0,
-       "status": "pending",
-       "detail": "provider non branché",
        "subscore": null
       }
      ]
@@ -2037,7 +2049,7 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 50.9,
+     "match_score": 48.3,
      "details": [
       {
        "kind": "budget",
@@ -2067,6 +2079,15 @@
        "contribution": 1.0
       },
       {
+       "kind": "hiking",
+       "label": "Randonnées",
+       "weight": 1.0,
+       "status": "ok",
+       "detail": "165 sentiers/itinéraires à proximité",
+       "subscore": 1.0,
+       "contribution": 1.0
+      },
+      {
        "kind": "no_vis_a_vis",
        "label": "Sans vis-à-vis",
        "weight": 1.5,
@@ -2085,15 +2106,6 @@
        "contribution": 0.85
       },
       {
-       "kind": "chambres_min",
-       "label": "≥ 5 chambres",
-       "weight": 2.0,
-       "status": "ok",
-       "detail": "2 ch.",
-       "subscore": 0.4,
-       "contribution": 0.8
-      },
-      {
        "kind": "nature_exception",
        "label": "Nature d'exception",
        "weight": 2.0,
@@ -2101,6 +2113,15 @@
        "detail": "",
        "subscore": 0.4,
        "contribution": 0.8
+      },
+      {
+       "kind": "fiber",
+       "label": "Fibre (télétravail)",
+       "weight": 1.0,
+       "status": "ok",
+       "detail": "75% des locaux éligibles fibre",
+       "subscore": 0.75,
+       "contribution": 0.75
       },
       {
        "kind": "authentic",
@@ -2130,11 +2151,20 @@
        "contribution": 0.192
       },
       {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 3.0,
+       "status": "ok",
+       "detail": "2 ch. (min 4)",
+       "subscore": 0.0,
+       "contribution": 0.0
+      },
+      {
        "kind": "near_gare",
        "label": "Proche d'une gare",
        "weight": 1.0,
        "status": "ok",
-       "detail": "gare à 29.6 km",
+       "detail": "gare de Donzere à 29.6 km",
        "subscore": 0.0,
        "contribution": 0.0
       },
@@ -2146,27 +2176,11 @@
        "detail": "41 km de l'axe",
        "subscore": 0.0,
        "contribution": 0.0
-      },
-      {
-       "kind": "fiber",
-       "label": "Fibre (télétravail)",
-       "weight": 1.0,
-       "status": "pending",
-       "detail": "provider non branché",
-       "subscore": null
-      },
-      {
-       "kind": "hiking",
-       "label": "Randonnées",
-       "weight": 1.0,
-       "status": "pending",
-       "detail": "provider non branché",
-       "subscore": null
       }
      ]
     },
     "2": {
-     "match_score": 46.1,
+     "match_score": 44.5,
      "details": [
       {
        "kind": "budget",
@@ -2196,6 +2210,15 @@
        "contribution": 1.804
       },
       {
+       "kind": "hiking",
+       "label": "Randonnées",
+       "weight": 1.0,
+       "status": "ok",
+       "detail": "165 sentiers/itinéraires à proximité",
+       "subscore": 1.0,
+       "contribution": 1.0
+      },
+      {
        "kind": "no_vis_a_vis",
        "label": "Sans vis-à-vis",
        "weight": 1.5,
@@ -2214,15 +2237,6 @@
        "contribution": 0.85
       },
       {
-       "kind": "chambres_min",
-       "label": "≥ 5 chambres",
-       "weight": 2.0,
-       "status": "ok",
-       "detail": "2 ch.",
-       "subscore": 0.4,
-       "contribution": 0.8
-      },
-      {
        "kind": "nature_exception",
        "label": "Nature d'exception",
        "weight": 2.0,
@@ -2230,6 +2244,15 @@
        "detail": "",
        "subscore": 0.4,
        "contribution": 0.8
+      },
+      {
+       "kind": "fiber",
+       "label": "Fibre (télétravail)",
+       "weight": 1.0,
+       "status": "ok",
+       "detail": "75% des locaux éligibles fibre",
+       "subscore": 0.75,
+       "contribution": 0.75
       },
       {
        "kind": "feature",
@@ -2268,11 +2291,20 @@
        "contribution": 0.192
       },
       {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 3.0,
+       "status": "ok",
+       "detail": "2 ch. (min 4)",
+       "subscore": 0.0,
+       "contribution": 0.0
+      },
+      {
        "kind": "near_gare",
        "label": "Proche d'une gare",
        "weight": 1.0,
        "status": "ok",
-       "detail": "gare à 29.6 km",
+       "detail": "gare de Donzere à 29.6 km",
        "subscore": 0.0,
        "contribution": 0.0
       },
@@ -2284,22 +2316,6 @@
        "detail": "41 km de l'axe",
        "subscore": 0.0,
        "contribution": 0.0
-      },
-      {
-       "kind": "fiber",
-       "label": "Fibre (télétravail)",
-       "weight": 1.0,
-       "status": "pending",
-       "detail": "provider non branché",
-       "subscore": null
-      },
-      {
-       "kind": "hiking",
-       "label": "Randonnées",
-       "weight": 1.0,
-       "status": "pending",
-       "detail": "provider non branché",
-       "subscore": null
       }
      ]
     }
@@ -2561,7 +2577,7 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 55.4,
+     "match_score": 53.4,
      "details": [
       {
        "kind": "budget",
@@ -2591,15 +2607,6 @@
        "contribution": 1.266
       },
       {
-       "kind": "chambres_min",
-       "label": "≥ 5 chambres",
-       "weight": 2.0,
-       "status": "ok",
-       "detail": "3 ch.",
-       "subscore": 0.6,
-       "contribution": 1.2
-      },
-      {
        "kind": "has_terrain",
        "label": "Avec terrain",
        "weight": 1.0,
@@ -2607,6 +2614,24 @@
        "detail": "1929.0 m²",
        "subscore": 1.0,
        "contribution": 1.0
+      },
+      {
+       "kind": "hiking",
+       "label": "Randonnées",
+       "weight": 1.0,
+       "status": "ok",
+       "detail": "33 sentiers/itinéraires à proximité",
+       "subscore": 1.0,
+       "contribution": 1.0
+      },
+      {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 3.0,
+       "status": "ok",
+       "detail": "3 ch. (min 4)",
+       "subscore": 0.3,
+       "contribution": 0.9
       },
       {
        "kind": "nature_exception",
@@ -2625,6 +2650,15 @@
        "detail": "~3h22 porte-à-porte",
        "subscore": 0.317,
        "contribution": 0.633
+      },
+      {
+       "kind": "fiber",
+       "label": "Fibre (télétravail)",
+       "weight": 1.0,
+       "status": "ok",
+       "detail": "56% des locaux éligibles fibre",
+       "subscore": 0.56,
+       "contribution": 0.56
       },
       {
        "kind": "authentic",
@@ -2658,7 +2692,7 @@
        "label": "Proche d'une gare",
        "weight": 1.0,
        "status": "ok",
-       "detail": "gare à 17.3 km",
+       "detail": "gare de Donzere à 17.3 km",
        "subscore": 0.0,
        "contribution": 0.0
       },
@@ -2669,27 +2703,11 @@
        "status": "n/a",
        "detail": "état inconnu",
        "subscore": null
-      },
-      {
-       "kind": "fiber",
-       "label": "Fibre (télétravail)",
-       "weight": 1.0,
-       "status": "pending",
-       "detail": "provider non branché",
-       "subscore": null
-      },
-      {
-       "kind": "hiking",
-       "label": "Randonnées",
-       "weight": 1.0,
-       "status": "pending",
-       "detail": "provider non branché",
-       "subscore": null
       }
      ]
     },
     "2": {
-     "match_score": 54.6,
+     "match_score": 53.2,
      "details": [
       {
        "kind": "has_terrain",
@@ -2728,13 +2746,22 @@
        "contribution": 1.266
       },
       {
-       "kind": "chambres_min",
-       "label": "≥ 5 chambres",
-       "weight": 2.0,
+       "kind": "hiking",
+       "label": "Randonnées",
+       "weight": 1.0,
        "status": "ok",
-       "detail": "3 ch.",
-       "subscore": 0.6,
-       "contribution": 1.2
+       "detail": "33 sentiers/itinéraires à proximité",
+       "subscore": 1.0,
+       "contribution": 1.0
+      },
+      {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 3.0,
+       "status": "ok",
+       "detail": "3 ch. (min 4)",
+       "subscore": 0.3,
+       "contribution": 0.9
       },
       {
        "kind": "nature_exception",
@@ -2762,6 +2789,15 @@
        "detail": "vue_panoramique",
        "subscore": 0.2,
        "contribution": 0.6
+      },
+      {
+       "kind": "fiber",
+       "label": "Fibre (télétravail)",
+       "weight": 1.0,
+       "status": "ok",
+       "detail": "56% des locaux éligibles fibre",
+       "subscore": 0.56,
+       "contribution": 0.56
       },
       {
        "kind": "authentic",
@@ -2795,7 +2831,7 @@
        "label": "Proche d'une gare",
        "weight": 1.0,
        "status": "ok",
-       "detail": "gare à 17.3 km",
+       "detail": "gare de Donzere à 17.3 km",
        "subscore": 0.0,
        "contribution": 0.0
       },
@@ -2805,22 +2841,6 @@
        "weight": 1.0,
        "status": "n/a",
        "detail": "état inconnu",
-       "subscore": null
-      },
-      {
-       "kind": "fiber",
-       "label": "Fibre (télétravail)",
-       "weight": 1.0,
-       "status": "pending",
-       "detail": "provider non branché",
-       "subscore": null
-      },
-      {
-       "kind": "hiking",
-       "label": "Randonnées",
-       "weight": 1.0,
-       "status": "pending",
-       "detail": "provider non branché",
        "subscore": null
       }
      ]
@@ -3080,7 +3100,7 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 72.2,
+     "match_score": 69.6,
      "details": [
       {
        "kind": "budget",
@@ -3110,15 +3130,6 @@
        "contribution": 2.0
       },
       {
-       "kind": "chambres_min",
-       "label": "≥ 5 chambres",
-       "weight": 2.0,
-       "status": "ok",
-       "detail": "3 ch.",
-       "subscore": 0.6,
-       "contribution": 1.2
-      },
-      {
        "kind": "temps_acces",
        "label": "≤ 4h porte-à-porte depuis Paris",
        "weight": 2.0,
@@ -3144,6 +3155,33 @@
        "detail": "749.0 m²",
        "subscore": 1.0,
        "contribution": 1.0
+      },
+      {
+       "kind": "hiking",
+       "label": "Randonnées",
+       "weight": 1.0,
+       "status": "ok",
+       "detail": "35 sentiers/itinéraires à proximité",
+       "subscore": 1.0,
+       "contribution": 1.0
+      },
+      {
+       "kind": "fiber",
+       "label": "Fibre (télétravail)",
+       "weight": 1.0,
+       "status": "ok",
+       "detail": "94% des locaux éligibles fibre",
+       "subscore": 0.94,
+       "contribution": 0.94
+      },
+      {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 3.0,
+       "status": "ok",
+       "detail": "3 ch. (min 4)",
+       "subscore": 0.3,
+       "contribution": 0.9
       },
       {
        "kind": "no_vis_a_vis",
@@ -3177,7 +3215,7 @@
        "label": "Proche d'une gare",
        "weight": 1.0,
        "status": "ok",
-       "detail": "gare à 11.3 km",
+       "detail": "gare de Saint-Rambert-d'Albon à 11.3 km",
        "subscore": 0.247,
        "contribution": 0.247
       },
@@ -3188,27 +3226,11 @@
        "status": "n/a",
        "detail": "état inconnu",
        "subscore": null
-      },
-      {
-       "kind": "fiber",
-       "label": "Fibre (télétravail)",
-       "weight": 1.0,
-       "status": "pending",
-       "detail": "provider non branché",
-       "subscore": null
-      },
-      {
-       "kind": "hiking",
-       "label": "Randonnées",
-       "weight": 1.0,
-       "status": "pending",
-       "detail": "provider non branché",
-       "subscore": null
       }
      ]
     },
     "2": {
-     "match_score": 61.0,
+     "match_score": 60.3,
      "details": [
       {
        "kind": "budget",
@@ -3247,15 +3269,6 @@
        "contribution": 1.498
       },
       {
-       "kind": "chambres_min",
-       "label": "≥ 5 chambres",
-       "weight": 2.0,
-       "status": "ok",
-       "detail": "3 ch.",
-       "subscore": 0.6,
-       "contribution": 1.2
-      },
-      {
        "kind": "temps_acces",
        "label": "≤ 4h porte-à-porte depuis Paris",
        "weight": 2.0,
@@ -3272,6 +3285,33 @@
        "detail": "12 km de l'axe",
        "subscore": 0.691,
        "contribution": 1.037
+      },
+      {
+       "kind": "hiking",
+       "label": "Randonnées",
+       "weight": 1.0,
+       "status": "ok",
+       "detail": "35 sentiers/itinéraires à proximité",
+       "subscore": 1.0,
+       "contribution": 1.0
+      },
+      {
+       "kind": "fiber",
+       "label": "Fibre (télétravail)",
+       "weight": 1.0,
+       "status": "ok",
+       "detail": "94% des locaux éligibles fibre",
+       "subscore": 0.94,
+       "contribution": 0.94
+      },
+      {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 3.0,
+       "status": "ok",
+       "detail": "3 ch. (min 4)",
+       "subscore": 0.3,
+       "contribution": 0.9
       },
       {
        "kind": "no_vis_a_vis",
@@ -3314,7 +3354,7 @@
        "label": "Proche d'une gare",
        "weight": 1.0,
        "status": "ok",
-       "detail": "gare à 11.3 km",
+       "detail": "gare de Saint-Rambert-d'Albon à 11.3 km",
        "subscore": 0.247,
        "contribution": 0.247
       },
@@ -3324,22 +3364,6 @@
        "weight": 1.0,
        "status": "n/a",
        "detail": "état inconnu",
-       "subscore": null
-      },
-      {
-       "kind": "fiber",
-       "label": "Fibre (télétravail)",
-       "weight": 1.0,
-       "status": "pending",
-       "detail": "provider non branché",
-       "subscore": null
-      },
-      {
-       "kind": "hiking",
-       "label": "Randonnées",
-       "weight": 1.0,
-       "status": "pending",
-       "detail": "provider non branché",
        "subscore": null
       }
      ]
@@ -3597,7 +3621,7 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 57.1,
+     "match_score": 56.6,
      "details": [
       {
        "kind": "budget",
@@ -3618,15 +3642,6 @@
        "contribution": 2.0
       },
       {
-       "kind": "chambres_min",
-       "label": "≥ 5 chambres",
-       "weight": 2.0,
-       "status": "ok",
-       "detail": "3 ch.",
-       "subscore": 0.6,
-       "contribution": 1.2
-      },
-      {
        "kind": "has_terrain",
        "label": "Avec terrain",
        "weight": 1.0,
@@ -3634,6 +3649,33 @@
        "detail": "1102.0 m²",
        "subscore": 1.0,
        "contribution": 1.0
+      },
+      {
+       "kind": "hiking",
+       "label": "Randonnées",
+       "weight": 1.0,
+       "status": "ok",
+       "detail": "88 sentiers/itinéraires à proximité",
+       "subscore": 1.0,
+       "contribution": 1.0
+      },
+      {
+       "kind": "fiber",
+       "label": "Fibre (télétravail)",
+       "weight": 1.0,
+       "status": "ok",
+       "detail": "91% des locaux éligibles fibre",
+       "subscore": 0.91,
+       "contribution": 0.91
+      },
+      {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 3.0,
+       "status": "ok",
+       "detail": "3 ch. (min 4)",
+       "subscore": 0.3,
+       "contribution": 0.9
       },
       {
        "kind": "no_vis_a_vis",
@@ -3694,7 +3736,7 @@
        "label": "Proche d'une gare",
        "weight": 1.0,
        "status": "ok",
-       "detail": "gare à 33.1 km",
+       "detail": "gare de Bollene-La Croisiere à 33.1 km",
        "subscore": 0.0,
        "contribution": 0.0
       },
@@ -3705,27 +3747,11 @@
        "status": "n/a",
        "detail": "état inconnu",
        "subscore": null
-      },
-      {
-       "kind": "fiber",
-       "label": "Fibre (télétravail)",
-       "weight": 1.0,
-       "status": "pending",
-       "detail": "provider non branché",
-       "subscore": null
-      },
-      {
-       "kind": "hiking",
-       "label": "Randonnées",
-       "weight": 1.0,
-       "status": "pending",
-       "detail": "provider non branché",
-       "subscore": null
       }
      ]
     },
     "2": {
-     "match_score": 52.4,
+     "match_score": 52.5,
      "details": [
       {
        "kind": "has_terrain",
@@ -3755,13 +3781,31 @@
        "contribution": 2.0
       },
       {
-       "kind": "chambres_min",
-       "label": "≥ 5 chambres",
-       "weight": 2.0,
+       "kind": "hiking",
+       "label": "Randonnées",
+       "weight": 1.0,
        "status": "ok",
-       "detail": "3 ch.",
-       "subscore": 0.6,
-       "contribution": 1.2
+       "detail": "88 sentiers/itinéraires à proximité",
+       "subscore": 1.0,
+       "contribution": 1.0
+      },
+      {
+       "kind": "fiber",
+       "label": "Fibre (télétravail)",
+       "weight": 1.0,
+       "status": "ok",
+       "detail": "91% des locaux éligibles fibre",
+       "subscore": 0.91,
+       "contribution": 0.91
+      },
+      {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 3.0,
+       "status": "ok",
+       "detail": "3 ch. (min 4)",
+       "subscore": 0.3,
+       "contribution": 0.9
       },
       {
        "kind": "no_vis_a_vis",
@@ -3831,7 +3875,7 @@
        "label": "Proche d'une gare",
        "weight": 1.0,
        "status": "ok",
-       "detail": "gare à 33.1 km",
+       "detail": "gare de Bollene-La Croisiere à 33.1 km",
        "subscore": 0.0,
        "contribution": 0.0
       },
@@ -3841,22 +3885,6 @@
        "weight": 1.0,
        "status": "n/a",
        "detail": "état inconnu",
-       "subscore": null
-      },
-      {
-       "kind": "fiber",
-       "label": "Fibre (télétravail)",
-       "weight": 1.0,
-       "status": "pending",
-       "detail": "provider non branché",
-       "subscore": null
-      },
-      {
-       "kind": "hiking",
-       "label": "Randonnées",
-       "weight": 1.0,
-       "status": "pending",
-       "detail": "provider non branché",
        "subscore": null
       }
      ]
@@ -4118,7 +4146,7 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 63.4,
+     "match_score": 62.4,
      "details": [
       {
        "kind": "budget",
@@ -4137,15 +4165,6 @@
        "detail": "4 km de l'axe",
        "subscore": 0.901,
        "contribution": 1.352
-      },
-      {
-       "kind": "chambres_min",
-       "label": "≥ 5 chambres",
-       "weight": 2.0,
-       "status": "ok",
-       "detail": "3 ch.",
-       "subscore": 0.6,
-       "contribution": 1.2
       },
       {
        "kind": "temps_acces",
@@ -4184,13 +4203,40 @@
        "contribution": 1.0
       },
       {
+       "kind": "hiking",
+       "label": "Randonnées",
+       "weight": 1.0,
+       "status": "ok",
+       "detail": "151 sentiers/itinéraires à proximité",
+       "subscore": 1.0,
+       "contribution": 1.0
+      },
+      {
        "kind": "near_gare",
        "label": "Proche d'une gare",
        "weight": 1.0,
        "status": "ok",
-       "detail": "gare à 0.1 km",
+       "detail": "gare de Saint-Rambert-d'Albon à 0.1 km",
        "subscore": 0.993,
        "contribution": 0.993
+      },
+      {
+       "kind": "fiber",
+       "label": "Fibre (télétravail)",
+       "weight": 1.0,
+       "status": "ok",
+       "detail": "98% des locaux éligibles fibre",
+       "subscore": 0.98,
+       "contribution": 0.98
+      },
+      {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 3.0,
+       "status": "ok",
+       "detail": "3 ch. (min 4)",
+       "subscore": 0.3,
+       "contribution": 0.9
       },
       {
        "kind": "no_vis_a_vis",
@@ -4227,27 +4273,11 @@
        "detail": "156.9 m",
        "subscore": 0.262,
        "contribution": 0.262
-      },
-      {
-       "kind": "fiber",
-       "label": "Fibre (télétravail)",
-       "weight": 1.0,
-       "status": "pending",
-       "detail": "provider non branché",
-       "subscore": null
-      },
-      {
-       "kind": "hiking",
-       "label": "Randonnées",
-       "weight": 1.0,
-       "status": "pending",
-       "detail": "provider non branché",
-       "subscore": null
       }
      ]
     },
     "2": {
-     "match_score": 50.2,
+     "match_score": 50.9,
      "details": [
       {
        "kind": "budget",
@@ -4266,15 +4296,6 @@
        "detail": "4 km de l'axe",
        "subscore": 0.901,
        "contribution": 1.352
-      },
-      {
-       "kind": "chambres_min",
-       "label": "≥ 5 chambres",
-       "weight": 2.0,
-       "status": "ok",
-       "detail": "3 ch.",
-       "subscore": 0.6,
-       "contribution": 1.2
       },
       {
        "kind": "temps_acces",
@@ -4304,13 +4325,40 @@
        "contribution": 1.0
       },
       {
+       "kind": "hiking",
+       "label": "Randonnées",
+       "weight": 1.0,
+       "status": "ok",
+       "detail": "151 sentiers/itinéraires à proximité",
+       "subscore": 1.0,
+       "contribution": 1.0
+      },
+      {
        "kind": "near_gare",
        "label": "Proche d'une gare",
        "weight": 1.0,
        "status": "ok",
-       "detail": "gare à 0.1 km",
+       "detail": "gare de Saint-Rambert-d'Albon à 0.1 km",
        "subscore": 0.993,
        "contribution": 0.993
+      },
+      {
+       "kind": "fiber",
+       "label": "Fibre (télétravail)",
+       "weight": 1.0,
+       "status": "ok",
+       "detail": "98% des locaux éligibles fibre",
+       "subscore": 0.98,
+       "contribution": 0.98
+      },
+      {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 3.0,
+       "status": "ok",
+       "detail": "3 ch. (min 4)",
+       "subscore": 0.3,
+       "contribution": 0.9
       },
       {
        "kind": "no_vis_a_vis",
@@ -4365,22 +4413,6 @@
        "detail": "156.9 m",
        "subscore": 0.262,
        "contribution": 0.262
-      },
-      {
-       "kind": "fiber",
-       "label": "Fibre (télétravail)",
-       "weight": 1.0,
-       "status": "pending",
-       "detail": "provider non branché",
-       "subscore": null
-      },
-      {
-       "kind": "hiking",
-       "label": "Randonnées",
-       "weight": 1.0,
-       "status": "pending",
-       "detail": "provider non branché",
-       "subscore": null
       }
      ]
     }
@@ -4637,7 +4669,7 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 59.2,
+     "match_score": 54.9,
      "details": [
       {
        "kind": "budget",
@@ -4656,15 +4688,6 @@
        "detail": "aucune autoroute/voie ferrée à proximité",
        "subscore": 1.0,
        "contribution": 2.0
-      },
-      {
-       "kind": "chambres_min",
-       "label": "≥ 5 chambres",
-       "weight": 2.0,
-       "status": "ok",
-       "detail": "3 ch.",
-       "subscore": 0.6,
-       "contribution": 1.2
       },
       {
        "kind": "has_terrain",
@@ -4694,6 +4717,24 @@
        "contribution": 1.0
       },
       {
+       "kind": "hiking",
+       "label": "Randonnées",
+       "weight": 1.0,
+       "status": "ok",
+       "detail": "18 sentiers/itinéraires à proximité",
+       "subscore": 1.0,
+       "contribution": 1.0
+      },
+      {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 3.0,
+       "status": "ok",
+       "detail": "3 ch. (min 4)",
+       "subscore": 0.3,
+       "contribution": 0.9
+      },
+      {
        "kind": "no_vis_a_vis",
        "label": "Sans vis-à-vis",
        "weight": 1.5,
@@ -4721,11 +4762,20 @@
        "contribution": 0.45
       },
       {
+       "kind": "fiber",
+       "label": "Fibre (télétravail)",
+       "weight": 1.0,
+       "status": "ok",
+       "detail": "19% des locaux éligibles fibre",
+       "subscore": 0.19,
+       "contribution": 0.19
+      },
+      {
        "kind": "near_gare",
        "label": "Proche d'une gare",
        "weight": 1.0,
        "status": "ok",
-       "detail": "gare à 33.7 km",
+       "detail": "gare de La Voulte-sur-Rhone à 33.7 km",
        "subscore": 0.0,
        "contribution": 0.0
       },
@@ -4745,27 +4795,11 @@
        "status": "n/a",
        "detail": "état inconnu",
        "subscore": null
-      },
-      {
-       "kind": "fiber",
-       "label": "Fibre (télétravail)",
-       "weight": 1.0,
-       "status": "pending",
-       "detail": "provider non branché",
-       "subscore": null
-      },
-      {
-       "kind": "hiking",
-       "label": "Randonnées",
-       "weight": 1.0,
-       "status": "pending",
-       "detail": "provider non branché",
-       "subscore": null
       }
      ]
     },
     "2": {
-     "match_score": 57.6,
+     "match_score": 54.3,
      "details": [
       {
        "kind": "has_terrain",
@@ -4795,15 +4829,6 @@
        "contribution": 2.0
       },
       {
-       "kind": "chambres_min",
-       "label": "≥ 5 chambres",
-       "weight": 2.0,
-       "status": "ok",
-       "detail": "3 ch.",
-       "subscore": 0.6,
-       "contribution": 1.2
-      },
-      {
        "kind": "nature_exception",
        "label": "Nature d'exception",
        "weight": 2.0,
@@ -4820,6 +4845,24 @@
        "detail": "1137.8 m",
        "subscore": 1.0,
        "contribution": 1.0
+      },
+      {
+       "kind": "hiking",
+       "label": "Randonnées",
+       "weight": 1.0,
+       "status": "ok",
+       "detail": "18 sentiers/itinéraires à proximité",
+       "subscore": 1.0,
+       "contribution": 1.0
+      },
+      {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 3.0,
+       "status": "ok",
+       "detail": "3 ch. (min 4)",
+       "subscore": 0.3,
+       "contribution": 0.9
       },
       {
        "kind": "no_vis_a_vis",
@@ -4858,11 +4901,20 @@
        "contribution": 0.45
       },
       {
+       "kind": "fiber",
+       "label": "Fibre (télétravail)",
+       "weight": 1.0,
+       "status": "ok",
+       "detail": "19% des locaux éligibles fibre",
+       "subscore": 0.19,
+       "contribution": 0.19
+      },
+      {
        "kind": "near_gare",
        "label": "Proche d'une gare",
        "weight": 1.0,
        "status": "ok",
-       "detail": "gare à 33.7 km",
+       "detail": "gare de La Voulte-sur-Rhone à 33.7 km",
        "subscore": 0.0,
        "contribution": 0.0
       },
@@ -4881,22 +4933,6 @@
        "weight": 1.0,
        "status": "n/a",
        "detail": "état inconnu",
-       "subscore": null
-      },
-      {
-       "kind": "fiber",
-       "label": "Fibre (télétravail)",
-       "weight": 1.0,
-       "status": "pending",
-       "detail": "provider non branché",
-       "subscore": null
-      },
-      {
-       "kind": "hiking",
-       "label": "Randonnées",
-       "weight": 1.0,
-       "status": "pending",
-       "detail": "provider non branché",
        "subscore": null
       }
      ]
@@ -5157,7 +5193,7 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 71.2,
+     "match_score": 65.7,
      "details": [
       {
        "kind": "budget",
@@ -5223,6 +5259,15 @@
        "contribution": 1.0
       },
       {
+       "kind": "hiking",
+       "label": "Randonnées",
+       "weight": 1.0,
+       "status": "ok",
+       "detail": "46 sentiers/itinéraires à proximité",
+       "subscore": 1.0,
+       "contribution": 1.0
+      },
+      {
        "kind": "no_vis_a_vis",
        "label": "Sans vis-à-vis",
        "weight": 1.5,
@@ -5230,15 +5275,6 @@
        "detail": "non précisé",
        "subscore": 0.6,
        "contribution": 0.9
-      },
-      {
-       "kind": "chambres_min",
-       "label": "≥ 5 chambres",
-       "weight": 2.0,
-       "status": "ok",
-       "detail": "2 ch.",
-       "subscore": 0.4,
-       "contribution": 0.8
       },
       {
        "kind": "near_corridor",
@@ -5250,6 +5286,15 @@
        "contribution": 0.79
       },
       {
+       "kind": "fiber",
+       "label": "Fibre (télétravail)",
+       "weight": 1.0,
+       "status": "ok",
+       "detail": "75% des locaux éligibles fibre",
+       "subscore": 0.75,
+       "contribution": 0.75
+      },
+      {
        "kind": "authentic",
        "label": "Authentique / cachet",
        "weight": 1.5,
@@ -5259,34 +5304,27 @@
        "contribution": 0.45
       },
       {
-       "kind": "near_gare",
-       "label": "Proche d'une gare",
-       "weight": 1.0,
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 3.0,
        "status": "ok",
-       "detail": "gare à 19.2 km",
+       "detail": "2 ch. (min 4)",
        "subscore": 0.0,
        "contribution": 0.0
       },
       {
-       "kind": "fiber",
-       "label": "Fibre (télétravail)",
+       "kind": "near_gare",
+       "label": "Proche d'une gare",
        "weight": 1.0,
-       "status": "pending",
-       "detail": "provider non branché",
-       "subscore": null
-      },
-      {
-       "kind": "hiking",
-       "label": "Randonnées",
-       "weight": 1.0,
-       "status": "pending",
-       "detail": "provider non branché",
-       "subscore": null
+       "status": "ok",
+       "detail": "gare de Tain-l'Hermitage-Tournon à 19.2 km",
+       "subscore": 0.0,
+       "contribution": 0.0
       }
      ]
     },
     "2": {
-     "match_score": 71.9,
+     "match_score": 67.4,
      "details": [
       {
        "kind": "feature",
@@ -5361,6 +5399,15 @@
        "contribution": 1.0
       },
       {
+       "kind": "hiking",
+       "label": "Randonnées",
+       "weight": 1.0,
+       "status": "ok",
+       "detail": "46 sentiers/itinéraires à proximité",
+       "subscore": 1.0,
+       "contribution": 1.0
+      },
+      {
        "kind": "no_vis_a_vis",
        "label": "Sans vis-à-vis",
        "weight": 1.5,
@@ -5368,15 +5415,6 @@
        "detail": "non précisé",
        "subscore": 0.6,
        "contribution": 0.9
-      },
-      {
-       "kind": "chambres_min",
-       "label": "≥ 5 chambres",
-       "weight": 2.0,
-       "status": "ok",
-       "detail": "2 ch.",
-       "subscore": 0.4,
-       "contribution": 0.8
       },
       {
        "kind": "near_corridor",
@@ -5388,6 +5426,15 @@
        "contribution": 0.79
       },
       {
+       "kind": "fiber",
+       "label": "Fibre (télétravail)",
+       "weight": 1.0,
+       "status": "ok",
+       "detail": "75% des locaux éligibles fibre",
+       "subscore": 0.75,
+       "contribution": 0.75
+      },
+      {
        "kind": "authentic",
        "label": "Authentique / cachet",
        "weight": 1.5,
@@ -5397,29 +5444,22 @@
        "contribution": 0.45
       },
       {
-       "kind": "near_gare",
-       "label": "Proche d'une gare",
-       "weight": 1.0,
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 3.0,
        "status": "ok",
-       "detail": "gare à 19.2 km",
+       "detail": "2 ch. (min 4)",
        "subscore": 0.0,
        "contribution": 0.0
       },
       {
-       "kind": "fiber",
-       "label": "Fibre (télétravail)",
+       "kind": "near_gare",
+       "label": "Proche d'une gare",
        "weight": 1.0,
-       "status": "pending",
-       "detail": "provider non branché",
-       "subscore": null
-      },
-      {
-       "kind": "hiking",
-       "label": "Randonnées",
-       "weight": 1.0,
-       "status": "pending",
-       "detail": "provider non branché",
-       "subscore": null
+       "status": "ok",
+       "detail": "gare de Tain-l'Hermitage-Tournon à 19.2 km",
+       "subscore": 0.0,
+       "contribution": 0.0
       }
      ]
     }
@@ -5675,7 +5715,7 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 63.8,
+     "match_score": 62.3,
      "details": [
       {
        "kind": "budget",
@@ -5694,15 +5734,6 @@
        "detail": "aucune autoroute/voie ferrée à proximité",
        "subscore": 1.0,
        "contribution": 2.0
-      },
-      {
-       "kind": "chambres_min",
-       "label": "≥ 5 chambres",
-       "weight": 2.0,
-       "status": "ok",
-       "detail": "3 ch.",
-       "subscore": 0.6,
-       "contribution": 1.2
       },
       {
        "kind": "temps_acces",
@@ -5732,12 +5763,39 @@
        "contribution": 1.0
       },
       {
+       "kind": "hiking",
+       "label": "Randonnées",
+       "weight": 1.0,
+       "status": "ok",
+       "detail": "19 sentiers/itinéraires à proximité",
+       "subscore": 1.0,
+       "contribution": 1.0
+      },
+      {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 3.0,
+       "status": "ok",
+       "detail": "3 ch. (min 4)",
+       "subscore": 0.3,
+       "contribution": 0.9
+      },
+      {
        "kind": "no_vis_a_vis",
        "label": "Sans vis-à-vis",
        "weight": 1.5,
        "status": "ok",
        "detail": "non précisé",
        "subscore": 0.6,
+       "contribution": 0.9
+      },
+      {
+       "kind": "fiber",
+       "label": "Fibre (télétravail)",
+       "weight": 1.0,
+       "status": "ok",
+       "detail": "90% des locaux éligibles fibre",
+       "subscore": 0.9,
        "contribution": 0.9
       },
       {
@@ -5772,7 +5830,7 @@
        "label": "Proche d'une gare",
        "weight": 1.0,
        "status": "ok",
-       "detail": "gare à 21.7 km",
+       "detail": "gare de La Voulte-sur-Rhone à 21.7 km",
        "subscore": 0.0,
        "contribution": 0.0
       },
@@ -5783,27 +5841,11 @@
        "status": "n/a",
        "detail": "état inconnu",
        "subscore": null
-      },
-      {
-       "kind": "fiber",
-       "label": "Fibre (télétravail)",
-       "weight": 1.0,
-       "status": "pending",
-       "detail": "provider non branché",
-       "subscore": null
-      },
-      {
-       "kind": "hiking",
-       "label": "Randonnées",
-       "weight": 1.0,
-       "status": "pending",
-       "detail": "provider non branché",
-       "subscore": null
       }
      ]
     },
     "2": {
-     "match_score": 61.2,
+     "match_score": 60.3,
      "details": [
       {
        "kind": "has_terrain",
@@ -5833,15 +5875,6 @@
        "contribution": 2.0
       },
       {
-       "kind": "chambres_min",
-       "label": "≥ 5 chambres",
-       "weight": 2.0,
-       "status": "ok",
-       "detail": "3 ch.",
-       "subscore": 0.6,
-       "contribution": 1.2
-      },
-      {
        "kind": "temps_acces",
        "label": "≤ 4h porte-à-porte depuis Paris",
        "weight": 2.0,
@@ -5860,12 +5893,39 @@
        "contribution": 1.0
       },
       {
+       "kind": "hiking",
+       "label": "Randonnées",
+       "weight": 1.0,
+       "status": "ok",
+       "detail": "19 sentiers/itinéraires à proximité",
+       "subscore": 1.0,
+       "contribution": 1.0
+      },
+      {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 3.0,
+       "status": "ok",
+       "detail": "3 ch. (min 4)",
+       "subscore": 0.3,
+       "contribution": 0.9
+      },
+      {
        "kind": "no_vis_a_vis",
        "label": "Sans vis-à-vis",
        "weight": 1.5,
        "status": "ok",
        "detail": "non précisé",
        "subscore": 0.6,
+       "contribution": 0.9
+      },
+      {
+       "kind": "fiber",
+       "label": "Fibre (télétravail)",
+       "weight": 1.0,
+       "status": "ok",
+       "detail": "90% des locaux éligibles fibre",
+       "subscore": 0.9,
        "contribution": 0.9
       },
       {
@@ -5909,7 +5969,7 @@
        "label": "Proche d'une gare",
        "weight": 1.0,
        "status": "ok",
-       "detail": "gare à 21.7 km",
+       "detail": "gare de La Voulte-sur-Rhone à 21.7 km",
        "subscore": 0.0,
        "contribution": 0.0
       },
@@ -5919,22 +5979,6 @@
        "weight": 1.0,
        "status": "n/a",
        "detail": "état inconnu",
-       "subscore": null
-      },
-      {
-       "kind": "fiber",
-       "label": "Fibre (télétravail)",
-       "weight": 1.0,
-       "status": "pending",
-       "detail": "provider non branché",
-       "subscore": null
-      },
-      {
-       "kind": "hiking",
-       "label": "Randonnées",
-       "weight": 1.0,
-       "status": "pending",
-       "detail": "provider non branché",
        "subscore": null
       }
      ]
@@ -6194,23 +6238,23 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 60.1,
+     "match_score": 65.2,
      "details": [
+      {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 3.0,
+       "status": "ok",
+       "detail": "5 ch. (min 4)",
+       "subscore": 1.0,
+       "contribution": 3.0
+      },
       {
        "kind": "budget",
        "label": "Budget (apport 150000€)",
        "weight": 2.0,
        "status": "ok",
        "detail": "≤ budget 600000€",
-       "subscore": 1.0,
-       "contribution": 2.0
-      },
-      {
-       "kind": "chambres_min",
-       "label": "≥ 5 chambres",
-       "weight": 2.0,
-       "status": "ok",
-       "detail": "5 ch.",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -6242,6 +6286,15 @@
        "contribution": 1.0
       },
       {
+       "kind": "hiking",
+       "label": "Randonnées",
+       "weight": 1.0,
+       "status": "ok",
+       "detail": "197 sentiers/itinéraires à proximité",
+       "subscore": 1.0,
+       "contribution": 1.0
+      },
+      {
        "kind": "no_vis_a_vis",
        "label": "Sans vis-à-vis",
        "weight": 1.5,
@@ -6249,6 +6302,15 @@
        "detail": "non précisé",
        "subscore": 0.6,
        "contribution": 0.9
+      },
+      {
+       "kind": "fiber",
+       "label": "Fibre (télétravail)",
+       "weight": 1.0,
+       "status": "ok",
+       "detail": "86% des locaux éligibles fibre",
+       "subscore": 0.86,
+       "contribution": 0.86
       },
       {
        "kind": "temps_acces",
@@ -6291,7 +6353,7 @@
        "label": "Proche d'une gare",
        "weight": 1.0,
        "status": "ok",
-       "detail": "gare à 30.2 km",
+       "detail": "gare de Montelimar à 30.2 km",
        "subscore": 0.0,
        "contribution": 0.0
       },
@@ -6302,28 +6364,21 @@
        "status": "n/a",
        "detail": "état inconnu",
        "subscore": null
-      },
-      {
-       "kind": "fiber",
-       "label": "Fibre (télétravail)",
-       "weight": 1.0,
-       "status": "pending",
-       "detail": "provider non branché",
-       "subscore": null
-      },
-      {
-       "kind": "hiking",
-       "label": "Randonnées",
-       "weight": 1.0,
-       "status": "pending",
-       "detail": "provider non branché",
-       "subscore": null
       }
      ]
     },
     "2": {
-     "match_score": 58.3,
+     "match_score": 62.6,
      "details": [
+      {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 3.0,
+       "status": "ok",
+       "detail": "5 ch. (min 4)",
+       "subscore": 1.0,
+       "contribution": 3.0
+      },
       {
        "kind": "has_terrain",
        "label": "Grand terrain (>1500 m²)",
@@ -6339,15 +6394,6 @@
        "weight": 2.0,
        "status": "ok",
        "detail": "≤ budget 600000€",
-       "subscore": 1.0,
-       "contribution": 2.0
-      },
-      {
-       "kind": "chambres_min",
-       "label": "≥ 5 chambres",
-       "weight": 2.0,
-       "status": "ok",
-       "detail": "5 ch.",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -6370,6 +6416,15 @@
        "contribution": 1.0
       },
       {
+       "kind": "hiking",
+       "label": "Randonnées",
+       "weight": 1.0,
+       "status": "ok",
+       "detail": "197 sentiers/itinéraires à proximité",
+       "subscore": 1.0,
+       "contribution": 1.0
+      },
+      {
        "kind": "no_vis_a_vis",
        "label": "Sans vis-à-vis",
        "weight": 1.5,
@@ -6377,6 +6432,15 @@
        "detail": "non précisé",
        "subscore": 0.6,
        "contribution": 0.9
+      },
+      {
+       "kind": "fiber",
+       "label": "Fibre (télétravail)",
+       "weight": 1.0,
+       "status": "ok",
+       "detail": "86% des locaux éligibles fibre",
+       "subscore": 0.86,
+       "contribution": 0.86
       },
       {
        "kind": "temps_acces",
@@ -6428,7 +6492,7 @@
        "label": "Proche d'une gare",
        "weight": 1.0,
        "status": "ok",
-       "detail": "gare à 30.2 km",
+       "detail": "gare de Montelimar à 30.2 km",
        "subscore": 0.0,
        "contribution": 0.0
       },
@@ -6438,22 +6502,6 @@
        "weight": 1.0,
        "status": "n/a",
        "detail": "état inconnu",
-       "subscore": null
-      },
-      {
-       "kind": "fiber",
-       "label": "Fibre (télétravail)",
-       "weight": 1.0,
-       "status": "pending",
-       "detail": "provider non branché",
-       "subscore": null
-      },
-      {
-       "kind": "hiking",
-       "label": "Randonnées",
-       "weight": 1.0,
-       "status": "pending",
-       "detail": "provider non branché",
        "subscore": null
       }
      ]
@@ -6711,7 +6759,7 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 65.3,
+     "match_score": 63.3,
      "details": [
       {
        "kind": "budget",
@@ -6730,15 +6778,6 @@
        "detail": "aucune autoroute/voie ferrée à proximité",
        "subscore": 1.0,
        "contribution": 2.0
-      },
-      {
-       "kind": "chambres_min",
-       "label": "≥ 5 chambres",
-       "weight": 2.0,
-       "status": "ok",
-       "detail": "3 ch.",
-       "subscore": 0.6,
-       "contribution": 1.2
       },
       {
        "kind": "temps_acces",
@@ -6777,6 +6816,24 @@
        "contribution": 1.0
       },
       {
+       "kind": "hiking",
+       "label": "Randonnées",
+       "weight": 1.0,
+       "status": "ok",
+       "detail": "64 sentiers/itinéraires à proximité",
+       "subscore": 1.0,
+       "contribution": 1.0
+      },
+      {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 3.0,
+       "status": "ok",
+       "detail": "3 ch. (min 4)",
+       "subscore": 0.3,
+       "contribution": 0.9
+      },
+      {
        "kind": "no_vis_a_vis",
        "label": "Sans vis-à-vis",
        "weight": 1.5,
@@ -6784,6 +6841,15 @@
        "detail": "non précisé",
        "subscore": 0.6,
        "contribution": 0.9
+      },
+      {
+       "kind": "fiber",
+       "label": "Fibre (télétravail)",
+       "weight": 1.0,
+       "status": "ok",
+       "detail": "83% des locaux éligibles fibre",
+       "subscore": 0.83,
+       "contribution": 0.83
       },
       {
        "kind": "nature_exception",
@@ -6817,30 +6883,14 @@
        "label": "Proche d'une gare",
        "weight": 1.0,
        "status": "ok",
-       "detail": "gare à 17.5 km",
+       "detail": "gare de Saint-Rambert-d'Albon à 17.5 km",
        "subscore": 0.0,
        "contribution": 0.0
-      },
-      {
-       "kind": "fiber",
-       "label": "Fibre (télétravail)",
-       "weight": 1.0,
-       "status": "pending",
-       "detail": "provider non branché",
-       "subscore": null
-      },
-      {
-       "kind": "hiking",
-       "label": "Randonnées",
-       "weight": 1.0,
-       "status": "pending",
-       "detail": "provider non branché",
-       "subscore": null
       }
      ]
     },
     "2": {
-     "match_score": 54.8,
+     "match_score": 54.4,
      "details": [
       {
        "kind": "budget",
@@ -6859,15 +6909,6 @@
        "detail": "aucune autoroute/voie ferrée à proximité",
        "subscore": 1.0,
        "contribution": 2.0
-      },
-      {
-       "kind": "chambres_min",
-       "label": "≥ 5 chambres",
-       "weight": 2.0,
-       "status": "ok",
-       "detail": "3 ch.",
-       "subscore": 0.6,
-       "contribution": 1.2
       },
       {
        "kind": "has_terrain",
@@ -6906,6 +6947,24 @@
        "contribution": 1.0
       },
       {
+       "kind": "hiking",
+       "label": "Randonnées",
+       "weight": 1.0,
+       "status": "ok",
+       "detail": "64 sentiers/itinéraires à proximité",
+       "subscore": 1.0,
+       "contribution": 1.0
+      },
+      {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 3.0,
+       "status": "ok",
+       "detail": "3 ch. (min 4)",
+       "subscore": 0.3,
+       "contribution": 0.9
+      },
+      {
        "kind": "no_vis_a_vis",
        "label": "Sans vis-à-vis",
        "weight": 1.5,
@@ -6913,6 +6972,15 @@
        "detail": "non précisé",
        "subscore": 0.6,
        "contribution": 0.9
+      },
+      {
+       "kind": "fiber",
+       "label": "Fibre (télétravail)",
+       "weight": 1.0,
+       "status": "ok",
+       "detail": "83% des locaux éligibles fibre",
+       "subscore": 0.83,
+       "contribution": 0.83
       },
       {
        "kind": "nature_exception",
@@ -6955,25 +7023,9 @@
        "label": "Proche d'une gare",
        "weight": 1.0,
        "status": "ok",
-       "detail": "gare à 17.5 km",
+       "detail": "gare de Saint-Rambert-d'Albon à 17.5 km",
        "subscore": 0.0,
        "contribution": 0.0
-      },
-      {
-       "kind": "fiber",
-       "label": "Fibre (télétravail)",
-       "weight": 1.0,
-       "status": "pending",
-       "detail": "provider non branché",
-       "subscore": null
-      },
-      {
-       "kind": "hiking",
-       "label": "Randonnées",
-       "weight": 1.0,
-       "status": "pending",
-       "detail": "provider non branché",
-       "subscore": null
       }
      ]
     }
@@ -7229,7 +7281,7 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 61.0,
+     "match_score": 57.5,
      "details": [
       {
        "kind": "budget",
@@ -7268,6 +7320,24 @@
        "contribution": 1.0
       },
       {
+       "kind": "hiking",
+       "label": "Randonnées",
+       "weight": 1.0,
+       "status": "ok",
+       "detail": "67 sentiers/itinéraires à proximité",
+       "subscore": 1.0,
+       "contribution": 1.0
+      },
+      {
+       "kind": "fiber",
+       "label": "Fibre (télétravail)",
+       "weight": 1.0,
+       "status": "ok",
+       "detail": "91% des locaux éligibles fibre",
+       "subscore": 0.91,
+       "contribution": 0.91
+      },
+      {
        "kind": "no_vis_a_vis",
        "label": "Sans vis-à-vis",
        "weight": 1.5,
@@ -7281,18 +7351,9 @@
        "label": "Proche d'une gare",
        "weight": 1.0,
        "status": "ok",
-       "detail": "gare à 2.6 km",
+       "detail": "gare de Die à 2.6 km",
        "subscore": 0.827,
        "contribution": 0.827
-      },
-      {
-       "kind": "chambres_min",
-       "label": "≥ 5 chambres",
-       "weight": 2.0,
-       "status": "ok",
-       "detail": "2 ch.",
-       "subscore": 0.4,
-       "contribution": 0.8
       },
       {
        "kind": "nature_exception",
@@ -7331,33 +7392,26 @@
        "contribution": 0.098
       },
       {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 3.0,
+       "status": "ok",
+       "detail": "2 ch. (min 4)",
+       "subscore": 0.0,
+       "contribution": 0.0
+      },
+      {
        "kind": "light_works",
        "label": "Travaux légers",
        "weight": 1.0,
        "status": "n/a",
        "detail": "état inconnu",
        "subscore": null
-      },
-      {
-       "kind": "fiber",
-       "label": "Fibre (télétravail)",
-       "weight": 1.0,
-       "status": "pending",
-       "detail": "provider non branché",
-       "subscore": null
-      },
-      {
-       "kind": "hiking",
-       "label": "Randonnées",
-       "weight": 1.0,
-       "status": "pending",
-       "detail": "provider non branché",
-       "subscore": null
       }
      ]
     },
     "2": {
-     "match_score": 58.8,
+     "match_score": 56.3,
      "details": [
       {
        "kind": "has_terrain",
@@ -7396,6 +7450,24 @@
        "contribution": 1.05
       },
       {
+       "kind": "hiking",
+       "label": "Randonnées",
+       "weight": 1.0,
+       "status": "ok",
+       "detail": "67 sentiers/itinéraires à proximité",
+       "subscore": 1.0,
+       "contribution": 1.0
+      },
+      {
+       "kind": "fiber",
+       "label": "Fibre (télétravail)",
+       "weight": 1.0,
+       "status": "ok",
+       "detail": "91% des locaux éligibles fibre",
+       "subscore": 0.91,
+       "contribution": 0.91
+      },
+      {
        "kind": "no_vis_a_vis",
        "label": "Sans vis-à-vis",
        "weight": 1.5,
@@ -7409,18 +7481,9 @@
        "label": "Proche d'une gare",
        "weight": 1.0,
        "status": "ok",
-       "detail": "gare à 2.6 km",
+       "detail": "gare de Die à 2.6 km",
        "subscore": 0.827,
        "contribution": 0.827
-      },
-      {
-       "kind": "chambres_min",
-       "label": "≥ 5 chambres",
-       "weight": 2.0,
-       "status": "ok",
-       "detail": "2 ch.",
-       "subscore": 0.4,
-       "contribution": 0.8
       },
       {
        "kind": "nature_exception",
@@ -7468,27 +7531,20 @@
        "contribution": 0.098
       },
       {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 3.0,
+       "status": "ok",
+       "detail": "2 ch. (min 4)",
+       "subscore": 0.0,
+       "contribution": 0.0
+      },
+      {
        "kind": "light_works",
        "label": "Travaux légers",
        "weight": 1.0,
        "status": "n/a",
        "detail": "état inconnu",
-       "subscore": null
-      },
-      {
-       "kind": "fiber",
-       "label": "Fibre (télétravail)",
-       "weight": 1.0,
-       "status": "pending",
-       "detail": "provider non branché",
-       "subscore": null
-      },
-      {
-       "kind": "hiking",
-       "label": "Randonnées",
-       "weight": 1.0,
-       "status": "pending",
-       "detail": "provider non branché",
        "subscore": null
       }
      ]
@@ -7745,7 +7801,7 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 57.2,
+     "match_score": 56.2,
      "details": [
       {
        "kind": "budget",
@@ -7766,15 +7822,6 @@
        "contribution": 2.0
       },
       {
-       "kind": "chambres_min",
-       "label": "≥ 5 chambres",
-       "weight": 2.0,
-       "status": "ok",
-       "detail": "3 ch.",
-       "subscore": 0.6,
-       "contribution": 1.2
-      },
-      {
        "kind": "has_terrain",
        "label": "Avec terrain",
        "weight": 1.0,
@@ -7793,6 +7840,24 @@
        "contribution": 1.0
       },
       {
+       "kind": "hiking",
+       "label": "Randonnées",
+       "weight": 1.0,
+       "status": "ok",
+       "detail": "71 sentiers/itinéraires à proximité",
+       "subscore": 1.0,
+       "contribution": 1.0
+      },
+      {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 3.0,
+       "status": "ok",
+       "detail": "3 ch. (min 4)",
+       "subscore": 0.3,
+       "contribution": 0.9
+      },
+      {
        "kind": "no_vis_a_vis",
        "label": "Sans vis-à-vis",
        "weight": 1.5,
@@ -7800,6 +7865,15 @@
        "detail": "non précisé",
        "subscore": 0.6,
        "contribution": 0.9
+      },
+      {
+       "kind": "fiber",
+       "label": "Fibre (télétravail)",
+       "weight": 1.0,
+       "status": "ok",
+       "detail": "81% des locaux éligibles fibre",
+       "subscore": 0.81,
+       "contribution": 0.81
       },
       {
        "kind": "nature_exception",
@@ -7833,7 +7907,7 @@
        "label": "Proche d'une gare",
        "weight": 1.0,
        "status": "ok",
-       "detail": "gare à 36.7 km",
+       "detail": "gare de Montelimar à 36.7 km",
        "subscore": 0.0,
        "contribution": 0.0
       },
@@ -7853,27 +7927,11 @@
        "status": "n/a",
        "detail": "état inconnu",
        "subscore": null
-      },
-      {
-       "kind": "fiber",
-       "label": "Fibre (télétravail)",
-       "weight": 1.0,
-       "status": "pending",
-       "detail": "provider non branché",
-       "subscore": null
-      },
-      {
-       "kind": "hiking",
-       "label": "Randonnées",
-       "weight": 1.0,
-       "status": "pending",
-       "detail": "provider non branché",
-       "subscore": null
       }
      ]
     },
     "2": {
-     "match_score": 54.3,
+     "match_score": 53.8,
      "details": [
       {
        "kind": "has_terrain",
@@ -7903,15 +7961,6 @@
        "contribution": 2.0
       },
       {
-       "kind": "chambres_min",
-       "label": "≥ 5 chambres",
-       "weight": 2.0,
-       "status": "ok",
-       "detail": "3 ch.",
-       "subscore": 0.6,
-       "contribution": 1.2
-      },
-      {
        "kind": "relief_mountain",
        "label": "Relief / montagne",
        "weight": 1.0,
@@ -7921,6 +7970,24 @@
        "contribution": 1.0
       },
       {
+       "kind": "hiking",
+       "label": "Randonnées",
+       "weight": 1.0,
+       "status": "ok",
+       "detail": "71 sentiers/itinéraires à proximité",
+       "subscore": 1.0,
+       "contribution": 1.0
+      },
+      {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 3.0,
+       "status": "ok",
+       "detail": "3 ch. (min 4)",
+       "subscore": 0.3,
+       "contribution": 0.9
+      },
+      {
        "kind": "no_vis_a_vis",
        "label": "Sans vis-à-vis",
        "weight": 1.5,
@@ -7928,6 +7995,15 @@
        "detail": "non précisé",
        "subscore": 0.6,
        "contribution": 0.9
+      },
+      {
+       "kind": "fiber",
+       "label": "Fibre (télétravail)",
+       "weight": 1.0,
+       "status": "ok",
+       "detail": "81% des locaux éligibles fibre",
+       "subscore": 0.81,
+       "contribution": 0.81
       },
       {
        "kind": "nature_exception",
@@ -7970,7 +8046,7 @@
        "label": "Proche d'une gare",
        "weight": 1.0,
        "status": "ok",
-       "detail": "gare à 36.7 km",
+       "detail": "gare de Montelimar à 36.7 km",
        "subscore": 0.0,
        "contribution": 0.0
       },
@@ -7989,22 +8065,6 @@
        "weight": 1.0,
        "status": "n/a",
        "detail": "état inconnu",
-       "subscore": null
-      },
-      {
-       "kind": "fiber",
-       "label": "Fibre (télétravail)",
-       "weight": 1.0,
-       "status": "pending",
-       "detail": "provider non branché",
-       "subscore": null
-      },
-      {
-       "kind": "hiking",
-       "label": "Randonnées",
-       "weight": 1.0,
-       "status": "pending",
-       "detail": "provider non branché",
        "subscore": null
       }
      ]
@@ -8266,7 +8326,7 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 56.9,
+     "match_score": 56.7,
      "details": [
       {
        "kind": "budget",
@@ -8276,15 +8336,6 @@
        "detail": "≤ budget 600000€",
        "subscore": 1.0,
        "contribution": 2.0
-      },
-      {
-       "kind": "chambres_min",
-       "label": "≥ 5 chambres",
-       "weight": 2.0,
-       "status": "ok",
-       "detail": "3 ch.",
-       "subscore": 0.6,
-       "contribution": 1.2
       },
       {
        "kind": "near_corridor",
@@ -8314,13 +8365,40 @@
        "contribution": 1.0
       },
       {
+       "kind": "hiking",
+       "label": "Randonnées",
+       "weight": 1.0,
+       "status": "ok",
+       "detail": "253 sentiers/itinéraires à proximité",
+       "subscore": 1.0,
+       "contribution": 1.0
+      },
+      {
+       "kind": "fiber",
+       "label": "Fibre (télétravail)",
+       "weight": 1.0,
+       "status": "ok",
+       "detail": "95% des locaux éligibles fibre",
+       "subscore": 0.95,
+       "contribution": 0.95
+      },
+      {
        "kind": "near_gare",
        "label": "Proche d'une gare",
        "weight": 1.0,
        "status": "ok",
-       "detail": "gare à 1.0 km",
+       "detail": "gare de Montelimar à 1.0 km",
        "subscore": 0.933,
        "contribution": 0.933
+      },
+      {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 3.0,
+       "status": "ok",
+       "detail": "3 ch. (min 4)",
+       "subscore": 0.3,
+       "contribution": 0.9
       },
       {
        "kind": "no_vis_a_vis",
@@ -8375,27 +8453,11 @@
        "detail": "voie ferrée 235 m",
        "subscore": 0.044,
        "contribution": 0.087
-      },
-      {
-       "kind": "fiber",
-       "label": "Fibre (télétravail)",
-       "weight": 1.0,
-       "status": "pending",
-       "detail": "provider non branché",
-       "subscore": null
-      },
-      {
-       "kind": "hiking",
-       "label": "Randonnées",
-       "weight": 1.0,
-       "status": "pending",
-       "detail": "provider non branché",
-       "subscore": null
       }
      ]
     },
     "2": {
-     "match_score": 45.9,
+     "match_score": 46.9,
      "details": [
       {
        "kind": "budget",
@@ -8405,15 +8467,6 @@
        "detail": "≤ budget 600000€",
        "subscore": 1.0,
        "contribution": 2.0
-      },
-      {
-       "kind": "chambres_min",
-       "label": "≥ 5 chambres",
-       "weight": 2.0,
-       "status": "ok",
-       "detail": "3 ch.",
-       "subscore": 0.6,
-       "contribution": 1.2
       },
       {
        "kind": "near_corridor",
@@ -8434,13 +8487,40 @@
        "contribution": 1.0
       },
       {
+       "kind": "hiking",
+       "label": "Randonnées",
+       "weight": 1.0,
+       "status": "ok",
+       "detail": "253 sentiers/itinéraires à proximité",
+       "subscore": 1.0,
+       "contribution": 1.0
+      },
+      {
+       "kind": "fiber",
+       "label": "Fibre (télétravail)",
+       "weight": 1.0,
+       "status": "ok",
+       "detail": "95% des locaux éligibles fibre",
+       "subscore": 0.95,
+       "contribution": 0.95
+      },
+      {
        "kind": "near_gare",
        "label": "Proche d'une gare",
        "weight": 1.0,
        "status": "ok",
-       "detail": "gare à 1.0 km",
+       "detail": "gare de Montelimar à 1.0 km",
        "subscore": 0.933,
        "contribution": 0.933
+      },
+      {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 3.0,
+       "status": "ok",
+       "detail": "3 ch. (min 4)",
+       "subscore": 0.3,
+       "contribution": 0.9
       },
       {
        "kind": "no_vis_a_vis",
@@ -8513,22 +8593,6 @@
        "detail": "voie ferrée 235 m",
        "subscore": 0.044,
        "contribution": 0.087
-      },
-      {
-       "kind": "fiber",
-       "label": "Fibre (télétravail)",
-       "weight": 1.0,
-       "status": "pending",
-       "detail": "provider non branché",
-       "subscore": null
-      },
-      {
-       "kind": "hiking",
-       "label": "Randonnées",
-       "weight": 1.0,
-       "status": "pending",
-       "detail": "provider non branché",
-       "subscore": null
       }
      ]
     }
@@ -8785,7 +8849,7 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 55.7,
+     "match_score": 54.9,
      "details": [
       {
        "kind": "budget",
@@ -8806,15 +8870,6 @@
        "contribution": 2.0
       },
       {
-       "kind": "chambres_min",
-       "label": "≥ 5 chambres",
-       "weight": 2.0,
-       "status": "ok",
-       "detail": "3 ch.",
-       "subscore": 0.6,
-       "contribution": 1.2
-      },
-      {
        "kind": "has_terrain",
        "label": "Avec terrain",
        "weight": 1.0,
@@ -8824,6 +8879,24 @@
        "contribution": 1.0
       },
       {
+       "kind": "hiking",
+       "label": "Randonnées",
+       "weight": 1.0,
+       "status": "ok",
+       "detail": "86 sentiers/itinéraires à proximité",
+       "subscore": 1.0,
+       "contribution": 1.0
+      },
+      {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 3.0,
+       "status": "ok",
+       "detail": "3 ch. (min 4)",
+       "subscore": 0.3,
+       "contribution": 0.9
+      },
+      {
        "kind": "no_vis_a_vis",
        "label": "Sans vis-à-vis",
        "weight": 1.5,
@@ -8831,6 +8904,15 @@
        "detail": "non précisé",
        "subscore": 0.6,
        "contribution": 0.9
+      },
+      {
+       "kind": "fiber",
+       "label": "Fibre (télétravail)",
+       "weight": 1.0,
+       "status": "ok",
+       "detail": "81% des locaux éligibles fibre",
+       "subscore": 0.81,
+       "contribution": 0.81
       },
       {
        "kind": "nature_exception",
@@ -8873,7 +8955,7 @@
        "label": "Proche d'une gare",
        "weight": 1.0,
        "status": "ok",
-       "detail": "gare à 34.2 km",
+       "detail": "gare de Montelimar à 34.2 km",
        "subscore": 0.0,
        "contribution": 0.0
       },
@@ -8893,27 +8975,11 @@
        "status": "n/a",
        "detail": "état inconnu",
        "subscore": null
-      },
-      {
-       "kind": "fiber",
-       "label": "Fibre (télétravail)",
-       "weight": 1.0,
-       "status": "pending",
-       "detail": "provider non branché",
-       "subscore": null
-      },
-      {
-       "kind": "hiking",
-       "label": "Randonnées",
-       "weight": 1.0,
-       "status": "pending",
-       "detail": "provider non branché",
-       "subscore": null
       }
      ]
     },
     "2": {
-     "match_score": 43.9,
+     "match_score": 44.6,
      "details": [
       {
        "kind": "budget",
@@ -8934,13 +9000,22 @@
        "contribution": 2.0
       },
       {
-       "kind": "chambres_min",
-       "label": "≥ 5 chambres",
-       "weight": 2.0,
+       "kind": "hiking",
+       "label": "Randonnées",
+       "weight": 1.0,
        "status": "ok",
-       "detail": "3 ch.",
-       "subscore": 0.6,
-       "contribution": 1.2
+       "detail": "86 sentiers/itinéraires à proximité",
+       "subscore": 1.0,
+       "contribution": 1.0
+      },
+      {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 3.0,
+       "status": "ok",
+       "detail": "3 ch. (min 4)",
+       "subscore": 0.3,
+       "contribution": 0.9
       },
       {
        "kind": "no_vis_a_vis",
@@ -8950,6 +9025,15 @@
        "detail": "non précisé",
        "subscore": 0.6,
        "contribution": 0.9
+      },
+      {
+       "kind": "fiber",
+       "label": "Fibre (télétravail)",
+       "weight": 1.0,
+       "status": "ok",
+       "detail": "81% des locaux éligibles fibre",
+       "subscore": 0.81,
+       "contribution": 0.81
       },
       {
        "kind": "nature_exception",
@@ -9010,7 +9094,7 @@
        "label": "Proche d'une gare",
        "weight": 1.0,
        "status": "ok",
-       "detail": "gare à 34.2 km",
+       "detail": "gare de Montelimar à 34.2 km",
        "subscore": 0.0,
        "contribution": 0.0
       },
@@ -9029,22 +9113,6 @@
        "weight": 1.0,
        "status": "n/a",
        "detail": "état inconnu",
-       "subscore": null
-      },
-      {
-       "kind": "fiber",
-       "label": "Fibre (télétravail)",
-       "weight": 1.0,
-       "status": "pending",
-       "detail": "provider non branché",
-       "subscore": null
-      },
-      {
-       "kind": "hiking",
-       "label": "Randonnées",
-       "weight": 1.0,
-       "status": "pending",
-       "detail": "provider non branché",
        "subscore": null
       }
      ]
@@ -9301,7 +9369,7 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 59.1,
+     "match_score": 58.2,
      "details": [
       {
        "kind": "budget",
@@ -9322,15 +9390,6 @@
        "contribution": 2.0
       },
       {
-       "kind": "chambres_min",
-       "label": "≥ 5 chambres",
-       "weight": 2.0,
-       "status": "ok",
-       "detail": "3 ch.",
-       "subscore": 0.6,
-       "contribution": 1.2
-      },
-      {
        "kind": "temps_acces",
        "label": "≤ 4h porte-à-porte depuis Paris",
        "weight": 2.0,
@@ -9340,12 +9399,39 @@
        "contribution": 1.15
       },
       {
+       "kind": "hiking",
+       "label": "Randonnées",
+       "weight": 1.0,
+       "status": "ok",
+       "detail": "130 sentiers/itinéraires à proximité",
+       "subscore": 1.0,
+       "contribution": 1.0
+      },
+      {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 3.0,
+       "status": "ok",
+       "detail": "3 ch. (min 4)",
+       "subscore": 0.3,
+       "contribution": 0.9
+      },
+      {
        "kind": "no_vis_a_vis",
        "label": "Sans vis-à-vis",
        "weight": 1.5,
        "status": "ok",
        "detail": "non précisé",
        "subscore": 0.6,
+       "contribution": 0.9
+      },
+      {
+       "kind": "fiber",
+       "label": "Fibre (télétravail)",
+       "weight": 1.0,
+       "status": "ok",
+       "detail": "90% des locaux éligibles fibre",
+       "subscore": 0.9,
        "contribution": 0.9
       },
       {
@@ -9389,7 +9475,7 @@
        "label": "Proche d'une gare",
        "weight": 1.0,
        "status": "ok",
-       "detail": "gare à 22.3 km",
+       "detail": "gare de Tain-l'Hermitage-Tournon à 22.3 km",
        "subscore": 0.0,
        "contribution": 0.0
       },
@@ -9407,22 +9493,6 @@
        "weight": 1.0,
        "status": "n/a",
        "detail": "état inconnu",
-       "subscore": null
-      },
-      {
-       "kind": "fiber",
-       "label": "Fibre (télétravail)",
-       "weight": 1.0,
-       "status": "pending",
-       "detail": "provider non branché",
-       "subscore": null
-      },
-      {
-       "kind": "hiking",
-       "label": "Randonnées",
-       "weight": 1.0,
-       "status": "pending",
-       "detail": "provider non branché",
        "subscore": null
       }
      ]
@@ -9449,15 +9519,6 @@
        "contribution": 2.0
       },
       {
-       "kind": "chambres_min",
-       "label": "≥ 5 chambres",
-       "weight": 2.0,
-       "status": "ok",
-       "detail": "3 ch.",
-       "subscore": 0.6,
-       "contribution": 1.2
-      },
-      {
        "kind": "temps_acces",
        "label": "≤ 4h porte-à-porte depuis Paris",
        "weight": 2.0,
@@ -9467,12 +9528,39 @@
        "contribution": 1.15
       },
       {
+       "kind": "hiking",
+       "label": "Randonnées",
+       "weight": 1.0,
+       "status": "ok",
+       "detail": "130 sentiers/itinéraires à proximité",
+       "subscore": 1.0,
+       "contribution": 1.0
+      },
+      {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 3.0,
+       "status": "ok",
+       "detail": "3 ch. (min 4)",
+       "subscore": 0.3,
+       "contribution": 0.9
+      },
+      {
        "kind": "no_vis_a_vis",
        "label": "Sans vis-à-vis",
        "weight": 1.5,
        "status": "ok",
        "detail": "non précisé",
        "subscore": 0.6,
+       "contribution": 0.9
+      },
+      {
+       "kind": "fiber",
+       "label": "Fibre (télétravail)",
+       "weight": 1.0,
+       "status": "ok",
+       "detail": "90% des locaux éligibles fibre",
+       "subscore": 0.9,
        "contribution": 0.9
       },
       {
@@ -9525,7 +9613,7 @@
        "label": "Proche d'une gare",
        "weight": 1.0,
        "status": "ok",
-       "detail": "gare à 22.3 km",
+       "detail": "gare de Tain-l'Hermitage-Tournon à 22.3 km",
        "subscore": 0.0,
        "contribution": 0.0
       },
@@ -9543,22 +9631,6 @@
        "weight": 1.0,
        "status": "n/a",
        "detail": "état inconnu",
-       "subscore": null
-      },
-      {
-       "kind": "fiber",
-       "label": "Fibre (télétravail)",
-       "weight": 1.0,
-       "status": "pending",
-       "detail": "provider non branché",
-       "subscore": null
-      },
-      {
-       "kind": "hiking",
-       "label": "Randonnées",
-       "weight": 1.0,
-       "status": "pending",
-       "detail": "provider non branché",
        "subscore": null
       }
      ]
