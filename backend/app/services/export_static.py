@@ -10,10 +10,16 @@ scraper. Le front lit donc ce snapshot produit par le backend. On exporte :
 
 from __future__ import annotations
 
+import io
 import json
 import os
 import urllib.request
 from datetime import datetime, timezone
+
+try:  # optimisation des images (optionnelle : repli sur l'octet brut si absente)
+    from PIL import Image
+except ImportError:  # pragma: no cover
+    Image = None
 
 from ..models import FilterSet, Listing, SavedListing, SearchHistory
 from .filtersets import resolve_criteria
@@ -31,6 +37,25 @@ _FLAG_COLS = (
 
 _UA = "Mozilla/5.0 (compatible; immobilier-export/1.0)"
 _MAX_PHOTOS = 10
+# Optimisation : galerie web -> 1280 px max suffit ; JPEG progressif qualité 78.
+_MAX_DIM = 1280
+_JPEG_QUALITY = 78
+
+
+def _optimize_jpeg(data: bytes) -> bytes:
+    """Redimensionne (≤_MAX_DIM) et recompresse en JPEG ; renvoie l'original si échec."""
+    if Image is None:
+        return data
+    try:
+        im = Image.open(io.BytesIO(data))
+        im = im.convert("RGB")  # supprime alpha/EXIF, force JPEG-compatible
+        im.thumbnail((_MAX_DIM, _MAX_DIM))  # garde le ratio, ne sur-échantillonne pas
+        buf = io.BytesIO()
+        im.save(buf, format="JPEG", quality=_JPEG_QUALITY, optimize=True, progressive=True)
+        out = buf.getvalue()
+        return out if out and len(out) < len(data) else data
+    except Exception:
+        return data
 
 
 class _RowItem:
@@ -90,6 +115,7 @@ def _download_photos(row: Listing, photos_dir: str, rel_base: str) -> list[str]:
             with urllib.request.urlopen(req, timeout=20) as resp:
                 data = resp.read()
             if data:
+                data = _optimize_jpeg(data)
                 with open(path, "wb") as fh:
                     fh.write(data)
                 rels.append(rel)

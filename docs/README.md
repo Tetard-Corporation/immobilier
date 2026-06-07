@@ -34,5 +34,8 @@ python -m app.services.export_static ../docs/data --no-photos # sans télécharg
 
 ## Poids du repo
 Les photos sont stockées en local (choix retenu : robustesse si l'annonce
-disparaît). ~3–4 Mo / bien. Sur un gros historique, surveiller la taille du repo
-(limite Pages ~1 Go) ; au besoin réduire `_MAX_PHOTOS` dans `export_static.py`.
+disparaît) et **optimisées à l'enregistrement** : redimensionnées à ≤ 1280 px et
+recompressées en JPEG progressif (qualité 78, métadonnées supprimées) via Pillow
+— typiquement **−55 % de poids**. Réglages : `_MAX_DIM`, `_JPEG_QUALITY`,
+`_MAX_PHOTOS` dans `export_static.py`. Sur un gros historique, surveiller la taille
+du repo (limite Pages ~1 Go).
