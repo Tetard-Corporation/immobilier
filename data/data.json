@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-07T17:08:49.462161+00:00",
+ "generated_at": "2026-06-07T17:14:01.686896+00:00",
  "sets": [
   {
    "id": 1,
@@ -19,7 +19,7 @@
     {
      "kind": "chambres_min",
      "label": "≥ 4 chambres (min strict)",
-     "weight": 3,
+     "weight": 4,
      "params": {
       "min": 4
      }
@@ -157,6 +157,12 @@
      "params": {
       "max_km": 30
      }
+    },
+    {
+     "kind": "pas_pavillon",
+     "label": "Cachet (éviter pavillon/neuf)",
+     "weight": 2,
+     "params": {}
     }
    ]
   },
@@ -178,7 +184,7 @@
     {
      "kind": "chambres_min",
      "label": "≥ 4 chambres (min strict)",
-     "weight": 3,
+     "weight": 4,
      "params": {
       "min": 4
      }
@@ -310,6 +316,12 @@
      "params": {
       "max_km": 30
      }
+    },
+    {
+     "kind": "pas_pavillon",
+     "label": "Cachet (éviter pavillon/neuf)",
+     "weight": 2,
+     "params": {}
     }
    ]
   }
@@ -554,7 +566,7 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 56.3,
+     "match_score": 57.2,
      "details": [
       {
        "kind": "budget",
@@ -580,6 +592,15 @@
        "weight": 2.0,
        "status": "ok",
        "detail": "118 commerces/services à vélo (≤ 3 km)",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -694,7 +715,7 @@
       {
        "kind": "chambres_min",
        "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
+       "weight": 4.0,
        "status": "ok",
        "detail": "2 ch. (min 4)",
        "subscore": 0.0,
@@ -737,7 +758,7 @@
      ]
     },
     "2": {
-     "match_score": 60.3,
+     "match_score": 60.9,
      "details": [
       {
        "kind": "feature",
@@ -772,6 +793,15 @@
        "weight": 2.0,
        "status": "ok",
        "detail": "118 commerces/services à vélo (≤ 3 km)",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -868,7 +898,7 @@
       {
        "kind": "chambres_min",
        "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
+       "weight": 4.0,
        "status": "ok",
        "detail": "2 ch. (min 4)",
        "subscore": 0.0,
@@ -1167,7 +1197,7 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 60.1,
+     "match_score": 61.6,
      "details": [
       {
        "kind": "budget",
@@ -1206,6 +1236,15 @@
        "contribution": 2.0
       },
       {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
        "kind": "ski",
        "label": "Proximité station de ski",
        "weight": 2.0,
@@ -1222,6 +1261,15 @@
        "detail": "sans vis-à-vis",
        "subscore": 1.0,
        "contribution": 1.5
+      },
+      {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "3 ch. (min 4)",
+       "subscore": 0.3,
+       "contribution": 1.2
       },
       {
        "kind": "nuisance_sonore",
@@ -1249,15 +1297,6 @@
        "detail": "99% des locaux éligibles fibre",
        "subscore": 0.99,
        "contribution": 0.99
-      },
-      {
-       "kind": "chambres_min",
-       "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "3 ch. (min 4)",
-       "subscore": 0.3,
-       "contribution": 0.9
       },
       {
        "kind": "temps_acces",
@@ -1350,7 +1389,7 @@
      ]
     },
     "2": {
-     "match_score": 66.6,
+     "match_score": 67.5,
      "details": [
       {
        "kind": "feature",
@@ -1398,6 +1437,15 @@
        "contribution": 2.0
       },
       {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
        "kind": "ski",
        "label": "Proximité station de ski",
        "weight": 2.0,
@@ -1414,6 +1462,15 @@
        "detail": "sans vis-à-vis",
        "subscore": 1.0,
        "contribution": 1.5
+      },
+      {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "3 ch. (min 4)",
+       "subscore": 0.3,
+       "contribution": 1.2
       },
       {
        "kind": "nuisance_sonore",
@@ -1441,15 +1498,6 @@
        "detail": "99% des locaux éligibles fibre",
        "subscore": 0.99,
        "contribution": 0.99
-      },
-      {
-       "kind": "chambres_min",
-       "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "3 ch. (min 4)",
-       "subscore": 0.3,
-       "contribution": 0.9
       },
       {
        "kind": "temps_acces",
@@ -1783,16 +1831,16 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 70.3,
+     "match_score": 72.9,
      "details": [
       {
        "kind": "chambres_min",
        "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
+       "weight": 4.0,
        "status": "ok",
        "detail": "4 ch. (min 4)",
        "subscore": 1.0,
-       "contribution": 3.0
+       "contribution": 4.0
       },
       {
        "kind": "budget",
@@ -1827,6 +1875,15 @@
        "weight": 2.0,
        "status": "ok",
        "detail": "60 commerces/services à vélo (≤ 3 km)",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -1967,16 +2024,16 @@
      ]
     },
     "2": {
-     "match_score": 68.5,
+     "match_score": 71.1,
      "details": [
       {
        "kind": "chambres_min",
        "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
+       "weight": 4.0,
        "status": "ok",
        "detail": "4 ch. (min 4)",
        "subscore": 1.0,
-       "contribution": 3.0
+       "contribution": 4.0
       },
       {
        "kind": "feature",
@@ -2020,6 +2077,15 @@
        "weight": 2.0,
        "status": "ok",
        "detail": "60 commerces/services à vélo (≤ 3 km)",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -2398,7 +2464,7 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 49.5,
+     "match_score": 52.0,
      "details": [
       {
        "kind": "budget",
@@ -2419,6 +2485,15 @@
        "contribution": 2.0
       },
       {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
        "kind": "near_corridor",
        "label": "Axe Paris-Marseille",
        "weight": 1.5,
@@ -2426,6 +2501,15 @@
        "detail": "4 km de l'axe Paris – Marseille",
        "subscore": 0.901,
        "contribution": 1.351
+      },
+      {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "3 ch. (min 4)",
+       "subscore": 0.3,
+       "contribution": 1.2
       },
       {
        "kind": "nature_exception",
@@ -2462,15 +2546,6 @@
        "detail": "91% des locaux éligibles fibre",
        "subscore": 0.91,
        "contribution": 0.91
-      },
-      {
-       "kind": "chambres_min",
-       "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "3 ch. (min 4)",
-       "subscore": 0.3,
-       "contribution": 0.9
       },
       {
        "kind": "no_vis_a_vis",
@@ -2582,7 +2657,7 @@
      ]
     },
     "2": {
-     "match_score": 51.7,
+     "match_score": 53.7,
      "details": [
       {
        "kind": "has_terrain",
@@ -2612,6 +2687,15 @@
        "contribution": 2.0
       },
       {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
        "kind": "near_corridor",
        "label": "Axe Paris-Marseille",
        "weight": 1.5,
@@ -2619,6 +2703,15 @@
        "detail": "4 km de l'axe Paris – Marseille",
        "subscore": 0.901,
        "contribution": 1.351
+      },
+      {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "3 ch. (min 4)",
+       "subscore": 0.3,
+       "contribution": 1.2
       },
       {
        "kind": "nature_exception",
@@ -2646,15 +2739,6 @@
        "detail": "91% des locaux éligibles fibre",
        "subscore": 0.91,
        "contribution": 0.91
-      },
-      {
-       "kind": "chambres_min",
-       "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "3 ch. (min 4)",
-       "subscore": 0.3,
-       "contribution": 0.9
       },
       {
        "kind": "no_vis_a_vis",
@@ -3006,7 +3090,7 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 56.0,
+     "match_score": 59.0,
      "details": [
       {
        "kind": "budget",
@@ -3032,6 +3116,15 @@
        "weight": 2.0,
        "status": "ok",
        "detail": "35 commerces/services à vélo (≤ 3 km)",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -3173,7 +3266,7 @@
       {
        "kind": "chambres_min",
        "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
+       "weight": 4.0,
        "status": "n/a",
        "detail": "nb chambres inconnu",
        "subscore": null
@@ -3189,7 +3282,7 @@
      ]
     },
     "2": {
-     "match_score": 54.8,
+     "match_score": 57.7,
      "details": [
       {
        "kind": "budget",
@@ -3215,6 +3308,15 @@
        "weight": 2.0,
        "status": "ok",
        "detail": "35 commerces/services à vélo (≤ 3 km)",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -3347,7 +3449,7 @@
       {
        "kind": "chambres_min",
        "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
+       "weight": 4.0,
        "status": "n/a",
        "detail": "nb chambres inconnu",
        "subscore": null
@@ -3615,7 +3717,7 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 50.6,
+     "match_score": 52.0,
      "details": [
       {
        "kind": "budget",
@@ -3632,6 +3734,15 @@
        "weight": 2.0,
        "status": "ok",
        "detail": "aucune autoroute/voie ferrée à proximité",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -3782,7 +3893,7 @@
       {
        "kind": "chambres_min",
        "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
+       "weight": 4.0,
        "status": "ok",
        "detail": "2 ch. (min 4)",
        "subscore": 0.0,
@@ -3800,7 +3911,7 @@
      ]
     },
     "2": {
-     "match_score": 52.0,
+     "match_score": 53.1,
      "details": [
       {
        "kind": "has_terrain",
@@ -3826,6 +3937,15 @@
        "weight": 2.0,
        "status": "ok",
        "detail": "aucune autoroute/voie ferrée à proximité",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -3958,7 +4078,7 @@
       {
        "kind": "chambres_min",
        "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
+       "weight": 4.0,
        "status": "ok",
        "detail": "2 ch. (min 4)",
        "subscore": 0.0,
@@ -4227,7 +4347,7 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 69.2,
+     "match_score": 69.8,
      "details": [
       {
        "kind": "budget",
@@ -4266,6 +4386,15 @@
        "contribution": 2.0
       },
       {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
        "kind": "temps_acces",
        "label": "≤ 4h porte-à-porte depuis Paris",
        "weight": 2.0,
@@ -4273,6 +4402,15 @@
        "detail": "~2h29 porte-à-porte depuis Paris (max 4h)",
        "subscore": 0.758,
        "contribution": 1.517
+      },
+      {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "3 ch. (min 4)",
+       "subscore": 0.3,
+       "contribution": 1.2
       },
       {
        "kind": "nature_exception",
@@ -4336,15 +4474,6 @@
        "detail": "98% des locaux éligibles fibre",
        "subscore": 0.98,
        "contribution": 0.98
-      },
-      {
-       "kind": "chambres_min",
-       "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "3 ch. (min 4)",
-       "subscore": 0.3,
-       "contribution": 0.9
       },
       {
        "kind": "no_vis_a_vis",
@@ -4411,7 +4540,7 @@
      ]
     },
     "2": {
-     "match_score": 56.6,
+     "match_score": 58.2,
      "details": [
       {
        "kind": "budget",
@@ -4450,6 +4579,15 @@
        "contribution": 2.0
       },
       {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
        "kind": "temps_acces",
        "label": "≤ 4h porte-à-porte depuis Paris",
        "weight": 2.0,
@@ -4457,6 +4595,15 @@
        "detail": "~2h29 porte-à-porte depuis Paris (max 4h)",
        "subscore": 0.758,
        "contribution": 1.517
+      },
+      {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "3 ch. (min 4)",
+       "subscore": 0.3,
+       "contribution": 1.2
       },
       {
        "kind": "nature_exception",
@@ -4493,15 +4640,6 @@
        "detail": "98% des locaux éligibles fibre",
        "subscore": 0.98,
        "contribution": 0.98
-      },
-      {
-       "kind": "chambres_min",
-       "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "3 ch. (min 4)",
-       "subscore": 0.3,
-       "contribution": 0.9
       },
       {
        "kind": "no_vis_a_vis",
@@ -4846,16 +4984,16 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 74.0,
+     "match_score": 76.2,
      "details": [
       {
        "kind": "chambres_min",
        "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
+       "weight": 4.0,
        "status": "ok",
        "detail": "4 ch. (min 4)",
        "subscore": 1.0,
-       "contribution": 3.0
+       "contribution": 4.0
       },
       {
        "kind": "budget",
@@ -4890,6 +5028,15 @@
        "weight": 2.0,
        "status": "ok",
        "detail": "131 commerces/services à vélo (≤ 3 km)",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -5031,16 +5178,16 @@
      ]
     },
     "2": {
-     "match_score": 72.0,
+     "match_score": 74.2,
      "details": [
       {
        "kind": "chambres_min",
        "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
+       "weight": 4.0,
        "status": "ok",
        "detail": "4 ch. (min 4)",
        "subscore": 1.0,
-       "contribution": 3.0
+       "contribution": 4.0
       },
       {
        "kind": "feature",
@@ -5084,6 +5231,15 @@
        "weight": 2.0,
        "status": "ok",
        "detail": "131 commerces/services à vélo (≤ 3 km)",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -5464,7 +5620,7 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 62.1,
+     "match_score": 64.7,
      "details": [
       {
        "kind": "budget",
@@ -5499,6 +5655,15 @@
        "weight": 2.0,
        "status": "ok",
        "detail": "93 m² habitables (souhait ≥ 90 m²)",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -5631,7 +5796,7 @@
       {
        "kind": "chambres_min",
        "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
+       "weight": 4.0,
        "status": "n/a",
        "detail": "nb chambres inconnu",
        "subscore": null
@@ -5647,7 +5812,7 @@
      ]
     },
     "2": {
-     "match_score": 62.1,
+     "match_score": 64.4,
      "details": [
       {
        "kind": "feature",
@@ -5691,6 +5856,15 @@
        "weight": 2.0,
        "status": "ok",
        "detail": "93 m² habitables (souhait ≥ 90 m²)",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -5805,7 +5979,7 @@
       {
        "kind": "chambres_min",
        "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
+       "weight": 4.0,
        "status": "n/a",
        "detail": "nb chambres inconnu",
        "subscore": null
@@ -6077,16 +6251,16 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 64.2,
+     "match_score": 67.4,
      "details": [
       {
        "kind": "chambres_min",
        "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
+       "weight": 4.0,
        "status": "ok",
        "detail": "4 ch. (min 4)",
        "subscore": 1.0,
-       "contribution": 3.0
+       "contribution": 4.0
       },
       {
        "kind": "budget",
@@ -6112,6 +6286,15 @@
        "weight": 2.0,
        "status": "ok",
        "detail": "139 m² habitables (souhait ≥ 90 m²)",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -6261,16 +6444,16 @@
      ]
     },
     "2": {
-     "match_score": 62.6,
+     "match_score": 65.7,
      "details": [
       {
        "kind": "chambres_min",
        "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
+       "weight": 4.0,
        "status": "ok",
        "detail": "4 ch. (min 4)",
        "subscore": 1.0,
-       "contribution": 3.0
+       "contribution": 4.0
       },
       {
        "kind": "has_terrain",
@@ -6305,6 +6488,15 @@
        "weight": 2.0,
        "status": "ok",
        "detail": "139 m² habitables (souhait ≥ 90 m²)",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -6692,16 +6884,16 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 60.5,
+     "match_score": 64.2,
      "details": [
       {
        "kind": "chambres_min",
        "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
+       "weight": 4.0,
        "status": "ok",
        "detail": "4 ch. (min 4)",
        "subscore": 1.0,
-       "contribution": 3.0
+       "contribution": 4.0
       },
       {
        "kind": "budget",
@@ -6736,6 +6928,15 @@
        "weight": 2.0,
        "status": "ok",
        "detail": "21 commerces/services à vélo (≤ 3 km)",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -6875,16 +7076,16 @@
      ]
     },
     "2": {
-     "match_score": 62.4,
+     "match_score": 65.5,
      "details": [
       {
        "kind": "chambres_min",
        "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
+       "weight": 4.0,
        "status": "ok",
        "detail": "4 ch. (min 4)",
        "subscore": 1.0,
-       "contribution": 3.0
+       "contribution": 4.0
       },
       {
        "kind": "feature",
@@ -6928,6 +7129,15 @@
        "weight": 2.0,
        "status": "ok",
        "detail": "21 commerces/services à vélo (≤ 3 km)",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -7299,16 +7509,16 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 66.5,
+     "match_score": 69.5,
      "details": [
       {
        "kind": "chambres_min",
        "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
+       "weight": 4.0,
        "status": "ok",
        "detail": "6 ch. (min 4)",
        "subscore": 1.0,
-       "contribution": 3.0
+       "contribution": 4.0
       },
       {
        "kind": "budget",
@@ -7334,6 +7544,15 @@
        "weight": 2.0,
        "status": "ok",
        "detail": "31 commerces/services à vélo (≤ 3 km)",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -7483,16 +7702,16 @@
      ]
     },
     "2": {
-     "match_score": 62.5,
+     "match_score": 65.8,
      "details": [
       {
        "kind": "chambres_min",
        "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
+       "weight": 4.0,
        "status": "ok",
        "detail": "6 ch. (min 4)",
        "subscore": 1.0,
-       "contribution": 3.0
+       "contribution": 4.0
       },
       {
        "kind": "budget",
@@ -7518,6 +7737,15 @@
        "weight": 2.0,
        "status": "ok",
        "detail": "31 commerces/services à vélo (≤ 3 km)",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -7914,7 +8142,7 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 50.7,
+     "match_score": 52.1,
      "details": [
       {
        "kind": "budget",
@@ -7940,6 +8168,15 @@
        "weight": 2.0,
        "status": "ok",
        "detail": "33 commerces/services à vélo (≤ 3 km)",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -8072,7 +8309,7 @@
       {
        "kind": "chambres_min",
        "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
+       "weight": 4.0,
        "status": "ok",
        "detail": "2 ch. (min 4)",
        "subscore": 0.0,
@@ -8099,7 +8336,7 @@
      ]
     },
     "2": {
-     "match_score": 49.2,
+     "match_score": 50.6,
      "details": [
       {
        "kind": "budget",
@@ -8125,6 +8362,15 @@
        "weight": 2.0,
        "status": "ok",
        "detail": "33 commerces/services à vélo (≤ 3 km)",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -8248,7 +8494,7 @@
       {
        "kind": "chambres_min",
        "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
+       "weight": 4.0,
        "status": "ok",
        "detail": "2 ch. (min 4)",
        "subscore": 0.0,
@@ -8535,7 +8781,7 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 59.8,
+     "match_score": 60.4,
      "details": [
       {
        "kind": "budget",
@@ -8570,6 +8816,15 @@
        "weight": 2.0,
        "status": "ok",
        "detail": "77 commerces/services à vélo (≤ 3 km)",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -8702,7 +8957,7 @@
       {
        "kind": "chambres_min",
        "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
+       "weight": 4.0,
        "status": "ok",
        "detail": "1 ch. (min 4)",
        "subscore": 0.0,
@@ -8720,7 +8975,7 @@
      ]
     },
     "2": {
-     "match_score": 56.3,
+     "match_score": 57.2,
      "details": [
       {
        "kind": "budget",
@@ -8755,6 +9010,15 @@
        "weight": 2.0,
        "status": "ok",
        "detail": "77 commerces/services à vélo (≤ 3 km)",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -8878,7 +9142,7 @@
       {
        "kind": "chambres_min",
        "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
+       "weight": 4.0,
        "status": "ok",
        "detail": "1 ch. (min 4)",
        "subscore": 0.0,
@@ -9154,7 +9418,7 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 57.6,
+     "match_score": 58.4,
      "details": [
       {
        "kind": "budget",
@@ -9189,6 +9453,15 @@
        "weight": 2.0,
        "status": "ok",
        "detail": "33 commerces/services à vélo (≤ 3 km)",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -9312,7 +9585,7 @@
       {
        "kind": "chambres_min",
        "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
+       "weight": 4.0,
        "status": "ok",
        "detail": "2 ch. (min 4)",
        "subscore": 0.0,
@@ -9339,7 +9612,7 @@
      ]
     },
     "2": {
-     "match_score": 55.8,
+     "match_score": 56.6,
      "details": [
       {
        "kind": "budget",
@@ -9374,6 +9647,15 @@
        "weight": 2.0,
        "status": "ok",
        "detail": "33 commerces/services à vélo (≤ 3 km)",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -9488,7 +9770,7 @@
       {
        "kind": "chambres_min",
        "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
+       "weight": 4.0,
        "status": "ok",
        "detail": "2 ch. (min 4)",
        "subscore": 0.0,
@@ -9772,7 +10054,7 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 55.1,
+     "match_score": 57.0,
      "details": [
       {
        "kind": "budget",
@@ -9811,6 +10093,15 @@
        "contribution": 2.0
       },
       {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
        "kind": "near_corridor",
        "label": "Axe Paris-Marseille",
        "weight": 1.5,
@@ -9818,6 +10109,15 @@
        "detail": "6 km de l'axe Paris – Marseille",
        "subscore": 0.844,
        "contribution": 1.266
+      },
+      {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "3 ch. (min 4)",
+       "subscore": 0.3,
+       "contribution": 1.2
       },
       {
        "kind": "near_city",
@@ -9845,15 +10145,6 @@
        "detail": "33 sentiers/itinéraires à proximité",
        "subscore": 1.0,
        "contribution": 1.0
-      },
-      {
-       "kind": "chambres_min",
-       "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "3 ch. (min 4)",
-       "subscore": 0.3,
-       "contribution": 0.9
       },
       {
        "kind": "nature_exception",
@@ -9956,7 +10247,7 @@
      ]
     },
     "2": {
-     "match_score": 56.7,
+     "match_score": 58.3,
      "details": [
       {
        "kind": "has_terrain",
@@ -10004,6 +10295,15 @@
        "contribution": 2.0
       },
       {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
        "kind": "near_corridor",
        "label": "Axe Paris-Marseille",
        "weight": 1.5,
@@ -10011,6 +10311,15 @@
        "detail": "6 km de l'axe Paris – Marseille",
        "subscore": 0.844,
        "contribution": 1.266
+      },
+      {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "3 ch. (min 4)",
+       "subscore": 0.3,
+       "contribution": 1.2
       },
       {
        "kind": "near_city",
@@ -10029,15 +10338,6 @@
        "detail": "33 sentiers/itinéraires à proximité",
        "subscore": 1.0,
        "contribution": 1.0
-      },
-      {
-       "kind": "chambres_min",
-       "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "3 ch. (min 4)",
-       "subscore": 0.3,
-       "contribution": 0.9
       },
       {
        "kind": "nature_exception",
@@ -10382,16 +10682,16 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 56.5,
+     "match_score": 60.5,
      "details": [
       {
        "kind": "chambres_min",
        "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
+       "weight": 4.0,
        "status": "ok",
        "detail": "4 ch. (min 4)",
        "subscore": 1.0,
-       "contribution": 3.0
+       "contribution": 4.0
       },
       {
        "kind": "budget",
@@ -10417,6 +10717,15 @@
        "weight": 2.0,
        "status": "ok",
        "detail": "21 commerces/services à vélo (≤ 3 km)",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -10565,16 +10874,16 @@
      ]
     },
     "2": {
-     "match_score": 53.2,
+     "match_score": 57.2,
      "details": [
       {
        "kind": "chambres_min",
        "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
+       "weight": 4.0,
        "status": "ok",
        "detail": "4 ch. (min 4)",
        "subscore": 1.0,
-       "contribution": 3.0
+       "contribution": 4.0
       },
       {
        "kind": "budget",
@@ -10600,6 +10909,15 @@
        "weight": 2.0,
        "status": "ok",
        "detail": "21 commerces/services à vélo (≤ 3 km)",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -10986,7 +11304,7 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 48.8,
+     "match_score": 51.3,
      "details": [
       {
        "kind": "budget",
@@ -11003,6 +11321,15 @@
        "weight": 2.0,
        "status": "ok",
        "detail": "21 commerces/services à vélo (≤ 3 km)",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -11025,6 +11352,15 @@
        "contribution": 1.32
       },
       {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "3 ch. (min 4)",
+       "subscore": 0.3,
+       "contribution": 1.2
+      },
+      {
        "kind": "has_terrain",
        "label": "Avec terrain",
        "weight": 1.0,
@@ -11041,15 +11377,6 @@
        "detail": "40 sentiers/itinéraires à proximité",
        "subscore": 1.0,
        "contribution": 1.0
-      },
-      {
-       "kind": "chambres_min",
-       "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "3 ch. (min 4)",
-       "subscore": 0.3,
-       "contribution": 0.9
       },
       {
        "kind": "no_vis_a_vis",
@@ -11169,7 +11496,7 @@
      ]
     },
     "2": {
-     "match_score": 44.4,
+     "match_score": 47.1,
      "details": [
       {
        "kind": "budget",
@@ -11186,6 +11513,15 @@
        "weight": 2.0,
        "status": "ok",
        "detail": "21 commerces/services à vélo (≤ 3 km)",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -11208,6 +11544,15 @@
        "contribution": 1.32
       },
       {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "3 ch. (min 4)",
+       "subscore": 0.3,
+       "contribution": 1.2
+      },
+      {
        "kind": "hiking",
        "label": "Randonnées",
        "weight": 1.0,
@@ -11215,15 +11560,6 @@
        "detail": "40 sentiers/itinéraires à proximité",
        "subscore": 1.0,
        "contribution": 1.0
-      },
-      {
-       "kind": "chambres_min",
-       "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "3 ch. (min 4)",
-       "subscore": 0.3,
-       "contribution": 0.9
       },
       {
        "kind": "no_vis_a_vis",
@@ -11594,7 +11930,7 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 63.1,
+     "match_score": 64.3,
      "details": [
       {
        "kind": "budget",
@@ -11631,6 +11967,24 @@
        "detail": "113 m² habitables (souhait ≥ 90 m²)",
        "subscore": 1.0,
        "contribution": 2.0
+      },
+      {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "3 ch. (min 4)",
+       "subscore": 0.3,
+       "contribution": 1.2
       },
       {
        "kind": "temps_acces",
@@ -11694,15 +12048,6 @@
        "detail": "7 commerces/services à vélo (≤ 3 km)",
        "subscore": 0.467,
        "contribution": 0.933
-      },
-      {
-       "kind": "chambres_min",
-       "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "3 ch. (min 4)",
-       "subscore": 0.3,
-       "contribution": 0.9
       },
       {
        "kind": "no_vis_a_vis",
@@ -11778,7 +12123,7 @@
      ]
     },
     "2": {
-     "match_score": 57.1,
+     "match_score": 58.7,
      "details": [
       {
        "kind": "budget",
@@ -11817,6 +12162,15 @@
        "contribution": 2.0
       },
       {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
        "kind": "has_terrain",
        "label": "Grand terrain (>1500 m²)",
        "weight": 3.0,
@@ -11824,6 +12178,15 @@
        "detail": "749 m² (souhait ≥ 1500 m²)",
        "subscore": 0.499,
        "contribution": 1.498
+      },
+      {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "3 ch. (min 4)",
+       "subscore": 0.3,
+       "contribution": 1.2
       },
       {
        "kind": "temps_acces",
@@ -11869,15 +12232,6 @@
        "detail": "7 commerces/services à vélo (≤ 3 km)",
        "subscore": 0.467,
        "contribution": 0.933
-      },
-      {
-       "kind": "chambres_min",
-       "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "3 ch. (min 4)",
-       "subscore": 0.3,
-       "contribution": 0.9
       },
       {
        "kind": "no_vis_a_vis",
@@ -12208,16 +12562,16 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 63.9,
+     "match_score": 67.1,
      "details": [
       {
        "kind": "chambres_min",
        "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
+       "weight": 4.0,
        "status": "ok",
        "detail": "4 ch. (min 4)",
        "subscore": 1.0,
-       "contribution": 3.0
+       "contribution": 4.0
       },
       {
        "kind": "budget",
@@ -12243,6 +12597,15 @@
        "weight": 2.0,
        "status": "ok",
        "detail": "176 m² habitables (souhait ≥ 90 m²)",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -12393,16 +12756,16 @@
      ]
     },
     "2": {
-     "match_score": 68.0,
+     "match_score": 70.6,
      "details": [
       {
        "kind": "chambres_min",
        "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
+       "weight": 4.0,
        "status": "ok",
        "detail": "4 ch. (min 4)",
        "subscore": 1.0,
-       "contribution": 3.0
+       "contribution": 4.0
       },
       {
        "kind": "feature",
@@ -12446,6 +12809,15 @@
        "weight": 2.0,
        "status": "ok",
        "detail": "176 m² habitables (souhait ≥ 90 m²)",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -12826,16 +13198,16 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 63.2,
+     "match_score": 66.4,
      "details": [
       {
        "kind": "chambres_min",
        "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
+       "weight": 4.0,
        "status": "ok",
        "detail": "5 ch. (min 4)",
        "subscore": 1.0,
-       "contribution": 3.0
+       "contribution": 4.0
       },
       {
        "kind": "nature_exception",
@@ -12852,6 +13224,15 @@
        "weight": 2.0,
        "status": "ok",
        "detail": "240 m² habitables (souhait ≥ 90 m²)",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -13011,16 +13392,16 @@
      ]
     },
     "2": {
-     "match_score": 62.8,
+     "match_score": 65.8,
      "details": [
       {
        "kind": "chambres_min",
        "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
+       "weight": 4.0,
        "status": "ok",
        "detail": "5 ch. (min 4)",
        "subscore": 1.0,
-       "contribution": 3.0
+       "contribution": 4.0
       },
       {
        "kind": "feature",
@@ -13046,6 +13427,15 @@
        "weight": 2.0,
        "status": "ok",
        "detail": "240 m² habitables (souhait ≥ 90 m²)",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -13443,7 +13833,7 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 51.0,
+     "match_score": 53.4,
      "details": [
       {
        "kind": "budget",
@@ -13473,6 +13863,15 @@
        "contribution": 2.0
       },
       {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
        "kind": "ski",
        "label": "Proximité station de ski",
        "weight": 2.0,
@@ -13480,6 +13879,15 @@
        "detail": "remontée de ski à 7.3 km",
        "subscore": 0.757,
        "contribution": 1.513
+      },
+      {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "3 ch. (min 4)",
+       "subscore": 0.3,
+       "contribution": 1.2
       },
       {
        "kind": "nature_exception",
@@ -13516,15 +13924,6 @@
        "detail": "91% des locaux éligibles fibre",
        "subscore": 0.91,
        "contribution": 0.91
-      },
-      {
-       "kind": "chambres_min",
-       "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "3 ch. (min 4)",
-       "subscore": 0.3,
-       "contribution": 0.9
       },
       {
        "kind": "no_vis_a_vis",
@@ -13626,7 +14025,7 @@
      ]
     },
     "2": {
-     "match_score": 47.4,
+     "match_score": 50.0,
      "details": [
       {
        "kind": "budget",
@@ -13656,6 +14055,15 @@
        "contribution": 2.0
       },
       {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
        "kind": "ski",
        "label": "Proximité station de ski",
        "weight": 2.0,
@@ -13663,6 +14071,15 @@
        "detail": "remontée de ski à 7.3 km",
        "subscore": 0.757,
        "contribution": 1.513
+      },
+      {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "3 ch. (min 4)",
+       "subscore": 0.3,
+       "contribution": 1.2
       },
       {
        "kind": "nature_exception",
@@ -13690,15 +14107,6 @@
        "detail": "91% des locaux éligibles fibre",
        "subscore": 0.91,
        "contribution": 0.91
-      },
-      {
-       "kind": "chambres_min",
-       "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "3 ch. (min 4)",
-       "subscore": 0.3,
-       "contribution": 0.9
       },
       {
        "kind": "no_vis_a_vis",
@@ -14047,7 +14455,7 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 45.5,
+     "match_score": 48.3,
      "details": [
       {
        "kind": "budget",
@@ -14066,6 +14474,24 @@
        "detail": "105 m² habitables (souhait ≥ 90 m²)",
        "subscore": 1.0,
        "contribution": 2.0
+      },
+      {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "3 ch. (min 4)",
+       "subscore": 0.3,
+       "contribution": 1.2
       },
       {
        "kind": "ski",
@@ -14102,15 +14528,6 @@
        "detail": "terrasse : mentionné",
        "subscore": 1.0,
        "contribution": 1.0
-      },
-      {
-       "kind": "chambres_min",
-       "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "3 ch. (min 4)",
-       "subscore": 0.3,
-       "contribution": 0.9
       },
       {
        "kind": "no_vis_a_vis",
@@ -14230,7 +14647,7 @@
      ]
     },
     "2": {
-     "match_score": 42.0,
+     "match_score": 45.1,
      "details": [
       {
        "kind": "budget",
@@ -14249,6 +14666,24 @@
        "detail": "105 m² habitables (souhait ≥ 90 m²)",
        "subscore": 1.0,
        "contribution": 2.0
+      },
+      {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "3 ch. (min 4)",
+       "subscore": 0.3,
+       "contribution": 1.2
       },
       {
        "kind": "ski",
@@ -14276,15 +14711,6 @@
        "detail": "41 sentiers/itinéraires à proximité",
        "subscore": 1.0,
        "contribution": 1.0
-      },
-      {
-       "kind": "chambres_min",
-       "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "3 ch. (min 4)",
-       "subscore": 0.3,
-       "contribution": 0.9
       },
       {
        "kind": "no_vis_a_vis",
@@ -14652,7 +15078,7 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 60.0,
+     "match_score": 61.5,
      "details": [
       {
        "kind": "budget",
@@ -14689,6 +15115,24 @@
        "detail": "39 commerces/services à vélo (≤ 3 km)",
        "subscore": 1.0,
        "contribution": 2.0
+      },
+      {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "3 ch. (min 4)",
+       "subscore": 0.3,
+       "contribution": 1.2
       },
       {
        "kind": "near_city",
@@ -14734,15 +15178,6 @@
        "detail": "91% des locaux éligibles fibre",
        "subscore": 0.91,
        "contribution": 0.91
-      },
-      {
-       "kind": "chambres_min",
-       "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "3 ch. (min 4)",
-       "subscore": 0.3,
-       "contribution": 0.9
       },
       {
        "kind": "no_vis_a_vis",
@@ -14836,7 +15271,7 @@
      ]
     },
     "2": {
-     "match_score": 56.4,
+     "match_score": 58.1,
      "details": [
       {
        "kind": "has_terrain",
@@ -14884,6 +15319,24 @@
        "contribution": 2.0
       },
       {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "3 ch. (min 4)",
+       "subscore": 0.3,
+       "contribution": 1.2
+      },
+      {
        "kind": "near_city",
        "label": "Accessible depuis Marseille",
        "weight": 2.0,
@@ -14909,15 +15362,6 @@
        "detail": "91% des locaux éligibles fibre",
        "subscore": 0.91,
        "contribution": 0.91
-      },
-      {
-       "kind": "chambres_min",
-       "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "3 ch. (min 4)",
-       "subscore": 0.3,
-       "contribution": 0.9
       },
       {
        "kind": "no_vis_a_vis",
@@ -15268,7 +15712,7 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 61.6,
+     "match_score": 62.9,
      "details": [
       {
        "kind": "budget",
@@ -15298,6 +15742,15 @@
        "contribution": 2.0
       },
       {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
        "kind": "near_corridor",
        "label": "Axe Paris-Marseille",
        "weight": 1.5,
@@ -15305,6 +15758,15 @@
        "detail": "4 km de l'axe Paris – Marseille",
        "subscore": 0.901,
        "contribution": 1.352
+      },
+      {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "3 ch. (min 4)",
+       "subscore": 0.3,
+       "contribution": 1.2
       },
       {
        "kind": "temps_acces",
@@ -15379,15 +15841,6 @@
        "contribution": 0.98
       },
       {
-       "kind": "chambres_min",
-       "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "3 ch. (min 4)",
-       "subscore": 0.3,
-       "contribution": 0.9
-      },
-      {
        "kind": "no_vis_a_vis",
        "label": "Sans vis-à-vis",
        "weight": 1.5,
@@ -15453,7 +15906,7 @@
      ]
     },
     "2": {
-     "match_score": 53.0,
+     "match_score": 54.9,
      "details": [
       {
        "kind": "budget",
@@ -15483,6 +15936,15 @@
        "contribution": 2.0
       },
       {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
        "kind": "near_corridor",
        "label": "Axe Paris-Marseille",
        "weight": 1.5,
@@ -15490,6 +15952,15 @@
        "detail": "4 km de l'axe Paris – Marseille",
        "subscore": 0.901,
        "contribution": 1.352
+      },
+      {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "3 ch. (min 4)",
+       "subscore": 0.3,
+       "contribution": 1.2
       },
       {
        "kind": "temps_acces",
@@ -15544,15 +16015,6 @@
        "detail": "98% des locaux éligibles fibre",
        "subscore": 0.98,
        "contribution": 0.98
-      },
-      {
-       "kind": "chambres_min",
-       "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "3 ch. (min 4)",
-       "subscore": 0.3,
-       "contribution": 0.9
       },
       {
        "kind": "no_vis_a_vis",
@@ -15884,16 +16346,16 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 55.8,
+     "match_score": 59.9,
      "details": [
       {
        "kind": "chambres_min",
        "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
+       "weight": 4.0,
        "status": "ok",
        "detail": "4 ch. (min 4)",
        "subscore": 1.0,
-       "contribution": 3.0
+       "contribution": 4.0
       },
       {
        "kind": "budget",
@@ -15919,6 +16381,15 @@
        "weight": 2.0,
        "status": "ok",
        "detail": "21 commerces/services à vélo (≤ 3 km)",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -16067,16 +16538,16 @@
      ]
     },
     "2": {
-     "match_score": 51.5,
+     "match_score": 55.6,
      "details": [
       {
        "kind": "chambres_min",
        "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
+       "weight": 4.0,
        "status": "ok",
        "detail": "4 ch. (min 4)",
        "subscore": 1.0,
-       "contribution": 3.0
+       "contribution": 4.0
       },
       {
        "kind": "budget",
@@ -16102,6 +16573,15 @@
        "weight": 2.0,
        "status": "ok",
        "detail": "21 commerces/services à vélo (≤ 3 km)",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -16487,7 +16967,7 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 51.3,
+     "match_score": 53.6,
      "details": [
       {
        "kind": "budget",
@@ -16515,6 +16995,24 @@
        "detail": "233 m² habitables (souhait ≥ 90 m²)",
        "subscore": 1.0,
        "contribution": 2.0
+      },
+      {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "3 ch. (min 4)",
+       "subscore": 0.3,
+       "contribution": 1.2
       },
       {
        "kind": "has_terrain",
@@ -16560,15 +17058,6 @@
        "detail": "terrasse : mentionné",
        "subscore": 1.0,
        "contribution": 1.0
-      },
-      {
-       "kind": "chambres_min",
-       "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "3 ch. (min 4)",
-       "subscore": 0.3,
-       "contribution": 0.9
       },
       {
        "kind": "no_vis_a_vis",
@@ -16671,7 +17160,7 @@
      ]
     },
     "2": {
-     "match_score": 50.9,
+     "match_score": 53.0,
      "details": [
       {
        "kind": "has_terrain",
@@ -16710,6 +17199,24 @@
        "contribution": 2.0
       },
       {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "3 ch. (min 4)",
+       "subscore": 0.3,
+       "contribution": 1.2
+      },
+      {
        "kind": "nature_exception",
        "label": "Nature d'exception",
        "weight": 2.0,
@@ -16735,15 +17242,6 @@
        "detail": "18 sentiers/itinéraires à proximité",
        "subscore": 1.0,
        "contribution": 1.0
-      },
-      {
-       "kind": "chambres_min",
-       "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "3 ch. (min 4)",
-       "subscore": 0.3,
-       "contribution": 0.9
       },
       {
        "kind": "no_vis_a_vis",
@@ -17099,7 +17597,7 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 43.4,
+     "match_score": 45.5,
      "details": [
       {
        "kind": "budget",
@@ -17116,6 +17614,15 @@
        "weight": 2.0,
        "status": "ok",
        "detail": "23 commerces/services à vélo (≤ 3 km)",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -17248,7 +17755,7 @@
       {
        "kind": "chambres_min",
        "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
+       "weight": 4.0,
        "status": "ok",
        "detail": "2 ch. (min 4)",
        "subscore": 0.0,
@@ -17283,7 +17790,7 @@
      ]
     },
     "2": {
-     "match_score": 46.1,
+     "match_score": 47.8,
      "details": [
       {
        "kind": "has_terrain",
@@ -17309,6 +17816,15 @@
        "weight": 2.0,
        "status": "ok",
        "detail": "23 commerces/services à vélo (≤ 3 km)",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -17423,7 +17939,7 @@
       {
        "kind": "chambres_min",
        "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
+       "weight": 4.0,
        "status": "ok",
        "detail": "2 ch. (min 4)",
        "subscore": 0.0,
@@ -17712,16 +18228,16 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 73.5,
+     "match_score": 75.9,
      "details": [
       {
        "kind": "chambres_min",
        "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
+       "weight": 4.0,
        "status": "ok",
        "detail": "6 ch. (min 4)",
        "subscore": 1.0,
-       "contribution": 3.0
+       "contribution": 4.0
       },
       {
        "kind": "budget",
@@ -17747,6 +18263,15 @@
        "weight": 2.0,
        "status": "ok",
        "detail": "168 m² habitables (souhait ≥ 90 m²)",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -17895,16 +18420,16 @@
      ]
     },
     "2": {
-     "match_score": 66.5,
+     "match_score": 69.5,
      "details": [
       {
        "kind": "chambres_min",
        "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
+       "weight": 4.0,
        "status": "ok",
        "detail": "6 ch. (min 4)",
        "subscore": 1.0,
-       "contribution": 3.0
+       "contribution": 4.0
       },
       {
        "kind": "budget",
@@ -17930,6 +18455,15 @@
        "weight": 2.0,
        "status": "ok",
        "detail": "168 m² habitables (souhait ≥ 90 m²)",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -18326,7 +18860,7 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 60.3,
+     "match_score": 60.9,
      "details": [
       {
        "kind": "budget",
@@ -18352,6 +18886,15 @@
        "weight": 2.0,
        "status": "ok",
        "detail": "aucune autoroute/voie ferrée à proximité",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -18493,7 +19036,7 @@
       {
        "kind": "chambres_min",
        "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
+       "weight": 4.0,
        "status": "ok",
        "detail": "2 ch. (min 4)",
        "subscore": 0.0,
@@ -18511,7 +19054,7 @@
      ]
     },
     "2": {
-     "match_score": 60.1,
+     "match_score": 60.6,
      "details": [
       {
        "kind": "feature",
@@ -18546,6 +19089,15 @@
        "weight": 2.0,
        "status": "ok",
        "detail": "aucune autoroute/voie ferrée à proximité",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -18669,7 +19221,7 @@
       {
        "kind": "chambres_min",
        "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
+       "weight": 4.0,
        "status": "ok",
        "detail": "2 ch. (min 4)",
        "subscore": 0.0,
@@ -18940,16 +19492,16 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 61.9,
+     "match_score": 65.6,
      "details": [
       {
        "kind": "chambres_min",
        "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
+       "weight": 4.0,
        "status": "ok",
        "detail": "4 ch. (min 4)",
        "subscore": 1.0,
-       "contribution": 3.0
+       "contribution": 4.0
       },
       {
        "kind": "budget",
@@ -18975,6 +19527,15 @@
        "weight": 2.0,
        "status": "ok",
        "detail": "110 m² habitables (souhait ≥ 90 m²)",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -19122,16 +19683,16 @@
      ]
     },
     "2": {
-     "match_score": 60.5,
+     "match_score": 64.2,
      "details": [
       {
        "kind": "chambres_min",
        "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
+       "weight": 4.0,
        "status": "ok",
        "detail": "4 ch. (min 4)",
        "subscore": 1.0,
-       "contribution": 3.0
+       "contribution": 4.0
       },
       {
        "kind": "budget",
@@ -19157,6 +19718,15 @@
        "weight": 2.0,
        "status": "ok",
        "detail": "110 m² habitables (souhait ≥ 90 m²)",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -19543,7 +20113,7 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 44.2,
+     "match_score": 47.4,
      "details": [
       {
        "kind": "nature_exception",
@@ -19564,6 +20134,15 @@
        "contribution": 2.0
       },
       {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
        "kind": "ski",
        "label": "Proximité station de ski",
        "weight": 2.0,
@@ -19571,6 +20150,15 @@
        "detail": "remontée de ski à 9.3 km",
        "subscore": 0.69,
        "contribution": 1.38
+      },
+      {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "3 ch. (min 4)",
+       "subscore": 0.3,
+       "contribution": 1.2
       },
       {
        "kind": "hiking",
@@ -19598,15 +20186,6 @@
        "detail": "96% des locaux éligibles fibre",
        "subscore": 0.96,
        "contribution": 0.96
-      },
-      {
-       "kind": "chambres_min",
-       "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "3 ch. (min 4)",
-       "subscore": 0.3,
-       "contribution": 0.9
       },
       {
        "kind": "no_vis_a_vis",
@@ -19725,7 +20304,7 @@
      ]
     },
     "2": {
-     "match_score": 49.0,
+     "match_score": 51.6,
      "details": [
       {
        "kind": "feature",
@@ -19755,6 +20334,15 @@
        "contribution": 2.0
       },
       {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
        "kind": "ski",
        "label": "Proximité station de ski",
        "weight": 2.0,
@@ -19762,6 +20350,15 @@
        "detail": "remontée de ski à 9.3 km",
        "subscore": 0.69,
        "contribution": 1.38
+      },
+      {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "3 ch. (min 4)",
+       "subscore": 0.3,
+       "contribution": 1.2
       },
       {
        "kind": "hiking",
@@ -19780,15 +20377,6 @@
        "detail": "96% des locaux éligibles fibre",
        "subscore": 0.96,
        "contribution": 0.96
-      },
-      {
-       "kind": "chambres_min",
-       "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "3 ch. (min 4)",
-       "subscore": 0.3,
-       "contribution": 0.9
       },
       {
        "kind": "no_vis_a_vis",
@@ -20151,7 +20739,7 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 54.3,
+     "match_score": 56.3,
      "details": [
       {
        "kind": "budget",
@@ -20179,6 +20767,24 @@
        "detail": "340 m² habitables (souhait ≥ 90 m²)",
        "subscore": 1.0,
        "contribution": 2.0
+      },
+      {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "3 ch. (min 4)",
+       "subscore": 0.3,
+       "contribution": 1.2
       },
       {
        "kind": "temps_acces",
@@ -20215,15 +20821,6 @@
        "detail": "19 sentiers/itinéraires à proximité",
        "subscore": 1.0,
        "contribution": 1.0
-      },
-      {
-       "kind": "chambres_min",
-       "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "3 ch. (min 4)",
-       "subscore": 0.3,
-       "contribution": 0.9
       },
       {
        "kind": "no_vis_a_vis",
@@ -20335,7 +20932,7 @@
      ]
     },
     "2": {
-     "match_score": 56.0,
+     "match_score": 57.7,
      "details": [
       {
        "kind": "has_terrain",
@@ -20374,6 +20971,24 @@
        "contribution": 2.0
       },
       {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "3 ch. (min 4)",
+       "subscore": 0.3,
+       "contribution": 1.2
+      },
+      {
        "kind": "temps_acces",
        "label": "≤ 4h porte-à-porte depuis Paris",
        "weight": 2.0,
@@ -20399,15 +21014,6 @@
        "detail": "19 sentiers/itinéraires à proximité",
        "subscore": 1.0,
        "contribution": 1.0
-      },
-      {
-       "kind": "chambres_min",
-       "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "3 ch. (min 4)",
-       "subscore": 0.3,
-       "contribution": 0.9
       },
       {
        "kind": "no_vis_a_vis",
@@ -20768,7 +21374,7 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 55.9,
+     "match_score": 56.8,
      "details": [
       {
        "kind": "budget",
@@ -20794,6 +21400,15 @@
        "weight": 2.0,
        "status": "ok",
        "detail": "106 commerces/services à vélo (≤ 3 km)",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -20926,7 +21541,7 @@
       {
        "kind": "chambres_min",
        "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
+       "weight": 4.0,
        "status": "ok",
        "detail": "2 ch. (min 4)",
        "subscore": 0.0,
@@ -20952,7 +21567,7 @@
      ]
     },
     "2": {
-     "match_score": 50.6,
+     "match_score": 51.9,
      "details": [
       {
        "kind": "budget",
@@ -20978,6 +21593,15 @@
        "weight": 2.0,
        "status": "ok",
        "detail": "106 commerces/services à vélo (≤ 3 km)",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -21101,7 +21725,7 @@
       {
        "kind": "chambres_min",
        "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
+       "weight": 4.0,
        "status": "ok",
        "detail": "2 ch. (min 4)",
        "subscore": 0.0,
@@ -21381,7 +22005,7 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 53.6,
+     "match_score": 55.6,
      "details": [
       {
        "kind": "budget",
@@ -21402,6 +22026,15 @@
        "contribution": 2.0
       },
       {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
        "kind": "commerces",
        "label": "Commerces/services à vélo",
        "weight": 2.0,
@@ -21418,6 +22051,15 @@
        "detail": "~2h36 porte-à-porte depuis Paris (max 4h)",
        "subscore": 0.7,
        "contribution": 1.4
+      },
+      {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "3 ch. (min 4)",
+       "subscore": 0.3,
+       "contribution": 1.2
       },
       {
        "kind": "has_terrain",
@@ -21445,15 +22087,6 @@
        "detail": "99% des locaux éligibles fibre",
        "subscore": 0.99,
        "contribution": 0.99
-      },
-      {
-       "kind": "chambres_min",
-       "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "3 ch. (min 4)",
-       "subscore": 0.3,
-       "contribution": 0.9
       },
       {
        "kind": "no_vis_a_vis",
@@ -21565,7 +22198,7 @@
      ]
     },
     "2": {
-     "match_score": 49.9,
+     "match_score": 52.1,
      "details": [
       {
        "kind": "budget",
@@ -21586,6 +22219,15 @@
        "contribution": 2.0
       },
       {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
        "kind": "commerces",
        "label": "Commerces/services à vélo",
        "weight": 2.0,
@@ -21602,6 +22244,15 @@
        "detail": "~2h36 porte-à-porte depuis Paris (max 4h)",
        "subscore": 0.7,
        "contribution": 1.4
+      },
+      {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "3 ch. (min 4)",
+       "subscore": 0.3,
+       "contribution": 1.2
       },
       {
        "kind": "has_terrain",
@@ -21629,15 +22280,6 @@
        "detail": "99% des locaux éligibles fibre",
        "subscore": 0.99,
        "contribution": 0.99
-      },
-      {
-       "kind": "chambres_min",
-       "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "3 ch. (min 4)",
-       "subscore": 0.3,
-       "contribution": 0.9
       },
       {
        "kind": "no_vis_a_vis",
@@ -21993,7 +22635,7 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 55.9,
+     "match_score": 57.8,
      "details": [
       {
        "kind": "budget",
@@ -22023,6 +22665,15 @@
        "contribution": 2.0
       },
       {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
        "kind": "surface_habitable",
        "label": "Surface habitable (≥ 90 m²)",
        "weight": 2.0,
@@ -22030,6 +22681,15 @@
        "detail": "89 m² habitables (souhait ≥ 90 m²)",
        "subscore": 0.989,
        "contribution": 1.978
+      },
+      {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "3 ch. (min 4)",
+       "subscore": 0.3,
+       "contribution": 1.2
       },
       {
        "kind": "has_terrain",
@@ -22075,15 +22735,6 @@
        "detail": "~3h04 porte-à-porte depuis Paris (max 4h)",
        "subscore": 0.467,
        "contribution": 0.933
-      },
-      {
-       "kind": "chambres_min",
-       "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "3 ch. (min 4)",
-       "subscore": 0.3,
-       "contribution": 0.9
       },
       {
        "kind": "no_vis_a_vis",
@@ -22177,7 +22828,7 @@
      ]
     },
     "2": {
-     "match_score": 48.7,
+     "match_score": 51.0,
      "details": [
       {
        "kind": "budget",
@@ -22207,6 +22858,15 @@
        "contribution": 2.0
       },
       {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
        "kind": "surface_habitable",
        "label": "Surface habitable (≥ 90 m²)",
        "weight": 2.0,
@@ -22214,6 +22874,15 @@
        "detail": "89 m² habitables (souhait ≥ 90 m²)",
        "subscore": 0.989,
        "contribution": 1.978
+      },
+      {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "3 ch. (min 4)",
+       "subscore": 0.3,
+       "contribution": 1.2
       },
       {
        "kind": "hiking",
@@ -22241,15 +22910,6 @@
        "detail": "~3h04 porte-à-porte depuis Paris (max 4h)",
        "subscore": 0.467,
        "contribution": 0.933
-      },
-      {
-       "kind": "chambres_min",
-       "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "3 ch. (min 4)",
-       "subscore": 0.3,
-       "contribution": 0.9
       },
       {
        "kind": "no_vis_a_vis",
@@ -22606,16 +23266,16 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 64.8,
+     "match_score": 68.0,
      "details": [
       {
        "kind": "chambres_min",
        "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
+       "weight": 4.0,
        "status": "ok",
        "detail": "5 ch. (min 4)",
        "subscore": 1.0,
-       "contribution": 3.0
+       "contribution": 4.0
       },
       {
        "kind": "budget",
@@ -22650,6 +23310,15 @@
        "weight": 2.0,
        "status": "ok",
        "detail": "84 commerces/services à vélo (≤ 3 km)",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -22790,16 +23459,16 @@
      ]
     },
     "2": {
-     "match_score": 63.2,
+     "match_score": 66.2,
      "details": [
       {
        "kind": "chambres_min",
        "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
+       "weight": 4.0,
        "status": "ok",
        "detail": "5 ch. (min 4)",
        "subscore": 1.0,
-       "contribution": 3.0
+       "contribution": 4.0
       },
       {
        "kind": "has_terrain",
@@ -22843,6 +23512,15 @@
        "weight": 2.0,
        "status": "ok",
        "detail": "84 commerces/services à vélo (≤ 3 km)",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -23220,16 +23898,16 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 72.5,
+     "match_score": 69.9,
      "details": [
       {
        "kind": "chambres_min",
        "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
+       "weight": 4.0,
        "status": "ok",
        "detail": "4 ch. (min 4)",
        "subscore": 1.0,
-       "contribution": 3.0
+       "contribution": 4.0
       },
       {
        "kind": "budget",
@@ -23385,6 +24063,15 @@
        "contribution": 0.36
       },
       {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pavillon / neuf détecté",
+       "subscore": 0.15,
+       "contribution": 0.3
+      },
+      {
        "kind": "near_gare",
        "label": "Proche d'une gare",
        "weight": 1.0,
@@ -23404,16 +24091,16 @@
      ]
     },
     "2": {
-     "match_score": 62.2,
+     "match_score": 60.7,
      "details": [
       {
        "kind": "chambres_min",
        "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
+       "weight": 4.0,
        "status": "ok",
        "detail": "4 ch. (min 4)",
        "subscore": 1.0,
-       "contribution": 3.0
+       "contribution": 4.0
       },
       {
        "kind": "budget",
@@ -23558,6 +24245,15 @@
        "detail": "remontée de ski à 24.6 km",
        "subscore": 0.18,
        "contribution": 0.36
+      },
+      {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pavillon / neuf détecté",
+       "subscore": 0.15,
+       "contribution": 0.3
       },
       {
        "kind": "near_gare",
@@ -23836,16 +24532,16 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 67.8,
+     "match_score": 70.7,
      "details": [
       {
        "kind": "chambres_min",
        "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
+       "weight": 4.0,
        "status": "ok",
        "detail": "6 ch. (min 4)",
        "subscore": 1.0,
-       "contribution": 3.0
+       "contribution": 4.0
       },
       {
        "kind": "budget",
@@ -23871,6 +24567,15 @@
        "weight": 2.0,
        "status": "ok",
        "detail": "125 m² habitables (souhait ≥ 90 m²)",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -24020,16 +24725,16 @@
      ]
     },
     "2": {
-     "match_score": 63.5,
+     "match_score": 66.5,
      "details": [
       {
        "kind": "chambres_min",
        "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
+       "weight": 4.0,
        "status": "ok",
        "detail": "6 ch. (min 4)",
        "subscore": 1.0,
-       "contribution": 3.0
+       "contribution": 4.0
       },
       {
        "kind": "has_terrain",
@@ -24064,6 +24769,15 @@
        "weight": 2.0,
        "status": "ok",
        "detail": "125 m² habitables (souhait ≥ 90 m²)",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -24449,7 +25163,7 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 61.1,
+     "match_score": 57.5,
      "details": [
       {
        "kind": "budget",
@@ -24486,6 +25200,15 @@
        "detail": "12 commerces/services à vélo (≤ 3 km)",
        "subscore": 0.8,
        "contribution": 1.6
+      },
+      {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "3 ch. (min 4)",
+       "subscore": 0.3,
+       "contribution": 1.2
       },
       {
        "kind": "temps_acces",
@@ -24540,15 +25263,6 @@
        "detail": "terrasse : mentionné",
        "subscore": 1.0,
        "contribution": 1.0
-      },
-      {
-       "kind": "chambres_min",
-       "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "3 ch. (min 4)",
-       "subscore": 0.3,
-       "contribution": 0.9
       },
       {
        "kind": "no_vis_a_vis",
@@ -24614,6 +25328,15 @@
        "contribution": 0.3
       },
       {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pavillon / neuf détecté",
+       "subscore": 0.15,
+       "contribution": 0.3
+      },
+      {
        "kind": "feature",
        "label": "Cheminée / poêle",
        "weight": 1.0,
@@ -24634,7 +25357,7 @@
      ]
     },
     "2": {
-     "match_score": 54.6,
+     "match_score": 51.9,
      "details": [
       {
        "kind": "budget",
@@ -24671,6 +25394,15 @@
        "detail": "12 commerces/services à vélo (≤ 3 km)",
        "subscore": 0.8,
        "contribution": 1.6
+      },
+      {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "3 ch. (min 4)",
+       "subscore": 0.3,
+       "contribution": 1.2
       },
       {
        "kind": "has_terrain",
@@ -24716,15 +25448,6 @@
        "detail": "64 sentiers/itinéraires à proximité",
        "subscore": 1.0,
        "contribution": 1.0
-      },
-      {
-       "kind": "chambres_min",
-       "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "3 ch. (min 4)",
-       "subscore": 0.3,
-       "contribution": 0.9
       },
       {
        "kind": "no_vis_a_vis",
@@ -24795,6 +25518,15 @@
        "weight": 2.0,
        "status": "ok",
        "detail": "pas de remontée de ski à proximité",
+       "subscore": 0.15,
+       "contribution": 0.3
+      },
+      {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pavillon / neuf détecté",
        "subscore": 0.15,
        "contribution": 0.3
       },
@@ -25068,7 +25800,7 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 61.7,
+     "match_score": 57.9,
      "details": [
       {
        "kind": "budget",
@@ -25105,6 +25837,15 @@
        "detail": "~2h36 porte-à-porte depuis Paris (max 4h)",
        "subscore": 0.7,
        "contribution": 1.4
+      },
+      {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "3 ch. (min 4)",
+       "subscore": 0.3,
+       "contribution": 1.2
       },
       {
        "kind": "nature_exception",
@@ -25159,15 +25900,6 @@
        "detail": "99% des locaux éligibles fibre",
        "subscore": 0.99,
        "contribution": 0.99
-      },
-      {
-       "kind": "chambres_min",
-       "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "3 ch. (min 4)",
-       "subscore": 0.3,
-       "contribution": 0.9
       },
       {
        "kind": "no_vis_a_vis",
@@ -25233,6 +25965,15 @@
        "contribution": 0.3
       },
       {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pavillon / neuf détecté",
+       "subscore": 0.15,
+       "contribution": 0.3
+      },
+      {
        "kind": "feature",
        "label": "Cheminée / poêle",
        "weight": 1.0,
@@ -25252,7 +25993,7 @@
      ]
     },
     "2": {
-     "match_score": 55.4,
+     "match_score": 52.5,
      "details": [
       {
        "kind": "budget",
@@ -25300,6 +26041,15 @@
        "contribution": 1.362
       },
       {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "3 ch. (min 4)",
+       "subscore": 0.3,
+       "contribution": 1.2
+      },
+      {
        "kind": "nature_exception",
        "label": "Nature d'exception",
        "weight": 2.0,
@@ -25334,15 +26084,6 @@
        "detail": "99% des locaux éligibles fibre",
        "subscore": 0.99,
        "contribution": 0.99
-      },
-      {
-       "kind": "chambres_min",
-       "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "3 ch. (min 4)",
-       "subscore": 0.3,
-       "contribution": 0.9
       },
       {
        "kind": "no_vis_a_vis",
@@ -25413,6 +26154,15 @@
        "weight": 2.0,
        "status": "ok",
        "detail": "pas de remontée de ski à proximité",
+       "subscore": 0.15,
+       "contribution": 0.3
+      },
+      {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pavillon / neuf détecté",
        "subscore": 0.15,
        "contribution": 0.3
       },
@@ -25680,7 +26430,7 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 57.8,
+     "match_score": 59.5,
      "details": [
       {
        "kind": "budget",
@@ -25710,6 +26460,15 @@
        "contribution": 2.0
       },
       {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
        "kind": "temps_acces",
        "label": "≤ 4h porte-à-porte depuis Paris",
        "weight": 2.0,
@@ -25726,6 +26485,15 @@
        "detail": "6 km de l'axe Paris – Marseille",
        "subscore": 0.862,
        "contribution": 1.292
+      },
+      {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "3 ch. (min 4)",
+       "subscore": 0.3,
+       "contribution": 1.2
       },
       {
        "kind": "has_terrain",
@@ -25762,15 +26530,6 @@
        "detail": "94% des locaux éligibles fibre",
        "subscore": 0.94,
        "contribution": 0.94
-      },
-      {
-       "kind": "chambres_min",
-       "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "3 ch. (min 4)",
-       "subscore": 0.3,
-       "contribution": 0.9
       },
       {
        "kind": "no_vis_a_vis",
@@ -25864,7 +26623,7 @@
      ]
     },
     "2": {
-     "match_score": 52.9,
+     "match_score": 54.9,
      "details": [
       {
        "kind": "budget",
@@ -25894,6 +26653,15 @@
        "contribution": 2.0
       },
       {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
        "kind": "temps_acces",
        "label": "≤ 4h porte-à-porte depuis Paris",
        "weight": 2.0,
@@ -25910,6 +26678,15 @@
        "detail": "6 km de l'axe Paris – Marseille",
        "subscore": 0.862,
        "contribution": 1.292
+      },
+      {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "3 ch. (min 4)",
+       "subscore": 0.3,
+       "contribution": 1.2
       },
       {
        "kind": "nature_exception",
@@ -25937,15 +26714,6 @@
        "detail": "94% des locaux éligibles fibre",
        "subscore": 0.94,
        "contribution": 0.94
-      },
-      {
-       "kind": "chambres_min",
-       "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "3 ch. (min 4)",
-       "subscore": 0.3,
-       "contribution": 0.9
       },
       {
        "kind": "has_terrain",
@@ -26290,7 +27058,7 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 49.3,
+     "match_score": 50.8,
      "details": [
       {
        "kind": "budget",
@@ -26307,6 +27075,15 @@
        "weight": 2.0,
        "status": "ok",
        "detail": "aucune autoroute/voie ferrée à proximité",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -26439,7 +27216,7 @@
       {
        "kind": "chambres_min",
        "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
+       "weight": 4.0,
        "status": "ok",
        "detail": "1 ch. (min 4)",
        "subscore": 0.0,
@@ -26474,7 +27251,7 @@
      ]
     },
     "2": {
-     "match_score": 41.3,
+     "match_score": 43.4,
      "details": [
       {
        "kind": "budget",
@@ -26491,6 +27268,15 @@
        "weight": 2.0,
        "status": "ok",
        "detail": "aucune autoroute/voie ferrée à proximité",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -26614,7 +27400,7 @@
       {
        "kind": "chambres_min",
        "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
+       "weight": 4.0,
        "status": "ok",
        "detail": "1 ch. (min 4)",
        "subscore": 0.0,
@@ -26896,7 +27682,7 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 57.8,
+     "match_score": 59.5,
      "details": [
       {
        "kind": "budget",
@@ -26926,6 +27712,15 @@
        "contribution": 2.0
       },
       {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
        "kind": "temps_acces",
        "label": "≤ 4h porte-à-porte depuis Paris",
        "weight": 2.0,
@@ -26942,6 +27737,15 @@
        "detail": "6 km de l'axe Paris – Marseille",
        "subscore": 0.862,
        "contribution": 1.292
+      },
+      {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "3 ch. (min 4)",
+       "subscore": 0.3,
+       "contribution": 1.2
       },
       {
        "kind": "has_terrain",
@@ -26978,15 +27782,6 @@
        "detail": "94% des locaux éligibles fibre",
        "subscore": 0.94,
        "contribution": 0.94
-      },
-      {
-       "kind": "chambres_min",
-       "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "3 ch. (min 4)",
-       "subscore": 0.3,
-       "contribution": 0.9
       },
       {
        "kind": "no_vis_a_vis",
@@ -27080,7 +27875,7 @@
      ]
     },
     "2": {
-     "match_score": 52.9,
+     "match_score": 54.9,
      "details": [
       {
        "kind": "budget",
@@ -27110,6 +27905,15 @@
        "contribution": 2.0
       },
       {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
        "kind": "temps_acces",
        "label": "≤ 4h porte-à-porte depuis Paris",
        "weight": 2.0,
@@ -27126,6 +27930,15 @@
        "detail": "6 km de l'axe Paris – Marseille",
        "subscore": 0.862,
        "contribution": 1.292
+      },
+      {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "3 ch. (min 4)",
+       "subscore": 0.3,
+       "contribution": 1.2
       },
       {
        "kind": "nature_exception",
@@ -27153,15 +27966,6 @@
        "detail": "94% des locaux éligibles fibre",
        "subscore": 0.94,
        "contribution": 0.94
-      },
-      {
-       "kind": "chambres_min",
-       "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "3 ch. (min 4)",
-       "subscore": 0.3,
-       "contribution": 0.9
       },
       {
        "kind": "has_terrain",
@@ -27507,7 +28311,7 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 63.5,
+     "match_score": 63.8,
      "details": [
       {
        "kind": "budget",
@@ -27542,6 +28346,15 @@
        "weight": 2.0,
        "status": "ok",
        "detail": "18 commerces/services à vélo (≤ 3 km)",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -27674,7 +28487,7 @@
       {
        "kind": "chambres_min",
        "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
+       "weight": 4.0,
        "status": "ok",
        "detail": "2 ch. (min 4)",
        "subscore": 0.0,
@@ -27691,7 +28504,7 @@
      ]
     },
     "2": {
-     "match_score": 61.9,
+     "match_score": 62.2,
      "details": [
       {
        "kind": "has_terrain",
@@ -27735,6 +28548,15 @@
        "weight": 2.0,
        "status": "ok",
        "detail": "18 commerces/services à vélo (≤ 3 km)",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -27849,7 +28671,7 @@
       {
        "kind": "chambres_min",
        "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
+       "weight": 4.0,
        "status": "ok",
        "detail": "2 ch. (min 4)",
        "subscore": 0.0,
@@ -28120,7 +28942,7 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 58.1,
+     "match_score": 59.8,
      "details": [
       {
        "kind": "budget",
@@ -28148,6 +28970,24 @@
        "detail": "151 m² habitables (souhait ≥ 90 m²)",
        "subscore": 1.0,
        "contribution": 2.0
+      },
+      {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "3 ch. (min 4)",
+       "subscore": 0.3,
+       "contribution": 1.2
       },
       {
        "kind": "commerces",
@@ -28202,15 +29042,6 @@
        "detail": "terrasse : mentionné",
        "subscore": 1.0,
        "contribution": 1.0
-      },
-      {
-       "kind": "chambres_min",
-       "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "3 ch. (min 4)",
-       "subscore": 0.3,
-       "contribution": 0.9
       },
       {
        "kind": "no_vis_a_vis",
@@ -28304,7 +29135,7 @@
      ]
     },
     "2": {
-     "match_score": 53.5,
+     "match_score": 55.4,
      "details": [
       {
        "kind": "has_terrain",
@@ -28343,6 +29174,24 @@
        "contribution": 2.0
       },
       {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "3 ch. (min 4)",
+       "subscore": 0.3,
+       "contribution": 1.2
+      },
+      {
        "kind": "commerces",
        "label": "Commerces/services à vélo",
        "weight": 2.0,
@@ -28368,15 +29217,6 @@
        "detail": "71 sentiers/itinéraires à proximité",
        "subscore": 1.0,
        "contribution": 1.0
-      },
-      {
-       "kind": "chambres_min",
-       "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "3 ch. (min 4)",
-       "subscore": 0.3,
-       "contribution": 0.9
       },
       {
        "kind": "no_vis_a_vis",
@@ -28735,7 +29575,7 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 56.7,
+     "match_score": 58.4,
      "details": [
       {
        "kind": "budget",
@@ -28756,6 +29596,15 @@
        "contribution": 2.0
       },
       {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
        "kind": "surface_habitable",
        "label": "Surface habitable (≥ 90 m²)",
        "weight": 2.0,
@@ -28763,6 +29612,15 @@
        "detail": "88 m² habitables (souhait ≥ 90 m²)",
        "subscore": 0.978,
        "contribution": 1.956
+      },
+      {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "3 ch. (min 4)",
+       "subscore": 0.3,
+       "contribution": 1.2
       },
       {
        "kind": "near_corridor",
@@ -28826,15 +29684,6 @@
        "detail": "gare de Montelimar à 1.0 km",
        "subscore": 0.933,
        "contribution": 0.933
-      },
-      {
-       "kind": "chambres_min",
-       "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "3 ch. (min 4)",
-       "subscore": 0.3,
-       "contribution": 0.9
       },
       {
        "kind": "no_vis_a_vis",
@@ -28920,7 +29769,7 @@
      ]
     },
     "2": {
-     "match_score": 51.3,
+     "match_score": 53.3,
      "details": [
       {
        "kind": "budget",
@@ -28941,6 +29790,15 @@
        "contribution": 2.0
       },
       {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
        "kind": "surface_habitable",
        "label": "Surface habitable (≥ 90 m²)",
        "weight": 2.0,
@@ -28948,6 +29806,15 @@
        "detail": "88 m² habitables (souhait ≥ 90 m²)",
        "subscore": 0.978,
        "contribution": 1.956
+      },
+      {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "3 ch. (min 4)",
+       "subscore": 0.3,
+       "contribution": 1.2
       },
       {
        "kind": "near_corridor",
@@ -29002,15 +29869,6 @@
        "detail": "gare de Montelimar à 1.0 km",
        "subscore": 0.933,
        "contribution": 0.933
-      },
-      {
-       "kind": "chambres_min",
-       "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "3 ch. (min 4)",
-       "subscore": 0.3,
-       "contribution": 0.9
       },
       {
        "kind": "no_vis_a_vis",
@@ -29351,7 +30209,7 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 55.6,
+     "match_score": 57.5,
      "details": [
       {
        "kind": "budget",
@@ -29381,6 +30239,15 @@
        "contribution": 2.0
       },
       {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
        "kind": "surface_habitable",
        "label": "Surface habitable (≥ 90 m²)",
        "weight": 2.0,
@@ -29388,6 +30255,15 @@
        "detail": "60 m² habitables (souhait ≥ 90 m²)",
        "subscore": 0.667,
        "contribution": 1.333
+      },
+      {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "3 ch. (min 4)",
+       "subscore": 0.3,
+       "contribution": 1.2
       },
       {
        "kind": "has_terrain",
@@ -29415,15 +30291,6 @@
        "detail": "terrasse : mentionné",
        "subscore": 1.0,
        "contribution": 1.0
-      },
-      {
-       "kind": "chambres_min",
-       "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "3 ch. (min 4)",
-       "subscore": 0.3,
-       "contribution": 0.9
       },
       {
        "kind": "no_vis_a_vis",
@@ -29535,7 +30402,7 @@
      ]
     },
     "2": {
-     "match_score": 47.4,
+     "match_score": 49.8,
      "details": [
       {
        "kind": "budget",
@@ -29565,6 +30432,15 @@
        "contribution": 2.0
       },
       {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
        "kind": "surface_habitable",
        "label": "Surface habitable (≥ 90 m²)",
        "weight": 2.0,
@@ -29574,6 +30450,15 @@
        "contribution": 1.333
       },
       {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "3 ch. (min 4)",
+       "subscore": 0.3,
+       "contribution": 1.2
+      },
+      {
        "kind": "hiking",
        "label": "Randonnées",
        "weight": 1.0,
@@ -29581,15 +30466,6 @@
        "detail": "86 sentiers/itinéraires à proximité",
        "subscore": 1.0,
        "contribution": 1.0
-      },
-      {
-       "kind": "chambres_min",
-       "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "3 ch. (min 4)",
-       "subscore": 0.3,
-       "contribution": 0.9
       },
       {
        "kind": "no_vis_a_vis",
@@ -29964,7 +30840,7 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 62.4,
+     "match_score": 58.6,
      "details": [
       {
        "kind": "budget",
@@ -30010,6 +30886,15 @@
        "detail": "~2h29 porte-à-porte depuis Paris (max 4h)",
        "subscore": 0.758,
        "contribution": 1.517
+      },
+      {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "3 ch. (min 4)",
+       "subscore": 0.3,
+       "contribution": 1.2
       },
       {
        "kind": "near_corridor",
@@ -30057,15 +30942,6 @@
        "contribution": 0.98
       },
       {
-       "kind": "chambres_min",
-       "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "3 ch. (min 4)",
-       "subscore": 0.3,
-       "contribution": 0.9
-      },
-      {
        "kind": "no_vis_a_vis",
        "label": "Sans vis-à-vis",
        "weight": 1.5,
@@ -30111,6 +30987,15 @@
        "contribution": 0.3
       },
       {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pavillon / neuf détecté",
+       "subscore": 0.15,
+       "contribution": 0.3
+      },
+      {
        "kind": "relief_mountain",
        "label": "Relief / montagne",
        "weight": 1.0,
@@ -30148,7 +31033,7 @@
      ]
     },
     "2": {
-     "match_score": 56.1,
+     "match_score": 53.2,
      "details": [
       {
        "kind": "budget",
@@ -30196,6 +31081,15 @@
        "contribution": 1.517
       },
       {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "3 ch. (min 4)",
+       "subscore": 0.3,
+       "contribution": 1.2
+      },
+      {
        "kind": "near_corridor",
        "label": "Axe Paris-Marseille",
        "weight": 1.5,
@@ -30230,15 +31124,6 @@
        "detail": "98% des locaux éligibles fibre",
        "subscore": 0.98,
        "contribution": 0.98
-      },
-      {
-       "kind": "chambres_min",
-       "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "3 ch. (min 4)",
-       "subscore": 0.3,
-       "contribution": 0.9
       },
       {
        "kind": "no_vis_a_vis",
@@ -30300,6 +31185,15 @@
        "weight": 2.0,
        "status": "ok",
        "detail": "pas de remontée de ski à proximité",
+       "subscore": 0.15,
+       "contribution": 0.3
+      },
+      {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pavillon / neuf détecté",
        "subscore": 0.15,
        "contribution": 0.3
       },
@@ -30567,7 +31461,7 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 56.6,
+     "match_score": 58.4,
      "details": [
       {
        "kind": "budget",
@@ -30584,6 +31478,15 @@
        "weight": 2.0,
        "status": "ok",
        "detail": "23 commerces/services à vélo (≤ 3 km)",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -30615,6 +31518,15 @@
        "contribution": 1.292
       },
       {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "3 ch. (min 4)",
+       "subscore": 0.3,
+       "contribution": 1.2
+      },
+      {
        "kind": "has_terrain",
        "label": "Avec terrain",
        "weight": 1.0,
@@ -30640,15 +31552,6 @@
        "detail": "94% des locaux éligibles fibre",
        "subscore": 0.94,
        "contribution": 0.94
-      },
-      {
-       "kind": "chambres_min",
-       "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "3 ch. (min 4)",
-       "subscore": 0.3,
-       "contribution": 0.9
       },
       {
        "kind": "no_vis_a_vis",
@@ -30751,7 +31654,7 @@
      ]
     },
     "2": {
-     "match_score": 51.9,
+     "match_score": 53.9,
      "details": [
       {
        "kind": "budget",
@@ -30768,6 +31671,15 @@
        "weight": 2.0,
        "status": "ok",
        "detail": "23 commerces/services à vélo (≤ 3 km)",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -30799,6 +31711,15 @@
        "contribution": 1.292
       },
       {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "3 ch. (min 4)",
+       "subscore": 0.3,
+       "contribution": 1.2
+      },
+      {
        "kind": "hiking",
        "label": "Randonnées",
        "weight": 1.0,
@@ -30815,15 +31736,6 @@
        "detail": "94% des locaux éligibles fibre",
        "subscore": 0.94,
        "contribution": 0.94
-      },
-      {
-       "kind": "chambres_min",
-       "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "3 ch. (min 4)",
-       "subscore": 0.3,
-       "contribution": 0.9
       },
       {
        "kind": "has_terrain",
@@ -31180,7 +32092,7 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 52.5,
+     "match_score": 54.7,
      "details": [
       {
        "kind": "budget",
@@ -31201,6 +32113,15 @@
        "contribution": 2.0
       },
       {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
        "kind": "surface_habitable",
        "label": "Surface habitable (≥ 90 m²)",
        "weight": 2.0,
@@ -31208,6 +32129,15 @@
        "detail": "89 m² habitables (souhait ≥ 90 m²)",
        "subscore": 0.989,
        "contribution": 1.978
+      },
+      {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "3 ch. (min 4)",
+       "subscore": 0.3,
+       "contribution": 1.2
       },
       {
        "kind": "has_terrain",
@@ -31244,15 +32174,6 @@
        "detail": "97% des locaux éligibles fibre",
        "subscore": 0.97,
        "contribution": 0.97
-      },
-      {
-       "kind": "chambres_min",
-       "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "3 ch. (min 4)",
-       "subscore": 0.3,
-       "contribution": 0.9
       },
       {
        "kind": "no_vis_a_vis",
@@ -31364,7 +32285,7 @@
      ]
     },
     "2": {
-     "match_score": 46.2,
+     "match_score": 48.7,
      "details": [
       {
        "kind": "budget",
@@ -31385,6 +32306,15 @@
        "contribution": 2.0
       },
       {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
        "kind": "surface_habitable",
        "label": "Surface habitable (≥ 90 m²)",
        "weight": 2.0,
@@ -31392,6 +32322,15 @@
        "detail": "89 m² habitables (souhait ≥ 90 m²)",
        "subscore": 0.989,
        "contribution": 1.978
+      },
+      {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "3 ch. (min 4)",
+       "subscore": 0.3,
+       "contribution": 1.2
       },
       {
        "kind": "has_terrain",
@@ -31419,15 +32358,6 @@
        "detail": "97% des locaux éligibles fibre",
        "subscore": 0.97,
        "contribution": 0.97
-      },
-      {
-       "kind": "chambres_min",
-       "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "3 ch. (min 4)",
-       "subscore": 0.3,
-       "contribution": 0.9
       },
       {
        "kind": "no_vis_a_vis",
@@ -31789,7 +32719,7 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 52.4,
+     "match_score": 54.6,
      "details": [
       {
        "kind": "budget",
@@ -31810,6 +32740,15 @@
        "contribution": 2.0
       },
       {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
        "kind": "surface_habitable",
        "label": "Surface habitable (≥ 90 m²)",
        "weight": 2.0,
@@ -31817,6 +32756,15 @@
        "detail": "88 m² habitables (souhait ≥ 90 m²)",
        "subscore": 0.978,
        "contribution": 1.956
+      },
+      {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "3 ch. (min 4)",
+       "subscore": 0.3,
+       "contribution": 1.2
       },
       {
        "kind": "has_terrain",
@@ -31853,15 +32801,6 @@
        "detail": "97% des locaux éligibles fibre",
        "subscore": 0.97,
        "contribution": 0.97
-      },
-      {
-       "kind": "chambres_min",
-       "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "3 ch. (min 4)",
-       "subscore": 0.3,
-       "contribution": 0.9
       },
       {
        "kind": "no_vis_a_vis",
@@ -31973,7 +32912,7 @@
      ]
     },
     "2": {
-     "match_score": 46.1,
+     "match_score": 48.6,
      "details": [
       {
        "kind": "budget",
@@ -31994,6 +32933,15 @@
        "contribution": 2.0
       },
       {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
        "kind": "surface_habitable",
        "label": "Surface habitable (≥ 90 m²)",
        "weight": 2.0,
@@ -32001,6 +32949,15 @@
        "detail": "88 m² habitables (souhait ≥ 90 m²)",
        "subscore": 0.978,
        "contribution": 1.956
+      },
+      {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "3 ch. (min 4)",
+       "subscore": 0.3,
+       "contribution": 1.2
       },
       {
        "kind": "has_terrain",
@@ -32028,15 +32985,6 @@
        "detail": "97% des locaux éligibles fibre",
        "subscore": 0.97,
        "contribution": 0.97
-      },
-      {
-       "kind": "chambres_min",
-       "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "3 ch. (min 4)",
-       "subscore": 0.3,
-       "contribution": 0.9
       },
       {
        "kind": "no_vis_a_vis",
@@ -32399,7 +33347,7 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 59.4,
+     "match_score": 61.0,
      "details": [
       {
        "kind": "budget",
@@ -32438,6 +33386,24 @@
        "contribution": 2.0
       },
       {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "3 ch. (min 4)",
+       "subscore": 0.3,
+       "contribution": 1.2
+      },
+      {
        "kind": "temps_acces",
        "label": "≤ 4h porte-à-porte depuis Paris",
        "weight": 2.0,
@@ -32463,15 +33429,6 @@
        "detail": "cheminee : mentionné",
        "subscore": 1.0,
        "contribution": 1.0
-      },
-      {
-       "kind": "chambres_min",
-       "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "3 ch. (min 4)",
-       "subscore": 0.3,
-       "contribution": 0.9
       },
       {
        "kind": "no_vis_a_vis",
@@ -32582,7 +33539,7 @@
      ]
     },
     "2": {
-     "match_score": 55.5,
+     "match_score": 57.4,
      "details": [
       {
        "kind": "budget",
@@ -32621,6 +33578,24 @@
        "contribution": 2.0
       },
       {
+       "kind": "pas_pavillon",
+       "label": "Cachet (éviter pavillon/neuf)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de signe pavillon/neuf",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "chambres_min",
+       "label": "≥ 4 chambres (min strict)",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "3 ch. (min 4)",
+       "subscore": 0.3,
+       "contribution": 1.2
+      },
+      {
        "kind": "temps_acces",
        "label": "≤ 4h porte-à-porte depuis Paris",
        "weight": 2.0,
@@ -32637,15 +33612,6 @@
        "detail": "130 sentiers/itinéraires à proximité",
        "subscore": 1.0,
        "contribution": 1.0
-      },
-      {
-       "kind": "chambres_min",
-       "label": "≥ 4 chambres (min strict)",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "3 ch. (min 4)",
-       "subscore": 0.3,
-       "contribution": 0.9
       },
       {
        "kind": "no_vis_a_vis",

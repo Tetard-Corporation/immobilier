@@ -142,6 +142,18 @@ def _detect_equipements(description: str | None) -> list[str]:
     return [k for k, pat in _EQUIP_PATTERNS.items() if re.search(pat, t)]
 
 
+# Signe « pavillon / neuf » (= peu de cachet). Conservateur : on évite « cuisine neuve »
+# (rénovation = bien) en exigeant maison/villa/construction neuve, VEFA, programme neuf, etc.
+_PAVILLON_RE = re.compile(
+    r"\bpavillon\b|(?:maison|villa|construction|b[âa]tisse)\s+neuve|\bvefa\b|"
+    r"\brt\s?2012\b|à\s+construire|programme\s+neuf|construction\s+récente|"
+    r"maison\s+r[ée]cente|villa\s+contemporaine", re.I)
+
+
+def _detect_pavillon_neuf(description: str | None) -> bool:
+    return bool(description and _PAVILLON_RE.search(description))
+
+
 def _fibre_flags(code_commune: str | None, lut: dict) -> dict:
     if not code_commune or code_commune not in lut:
         return {}
@@ -341,7 +353,8 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
         for e in _detect_equipements(row.description):
             if e not in feats:
                 feats.append(e)
-        extra = {**infra, **poi, **_fibre_flags(row.code_commune, fibre_lut), "features": feats}
+        extra = {**infra, **poi, **_fibre_flags(row.code_commune, fibre_lut),
+                 "features": feats, "pavillon_neuf": _detect_pavillon_neuf(row.description)}
         item = _RowItem(row, extra_flags=extra)
         scores_by_set = {}
         for fs_id, prefs in set_prefs.items():
