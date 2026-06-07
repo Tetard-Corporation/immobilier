@@ -147,7 +147,10 @@ table.scores td.num { text-align: right; font-variant-numeric: tabular-nums; whi
 .star:hover { color: #fde047; }
 .star:active { transform: scale(1.25); }
 .stars.big .star { font-size: 26px; }
+.stars.sm .star { font-size: 15px; }
 .vavg { font-size: 12px; color: var(--muted); }
+table.crit-tbl td.num { white-space: nowrap; }
+table.crit-tbl .stars.sm { white-space: nowrap; }
 
 .votewrap .myvote { margin: 6px 0 12px; display: flex; align-items: center; gap: 10px; }
 table.votes-tbl td, table.votes-tbl th { padding: 6px 9px; }

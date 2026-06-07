@@ -28,8 +28,10 @@ python -m app.services.export_static ../docs/data --no-photos # sans télécharg
 
 Vote 1–5 ⭐ par bien et par personne, **sans login** (on se fait confiance). Au
 1er chargement, un overlay « Qui es-tu ? » fait choisir son nom (mémorisé en
-`localStorage`). Le vote s'affiche dans le feed (ta note + moyenne) et le détail
-par personne dans la fiche du bien.
+`localStorage`). La **note globale** s'affiche dans le feed (ta note + moyenne) et
+le détail par personne dans la fiche. Dans la fiche, on peut **aussi (en option)
+noter chaque critère** du set : le tableau « Critères » place côte à côte le score
+**algo**, **ton vote** et la **moyenne du groupe**.
 
 **Sans Supabase configuré**, le vote fonctionne quand même en mode *local*
 (localStorage, par navigateur) — pratique pour tester l'UX, mais non partagé.
@@ -42,9 +44,10 @@ par personne dans la fiche du bien.
      id         bigint generated always as identity primary key,
      bien_id    text not null,
      voter      text not null,
+     criterion  text not null default '__overall__',  -- '__overall__' = note globale
      stars      int  not null check (stars between 1 and 5),
      updated_at timestamptz not null default now(),
-     unique (bien_id, voter)        -- 1 vote par (bien, personne) -> upsert
+     unique (bien_id, voter, criterion)   -- 1 vote par (bien, personne, critère)
    );
    alter table votes enable row level security;
    create policy "anon read"   on votes for select using (true);

@@ -103,8 +103,8 @@ function gallery(bien) {
 function badges(bien) {
   const m = matchOf(bien, currentSetId);
   const parts = [];
-  if (m != null) parts.push(`<span class="badge match">match ${fix1(m)}</span>`);
-  if (bien.score != null) parts.push(`<span class="badge score">invest ${fix1(bien.score)}</span>`);
+  if (m != null) parts.push(`<span class="badge match" title="Match du set">🎯 ${fix1(m)}</span>`);
+  if (bien.score != null) parts.push(`<span class="badge score" title="Score d'investissement">📈 ${fix1(bien.score)}</span>`);
   return `<div class="badges">${parts.join("")}</div>` +
          (bien.is_favori ? `<div class="fav-star" title="favori">⭐</div>` : "");
 }
@@ -204,41 +204,38 @@ function pillarsTable(bien) {
   return `<table class="scores">${rows}</table>`;
 }
 
-function prefsComparativeTable(bien) {
-  // Colonnes = sets (têtard, ↳ Léo). Lignes = critères (union des préférences).
-  const setsWithPrefs = SETS.filter((s) => (s.preferences || []).length);
-  if (!setsWithPrefs.length) return "";
-  // index détails par set: key = kind|label
-  const detailIndex = {};   // setId -> {critKey -> entry}
-  const critOrder = [];     // [{key,label}]
-  const seen = new Set();
-  for (const s of setsWithPrefs) {
-    const sb = (bien.scores_by_set || {})[String(s.id)] || {};
-    detailIndex[s.id] = {};
-    for (const d of (sb.details || [])) {
-      const key = (d.kind || "") + "|" + (d.label || "");
-      detailIndex[s.id][key] = d;
-      if (!seen.has(key)) { seen.add(key); critOrder.push({ key, label: d.label || d.kind }); }
-    }
-  }
-  const head = `<tr><th>Critère</th>${setsWithPrefs.map((s) =>
-    `<th class="setcol-head">${s.parent_id ? "↳ " : ""}${s.name}</th>`).join("")}</tr>`;
-  const totalRow = `<tr><th>Match global</th>${setsWithPrefs.map((s) => {
-    const m = ((bien.scores_by_set || {})[String(s.id)] || {}).match_score;
-    return `<td class="num"><b>${fix1(m)}</b></td>`;
-  }).join("")}</tr>`;
-  const rows = critOrder.map(({ key, label }) => {
-    const cells = setsWithPrefs.map((s) => {
-      const d = detailIndex[s.id][key];
-      if (!d) return `<td class="num detailtxt">—</td>`;
-      if (d.subscore == null) return `<td class="num"><span class="${statusCls(d.status)}">${d.status}</span><div class="detailtxt">${d.detail || ""}</div></td>`;
-      const pct = Math.round(d.subscore * 100);
-      return `<td class="num">${pct}% <span class="weighttag">×${d.weight}</span>
-        <div class="detailtxt">${d.detail || ""}</div></td>`;
-    }).join("");
-    return `<tr><td>${label}</td>${cells}</tr>`;
+// Tableau unique pour le SET SÉLECTIONNÉ : par critère, le score algo, TON vote
+// (étoiles, optionnel) et la moyenne du groupe.
+function criteriaTable(bien) {
+  const set = SET_BY_ID[String(currentSetId)];
+  if (!set || !(set.preferences || []).length) return "";
+  const id = voteKey(bien);
+  const sb = (bien.scores_by_set || {})[String(currentSetId)] || {};
+  const algoBy = {};
+  for (const d of (sb.details || [])) algoBy[d.label || d.kind] = d;
+
+  const rows = set.preferences.map((p) => {
+    const label = p.label || p.kind;
+    const d = algoBy[label];
+    let algoCell = "—";
+    if (d && d.subscore != null) algoCell = Math.round(d.subscore * 100) + "%";
+    else if (d) algoCell = `<span class="${statusCls(d.status)}">${d.status}</span>`;
+    const info = Votes.forBien(id, label);
+    const grp = info.count ? `${info.avg.toFixed(1)} <span class="weighttag">(${info.count})</span>` : "—";
+    const detailTxt = d && d.detail ? `<div class="detailtxt">${d.detail}</div>` : "";
+    return `<tr>
+      <td>${label}${detailTxt}</td>
+      <td class="num">${algoCell}</td>
+      <td class="num">${starsWidget(id, "sm", label)}</td>
+      <td class="num">${grp}</td>
+    </tr>`;
   }).join("");
-  return `<table class="scores">${head}${totalRow}${rows}</table>`;
+
+  return `<div class="detailtxt" style="margin-bottom:6px">Match global ${set.name} : <b>${fix1(sb.match_score)}</b></div>
+    <table class="scores crit-tbl">
+      <tr><th>Critère</th><th class="num">Algo</th><th class="num">Ton vote</th><th class="num">Groupe</th></tr>
+      ${rows}
+    </table>`;
 }
 
 function openModal(bien) {
@@ -254,11 +251,11 @@ function openModal(bien) {
       ${bien.altitude != null ? Math.round(bien.altitude) + " m alt." : ""}</div>
     ${bien.is_favori ? `<div class="note">⭐ ${bien.favori_note || "favori"}</div>` : ""}
 
-    <div class="section-title">Votes ⭐ <span class="detailtxt">(${Votes.backend === "supabase" ? "partagés" : "local — Supabase non configuré"})</span></div>
+    <div class="section-title">Note globale ⭐ <span class="detailtxt">(${Votes.backend === "supabase" ? "partagés" : "local"})</span></div>
     ${votesBlock(bien)}
 
-    <div class="section-title">Match par critère et par set</div>
-    ${prefsComparativeTable(bien)}
+    <div class="section-title">Critères <span class="detailtxt">— algo vs vos votes (set : ${(SET_BY_ID[String(currentSetId)] || {}).name || "—"})</span></div>
+    ${criteriaTable(bien)}
 
     <div class="section-title">Score d'investissement (piliers)</div>
     ${pillarsTable(bien)}
@@ -280,11 +277,13 @@ function closeModal() { $("#modal").classList.add("hidden"); openBien = null; }
 function refreshModal() { if (openBien && !$("#modal").classList.contains("hidden")) openModal(openBien); }
 
 // ---------- Votes (étoiles) ----------
-function starsWidget(id, size) {
-  const mine = Votes.forBien(id).mine || 0;
+const escAttr = (s) => String(s).replace(/&/g, "&amp;").replace(/"/g, "&quot;");
+function starsWidget(id, size, criterion) {
+  const crit = criterion || Votes.OVERALL;
+  const mine = Votes.forBien(id, crit).mine || 0;
   let s = "";
   for (let i = 1; i <= 5; i++) s += `<span class="star ${i <= mine ? "on" : ""}" data-v="${i}">★</span>`;
-  return `<span class="stars ${size || ""}" data-bien="${id}">${s}</span>`;
+  return `<span class="stars ${size || ""}" data-bien="${escAttr(id)}" data-crit="${escAttr(crit)}">${s}</span>`;
 }
 function starsRow(b) {
   const info = Votes.forBien(voteKey(b));
@@ -311,9 +310,9 @@ function votesBlock(b) {
 }
 function handleStar(st) {
   if (!Votes.voter) { openIdentity(); return; }
-  const id = st.closest(".stars").dataset.bien;
+  const wrap = st.closest(".stars");
   const v = Number(st.dataset.v);
-  Votes.setMine(id, v);  // optimiste + persistance async ; déclenche onChange -> render + refreshModal
+  Votes.setMine(wrap.dataset.bien, v, wrap.dataset.crit);  // optimiste ; onChange -> render + refreshModal
 }
 
 // ---------- Identité de session ----------
