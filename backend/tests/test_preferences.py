@@ -65,6 +65,19 @@ def test_brief_jeune_gauche():
     assert {"population_jeune", "orientation_gauche", "near_gare"} <= kinds
 
 
+def test_corridor_paris_marseille_suit_la_vallee_du_rhone():
+    # Un bien en vallée du Rhône (Valence) doit être bien plus proche de l'axe réel
+    # qu'avec la ligne droite Paris-Marseille (qui passe par le Massif Central).
+    from app.services.preferences import _corridor_points
+    from app.services.geo import distance_to_corridor_km
+    pts = _corridor_points({"villes": ["Paris", "Marseille"]})
+    # Lyon, Valence, Avignon insérés -> au moins 6 points.
+    assert len(pts) >= 6
+    valence = (44.93, 4.89)
+    d = distance_to_corridor_km(valence[0], valence[1], pts)
+    assert d < 15  # sur l'axe rhodanien
+
+
 def test_corridor_preference_score():
     lyon = _listing(latitude=45.764, longitude=4.835, flags={})
     brest = _listing(latitude=48.39, longitude=-4.48, flags={})

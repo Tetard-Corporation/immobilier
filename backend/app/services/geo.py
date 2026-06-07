@@ -23,6 +23,7 @@ CITY_COORDS: dict[str, tuple[float, float]] = {
     "clermont-ferrand": (45.7772, 3.0870),
     "valence": (44.9334, 4.8924),
     "avignon": (43.9493, 4.8055),
+    "nimes": (43.8367, 4.3601),
 }
 
 

@@ -41,9 +41,27 @@ def _clamp(x: float) -> float:
     return max(0.0, min(1.0, x))
 
 
+# Tracés ferroviaires réels (hubs intermédiaires) pour les axes courants : un axe
+# Paris-Marseille ne suit pas la ligne droite (qui coupe le Massif Central) mais la
+# vallée du Rhône. On insère les hubs quand l'axe correspond à un trajet connu.
+_KNOWN_RAIL_HUBS = {
+    frozenset({"paris", "marseille"}): ["paris", "dijon", "lyon", "valence", "avignon", "marseille"],
+    frozenset({"paris", "lyon"}): ["paris", "dijon", "lyon"],
+    frozenset({"paris", "nice"}): ["paris", "lyon", "valence", "avignon", "marseille", "nice"],
+    frozenset({"paris", "montpellier"}): ["paris", "lyon", "valence", "nimes", "montpellier"],
+}
+
+
 def _corridor_points(params: dict) -> list[tuple[float, float]]:
     pts = [tuple(p) for p in params.get("points", []) if isinstance(p, (list, tuple)) and len(p) == 2]
-    for city in params.get("villes", []) or params.get("cities", []):
+    villes = [v for v in (params.get("villes", []) or params.get("cities", []))]
+    # Si l'axe relie deux villes correspondant à un trajet ferroviaire connu, on suit
+    # le tracé réel (hubs intermédiaires) plutôt que la ligne droite.
+    if len(villes) == 2:
+        key = frozenset(v.strip().lower() for v in villes)
+        if key in _KNOWN_RAIL_HUBS:
+            villes = _KNOWN_RAIL_HUBS[key]
+    for city in villes:
         c = resolve_city(city)
         if c:
             pts.append(c)
