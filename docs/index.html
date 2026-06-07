@@ -19,6 +19,7 @@
         <select id="sortSelect">
           <option value="match">Match du set ↓</option>
           <option value="score">Score invest. ↓</option>
+          <option value="note">Note ⭐ ↓</option>
           <option value="prix">Prix ↑</option>
         </select>
       </label>
@@ -26,6 +27,7 @@
         <input type="range" id="scoreMin" min="0" max="100" value="0" step="5" />
       </label>
       <label class="ctl chk"><input type="checkbox" id="favOnly" /> Favoris</label>
+      <button id="whoami" class="whoami" title="Changer d'identité">Qui es-tu ?</button>
       <div class="modeswitch">
         <button id="modeScroll" class="active">Scroll</button>
         <button id="modeMap">Carte</button>
@@ -44,8 +46,19 @@
     <div class="modal-card" id="modalCard"></div>
   </div>
 
+  <div id="identity" class="idoverlay hidden">
+    <div class="id-backdrop"></div>
+    <div class="idcard">
+      <h2>Qui es-tu ?</h2>
+      <p class="sub">On se fait confiance — choisis ton nom pour cette session. (mémorisé)</p>
+      <div id="idlist" class="idlist"></div>
+    </div>
+  </div>
+
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
           integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="config.js"></script>
+  <script src="votes.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

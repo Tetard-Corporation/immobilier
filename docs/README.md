@@ -24,6 +24,41 @@ python -m app.services.export_static ../docs/data --no-photos # sans télécharg
 > scraper**. Le front affiche donc un **instantané**. Pour rafraîchir : relancer
 > des recherches côté backend, puis ré-exporter et committer.
 
+## Vote par étoiles (Supabase)
+
+Vote 1–5 ⭐ par bien et par personne, **sans login** (on se fait confiance). Au
+1er chargement, un overlay « Qui es-tu ? » fait choisir son nom (mémorisé en
+`localStorage`). Le vote s'affiche dans le feed (ta note + moyenne) et le détail
+par personne dans la fiche du bien.
+
+**Sans Supabase configuré**, le vote fonctionne quand même en mode *local*
+(localStorage, par navigateur) — pratique pour tester l'UX, mais non partagé.
+
+### Mise en place (5 min, gratuit)
+1. Crée un projet sur [supabase.com](https://supabase.com).
+2. **SQL Editor** → exécute :
+   ```sql
+   create table if not exists votes (
+     id         bigint generated always as identity primary key,
+     bien_id    text not null,
+     voter      text not null,
+     stars      int  not null check (stars between 1 and 5),
+     updated_at timestamptz not null default now(),
+     unique (bien_id, voter)        -- 1 vote par (bien, personne) -> upsert
+   );
+   alter table votes enable row level security;
+   create policy "anon read"   on votes for select using (true);
+   create policy "anon insert" on votes for insert with check (true);
+   create policy "anon update" on votes for update using (true) with check (true);
+   ```
+3. **Settings → API** : copie l'URL du projet et la clé **anon public**.
+4. Édite `config.js` : renseigne `SUPABASE_URL`, `SUPABASE_ANON_KEY` et la liste
+   `USERS` (vos prénoms).
+
+> 🔓 La clé anon est **publique** (c'est prévu : protégée par RLS). Les policies
+> ci-dessus sont permissives (n'importe qui connaissant le site peut voter) — c'est
+> le choix « confiance » assumé. Pour durcir, on pourrait exiger un code partagé.
+
 ## Activer GitHub Pages
 1. Repo → **Settings → Pages**.
 2. **Source : Deploy from a branch**.

@@ -6,10 +6,12 @@ let SETS = [];        // [{id,name,parent_id,preferences:[...]}]
 let SET_BY_ID = {};
 let currentSetId = null;
 let map = null, markerLayer = null;
+let openBien = null;   // bien actuellement ouvert dans la modale (pour rafraîchir les votes)
 
 const $ = (s) => document.querySelector(s);
 const euros = (n) => (n == null ? "—" : Number(n).toLocaleString("fr-FR") + " €");
 const fix1 = (n) => (n == null ? "—" : Number(n).toFixed(1));
+const voteKey = (b) => `${b.source}__${b.external_id}`;
 
 async function boot() {
   DATA = await fetch("data/data.json").then((r) => r.json());
@@ -34,7 +36,15 @@ async function boot() {
   $("#modeScroll").addEventListener("click", () => setMode("scroll"));
   $("#modeMap").addEventListener("click", () => setMode("map"));
   $("#modal .modal-backdrop").addEventListener("click", closeModal);
-  document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeModal(); });
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape") { closeModal(); closeIdentityIfAllowed(); } });
+
+  // Votes (étoiles) : init backend + identité de session.
+  await Votes.init(window.APP_CONFIG || {});
+  Votes.onChange(() => { render(); if (openBien) refreshModal(); });
+  $("#whoami").addEventListener("click", openIdentity);
+  $("#identity .id-backdrop").addEventListener("click", closeIdentityIfAllowed);
+  renderWhoami();
+  if (!Votes.voter) openIdentity();
 
   render();
 }
@@ -47,6 +57,7 @@ function matchOf(bien, setId) {
 function sortValue(bien, mode) {
   if (mode === "prix") return bien.prix == null ? Infinity : bien.prix;
   if (mode === "score") return bien.score == null ? -1 : bien.score;
+  if (mode === "note") { const v = Votes.forBien(voteKey(bien)).avg; return v == null ? -1 : v; }
   const m = matchOf(bien, currentSetId);
   return m == null ? -1 : m;
 }
@@ -109,6 +120,7 @@ function renderScroll(list) {
         <div class="sub">${b.type_bien || "bien"} · ${b.nb_chambres ?? "?"} ch · terrain ${b.surface_terrain != null ? b.surface_terrain + " m²" : "—"}</div>
         <div class="chips">${(b.features || []).slice(0, 6).map((f) => `<span class="chip">${f}</span>`).join("")}</div>
         ${b.favori_note ? `<div class="note">⭐ ${b.favori_note}</div>` : ""}
+        ${starsRow(b)}
       </div>
     </article>`).join("") || `<p class="meta">Aucun bien ne correspond aux filtres.</p>`;
 
@@ -125,7 +137,9 @@ function renderScroll(list) {
       const i = Math.round(gal.scrollLeft / gal.clientWidth);
       card.querySelectorAll(".dots i").forEach((d, k) => d.classList.toggle("on", k === i));
     });
-    card.addEventListener("click", () => openModal(b));
+    card.querySelectorAll(".star").forEach((st) =>
+      st.addEventListener("click", (e) => { e.stopPropagation(); handleStar(st); }));
+    card.addEventListener("click", (e) => { if (e.target.closest(".stars")) return; openModal(b); });
   });
 }
 
@@ -229,6 +243,7 @@ function prefsComparativeTable(bien) {
 
 function openModal(bien) {
   if (!bien) return;
+  openBien = bien;
   const card = $("#modalCard");
   card.innerHTML = `
     <button class="modal-close" id="mclose">×</button>
@@ -238,6 +253,9 @@ function openModal(bien) {
       terrain ${bien.surface_terrain != null ? bien.surface_terrain + " m²" : "—"} ·
       ${bien.altitude != null ? Math.round(bien.altitude) + " m alt." : ""}</div>
     ${bien.is_favori ? `<div class="note">⭐ ${bien.favori_note || "favori"}</div>` : ""}
+
+    <div class="section-title">Votes ⭐ <span class="detailtxt">(${Votes.backend === "supabase" ? "partagés" : "local — Supabase non configuré"})</span></div>
+    ${votesBlock(bien)}
 
     <div class="section-title">Match par critère et par set</div>
     ${prefsComparativeTable(bien)}
@@ -255,7 +273,67 @@ function openModal(bien) {
   $("#modal").classList.remove("hidden");
   $("#mclose").addEventListener("click", closeModal);
   $("#mclose2").addEventListener("click", closeModal);
+  card.querySelectorAll(".star").forEach((st) =>
+    st.addEventListener("click", () => handleStar(st)));
 }
-function closeModal() { $("#modal").classList.add("hidden"); }
+function closeModal() { $("#modal").classList.add("hidden"); openBien = null; }
+function refreshModal() { if (openBien && !$("#modal").classList.contains("hidden")) openModal(openBien); }
+
+// ---------- Votes (étoiles) ----------
+function starsWidget(id, size) {
+  const mine = Votes.forBien(id).mine || 0;
+  let s = "";
+  for (let i = 1; i <= 5; i++) s += `<span class="star ${i <= mine ? "on" : ""}" data-v="${i}">★</span>`;
+  return `<span class="stars ${size || ""}" data-bien="${id}">${s}</span>`;
+}
+function starsRow(b) {
+  const info = Votes.forBien(voteKey(b));
+  const meta = info.count
+    ? `<span class="vavg">moy ${info.avg.toFixed(1)} · ${info.count} vote${info.count > 1 ? "s" : ""}</span>`
+    : `<span class="vavg detailtxt">non noté</span>`;
+  return `<div class="voterow">${starsWidget(voteKey(b))} ${meta}</div>`;
+}
+function votesBlock(b) {
+  const id = voteKey(b);
+  const info = Votes.forBien(id);
+  const rows = Votes.users.map((u) => {
+    const s = info.byUser[u];
+    const cell = s ? `<span style="color:#fbbf24">${"★".repeat(s)}</span><span class="detailtxt">${"☆".repeat(5 - s)}</span>`
+                   : `<span class="detailtxt">—</span>`;
+    return `<tr><td>${u}${u === Votes.voter ? ' <span class="weighttag">(toi)</span>' : ""}</td><td class="num">${cell}</td></tr>`;
+  }).join("");
+  const myLabel = Votes.voter ? "Ta note" : "Choisis ton identité pour noter";
+  return `<div class="votewrap">
+    <div class="myvote"><span>${myLabel} :</span> ${starsWidget(id, "big")}</div>
+    <table class="scores votes-tbl"><tr><th>Qui</th><th class="num">Note</th></tr>${rows}
+      <tr><th>Moyenne</th><td class="num"><b>${info.avg != null ? info.avg.toFixed(1) : "—"}</b> (${info.count})</td></tr></table>
+  </div>`;
+}
+function handleStar(st) {
+  if (!Votes.voter) { openIdentity(); return; }
+  const id = st.closest(".stars").dataset.bien;
+  const v = Number(st.dataset.v);
+  Votes.setMine(id, v);  // optimiste + persistance async ; déclenche onChange -> render + refreshModal
+}
+
+// ---------- Identité de session ----------
+function renderWhoami() {
+  $("#whoami").textContent = Votes.voter ? `🙂 ${Votes.voter}` : "Qui es-tu ?";
+}
+function openIdentity() {
+  const list = $("#idlist");
+  list.innerHTML = Votes.users.map((u) =>
+    `<button class="idbtn ${u === Votes.voter ? "cur" : ""}">${u}</button>`).join("");
+  list.querySelectorAll(".idbtn").forEach((btn) =>
+    btn.addEventListener("click", () => {
+      Votes.setVoter(btn.textContent);
+      $("#identity").classList.add("hidden");
+      renderWhoami(); render(); if (openBien) refreshModal();
+    }));
+  $("#identity").classList.remove("hidden");
+}
+function closeIdentityIfAllowed() {
+  if (Votes.voter) $("#identity").classList.add("hidden");  // on ne peut fermer qu'une fois identifié
+}
 
 boot();
