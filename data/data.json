@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-07T12:21:14.212925+00:00",
+ "generated_at": "2026-06-07T14:23:36.307933+00:00",
  "sets": [
   {
    "id": 1,
@@ -1832,7 +1832,7 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 59.2,
+     "match_score": 63.5,
      "details": [
       {
        "kind": "budget",
@@ -1898,6 +1898,15 @@
        "contribution": 0.9
       },
       {
+       "kind": "near_gare",
+       "label": "Proche d'une gare",
+       "weight": 1.0,
+       "status": "ok",
+       "detail": "gare à 5.1 km",
+       "subscore": 0.66,
+       "contribution": 0.66
+      },
+      {
        "kind": "authentic",
        "label": "Authentique / cachet",
        "weight": 1.5,
@@ -1914,15 +1923,6 @@
        "detail": "106.8 m",
        "subscore": 0.178,
        "contribution": 0.178
-      },
-      {
-       "kind": "near_gare",
-       "label": "Proche d'une gare",
-       "weight": 1.0,
-       "status": "ok",
-       "detail": "gare à 39.7 km",
-       "subscore": 0.0,
-       "contribution": 0.0
       },
       {
        "kind": "light_works",
@@ -1951,7 +1951,7 @@
      ]
     },
     "2": {
-     "match_score": 57.5,
+     "match_score": 60.7,
      "details": [
       {
        "kind": "has_terrain",
@@ -2017,6 +2017,15 @@
        "contribution": 0.9
       },
       {
+       "kind": "near_gare",
+       "label": "Proche d'une gare",
+       "weight": 1.0,
+       "status": "ok",
+       "detail": "gare à 5.1 km",
+       "subscore": 0.66,
+       "contribution": 0.66
+      },
+      {
        "kind": "feature",
        "label": "Vue panoramique",
        "weight": 3.0,
@@ -2042,15 +2051,6 @@
        "detail": "106.8 m",
        "subscore": 0.178,
        "contribution": 0.178
-      },
-      {
-       "kind": "near_gare",
-       "label": "Proche d'une gare",
-       "weight": 1.0,
-       "status": "ok",
-       "detail": "gare à 39.7 km",
-       "subscore": 0.0,
-       "contribution": 0.0
       },
       {
        "kind": "light_works",
@@ -3117,7 +3117,7 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 64.3,
+     "match_score": 68.6,
      "details": [
       {
        "kind": "budget",
@@ -3183,6 +3183,15 @@
        "contribution": 0.85
       },
       {
+       "kind": "near_gare",
+       "label": "Proche d'une gare",
+       "weight": 1.0,
+       "status": "ok",
+       "detail": "gare à 3.6 km",
+       "subscore": 0.76,
+       "contribution": 0.76
+      },
+      {
        "kind": "authentic",
        "label": "Authentique / cachet",
        "weight": 1.5,
@@ -3199,15 +3208,6 @@
        "detail": "99.9 m",
        "subscore": 0.167,
        "contribution": 0.167
-      },
-      {
-       "kind": "near_gare",
-       "label": "Proche d'une gare",
-       "weight": 1.0,
-       "status": "ok",
-       "detail": "gare à 13.6 km",
-       "subscore": 0.093,
-       "contribution": 0.093
       },
       {
        "kind": "has_terrain",
@@ -3236,7 +3236,7 @@
      ]
     },
     "2": {
-     "match_score": 57.2,
+     "match_score": 60.8,
      "details": [
       {
        "kind": "budget",
@@ -3302,6 +3302,15 @@
        "contribution": 0.85
       },
       {
+       "kind": "near_gare",
+       "label": "Proche d'une gare",
+       "weight": 1.0,
+       "status": "ok",
+       "detail": "gare à 3.6 km",
+       "subscore": 0.76,
+       "contribution": 0.76
+      },
+      {
        "kind": "feature",
        "label": "Vue panoramique",
        "weight": 3.0,
@@ -3327,15 +3336,6 @@
        "detail": "99.9 m",
        "subscore": 0.167,
        "contribution": 0.167
-      },
-      {
-       "kind": "near_gare",
-       "label": "Proche d'une gare",
-       "weight": 1.0,
-       "status": "ok",
-       "detail": "gare à 13.6 km",
-       "subscore": 0.093,
-       "contribution": 0.093
       },
       {
        "kind": "has_terrain",
@@ -3707,7 +3707,7 @@
        "label": "Proche d'une gare",
        "weight": 1.0,
        "status": "ok",
-       "detail": "gare à 68.2 km",
+       "detail": "gare à 29.6 km",
        "subscore": 0.0,
        "contribution": 0.0
       },
@@ -3836,7 +3836,7 @@
        "label": "Proche d'une gare",
        "weight": 1.0,
        "status": "ok",
-       "detail": "gare à 68.2 km",
+       "detail": "gare à 29.6 km",
        "subscore": 0.0,
        "contribution": 0.0
       },
@@ -4213,7 +4213,7 @@
        "label": "Proche d'une gare",
        "weight": 1.0,
        "status": "ok",
-       "detail": "gare à 53.3 km",
+       "detail": "gare à 17.3 km",
        "subscore": 0.0,
        "contribution": 0.0
       },
@@ -4341,7 +4341,7 @@
        "label": "Proche d'une gare",
        "weight": 1.0,
        "status": "ok",
-       "detail": "gare à 53.3 km",
+       "detail": "gare à 17.3 km",
        "subscore": 0.0,
        "contribution": 0.0
       },
@@ -4626,7 +4626,7 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 67.0,
+     "match_score": 68.6,
      "details": [
       {
        "kind": "budget",
@@ -4714,9 +4714,9 @@
        "label": "Proche d'une gare",
        "weight": 1.0,
        "status": "ok",
-       "detail": "gare à 32.6 km",
-       "subscore": 0.0,
-       "contribution": 0.0
+       "detail": "gare à 11.3 km",
+       "subscore": 0.247,
+       "contribution": 0.247
       },
       {
        "kind": "light_works",
@@ -4745,7 +4745,7 @@
      ]
     },
     "2": {
-     "match_score": 56.0,
+     "match_score": 57.2,
      "details": [
       {
        "kind": "budget",
@@ -4842,9 +4842,9 @@
        "label": "Proche d'une gare",
        "weight": 1.0,
        "status": "ok",
-       "detail": "gare à 32.6 km",
-       "subscore": 0.0,
-       "contribution": 0.0
+       "detail": "gare à 11.3 km",
+       "subscore": 0.247,
+       "contribution": 0.247
       },
       {
        "kind": "light_works",
@@ -5129,7 +5129,7 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 62.1,
+     "match_score": 68.1,
      "details": [
       {
        "kind": "budget",
@@ -5195,6 +5195,15 @@
        "contribution": 1.0
       },
       {
+       "kind": "near_gare",
+       "label": "Proche d'une gare",
+       "weight": 1.0,
+       "status": "ok",
+       "detail": "gare à 0.1 km",
+       "subscore": 0.993,
+       "contribution": 0.993
+      },
+      {
        "kind": "no_vis_a_vis",
        "label": "Sans vis-à-vis",
        "weight": 1.5,
@@ -5222,15 +5231,6 @@
        "contribution": 0.262
       },
       {
-       "kind": "near_gare",
-       "label": "Proche d'une gare",
-       "weight": 1.0,
-       "status": "ok",
-       "detail": "gare à 35.8 km",
-       "subscore": 0.0,
-       "contribution": 0.0
-      },
-      {
        "kind": "fiber",
        "label": "Fibre (télétravail)",
        "weight": 1.0,
@@ -5249,7 +5249,7 @@
      ]
     },
     "2": {
-     "match_score": 48.0,
+     "match_score": 52.6,
      "details": [
       {
        "kind": "budget",
@@ -5306,6 +5306,15 @@
        "contribution": 1.0
       },
       {
+       "kind": "near_gare",
+       "label": "Proche d'une gare",
+       "weight": 1.0,
+       "status": "ok",
+       "detail": "gare à 0.1 km",
+       "subscore": 0.993,
+       "contribution": 0.993
+      },
+      {
        "kind": "no_vis_a_vis",
        "label": "Sans vis-à-vis",
        "weight": 1.5,
@@ -5349,15 +5358,6 @@
        "detail": "156.9 m",
        "subscore": 0.262,
        "contribution": 0.262
-      },
-      {
-       "kind": "near_gare",
-       "label": "Proche d'une gare",
-       "weight": 1.0,
-       "status": "ok",
-       "detail": "gare à 35.8 km",
-       "subscore": 0.0,
-       "contribution": 0.0
       },
       {
        "kind": "fiber",
@@ -5709,7 +5709,7 @@
        "label": "Proche d'une gare",
        "weight": 1.0,
        "status": "ok",
-       "detail": "gare à 44.7 km",
+       "detail": "gare à 33.7 km",
        "subscore": 0.0,
        "contribution": 0.0
       },
@@ -5837,7 +5837,7 @@
        "label": "Proche d'une gare",
        "weight": 1.0,
        "status": "ok",
-       "detail": "gare à 44.7 km",
+       "detail": "gare à 33.7 km",
        "subscore": 0.0,
        "contribution": 0.0
       },
@@ -6229,7 +6229,7 @@
        "label": "Proche d'une gare",
        "weight": 1.0,
        "status": "ok",
-       "detail": "gare à 19.5 km",
+       "detail": "gare à 19.2 km",
        "subscore": 0.0,
        "contribution": 0.0
       },
@@ -6358,7 +6358,7 @@
        "label": "Proche d'une gare",
        "weight": 1.0,
        "status": "ok",
-       "detail": "gare à 19.5 km",
+       "detail": "gare à 19.2 km",
        "subscore": 0.0,
        "contribution": 0.0
       },
@@ -6723,7 +6723,7 @@
        "label": "Proche d'une gare",
        "weight": 1.0,
        "status": "ok",
-       "detail": "gare à 53.7 km",
+       "detail": "gare à 30.2 km",
        "subscore": 0.0,
        "contribution": 0.0
       },
@@ -6851,7 +6851,7 @@
        "label": "Proche d'une gare",
        "weight": 1.0,
        "status": "ok",
-       "detail": "gare à 53.7 km",
+       "detail": "gare à 30.2 km",
        "subscore": 0.0,
        "contribution": 0.0
       },
@@ -7231,7 +7231,7 @@
        "label": "Proche d'une gare",
        "weight": 1.0,
        "status": "ok",
-       "detail": "gare à 29.3 km",
+       "detail": "gare à 17.5 km",
        "subscore": 0.0,
        "contribution": 0.0
       },
@@ -7360,7 +7360,7 @@
        "label": "Proche d'une gare",
        "weight": 1.0,
        "status": "ok",
-       "detail": "gare à 29.3 km",
+       "detail": "gare à 17.5 km",
        "subscore": 0.0,
        "contribution": 0.0
       },
@@ -7639,7 +7639,7 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 57.6,
+     "match_score": 63.3,
      "details": [
       {
        "kind": "budget",
@@ -7687,6 +7687,15 @@
        "contribution": 1.0
       },
       {
+       "kind": "near_gare",
+       "label": "Proche d'une gare",
+       "weight": 1.0,
+       "status": "ok",
+       "detail": "gare à 1.0 km",
+       "subscore": 0.933,
+       "contribution": 0.933
+      },
+      {
        "kind": "no_vis_a_vis",
        "label": "Sans vis-à-vis",
        "weight": 1.5,
@@ -7732,15 +7741,6 @@
        "contribution": 0.129
       },
       {
-       "kind": "near_gare",
-       "label": "Proche d'une gare",
-       "weight": 1.0,
-       "status": "ok",
-       "detail": "gare à 43.3 km",
-       "subscore": 0.0,
-       "contribution": 0.0
-      },
-      {
        "kind": "fiber",
        "label": "Fibre (télétravail)",
        "weight": 1.0,
@@ -7759,7 +7759,7 @@
      ]
     },
     "2": {
-     "match_score": 45.4,
+     "match_score": 49.7,
      "details": [
       {
        "kind": "budget",
@@ -7796,6 +7796,15 @@
        "detail": "",
        "subscore": 0.5,
        "contribution": 1.0
+      },
+      {
+       "kind": "near_gare",
+       "label": "Proche d'une gare",
+       "weight": 1.0,
+       "status": "ok",
+       "detail": "gare à 1.0 km",
+       "subscore": 0.933,
+       "contribution": 0.933
       },
       {
        "kind": "no_vis_a_vis",
@@ -7859,15 +7868,6 @@
        "detail": "77.5 m",
        "subscore": 0.129,
        "contribution": 0.129
-      },
-      {
-       "kind": "near_gare",
-       "label": "Proche d'une gare",
-       "weight": 1.0,
-       "status": "ok",
-       "detail": "gare à 43.3 km",
-       "subscore": 0.0,
-       "contribution": 0.0
       },
       {
        "kind": "fiber",
