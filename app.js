@@ -71,7 +71,11 @@ function visibleBiens() {
   const min = Number($("#scoreMin").value);
   const sortMode = $("#sortSelect").value;
   let list = (DATA.biens || []).filter((b) => {
-    if (favOnly && !b.is_favori) return false;
+    // Favoris : perso (Supabase) si identifié, sinon repli sur les favoris curatés du dataset.
+    if (favOnly) {
+      const fav = Votes.voter ? Votes.isFavori(voteKey(b)) : b.is_favori;
+      if (!fav) return false;
+    }
     const ref = sortMode === "score" ? b.score : matchOf(b, currentSetId);
     if (min > 0 && (ref == null || ref < min)) return false;
     return true;
@@ -109,15 +113,21 @@ function badges(bien) {
   const parts = [];
   if (m != null) parts.push(`<span class="badge match" title="Match du set">🎯 ${fix1(m)}</span>`);
   if (bien.score != null) parts.push(`<span class="badge score" title="Score d'investissement">📈 ${fix1(bien.score)}</span>`);
-  return `<div class="badges">${parts.join("")}</div>` +
-         (bien.is_favori ? `<div class="fav-star" title="favori">⭐</div>` : "");
+  return `<div class="badges">${parts.join("")}</div>`;
+}
+function favBtn(b) {
+  const id = voteKey(b);
+  const mine = Votes.isFavori && Votes.isFavori(id);
+  const n = Votes.favCount ? Votes.favCount(id) : 0;
+  return `<button class="fav-btn${mine ? " on" : ""}" data-bien="${escAttr(id)}" title="Favori" aria-label="Favori">`
+    + `${mine ? "♥" : "♡"}${n > 0 ? `<span class="fav-n">${n}</span>` : ""}</button>`;
 }
 
 function renderScroll(list) {
   const root = $("#scrollView");
   root.innerHTML = list.map((b, idx) => `
     <article class="card" data-idx="${idx}">
-      <div class="galwrap" style="position:relative">${gallery(b)}${badges(b)}</div>
+      <div class="galwrap" style="position:relative">${gallery(b)}${badges(b)}${favBtn(b)}</div>
       <div class="body">
         <div class="body-main">
           <div class="price">${euros(b.prix)}</div>
@@ -148,8 +158,14 @@ function renderScroll(list) {
       st.addEventListener("click", (e) => { e.stopPropagation(); handleStar(st); }));
     const mm = card.querySelector(".minimap[data-lat]");
     if (mm) bindMiniMap(mm);
+    const fb = card.querySelector(".fav-btn");
+    if (fb) fb.addEventListener("click", (e) => {
+      e.stopPropagation();
+      if (!Votes.voter) { openIdentity(); return; }
+      Votes.toggleFavori(fb.dataset.bien);   // emit -> onChange -> render (le cœur se met à jour)
+    });
     card.addEventListener("click", (e) => {
-      if (e.target.closest(".stars") || e.target.closest(".minimap")) return;
+      if (e.target.closest(".stars") || e.target.closest(".minimap") || e.target.closest(".fav-btn")) return;
       openModal(b);
     });
   });
