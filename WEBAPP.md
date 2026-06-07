@@ -50,7 +50,7 @@ noter chaque critère** du set : le tableau « Critères » place côte à côte
      bien_id    text not null,
      voter      text not null,
      criterion  text not null default '__overall__',  -- '__overall__' = note globale
-     stars      int  not null check (stars between 1 and 5),
+     stars      int  check (stars between 1 and 5),    -- nullable : commenter sans noter
      comment    text,                                 -- commentaire optionnel
      updated_at timestamptz not null default now(),
      unique (bien_id, voter, criterion)   -- 1 vote par (bien, personne, critère)
