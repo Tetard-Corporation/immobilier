@@ -37,6 +37,8 @@ async function boot() {
   $("#modeMap").addEventListener("click", () => setMode("map"));
   $("#modal .modal-backdrop").addEventListener("click", closeModal);
   document.addEventListener("keydown", (e) => { if (e.key === "Escape") { closeModal(); closeIdentityIfAllowed(); } });
+  // Relâche du clic/doigt n'importe où -> ferme la grande carte (appui maintenu).
+  ["pointerup", "pointercancel"].forEach((ev) => window.addEventListener(ev, hideBigMap));
 
   // Votes (étoiles) : init backend + identité de session.
   await Votes.init(window.APP_CONFIG || {});
@@ -115,12 +117,15 @@ function renderScroll(list) {
     <article class="card" data-idx="${idx}">
       <div class="galwrap" style="position:relative">${gallery(b)}${badges(b)}</div>
       <div class="body">
-        <div class="price">${euros(b.prix)}</div>
-        <h3>${b.commune || "?"} <span class="sub">(${b.departement || "—"})</span></h3>
-        <div class="sub">${b.type_bien || "bien"} · ${b.nb_chambres ?? "?"} ch · terrain ${b.surface_terrain != null ? b.surface_terrain + " m²" : "—"}</div>
-        <div class="chips">${(b.features || []).slice(0, 6).map((f) => `<span class="chip">${f}</span>`).join("")}</div>
-        ${b.favori_note ? `<div class="note">⭐ ${b.favori_note}</div>` : ""}
-        ${starsRow(b)}
+        <div class="body-main">
+          <div class="price">${euros(b.prix)}</div>
+          <h3>${b.commune || "?"} <span class="sub">(${b.departement || "—"})</span></h3>
+          <div class="sub">${b.type_bien || "bien"} · ${b.nb_chambres ?? "?"} ch · terrain ${b.surface_terrain != null ? b.surface_terrain + " m²" : "—"}</div>
+          <div class="chips">${(b.features || []).slice(0, 6).map((f) => `<span class="chip">${f}</span>`).join("")}</div>
+          ${b.favori_note ? `<div class="note">⭐ ${b.favori_note}</div>` : ""}
+          ${starsRow(b)}
+        </div>
+        <div class="minimap-col">${miniMap(b)}</div>
       </div>
     </article>`).join("") || `<p class="meta">Aucun bien ne correspond aux filtres.</p>`;
 
@@ -139,9 +144,59 @@ function renderScroll(list) {
     });
     card.querySelectorAll(".star").forEach((st) =>
       st.addEventListener("click", (e) => { e.stopPropagation(); handleStar(st); }));
-    card.addEventListener("click", (e) => { if (e.target.closest(".stars")) return; openModal(b); });
+    const mm = card.querySelector(".minimap[data-lat]");
+    if (mm) bindMiniMap(mm);
+    card.addEventListener("click", (e) => {
+      if (e.target.closest(".stars") || e.target.closest(".minimap")) return;
+      openModal(b);
+    });
   });
 }
+
+// ---------- Mini-carte (tuiles OSM statiques, centrée, sans Leaflet) ----------
+function tileMapHTML(lat, lon, w, h, z) {
+  const n = 2 ** z;
+  const latR = lat * Math.PI / 180;
+  const gx = (lon + 180) / 360 * n * 256;
+  const gy = (1 - Math.log(Math.tan(latR) + 1 / Math.cos(latR)) / Math.PI) / 2 * n * 256;
+  const left0 = gx - w / 2, top0 = gy - h / 2;   // coin haut-gauche pour centrer le point
+  let imgs = "";
+  for (let tx = Math.floor(left0 / 256); tx <= Math.floor((left0 + w) / 256); tx++) {
+    for (let ty = Math.floor(top0 / 256); ty <= Math.floor((top0 + h) / 256); ty++) {
+      if (ty < 0 || ty >= n) continue;
+      const sx = tx * 256 - left0, sy = ty * 256 - top0;
+      const txx = ((tx % n) + n) % n;
+      imgs += `<img class="tile" alt="" loading="lazy" src="https://tile.openstreetmap.org/${z}/${txx}/${ty}.png" style="left:${sx}px;top:${sy}px">`;
+    }
+  }
+  return `<div class="staticmap" style="width:${w}px;height:${h}px">${imgs}<span class="mm-dot"></span></div>`;
+}
+function miniMap(b) {
+  if (b.latitude == null || b.longitude == null) {
+    return `<div class="minimap minimap-empty" title="localisation indisponible">📍<span>n/c</span></div>`;
+  }
+  return `<div class="minimap" data-lat="${b.latitude}" data-lon="${b.longitude}" title="Maintenir pour agrandir">
+    ${tileMapHTML(b.latitude, b.longitude, 104, 92, 12)}
+    <span class="mm-hint">⤢</span>
+  </div>`;
+}
+function bindMiniMap(mm) {
+  const open = (e) => { e.preventDefault(); e.stopPropagation(); showBigMap(+mm.dataset.lat, +mm.dataset.lon); };
+  mm.addEventListener("pointerdown", open);
+  mm.addEventListener("click", (e) => { e.stopPropagation(); e.preventDefault(); }); // n'ouvre pas la fiche
+  mm.addEventListener("contextmenu", (e) => e.preventDefault());
+}
+function showBigMap(lat, lon) {
+  hideBigMap();
+  const w = Math.min(window.innerWidth * 0.92, 560);
+  const h = Math.min(window.innerHeight * 0.6, 460);
+  const el = document.createElement("div");
+  el.id = "mapPopup";
+  el.innerHTML = `<div class="bigmap-card">${tileMapHTML(lat, lon, Math.round(w), Math.round(h), 14)}
+    <div class="bigmap-cap">Relâche pour fermer</div></div>`;
+  document.body.appendChild(el);
+}
+function hideBigMap() { const el = $("#mapPopup"); if (el) el.remove(); }
 
 function renderMap(list) {
   if (!map) {
