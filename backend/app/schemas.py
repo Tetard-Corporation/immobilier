@@ -216,6 +216,7 @@ class FilterSetIn(BaseModel):
     name: str
     description: str | None = None
     criteria: SearchCriteria
+    parent_id: int | None = Field(default=None, description="Set parent (pour un sous-set).")
 
 
 class FilterSetOut(BaseModel):
@@ -225,8 +226,38 @@ class FilterSetOut(BaseModel):
     name: str
     description: str | None = None
     criteria: dict
+    parent_id: int | None = None
     created_at: datetime
     updated_at: datetime
+
+
+class FilterSetResolvedOut(FilterSetOut):
+    """Set + critères effectifs après héritage parent → enfant."""
+
+    resolved_criteria: dict
+
+
+class SavedListingIn(BaseModel):
+    listing_id: int | None = None
+    source: str | None = None
+    external_id: str | None = None
+    filter_set_id: int | None = None
+    note: str | None = None
+    # Snapshot facultatif (sinon reconstruit depuis le listing en base).
+    snapshot: dict | None = None
+
+
+class SavedListingOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    listing_id: int | None = None
+    source: str
+    external_id: str
+    filter_set_id: int | None = None
+    note: str | None = None
+    snapshot: dict
+    saved_at: datetime
 
 
 # --------------------------------------------------------------------------- #

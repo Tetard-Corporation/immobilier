@@ -34,11 +34,19 @@ class FilterSet(Base):
     description: Mapped[str | None] = mapped_column(Text, nullable=True)
     # Critères de recherche normalisés (voir schemas.SearchCriteria).
     criteria: Mapped[dict] = mapped_column(JSON, nullable=False, default=dict)
+    # Sous-set : hérite du parent et surcharge ses critères/préférences (ex. têtard -> Léo).
+    parent_id: Mapped[int | None] = mapped_column(
+        ForeignKey("filter_sets.id", ondelete="CASCADE"), nullable=True
+    )
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utcnow)
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=_utcnow, onupdate=_utcnow
     )
 
+    parent: Mapped["FilterSet | None"] = relationship(remote_side=[id], back_populates="children")
+    children: Mapped[list["FilterSet"]] = relationship(
+        back_populates="parent", cascade="all, delete-orphan"
+    )
     saved_searches: Mapped[list["SavedSearch"]] = relationship(
         back_populates="filter_set", cascade="all, delete-orphan"
     )
@@ -141,6 +149,37 @@ class Listing(Base):
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=_utcnow, onupdate=_utcnow
     )
+
+
+class SavedListing(Base):
+    """Bien sauvegardé (favori) : historique durable des biens intéressants trouvés.
+
+    On fige un snapshot (prix, lieu, score, lien...) au moment de la sauvegarde pour
+    garder l'historique même si l'annonce d'origine disparaît ou change.
+    """
+
+    __tablename__ = "saved_listings"
+    __table_args__ = (
+        UniqueConstraint("source", "external_id", name="uq_saved_source_external"),
+    )
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    listing_id: Mapped[int | None] = mapped_column(
+        ForeignKey("listings.id", ondelete="SET NULL"), nullable=True
+    )
+    source: Mapped[str] = mapped_column(String(50), nullable=False)
+    external_id: Mapped[str] = mapped_column(String(120), nullable=False)
+    # Set de filtres rattaché (ex. têtard / Léo) : d'où vient ce favori.
+    filter_set_id: Mapped[int | None] = mapped_column(
+        ForeignKey("filter_sets.id", ondelete="SET NULL"), nullable=True
+    )
+    note: Mapped[str | None] = mapped_column(Text, nullable=True)
+    # Snapshot figé au moment de la sauvegarde (résultat normalisé sérialisé).
+    snapshot: Mapped[dict] = mapped_column(JSON, nullable=False, default=dict)
+    saved_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utcnow)
+
+    listing: Mapped["Listing | None"] = relationship()
+    filter_set: Mapped["FilterSet | None"] = relationship()
 
 
 class PriceHistory(Base):
