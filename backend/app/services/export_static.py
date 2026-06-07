@@ -54,10 +54,31 @@ def _load_infra_cache() -> dict:
         return {}
 
 
+_FIBRE_LUT = os.path.join(os.path.dirname(__file__), "..", "..", "data", "fibre_communes.json")
+
+
+def _load_fibre_lut() -> dict:
+    try:
+        with open(_FIBRE_LUT, encoding="utf-8") as fh:
+            return json.load(fh)
+    except Exception:
+        return {}
+
+
+def _fibre_flags(code_commune: str | None, lut: dict) -> dict:
+    if not code_commune or code_commune not in lut:
+        return {}
+    pct = lut[code_commune]
+    return {"fibre": pct >= 50, "fibre_pct": pct}
+
+
 def _query_overpass(lat: float, lon: float) -> dict | None:
+    # Une seule requête : autoroute/voie ferrée (bruit) + sentiers/itinéraires (rando).
     q = (f'[out:json][timeout:25];('
          f'way(around:2500,{lat},{lon})[highway~"motorway|trunk"];'
-         f'way(around:2500,{lat},{lon})[railway=rail];);out geom 80;')
+         f'way(around:2500,{lat},{lon})[railway=rail];'
+         f'way(around:1500,{lat},{lon})[highway~"path|footway|bridleway"];'
+         f'relation(around:3000,{lat},{lon})[route=hiking];);out geom 300;')
     try:
         data = urllib.parse.urlencode({"data": q}).encode()
         req = urllib.request.Request(_OVERPASS, data=data, headers={"User-Agent": _UA})
@@ -66,15 +87,25 @@ def _query_overpass(lat: float, lon: float) -> dict | None:
     except Exception:
         return None
     best = {"dist_autoroute_m": None, "dist_rail_m": None, "infra_checked": True}
+    n_sentiers, n_routes = 0, 0
     for el in payload.get("elements", []):
         tags = el.get("tags", {})
-        key = "dist_autoroute_m" if "highway" in tags else ("dist_rail_m" if tags.get("railway") == "rail" else None)
+        if el.get("type") == "relation" and tags.get("route") == "hiking":
+            n_routes += 1
+            continue
+        hw = tags.get("highway")
+        if hw in ("path", "footway", "bridleway"):
+            n_sentiers += 1
+            continue
+        key = "dist_autoroute_m" if hw in ("motorway", "trunk") else ("dist_rail_m" if tags.get("railway") == "rail" else None)
         if not key:
             continue
         for p in el.get("geometry", []):
             dm = round(haversine_km(lat, lon, p["lat"], p["lon"]) * 1000)
             if best[key] is None or dm < best[key]:
                 best[key] = dm
+    best["rando_count"] = n_sentiers + n_routes
+    best["randonnee"] = (n_routes >= 1) or (n_sentiers >= 3)
     return best
 
 
@@ -217,6 +248,7 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
 
     biens_out = []
     infra_cache = _load_infra_cache()
+    fibre_lut = _load_fibre_lut()
     rows = (
         db.query(Listing)
         .filter(Listing.source != "mock")
@@ -225,7 +257,8 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
     )
     for row in rows:
         infra = _infra_distances(row.latitude, row.longitude, infra_cache)
-        item = _RowItem(row, extra_flags=infra)
+        extra = {**infra, **_fibre_flags(row.code_commune, fibre_lut)}
+        item = _RowItem(row, extra_flags=extra)
         scores_by_set = {}
         for fs_id, prefs in set_prefs.items():
             if not prefs:

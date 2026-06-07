@@ -182,9 +182,7 @@ table.scores td.num { text-align: right; font-variant-numeric: tabular-nums; whi
   border-radius: 999px; padding: 6px 12px; font-size: 13px; cursor: pointer;
 }
 .whoami:hover { border-color: var(--fav); }
-.voterow { display: flex; align-items: center; gap: 8px; margin-top: 10px; cursor: pointer; }
-.voterow::after { content: "noter ›"; font-size: 11px; color: var(--muted); margin-left: auto; }
-.voterow:hover::after { color: var(--accent2); }
+.voterow { display: flex; align-items: center; gap: 8px; margin-top: 10px; }
 .stars { display: inline-flex; gap: 2px; }
 .star {
   color: #4a4f5a; font-size: 18px; cursor: pointer; line-height: 1;
