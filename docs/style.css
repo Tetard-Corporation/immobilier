@@ -168,14 +168,6 @@ table.votes-tbl td, table.votes-tbl th { padding: 6px 9px; }
 }
 .idbtn:hover { border-color: var(--fav); }
 .idbtn.cur { border-color: var(--fav); color: var(--fav); font-weight: 600; }
-.idcode { margin-top: 18px; border-top: 1px solid var(--line); padding-top: 14px; }
-.idcode label { display: block; margin-bottom: 6px; }
-.coderow { display: flex; gap: 8px; }
-.coderow input {
-  flex: 1; background: var(--card2); color: var(--txt); border: 1px solid var(--line);
-  border-radius: 10px; padding: 9px 12px; font-size: 14px;
-}
-#idmsg { margin-top: 8px; min-height: 16px; }
 
 @media (max-width: 560px) {
   .controls { gap: 10px; }

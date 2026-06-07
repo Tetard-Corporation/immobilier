@@ -7,13 +7,11 @@
 const Votes = (() => {
   const LS_VOTER = "tetard_voter";
   const LS_LOCAL = "tetard_votes_local";
-  const LS_SECRET = "tetard_vote_secret";   // code d'accès, jamais committé (par appareil)
   let cfg = {};
   let backend = "local";
   let cache = {};          // { bienId: { voter: stars } }
   let users = [];
   let voter = null;
-  let secret = null;
   const listeners = [];
 
   const hdr = () => ({
@@ -26,7 +24,6 @@ const Votes = (() => {
     cfg = config || {};
     users = cfg.USERS || [];
     voter = localStorage.getItem(LS_VOTER) || null;
-    secret = localStorage.getItem(LS_SECRET) || null;
     backend = cfg.SUPABASE_URL && cfg.SUPABASE_ANON_KEY ? "supabase" : "local";
     await reload();
   }
@@ -57,47 +54,29 @@ const Votes = (() => {
   }
 
   function setMine(id, stars) {
-    if (!voter) return Promise.resolve({ ok: false, reason: "no-voter" });
-
-    if (backend === "supabase") {
-      if (!secret) return Promise.resolve({ ok: false, reason: "no-secret" });
-      const prev = (cache[id] || {})[voter];           // pour rollback si refus
-      (cache[id] ||= {})[voter] = stars;
-      emit();                                            // optimiste
-      // Écriture interdite en direct : on passe par la fonction RPC qui valide le code.
-      return fetch(`${cfg.SUPABASE_URL}/rest/v1/rpc/cast_vote`, {
-        method: "POST",
-        headers: hdr(),
-        body: JSON.stringify({ p_bien_id: id, p_voter: voter, p_stars: stars, p_secret: secret }),
-      }).then((r) => {
-        if (r.ok) return { ok: true };
-        if (prev == null) delete cache[id][voter]; else cache[id][voter] = prev;  // rollback
-        emit();
-        return { ok: false, reason: r.status === 400 || r.status === 401 || r.status === 403 ? "bad-secret" : "http" };
-      }).catch(() => {
-        if (prev == null) delete cache[id][voter]; else cache[id][voter] = prev;
-        emit();
-        return { ok: false, reason: "http" };
-      });
-    }
-
+    if (!voter) return Promise.resolve();
     (cache[id] ||= {})[voter] = stars;
-    emit();
+    emit();  // optimiste : l'UI reflète immédiatement
+    if (backend === "supabase") {
+      return fetch(`${cfg.SUPABASE_URL}/rest/v1/votes?on_conflict=bien_id,voter`, {
+        method: "POST",
+        headers: { ...hdr(), Prefer: "resolution=merge-duplicates,return=minimal" },
+        body: JSON.stringify({ bien_id: id, voter, stars, updated_at: new Date().toISOString() }),
+      }).then((r) => { if (!r.ok) console.warn("[votes] enregistrement échoué :", r.status); });
+    }
     localStorage.setItem(LS_LOCAL, JSON.stringify(cache));
-    return Promise.resolve({ ok: true });
+    return Promise.resolve();
   }
 
   function setVoter(v) { voter = v; localStorage.setItem(LS_VOTER, v); emit(); }
-  function setSecret(s) { secret = s || null; if (secret) localStorage.setItem(LS_SECRET, secret); else localStorage.removeItem(LS_SECRET); emit(); }
   function emit() { listeners.forEach((f) => f()); }
   function onChange(f) { listeners.push(f); }
 
   return {
-    init, reload, forBien, setMine, setVoter, setSecret, onChange,
+    init, reload, forBien, setMine, setVoter, onChange,
     get voter() { return voter; },
     get users() { return users; },
     get backend() { return backend; },
-    get hasSecret() { return !!secret; },
   };
 })();
 window.Votes = Votes;

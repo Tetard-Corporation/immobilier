@@ -310,62 +310,30 @@ function votesBlock(b) {
   </div>`;
 }
 function handleStar(st) {
-  if (!Votes.voter || (Votes.backend === "supabase" && !Votes.hasSecret)) { openIdentity(); return; }
+  if (!Votes.voter) { openIdentity(); return; }
   const id = st.closest(".stars").dataset.bien;
   const v = Number(st.dataset.v);
-  Votes.setMine(id, v).then((res) => {   // optimiste + persistance async ; onChange -> render
-    if (res && res.ok === false) {
-      if (res.reason === "bad-secret") openIdentity("Code d'accès refusé — réessaie.");
-      else if (res.reason === "no-secret") openIdentity();
-      else if (res.reason === "http") openIdentity("Échec réseau — vote non enregistré.");
-    }
-  });
+  Votes.setMine(id, v);  // optimiste + persistance async ; déclenche onChange -> render + refreshModal
 }
 
 // ---------- Identité de session ----------
 function renderWhoami() {
   $("#whoami").textContent = Votes.voter ? `🙂 ${Votes.voter}` : "Qui es-tu ?";
 }
-function openIdentity(message) {
+function openIdentity() {
   const list = $("#idlist");
   list.innerHTML = Votes.users.map((u) =>
     `<button class="idbtn ${u === Votes.voter ? "cur" : ""}">${u}</button>`).join("");
   list.querySelectorAll(".idbtn").forEach((btn) =>
     btn.addEventListener("click", () => {
       Votes.setVoter(btn.textContent);
-      renderWhoami();
-      maybeCloseIdentity();          // ferme si rien d'autre n'est requis (code)
-      render(); if (openBien) refreshModal();
+      $("#identity").classList.add("hidden");
+      renderWhoami(); render(); if (openBien) refreshModal();
     }));
-
-  // Code d'accès : requis seulement avec Supabase (bloque les votes extérieurs).
-  const codeBox = $("#idcode");
-  if (Votes.backend === "supabase") {
-    codeBox.classList.remove("hidden");
-    $("#codeInput").value = "";
-    $("#idmsg").textContent = message || (Votes.hasSecret ? "Code déjà enregistré sur cet appareil." : "");
-    $("#codeSave").onclick = () => {
-      const val = $("#codeInput").value.trim();
-      if (!val) return;
-      Votes.setSecret(val);
-      $("#idmsg").textContent = "Code enregistré.";
-      maybeCloseIdentity();
-      render(); if (openBien) refreshModal();
-    };
-    $("#codeInput").onkeydown = (e) => { if (e.key === "Enter") $("#codeSave").click(); };
-  } else {
-    codeBox.classList.add("hidden");
-  }
   $("#identity").classList.remove("hidden");
 }
-
-// Ferme l'overlay quand l'utilisateur est prêt : identifié, et (si Supabase) code saisi.
-function maybeCloseIdentity() {
-  const ready = Votes.voter && (Votes.backend !== "supabase" || Votes.hasSecret);
-  if (ready) $("#identity").classList.add("hidden");
-}
 function closeIdentityIfAllowed() {
-  maybeCloseIdentity();  // fermable une fois identifié (+ code saisi si Supabase)
+  if (Votes.voter) $("#identity").classList.add("hidden");  // fermable une fois identifié
 }
 
 boot();

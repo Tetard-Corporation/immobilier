@@ -36,7 +36,7 @@ par personne dans la fiche du bien.
 
 ### Mise en place (5 min, gratuit)
 1. Crée un projet sur [supabase.com](https://supabase.com).
-2. **SQL Editor** → exécute (⚠️ **remplace `CHANGE-MOI`** par votre code partagé) :
+2. **SQL Editor** → exécute :
    ```sql
    create table if not exists votes (
      id         bigint generated always as identity primary key,
@@ -47,40 +47,17 @@ par personne dans la fiche du bien.
      unique (bien_id, voter)        -- 1 vote par (bien, personne) -> upsert
    );
    alter table votes enable row level security;
-
-   -- Lecture libre (afficher les notes), mais AUCUNE écriture directe par anon.
-   create policy "anon read" on votes for select using (true);
-   revoke insert, update, delete on votes from anon;
-
-   -- Écriture uniquement via cette fonction, qui valide le code partagé.
-   -- Le code vit ICI (ta base privée), jamais dans le site public.
-   create or replace function cast_vote(p_bien_id text, p_voter text, p_stars int, p_secret text)
-   returns void language plpgsql security definer set search_path = public as $$
-   begin
-     if p_secret is distinct from 'CHANGE-MOI' then
-       raise exception 'code invalide';
-     end if;
-     if p_stars < 1 or p_stars > 5 then
-       raise exception 'note hors bornes';
-     end if;
-     insert into votes (bien_id, voter, stars, updated_at)
-     values (p_bien_id, p_voter, p_stars, now())
-     on conflict (bien_id, voter) do update
-       set stars = excluded.stars, updated_at = now();
-   end; $$;
-   grant execute on function cast_vote(text, text, int, text) to anon;
+   create policy "anon read"   on votes for select using (true);
+   create policy "anon insert" on votes for insert with check (true);
+   create policy "anon update" on votes for update using (true) with check (true);
    ```
 3. **Settings → API** : copie l'URL du projet et la clé **anon public**.
 4. Édite `config.js` : renseigne `SUPABASE_URL`, `SUPABASE_ANON_KEY` et la liste
-   `USERS`. **Ne mets pas le code** dans `config.js` (il serait public).
-5. Partage le code (`CHANGE-MOI`) à vos 6 de vive voix. Chacun le saisit **une fois**
-   dans le front (overlay « Qui es-tu ? »), il est mémorisé sur son appareil.
+   `USERS` (vos prénoms).
 
-> 🔒 **Pourquoi ça bloque les votes extérieurs :** la clé anon est publique mais ne
-> donne que la **lecture**. Écrire passe obligatoirement par `cast_vote`, qui exige
-> le code — lequel n'apparaît **nulle part** dans le site (ni repo, ni `config.js`).
-> Un inconnu tombant sur l'URL peut voir les notes mais pas voter. Ce n'est pas de
-> la crypto (le code circule en clair entre vous), mais ça suffit à votre usage.
+> 🔓 La clé anon est **publique** (c'est prévu : protégée par RLS). Les policies
+> ci-dessus sont permissives : quiconque connaît l'URL du site peut voter — risque
+> assumé (usage entre amis, URL non diffusée).
 
 ## Activer GitHub Pages
 1. Repo → **Settings → Pages**.
