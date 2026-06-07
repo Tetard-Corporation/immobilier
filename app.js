@@ -502,6 +502,13 @@ function infoGrid(bien) {
 // sans toucher aux photos/description. Un clic sur une ligne ouvre le popup du critère.
 function renderModalDynamic(bien) {
   const host = $("#modalDynamic");
+  const id = voteKey(bien);
+  const pending = $("#globalComment") ? $("#globalComment").value : null;   // préserve la saisie en cours
+  const editor = Votes.voter
+    ? `<div class="comment-edit">
+        <textarea id="globalComment" rows="2" placeholder="Un commentaire général sur ce bien (optionnel)">${escHtml(Votes.forBien(id).mineComment || "")}</textarea>
+        <div class="comment-actions"><span id="globalMsg" class="detailtxt"></span><button class="btn" id="saveGlobal">Enregistrer</button></div></div>`
+    : `<p class="detailtxt">Choisis ton identité (en haut) pour commenter.</p>`;
   host.innerHTML = `
     <div class="section-title">Match</div>
     ${voteTable(bien, "match")}
@@ -509,10 +516,19 @@ function renderModalDynamic(bien) {
     ${voteTable(bien, "invest")}
     <div class="section-title">Risques</div>
     ${voteTable(bien, "risk")}
+    <div class="section-title">Commentaire global</div>
+    ${editor}
     <div class="section-title">Tous les commentaires</div>
     ${allCommentsSection(bien)}`;
+  if (pending != null && $("#globalComment")) $("#globalComment").value = pending;
   host.querySelectorAll(".critrow").forEach((tr) =>
     tr.addEventListener("click", () => openCritPopup(bien, tr.dataset.section, tr.dataset.key)));
+  const sg = $("#saveGlobal");
+  if (sg) sg.addEventListener("click", () => {
+    Votes.setComment(id, $("#globalComment").value.trim(), Votes.OVERALL).then((res) => {
+      const m = $("#globalMsg"); if (m) m.textContent = (res && res.ok) ? "✓ Commentaire global enregistré" : "Échec — réessaie";
+    });
+  });
 }
 function closeModal() {
   $("#modal").classList.add("hidden"); openBien = null;
