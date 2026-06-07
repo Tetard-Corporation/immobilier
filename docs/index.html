@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>têtard — biens & scores</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">🐸 <span>têtard</span></div>
+    <div class="controls">
+      <label class="ctl">Set
+        <select id="setSelect"></select>
+      </label>
+      <label class="ctl">Tri
+        <select id="sortSelect">
+          <option value="match">Match du set ↓</option>
+          <option value="score">Score invest. ↓</option>
+          <option value="note">Note ⭐ ↓</option>
+          <option value="prix">Prix ↑</option>
+        </select>
+      </label>
+      <label class="ctl">Score min <output id="scoreOut">0</output>
+        <input type="range" id="scoreMin" min="0" max="100" value="0" step="5" />
+      </label>
+      <label class="ctl chk"><input type="checkbox" id="favOnly" /> Favoris</label>
+      <button id="whoami" class="whoami" title="Changer d'identité">Qui es-tu ?</button>
+      <div class="modeswitch">
+        <button id="modeScroll" class="active">Scroll</button>
+        <button id="modeMap">Carte</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div id="meta" class="meta"></div>
+    <section id="scrollView" class="scrollview"></section>
+    <section id="mapView" class="mapview hidden"><div id="map"></div></section>
+  </main>
+
+  <div id="modal" class="modal hidden">
+    <div class="modal-backdrop"></div>
+    <div class="modal-card" id="modalCard"></div>
+  </div>
+
+  <div id="identity" class="idoverlay hidden">
+    <div class="id-backdrop"></div>
+    <div class="idcard">
+      <h2>Qui es-tu ?</h2>
+      <p class="sub">On se fait confiance — choisis ton nom pour cette session. (mémorisé)</p>
+      <div id="idlist" class="idlist"></div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+          integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="config.js"></script>
+  <script src="votes.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

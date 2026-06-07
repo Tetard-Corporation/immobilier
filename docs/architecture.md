@@ -55,12 +55,19 @@ supérieure à Jinka :
 
 | Connecteur | Mode collecte | Notes |
 |---|---|---|
-| `pappers` | API officielle | ✅ déjà implémenté (données foncières/DVF) |
-| `mock` | fixtures | ✅ déjà implémenté (dev/tests) |
-| `pap` | HTTP léger | particulier à particulier, anti-bot faible |
-| `terrains_specialises` | HTTP léger | Terrains.fr, Terrain-construction, Ouest-France Immo |
-| `leboncoin` | headless + proxies | Datadome, gros volume |
-| `seloger` | headless + proxies | groupe Aviv (SeLoger/Bien'ici/Logic-Immo) |
+| `pappers` | API officielle | ✅ implémenté (données foncières/DVF) |
+| `bienici` | API JSON | ✅ implémenté et vérifié en live (annonces) |
+| `mock` | fixtures | ✅ implémenté (dev/tests) |
+| `leboncoin` | API JSON + proxy | ✅ implémenté (parsing testé). ⚠️ Datadome → requiert `PROXY_URL` en live |
+| `pap` | HTTP/headless + JSON-LD | ✅ implémenté (parsing testé). ⚠️ Cloudflare → headless/proxy en live |
+| `seloger` | headless + JSON-LD | ✅ implémenté (parsing testé). ⚠️ Datadome → headless/proxy en live |
+| `paruvendu` | HTTP (rendu serveur) | ✅ implémenté et vérifié en live (cartes blocAnnonce) |
+| `agences` | **inbound** : IMAP + sites | ✅ implémenté. Newsletters d'agences (extraction LLM Haiku + repli heuristique) + scraping de sites d'agences. Zéro risque ToS. |
+
+**Constat de terrain (sondages)** : Leboncoin, SeLoger et PAP renvoient un blocage
+anti-bot (Datadome / Cloudflare) sans proxy ; Bien'ici et Paruvendu sont accessibles.
+Le mode headless (Playwright, dépendance optionnelle) + `PROXY_URL` sont en place dans
+`ScraperSource` pour les débloquer dans l'environnement d'exécution.
 
 Base commune `ScraperSource` : gestion `httpx` **ou** Playwright selon la source,
 rate-limiting, backoff, cache disque, `User-Agent`/headers réalistes, proxy
@@ -74,13 +81,23 @@ class EnrichmentProvider(ABC):
     def enrich(self, listing: NormalizedListing) -> dict: ...   # champs fusionnés
 ```
 
-| Provider | Source de données | Champs produits |
-|---|---|---|
-| `gpu_zonage` | API Carto GPU (apicarto.ign.fr) | `zone_urba` (U/AU/A/N), `libelle`, `constructible` (bool), `est_zone_au` (bool) |
-| `georisques` | api.georisques.gouv.fr | `risques` (argile, inondation, radon, PPRN, séisme…) |
-| `aeronautique` | PEB + servitudes T4/T5 (GPU/SUP) | `peb_zone` (A–D), `sous_servitude_aero` (bool), `couloir_aerien` (bool) |
-| `dvf_comparables` | Pappers / DVF | `prix_m2_secteur`, `ecart_prix_pct` |
-| `cadastre` | API Carto cadastre | `contenance`, `parcelle`, géométrie (compléter les annonces) |
+| Provider | Source de données | Champs produits | Statut |
+|---|---|---|---|
+| `gpu_zonage` | API Carto GPU (apicarto.ign.fr) | `zone_urba` (U/AU/A/N), `constructible`, `est_zone_au` | ✅ live (sans clé) |
+| `georisques` | api.georisques.gouv.fr | `risques` (argile, inondation, radon, séisme…) | ✅ live (sans clé) |
+| `relief` | altimétrie IGN (data.geopf.fr) | `altitude`, `montagne` | ✅ live (sans clé) |
+| `rail_time` | estimation (sans clé) ou Navitia/SNCF (clé option.) | `rail_time_min` depuis une ville d'origine | ✅ live **sans clé** (estimation) ; horaires réels si clé |
+| `aeronautique` | PEB + servitudes T4/T5 (GPU/SUP) | `peb_zone` (A–D) | à venir |
+| `fibre` | Arcep (open data THD) | `fibre` (bool) | à venir |
+| `hiking` | OSM (sentiers) | `randonnee` (bool) | à venir |
+| `dvf_comparables` | **geo-dvf** (files.data.gouv.fr) | `prix_m2_secteur`, `ecart_prix_pct` | ✅ live (open data, **sans clé**) |
+| `pollution` | Hub'Eau (eau potable) + BAN | `pollution_eau_score`, `eau_potable_conforme`, `pollutions` (pesticides/nitrates/PFAS) | ✅ live (sans clé) |
+| `socio` | INSEE âge + résultats électoraux (jeu local) | `age_median`, `part_gauche` -> préférences `population_jeune`/`orientation_gauche` | ✅ codé (gabarit à compléter) |
+
+Pipeline : `enrich_listing(item)` fusionne les champs des providers disponibles dans
+`item.flags`, **recalcule le score**, et fait passer les préférences correspondantes de
+`pending` à `ok`. Opt-in via `?enrich=true` (ou `ENRICH_ON_SEARCH`), avec cache par
+coordonnées arrondies. État des providers : `GET /api/enrichment/status`.
 
 Exécution : pipeline appelé après la collecte ; résultats stockés dans
 `Listing.enrichment` (JSON) + colonnes dérivées indexables (`constructible`,
@@ -94,8 +111,14 @@ Exécution : pipeline appelé après la collecte ; résultats stockés dans
   - croisement cadastre/DVF : bâti présent à faible valeur/m² ou ancien.
 - **Dédoublonnage inter-sources** : empreinte (géo arrondie + tranche prix + surface)
   → regroupement, un bien canonique + ses occurrences par portail.
-- **Score d'investissement** : combinaison `ecart_prix_pct` (vs comparables),
-  bonus constructible/AU, malus risques/PEB/aérien → note 0–100.
+- **Score d'investissement hiérarchique** (`services/scoring.py`) : piliers
+  thématiques → sous-piliers, agrégation bottom-up, tolérante aux données partielles.
+  Piliers : Prix & opportunité (affaire vs marché, négociation), Foncier &
+  constructibilité (zonage/AU, terrain), Cadre & nature (qualité, exception,
+  authenticité), Risques & nuisances (naturels, proximité, aérien/PEB), État &
+  travaux, Accessibilité & services (train, gare, fibre). Détail explicable
+  (score/poids/contribution par niveau + statut ok/pending/n-a). Schéma exposé via
+  `GET /api/scoring/schema`.
 - **Suivi baisse de prix** : table `PriceHistory` ; à chaque revue, si le prix
   change on historise et on lève un `flag_baisse_prix`.
 
@@ -126,12 +149,34 @@ poussent en amont (ex. Pappers).
 
 ## 6. Feuille de route (lots)
 
-- **Lot A — Enrichissement open data** (faible risque, forte valeur)
-  `EnrichmentProvider` + `gpu_zonage`, `georisques`, `aeronautique`, `dvf_comparables`,
-  pipeline + champs dérivés + filtres `constructible/risques/aérien`. *(commence ici)*
-- **Lot B — Scoring + classification ruines + suivi prix** (sur données enrichies).
+- **Lot A — Enrichissement open data** : 🟡 en cours. `EnrichmentProvider` + pipeline +
+  colonnes dérivées + filtres (`constructible_only`, `zones_urba`, `exclure_risques`,
+  `altitude`). Providers live (sans clé) : `gpu_zonage`, `georisques`, `relief`, `pollution`,
+  `socio` (gabarit), `dvf_comparables` (geo-dvf → composante « affaire »). `rail_time` fonctionne **sans clé** (estimation à vol d'oiseau) ; une clé
+  Navitia/SNCF (B2B) reste optionnelle pour les horaires réels. Restent :
+  `aeronautique` (PEB/servitudes — données GPU lacunaires), `fibre` (Arcep — pas d'API
+  point), `hiking` (OSM — Overpass injoignable depuis l'environnement de build).
+- **Lot B — Score d'investissement** : ✅ implémenté. Moteur pondéré et **explicable**
+  (détail des contributions), tolérant aux données partielles — fonctionne dès
+  maintenant (état, nature, nuisances, baisse de prix) et intègre automatiquement les
+  composantes du Lot A (affaire vs comparables, constructible/AU, risques, PEB) quand
+  elles sont présentes. Filtre `score_min` + tri `sort=score`. (Classification ruines
+  et suivi prix déjà livrés au Lot C.)
 - **Lot C — Scraper PAP & sites spécialisés terrains** (HTTP léger) + dédoublonnage.
-- **Lot D — Scrapers Leboncoin & SeLoger** (headless + proxies).
+- **Lot D — Scrapers durs** (headless + proxies) : ✅ infra headless/proxy + Leboncoin,
+  PAP, SeLoger (parsing testé offline) — nécessitent une validation live via proxy.
+  (Paruvendu, réel et accessible, reste un bonus optionnel.)
+- **Lot F — Filtre avancé par préférences (ranking)** : ✅ implémenté. Régime
+  ranking pur (aucune exclusion) ; `match_score` + détail par préférence. Préférences
+  géo (corridor, proximité gare via open data bundlé, autour d'une ville), budget/SCI,
+  chambres, terrain, travaux légers, sans vis-à-vis, nature/authentique. Critères
+  dépendant d'un provider (trajet train Navitia, fibre Arcep, relief IGN, rando OSM)
+  définis et en `pending` jusqu'au branchement (Lot A). **Parseur de brief NL**
+  (IA Claude + repli heuristique) → préférences éditables.
+- **Lot E — Newsletters d'agences** (ingestion email IMAP + extraction LLM Haiku +
+  repli heuristique) + scraping de sites d'agences locales : ✅ implémenté.
+  Source `agences` (inbound) alimentée par un job de scheduler, branchée sur le
+  pipeline (classification, dédoublonnage, nouveautés). Zéro risque ToS (opt-in).
 - **Lot E — Agrégation multi-sources** (source `all`) dans recherches fréquentes.
 - **Lot F — Tests d'intégration, durcissement, doc.**
 - *(Front : phase ultérieure.)*

@@ -43,6 +43,28 @@ def tick() -> None:
         db.close()
 
 
+def ingest_agences_tick() -> None:
+    """Passage périodique : ingestion des newsletters/sites d'agences."""
+    from .services.agences_ingest import ingest
+
+    db = SessionLocal()
+    try:
+        ingest(db)
+    except Exception:  # ne jamais faire tomber le scheduler
+        logger.exception("Échec de l'ingestion agences.")
+    finally:
+        db.close()
+
+
+def _agences_enabled() -> bool:
+    from .agences_config import load_agences_config
+
+    settings = get_settings()
+    if settings.imap_configured:
+        return True
+    return bool(load_agences_config(settings.agences_config_path).all_site_urls)
+
+
 def start_scheduler() -> BackgroundScheduler | None:
     global _scheduler
     settings = get_settings()
@@ -61,6 +83,20 @@ def start_scheduler() -> BackgroundScheduler | None:
         max_instances=1,
         coalesce=True,
     )
+    if _agences_enabled():
+        _scheduler.add_job(
+            ingest_agences_tick,
+            "interval",
+            minutes=max(settings.agences_ingest_interval_minutes, 1),
+            id="agences_ingest_tick",
+            next_run_time=datetime.now(timezone.utc),
+            max_instances=1,
+            coalesce=True,
+        )
+        logger.info(
+            "Ingestion agences activée (toutes les %s min).",
+            settings.agences_ingest_interval_minutes,
+        )
     _scheduler.start()
     logger.info("Scheduler démarré (tick = %ss).", settings.scheduler_tick_seconds)
     return _scheduler

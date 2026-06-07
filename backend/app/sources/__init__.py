@@ -2,15 +2,30 @@
 
 from __future__ import annotations
 
+from .agences import AgencesSource
 from .base import ListingSource, NormalizedListing, SearchResult
+from .bienici import BienIciSource
+from .leboncoin import LeboncoinSource
 from .mock import MockSource
+from .pap import PapSource
 from .pappers import PappersSource
+from .paruvendu import ParuvenduSource
+from .seloger import SeLogerSource
 
 _registry: dict[str, ListingSource] | None = None
 
 
 def _build_registry() -> dict[str, ListingSource]:
-    return {"pappers": PappersSource(), "mock": MockSource()}
+    return {
+        "pappers": PappersSource(),
+        "bienici": BienIciSource(),
+        "leboncoin": LeboncoinSource(),
+        "pap": PapSource(),
+        "seloger": SeLogerSource(),
+        "paruvendu": ParuvenduSource(),
+        "agences": AgencesSource(),
+        "mock": MockSource(),
+    }
 
 
 def get_registry() -> dict[str, ListingSource]:

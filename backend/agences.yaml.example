@@ -1,0 +1,16 @@
+# Configuration des agences locales (source "agences").
+# Copier en `agences.yaml` et renseigner. Tout est optionnel.
+
+# Surcharge éventuelle de la boîte IMAP (sinon variables d'environnement IMAP_*).
+imap:
+  host: imap.exemple.fr
+  user: prospection@exemple.fr
+  folder: INBOX
+
+agences:
+  - nom: "Agence du Coin"
+    # Pages d'annonces à scraper (sites d'agences, souvent peu protégés).
+    sites:
+      - https://agence-du-coin.fr/nos-biens-a-vendre
+  - nom: "Terres & Demeures"
+    sites: []

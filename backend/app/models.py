@@ -34,11 +34,19 @@ class FilterSet(Base):
     description: Mapped[str | None] = mapped_column(Text, nullable=True)
     # Critères de recherche normalisés (voir schemas.SearchCriteria).
     criteria: Mapped[dict] = mapped_column(JSON, nullable=False, default=dict)
+    # Sous-set : hérite du parent et surcharge ses critères/préférences (ex. têtard -> Léo).
+    parent_id: Mapped[int | None] = mapped_column(
+        ForeignKey("filter_sets.id", ondelete="CASCADE"), nullable=True
+    )
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utcnow)
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=_utcnow, onupdate=_utcnow
     )
 
+    parent: Mapped["FilterSet | None"] = relationship(remote_side=[id], back_populates="children")
+    children: Mapped[list["FilterSet"]] = relationship(
+        back_populates="parent", cascade="all, delete-orphan"
+    )
     saved_searches: Mapped[list["SavedSearch"]] = relationship(
         back_populates="filter_set", cascade="all, delete-orphan"
     )
@@ -90,6 +98,7 @@ class Listing(Base):
     surface_terrain: Mapped[float | None] = mapped_column(Float, nullable=True)
     surface_bati: Mapped[float | None] = mapped_column(Float, nullable=True)
     nb_pieces: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    nb_chambres: Mapped[int | None] = mapped_column(Integer, nullable=True)
 
     adresse: Mapped[str | None] = mapped_column(String(300), nullable=True)
     commune: Mapped[str | None] = mapped_column(String(150), nullable=True)
@@ -103,12 +112,107 @@ class Listing(Base):
     date_mutation: Mapped[str | None] = mapped_column(String(20), nullable=True)
     dpe_classe: Mapped[str | None] = mapped_column(String(4), nullable=True)
     url: Mapped[str | None] = mapped_column(String(400), nullable=True)
+    description: Mapped[str | None] = mapped_column(Text, nullable=True)
+
+    # Classification : état du bâti
+    condition: Mapped[str | None] = mapped_column(String(20), nullable=True)
+    niveau_travaux: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    # Classification : qualité/nature du terrain
+    features: Mapped[list] = mapped_column(JSON, nullable=False, default=list)
+    nuisances: Mapped[list] = mapped_column(JSON, nullable=False, default=list)
+    nature_score: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    nature_exception: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    price_decreased: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    # Score d'investissement (0–100) + détail explicable des contributions.
+    score: Mapped[float | None] = mapped_column(Float, nullable=True, index=True)
+    score_details: Mapped[list] = mapped_column(JSON, nullable=False, default=list)
+
+    # Enrichissement (Lot A) : données officielles géolocalisées.
+    constructible: Mapped[bool | None] = mapped_column(Boolean, nullable=True)
+    est_zone_au: Mapped[bool | None] = mapped_column(Boolean, nullable=True)
+    zone_urba: Mapped[str | None] = mapped_column(String(10), nullable=True)
+    altitude: Mapped[float | None] = mapped_column(Float, nullable=True)
+    rail_time_min: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    risques: Mapped[list] = mapped_column(JSON, nullable=False, default=list)
+    prix_m2_secteur: Mapped[float | None] = mapped_column(Float, nullable=True)
+    ecart_prix_pct: Mapped[float | None] = mapped_column(Float, nullable=True)
+    pollution_eau_score: Mapped[float | None] = mapped_column(Float, nullable=True)
+    eau_potable_conforme: Mapped[bool | None] = mapped_column(Boolean, nullable=True)
+    pollutions: Mapped[list] = mapped_column(JSON, nullable=False, default=list)
+    age_median: Mapped[float | None] = mapped_column(Float, nullable=True)
+    part_gauche: Mapped[float | None] = mapped_column(Float, nullable=True)
+    population_commune: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    isolement_score: Mapped[float | None] = mapped_column(Float, nullable=True)
+    # Empreinte de dédoublonnage inter-sources (biens identiques regroupés).
+    canonical_id: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
 
     raw: Mapped[dict] = mapped_column(JSON, nullable=False, default=dict)
     first_seen_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utcnow)
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=_utcnow, onupdate=_utcnow
     )
+
+
+class SearchHistory(Base):
+    """Historique systématique de TOUTES les recherches lancées (audit + reprise)."""
+
+    __tablename__ = "search_history"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    source: Mapped[str] = mapped_column(String(50), nullable=False)
+    criteria: Mapped[dict] = mapped_column(JSON, nullable=False, default=dict)
+    filter_set_id: Mapped[int | None] = mapped_column(
+        ForeignKey("filter_sets.id", ondelete="SET NULL"), nullable=True
+    )
+    nb_results: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    enriched: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    # Aperçu léger des meilleurs résultats (id/commune/prix/url) pour relecture rapide.
+    top_results: Mapped[list] = mapped_column(JSON, nullable=False, default=list)
+    ran_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utcnow)
+
+
+class SavedListing(Base):
+    """Bien sauvegardé (favori) : historique durable des biens intéressants trouvés.
+
+    On fige un snapshot (prix, lieu, score, lien...) au moment de la sauvegarde pour
+    garder l'historique même si l'annonce d'origine disparaît ou change.
+    """
+
+    __tablename__ = "saved_listings"
+    __table_args__ = (
+        UniqueConstraint("source", "external_id", name="uq_saved_source_external"),
+    )
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    listing_id: Mapped[int | None] = mapped_column(
+        ForeignKey("listings.id", ondelete="SET NULL"), nullable=True
+    )
+    source: Mapped[str] = mapped_column(String(50), nullable=False)
+    external_id: Mapped[str] = mapped_column(String(120), nullable=False)
+    # Set de filtres rattaché (ex. têtard / Léo) : d'où vient ce favori.
+    filter_set_id: Mapped[int | None] = mapped_column(
+        ForeignKey("filter_sets.id", ondelete="SET NULL"), nullable=True
+    )
+    note: Mapped[str | None] = mapped_column(Text, nullable=True)
+    # Snapshot figé au moment de la sauvegarde (résultat normalisé sérialisé).
+    snapshot: Mapped[dict] = mapped_column(JSON, nullable=False, default=dict)
+    saved_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utcnow)
+
+    listing: Mapped["Listing | None"] = relationship()
+    filter_set: Mapped["FilterSet | None"] = relationship()
+
+
+class PriceHistory(Base):
+    """Historique de prix d'un bien, pour détecter les baisses/re-publications."""
+
+    __tablename__ = "price_history"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    listing_id: Mapped[int] = mapped_column(
+        ForeignKey("listings.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    prix: Mapped[float] = mapped_column(Float, nullable=False)
+    observed_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utcnow)
 
 
 class SearchRun(Base):

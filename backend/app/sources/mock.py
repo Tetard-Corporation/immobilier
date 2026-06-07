@@ -7,6 +7,7 @@ afin que la couche de normalisation et les filtres se comportent comme en réel.
 from __future__ import annotations
 
 from ..schemas import SearchCriteria
+from ..services.enrich import annotate
 from ..services.filters import matches
 from .base import ListingSource, NormalizedListing, SearchResult
 
@@ -26,6 +27,14 @@ _TYPES = [
 ]
 
 
+_DESCRIPTIONS = [
+    "Terrain plat et viabilisé, proche commerces et écoles.",
+    "Magnifique terrain avec vue dégagée, en pleine nature, sans vis-à-vis, joliment arboré.",
+    "Maison à rénover, prévoir des travaux de rafraîchissement.",
+    "Ancienne bâtisse en ruine à reconstruire, au calme en lisière de forêt.",
+]
+
+
 def _build_dataset() -> list[NormalizedListing]:
     listings: list[NormalizedListing] = []
     idx = 0
@@ -38,6 +47,7 @@ def _build_dataset() -> list[NormalizedListing]:
             parcelle = f"{cc}000A{1000 + idx:04d}"
             date = f"2025-{(idx % 12) + 1:02d}-{(idx % 27) + 1:02d}"
             nature = "vente_terrain_batir" if type_bien == "terrain" else "vente"
+            description = _DESCRIPTIONS[idx % len(_DESCRIPTIONS)]
             listings.append(
                 NormalizedListing(
                     source="mock",
@@ -47,6 +57,7 @@ def _build_dataset() -> list[NormalizedListing]:
                     surface_terrain=float(surface_terrain),
                     surface_bati=sbati,
                     nb_pieces=pieces,
+                    nb_chambres=(max(pieces - 2, 1) if pieces else None),
                     adresse=f"{idx} rue de l'Exemple {cp} {commune}",
                     commune=commune,
                     code_postal=cp,
@@ -57,6 +68,7 @@ def _build_dataset() -> list[NormalizedListing]:
                     parcelle=parcelle,
                     date_mutation=date,
                     dpe_classe=dpe,
+                    description=description,
                     url=f"https://immobilier.pappers.fr/carte?parcelle={parcelle}",
                     raw={"nature": nature, "mock": True},
                 )
@@ -76,7 +88,7 @@ class MockSource(ListingSource):
         return True
 
     def search(self, criteria: SearchCriteria) -> SearchResult:
-        filtered = [item for item in self._dataset if matches(item, criteria)]
+        filtered = [item for item in self._dataset if matches(annotate(item), criteria)]
         total = len(filtered)
         start = (criteria.page - 1) * criteria.par_page
         page_items = filtered[start : start + criteria.par_page]

@@ -19,6 +19,7 @@ class NormalizedListing:
     surface_terrain: float | None = None
     surface_bati: float | None = None
     nb_pieces: int | None = None
+    nb_chambres: int | None = None
     adresse: str | None = None
     commune: str | None = None
     code_postal: str | None = None
@@ -30,6 +31,9 @@ class NormalizedListing:
     date_mutation: str | None = None
     dpe_classe: str | None = None
     url: str | None = None
+    description: str | None = None
+    # Drapeaux calculés : {"ruine": bool, "a_renover": bool, "price_decreased": bool}
+    flags: dict = field(default_factory=dict)
     raw: dict = field(default_factory=dict)
 
     @property

@@ -10,7 +10,14 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from .config import get_settings
 from .db import init_db
-from .routers import filter_sets, listings, saved_searches, search, sources
+from .routers import (
+    filter_sets,
+    listings,
+    saved_listings,
+    saved_searches,
+    search,
+    sources,
+)
 from .scheduler import shutdown_scheduler, start_scheduler
 
 logging.basicConfig(level=logging.INFO)
@@ -48,6 +55,7 @@ def create_app() -> FastAPI:
     app.include_router(search.router, prefix=api)
     app.include_router(filter_sets.router, prefix=api)
     app.include_router(saved_searches.router, prefix=api)
+    app.include_router(saved_listings.router, prefix=api)
     app.include_router(listings.router, prefix=api)
 
     @app.get("/api/health", tags=["meta"])
