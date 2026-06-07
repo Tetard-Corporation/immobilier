@@ -207,6 +207,16 @@ table.votegrid tr.global-row td { background: rgba(56,189,248,.07); }
   color: var(--muted); font-size: 13px; white-space: pre-wrap;
   margin: 8px 0 4px; max-height: 9.5em; overflow: auto;
 }
+/* Carte interactive de la fiche + infos clés */
+.modal-map { height: 240px; border-radius: 12px; overflow: hidden; margin: 4px 0 6px; }
+.modal-map .leaflet-container { background: #0b0d11; }
+.infogrid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 8px 14px; margin: 10px 0 4px;
+}
+.infogrid .ig-k { display: block; color: var(--muted); font-size: 11px; }
+.infogrid .ig-v { font-size: 14px; }
+
 /* Commentaires */
 .acomment { padding: 7px 0; border-bottom: 1px solid var(--line); font-size: 13px; }
 .acomment .vcomment { font-style: italic; margin-top: 2px; }

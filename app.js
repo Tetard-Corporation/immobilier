@@ -7,6 +7,7 @@ let SET_BY_ID = {};
 let currentSetId = null;
 let map = null, markerLayer = null;
 let openBien = null;   // bien actuellement ouvert dans la modale (pour rafraîchir les votes)
+let modalMapInstance = null;   // carte Leaflet interactive de la fiche
 
 const $ = (s) => document.querySelector(s);
 const euros = (n) => (n == null ? "—" : Number(n).toLocaleString("fr-FR") + " €");
@@ -301,7 +302,8 @@ function voteTable(bien, section) {
     const cells = persons.map((u) => {
       if (u === Votes.voter) return `<td class="num">${starsWidget(id, "xs", key)}</td>`;
       const e = Votes.forBien(id, key).byUser[u];
-      return `<td class="num">${e ? `<span class="ministars">${"★".repeat(e.stars)}</span>` : '<span class="detailtxt">·</span>'}</td>`;
+      const has = e && typeof e.stars === "number";
+      return `<td class="num">${has ? `<span class="ministars">${"★".repeat(e.stars)}</span>` : '<span class="detailtxt">·</span>'}</td>`;
     }).join("");
     const lab = isGlobal ? `<b>${label}</b>` : label;
     const alg = isGlobal ? `<b>${algo}</b>` : algo;
@@ -319,12 +321,13 @@ function commentsSection(bien) {
   const list = Votes.users.map((u) => {
     const e = info.byUser[u];
     if (!e || !e.comment) return "";
-    return `<div class="acomment"><b>${u}</b> <span style="color:#fbbf24">${"★".repeat(e.stars)}</span>
+    const stars = typeof e.stars === "number" ? `<span style="color:#fbbf24">${"★".repeat(e.stars)}</span>` : "";
+    return `<div class="acomment"><b>${u}</b> ${stars}
       <div class="vcomment">“${escHtml(e.comment)}”</div></div>`;
   }).filter(Boolean).join("") || `<p class="detailtxt">Aucun commentaire pour l'instant.</p>`;
   const editor = Votes.voter ? `
     <div class="comment-edit">
-      <textarea id="myComment" rows="2" placeholder="Ton commentaire (nécessite une note globale dans Match)">${escHtml(info.mineComment || "")}</textarea>
+      <textarea id="myComment" rows="2" placeholder="Ton commentaire (optionnel)">${escHtml(info.mineComment || "")}</textarea>
       <div class="comment-actions"><span id="commentMsg" class="detailtxt"></span><button class="btn" id="saveComment">Enregistrer</button></div>
     </div>` : "";
   return `${editor}<div class="comments-list">${list}</div>`;
@@ -347,6 +350,12 @@ function openModal(bien) {
     <div class="modal-gallery galwrap" style="position:relative">${gallery(bien)}</div>
     ${bien.description ? `<p class="descr">${escHtml(htmlToText(bien.description))}</p>` : ""}
 
+    ${infoGrid(bien)}
+
+    ${bien.latitude != null && bien.longitude != null
+      ? `<div class="section-title">Carte</div><div id="modalMap" class="modal-map"></div>`
+      : ""}
+
     <div id="modalDynamic"></div>
 
     <div class="modal-actions">
@@ -367,7 +376,30 @@ function openModal(bien) {
     const i = Math.round(gal.scrollLeft / gal.clientWidth);
     card.querySelectorAll(".dots i").forEach((dd, k) => dd.classList.toggle("on", k === i));
   });
+  // Carte interactive (pan/zoom) centrée sur le bien.
+  if (modalMapInstance) { modalMapInstance.remove(); modalMapInstance = null; }
+  if (bien.latitude != null && bien.longitude != null) {
+    modalMapInstance = L.map("modalMap").setView([bien.latitude, bien.longitude], 13);
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19, attribution: "© OpenStreetMap" }).addTo(modalMapInstance);
+    L.circleMarker([bien.latitude, bien.longitude], { radius: 9, color: "#04210f", weight: 2, fillColor: "#f87171", fillOpacity: .95 }).addTo(modalMapInstance);
+    setTimeout(() => { if (modalMapInstance) modalMapInstance.invalidateSize(); }, 80);
+  }
   renderModalDynamic(bien);
+}
+
+// Bloc "infos clés" : champs complémentaires non déjà affichés ailleurs.
+function infoGrid(bien) {
+  const items = [
+    ["Code postal", bien.code_postal],
+    ["Surface bâtie", bien.surface_bati != null ? bien.surface_bati + " m²" : null],
+    ["DPE", bien.dpe_classe],
+    ["Gare la + proche", bien.rail_time_min != null ? bien.rail_time_min + " min" : null],
+    ["Population commune", bien.population_commune != null ? bien.population_commune + " hab." : null],
+    ["Isolement", bien.isolement_score != null ? Math.round(bien.isolement_score * 100) + " %" : null],
+  ].filter(([, v]) => v != null && v !== "");
+  if (!items.length) return "";
+  return `<div class="infogrid">${items.map(([k, v]) =>
+    `<div><span class="ig-k">${k}</span><span class="ig-v">${v}</span></div>`).join("")}</div>`;
 }
 
 // Partie dynamique (tableaux de votes + commentaires), re-rendue à chaque vote
@@ -389,13 +421,16 @@ function renderModalDynamic(bien) {
   const saveBtn = $("#saveComment");
   if (saveBtn) saveBtn.addEventListener("click", () => {
     Votes.setComment(voteKey(bien), $("#myComment").value.trim()).then((res) => {
-      if (res && res.ok === false && res.reason === "no-stars") {
-        $("#commentMsg").textContent = "Donne d'abord une note globale (section Match) pour commenter.";
-      }
+      const msg = $("#commentMsg");   // re-requête : le DOM dynamique a pu être reconstruit
+      if (msg) msg.textContent = (res && res.ok)
+        ? "✓ Commentaire enregistré" : "Échec de l'enregistrement — réessaie";
     });
   });
 }
-function closeModal() { $("#modal").classList.add("hidden"); openBien = null; }
+function closeModal() {
+  $("#modal").classList.add("hidden"); openBien = null;
+  if (modalMapInstance) { modalMapInstance.remove(); modalMapInstance = null; }
+}
 function refreshModal() { if (openBien && !$("#modal").classList.contains("hidden")) renderModalDynamic(openBien); }
 
 // ---------- Votes (étoiles) ----------

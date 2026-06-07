@@ -82,13 +82,13 @@ const Votes = (() => {
     return Promise.resolve({ ok: true });
   }
 
-  // Commentaire seul : nécessite une note préalable (la colonne stars est requise).
+  // Commentaire indépendant de la note : on peut commenter sans noter (stars nullable).
   function setComment(id, comment, criterion) {
     if (!voter) return Promise.resolve({ ok: false, reason: "no-voter" });
     const crit = criterion || OVERALL;
     const existing = ((cache[id] || {})[crit] || {})[voter];
-    if (!existing || typeof existing.stars !== "number") return Promise.resolve({ ok: false, reason: "no-stars" });
-    return setMine(id, existing.stars, crit, comment || null);
+    const stars = existing ? existing.stars : null;
+    return setMine(id, stars, crit, comment || null);
   }
 
   function setVoter(v) { voter = v; localStorage.setItem(LS_VOTER, v); emit(); }
