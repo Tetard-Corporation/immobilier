@@ -297,7 +297,7 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
             "code_postal": row.code_postal, "departement": row.departement,
             "latitude": row.latitude, "longitude": row.longitude,
             "url": row.url, "description": row.description, "dpe_classe": row.dpe_classe,
-            "condition": row.condition, "features": row.features, "nuisances": row.nuisances,
+            "condition": row.condition, "features": feats, "nuisances": row.nuisances,
             "altitude": row.altitude, "rail_time_min": row.rail_time_min,
             "isolement_score": row.isolement_score, "population_commune": row.population_commune,
             "risques": row.risques, "score": row.score, "score_details": row.score_details,

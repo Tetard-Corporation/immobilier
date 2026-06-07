@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-07T15:54:20.883958+00:00",
+ "generated_at": "2026-06-07T15:55:58.424522+00:00",
  "sets": [
   {
    "id": 1,
@@ -304,7 +304,8 @@
    "condition": null,
    "features": [
     "arbore",
-    "eau"
+    "eau",
+    "piscine"
    ],
    "nuisances": [],
    "altitude": 106.8,
@@ -848,18 +849,7 @@
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 10,
-   "photos": [
-    "photos/bienici_century-21-202_3293_4975/0.jpg",
-    "photos/bienici_century-21-202_3293_4975/1.jpg",
-    "photos/bienici_century-21-202_3293_4975/2.jpg",
-    "photos/bienici_century-21-202_3293_4975/3.jpg",
-    "photos/bienici_century-21-202_3293_4975/4.jpg",
-    "photos/bienici_century-21-202_3293_4975/5.jpg",
-    "photos/bienici_century-21-202_3293_4975/6.jpg",
-    "photos/bienici_century-21-202_3293_4975/7.jpg",
-    "photos/bienici_century-21-202_3293_4975/8.jpg",
-    "photos/bienici_century-21-202_3293_4975/9.jpg"
-   ]
+   "photos": []
   },
   {
    "id": 19,
@@ -1425,12 +1415,7 @@
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 4,
-   "photos": [
-    "photos/bienici_ag440414-534117671/0.jpg",
-    "photos/bienici_ag440414-534117671/1.jpg",
-    "photos/bienici_ag440414-534117671/2.jpg",
-    "photos/bienici_ag440414-534117671/3.jpg"
-   ]
+   "photos": []
   },
   {
    "id": 14,
@@ -1455,7 +1440,9 @@
     "eau",
     "isole",
     "vue",
-    "vue_panoramique"
+    "vue_panoramique",
+    "terrasse",
+    "garage"
    ],
    "nuisances": [],
    "altitude": 116.3,
@@ -2002,18 +1989,7 @@
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 10,
-   "photos": [
-    "photos/bienici_iad-france-937673/0.jpg",
-    "photos/bienici_iad-france-937673/1.jpg",
-    "photos/bienici_iad-france-937673/2.jpg",
-    "photos/bienici_iad-france-937673/3.jpg",
-    "photos/bienici_iad-france-937673/4.jpg",
-    "photos/bienici_iad-france-937673/5.jpg",
-    "photos/bienici_iad-france-937673/6.jpg",
-    "photos/bienici_iad-france-937673/7.jpg",
-    "photos/bienici_iad-france-937673/8.jpg",
-    "photos/bienici_iad-france-937673/9.jpg"
-   ]
+   "photos": []
   },
   {
    "id": 20,
@@ -2580,18 +2556,7 @@
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 10,
-   "photos": [
-    "photos/bienici_iad-france-932267/0.jpg",
-    "photos/bienici_iad-france-932267/1.jpg",
-    "photos/bienici_iad-france-932267/2.jpg",
-    "photos/bienici_iad-france-932267/3.jpg",
-    "photos/bienici_iad-france-932267/4.jpg",
-    "photos/bienici_iad-france-932267/5.jpg",
-    "photos/bienici_iad-france-932267/6.jpg",
-    "photos/bienici_iad-france-932267/7.jpg",
-    "photos/bienici_iad-france-932267/8.jpg",
-    "photos/bienici_iad-france-932267/9.jpg"
-   ]
+   "photos": []
   },
   {
    "id": 21,
@@ -2615,7 +2580,9 @@
    "features": [
     "arbore",
     "authentique",
-    "eau"
+    "eau",
+    "cheminee",
+    "garage"
    ],
    "nuisances": [],
    "altitude": 327.2,
@@ -3157,18 +3124,7 @@
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 10,
-   "photos": [
-    "photos/bienici_century-21-202_3452_12009/0.jpg",
-    "photos/bienici_century-21-202_3452_12009/1.jpg",
-    "photos/bienici_century-21-202_3452_12009/2.jpg",
-    "photos/bienici_century-21-202_3452_12009/3.jpg",
-    "photos/bienici_century-21-202_3452_12009/4.jpg",
-    "photos/bienici_century-21-202_3452_12009/5.jpg",
-    "photos/bienici_century-21-202_3452_12009/6.jpg",
-    "photos/bienici_century-21-202_3452_12009/7.jpg",
-    "photos/bienici_century-21-202_3452_12009/8.jpg",
-    "photos/bienici_century-21-202_3452_12009/9.jpg"
-   ]
+   "photos": []
   },
   {
    "id": 7,
@@ -3190,7 +3146,9 @@
    "dpe_classe": "E",
    "condition": "renover",
    "features": [
-    "eau"
+    "eau",
+    "terrasse",
+    "garage"
    ],
    "nuisances": [],
    "altitude": 99.9,
@@ -3735,18 +3693,7 @@
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 10,
-   "photos": [
-    "photos/bienici_hektor-DANTON26000-17253/0.jpg",
-    "photos/bienici_hektor-DANTON26000-17253/1.jpg",
-    "photos/bienici_hektor-DANTON26000-17253/2.jpg",
-    "photos/bienici_hektor-DANTON26000-17253/3.jpg",
-    "photos/bienici_hektor-DANTON26000-17253/4.jpg",
-    "photos/bienici_hektor-DANTON26000-17253/5.jpg",
-    "photos/bienici_hektor-DANTON26000-17253/6.jpg",
-    "photos/bienici_hektor-DANTON26000-17253/7.jpg",
-    "photos/bienici_hektor-DANTON26000-17253/8.jpg",
-    "photos/bienici_hektor-DANTON26000-17253/9.jpg"
-   ]
+   "photos": []
   },
   {
    "id": 8,
@@ -3768,7 +3715,8 @@
    "dpe_classe": "E",
    "condition": "renover",
    "features": [
-    "eau"
+    "eau",
+    "garage"
    ],
    "nuisances": [
     "nuisances"
@@ -4315,18 +4263,7 @@
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 10,
-   "photos": [
-    "photos/bienici_hektor-105918-323/0.jpg",
-    "photos/bienici_hektor-105918-323/1.jpg",
-    "photos/bienici_hektor-105918-323/2.jpg",
-    "photos/bienici_hektor-105918-323/3.jpg",
-    "photos/bienici_hektor-105918-323/4.jpg",
-    "photos/bienici_hektor-105918-323/5.jpg",
-    "photos/bienici_hektor-105918-323/6.jpg",
-    "photos/bienici_hektor-105918-323/7.jpg",
-    "photos/bienici_hektor-105918-323/8.jpg",
-    "photos/bienici_hektor-105918-323/9.jpg"
-   ]
+   "photos": []
   },
   {
    "id": 22,
@@ -4898,18 +4835,7 @@
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 10,
-   "photos": [
-    "photos/bienici_ag340369-534119477/0.jpg",
-    "photos/bienici_ag340369-534119477/1.jpg",
-    "photos/bienici_ag340369-534119477/2.jpg",
-    "photos/bienici_ag340369-534119477/3.jpg",
-    "photos/bienici_ag340369-534119477/4.jpg",
-    "photos/bienici_ag340369-534119477/5.jpg",
-    "photos/bienici_ag340369-534119477/6.jpg",
-    "photos/bienici_ag340369-534119477/7.jpg",
-    "photos/bienici_ag340369-534119477/8.jpg",
-    "photos/bienici_ag340369-534119477/9.jpg"
-   ]
+   "photos": []
   },
   {
    "id": 15,
@@ -5478,16 +5404,7 @@
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 8,
-   "photos": [
-    "photos/bienici_safti-1-1662947/0.jpg",
-    "photos/bienici_safti-1-1662947/1.jpg",
-    "photos/bienici_safti-1-1662947/2.jpg",
-    "photos/bienici_safti-1-1662947/3.jpg",
-    "photos/bienici_safti-1-1662947/4.jpg",
-    "photos/bienici_safti-1-1662947/5.jpg",
-    "photos/bienici_safti-1-1662947/6.jpg",
-    "photos/bienici_safti-1-1662947/7.jpg"
-   ]
+   "photos": []
   },
   {
    "id": 9,
@@ -5511,7 +5428,9 @@
    "features": [
     "arbore",
     "eau",
-    "isole"
+    "isole",
+    "terrasse",
+    "garage"
    ],
    "nuisances": [],
    "altitude": 396.9,
@@ -6055,18 +5974,7 @@
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 10,
-   "photos": [
-    "photos/bienici_safti-1-1660649/0.jpg",
-    "photos/bienici_safti-1-1660649/1.jpg",
-    "photos/bienici_safti-1-1660649/2.jpg",
-    "photos/bienici_safti-1-1660649/3.jpg",
-    "photos/bienici_safti-1-1660649/4.jpg",
-    "photos/bienici_safti-1-1660649/5.jpg",
-    "photos/bienici_safti-1-1660649/6.jpg",
-    "photos/bienici_safti-1-1660649/7.jpg",
-    "photos/bienici_safti-1-1660649/8.jpg",
-    "photos/bienici_safti-1-1660649/9.jpg"
-   ]
+   "photos": []
   },
   {
    "id": 6,
@@ -6087,7 +5995,11 @@
    "description": "NYONS - EXCLUSIVITE<br>Découvrez cette agréable villa à Nyons, qui offre un cadre de vie confortable et pratique, à proximité des commodités.<br>Elle se compose d'un bel espace de vie, d'une cuisine séparée, de 3 chambres et d'un bureau. La maison bénéficie d'un excellent confort thermique et d'une bonne autonomie grâce à une climatisation réversible ainsi qu'un chauffage au sol par géothermie et des panneaux solaires.<br>À l'extérieur, vous profiterez d'un terrain agréable avec piscine, idéal pour les beaux jours, ainsi que de dépendances offrant de nombreuses possibilités de rangement, d'atelier ou d'aménagement complémentaire.<br>Une villa alliant confort et économies d'énergie parfaite pour une résidence principale comme secondaire.<br>Cette maison est à vendre à l'agence Boschi immobilier de Nyons 26110<br>Elle se compose de :<br>-Rez-de-Chaussée-<br>Entrée 4 m²<br>WC 1 m²<br>Bureau 7 m²<br>Salle d'eau 4.5 m²<br>Salon avec insert bois 32 m²<br>Cuisine 19 m²<br>Cellier 6.5 m²<br>-1er étage-<br>Couloir 6 m²<br>Dégagement 3 m²<br>Chambre 13.5 m²<br>Chambre 14 m²<br>WC 1.5 m²<br>Salle d'eau + baignoire 8.5 m²<br>Chambre 15 m²<br>-Dépendance / WC 22 m² + 14 m²<br>-Garage 35 m²<br>-Piscine construction 2012 - 10x4,7 - coque - filtration verre - chlore - pompe à chaleur 2024<br>Honoraires à la charge du vendeur.  Classe énergie B, Classe climat A Montant moyen estimé des dépenses annuelles d'énergie pour un usage standard, établi à partir des prix de l'énergie de l'année 2021 : entre 890.00 et 1260.00 €. Les informations sur les risques auxquels ce bien est exposé sont disponibles sur le site Géorisques : georisques.gouv.fr. <br>",
    "dpe_classe": "B",
    "condition": null,
-   "features": [],
+   "features": [
+    "cheminee",
+    "garage",
+    "piscine"
+   ],
    "nuisances": [],
    "altitude": 301.3,
    "rail_time_min": 247,
@@ -6630,18 +6542,7 @@
    "is_favori": true,
    "favori_note": "Baronnies — - (match 23.8/score 63.9)",
    "n_photos_source": 10,
-   "photos": [
-    "photos/bienici_netty-company51600xbi-house-37485/0.jpg",
-    "photos/bienici_netty-company51600xbi-house-37485/1.jpg",
-    "photos/bienici_netty-company51600xbi-house-37485/2.jpg",
-    "photos/bienici_netty-company51600xbi-house-37485/3.jpg",
-    "photos/bienici_netty-company51600xbi-house-37485/4.jpg",
-    "photos/bienici_netty-company51600xbi-house-37485/5.jpg",
-    "photos/bienici_netty-company51600xbi-house-37485/6.jpg",
-    "photos/bienici_netty-company51600xbi-house-37485/7.jpg",
-    "photos/bienici_netty-company51600xbi-house-37485/8.jpg",
-    "photos/bienici_netty-company51600xbi-house-37485/9.jpg"
-   ]
+   "photos": []
   },
   {
    "id": 16,
@@ -6663,7 +6564,8 @@
    "dpe_classe": "D",
    "condition": "habitable",
    "features": [
-    "calme"
+    "calme",
+    "terrasse"
    ],
    "nuisances": [],
    "altitude": 156.9,
@@ -7211,18 +7113,7 @@
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 10,
-   "photos": [
-    "photos/bienici_hektor-716_iparticuliersadmin-28865/0.jpg",
-    "photos/bienici_hektor-716_iparticuliersadmin-28865/1.jpg",
-    "photos/bienici_hektor-716_iparticuliersadmin-28865/2.jpg",
-    "photos/bienici_hektor-716_iparticuliersadmin-28865/3.jpg",
-    "photos/bienici_hektor-716_iparticuliersadmin-28865/4.jpg",
-    "photos/bienici_hektor-716_iparticuliersadmin-28865/5.jpg",
-    "photos/bienici_hektor-716_iparticuliersadmin-28865/6.jpg",
-    "photos/bienici_hektor-716_iparticuliersadmin-28865/7.jpg",
-    "photos/bienici_hektor-716_iparticuliersadmin-28865/8.jpg",
-    "photos/bienici_hektor-716_iparticuliersadmin-28865/9.jpg"
-   ]
+   "photos": []
   },
   {
    "id": 10,
@@ -7244,7 +7135,9 @@
    "dpe_classe": "F",
    "condition": null,
    "features": [
-    "eau"
+    "eau",
+    "terrasse",
+    "garage"
    ],
    "nuisances": [],
    "altitude": 1137.8,
@@ -7786,18 +7679,7 @@
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 10,
-   "photos": [
-    "photos/bienici_adapt-immo-120051877/0.jpg",
-    "photos/bienici_adapt-immo-120051877/1.jpg",
-    "photos/bienici_adapt-immo-120051877/2.jpg",
-    "photos/bienici_adapt-immo-120051877/3.jpg",
-    "photos/bienici_adapt-immo-120051877/4.jpg",
-    "photos/bienici_adapt-immo-120051877/5.jpg",
-    "photos/bienici_adapt-immo-120051877/6.jpg",
-    "photos/bienici_adapt-immo-120051877/7.jpg",
-    "photos/bienici_adapt-immo-120051877/8.jpg",
-    "photos/bienici_adapt-immo-120051877/9.jpg"
-   ]
+   "photos": []
   },
   {
    "id": 23,
@@ -7818,7 +7700,9 @@
    "description": "Maison individuelle érigée en 1966 de bonne construction !!! Sa surface habitable de 62 m² offre une salon, une cuisine et deux chambres, salle de bains et wc. Cave en sous/sol et garage attenant. Combles à vérifier si aménageables. En dépendance, un petit bâtiment faisant office de garage. L'ensemble de la propriété porte sur un terrain de 1980 m² plat et en zone UB au PLU de la commune.",
    "dpe_classe": "G",
    "condition": null,
-   "features": [],
+   "features": [
+    "garage"
+   ],
    "nuisances": [],
    "altitude": 335.5,
    "rail_time_min": 217,
@@ -8360,14 +8244,7 @@
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 6,
-   "photos": [
-    "photos/bienici_adapt-immo-730101020/0.jpg",
-    "photos/bienici_adapt-immo-730101020/1.jpg",
-    "photos/bienici_adapt-immo-730101020/2.jpg",
-    "photos/bienici_adapt-immo-730101020/3.jpg",
-    "photos/bienici_adapt-immo-730101020/4.jpg",
-    "photos/bienici_adapt-immo-730101020/5.jpg"
-   ]
+   "photos": []
   },
   {
    "id": 11,
@@ -8392,7 +8269,9 @@
     "arbore",
     "eau",
     "vue",
-    "vue_panoramique"
+    "vue_panoramique",
+    "cheminee",
+    "terrasse"
    ],
    "nuisances": [],
    "altitude": 600.5,
@@ -8936,18 +8815,7 @@
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 10,
-   "photos": [
-    "photos/bienici_safti-1-1669381/0.jpg",
-    "photos/bienici_safti-1-1669381/1.jpg",
-    "photos/bienici_safti-1-1669381/2.jpg",
-    "photos/bienici_safti-1-1669381/3.jpg",
-    "photos/bienici_safti-1-1669381/4.jpg",
-    "photos/bienici_safti-1-1669381/5.jpg",
-    "photos/bienici_safti-1-1669381/6.jpg",
-    "photos/bienici_safti-1-1669381/7.jpg",
-    "photos/bienici_safti-1-1669381/8.jpg",
-    "photos/bienici_safti-1-1669381/9.jpg"
-   ]
+   "photos": []
   },
   {
    "id": 24,
@@ -8970,7 +8838,8 @@
    "condition": null,
    "features": [
     "calme",
-    "sans_vis_a_vis"
+    "sans_vis_a_vis",
+    "garage"
    ],
    "nuisances": [],
    "altitude": 660.5,
@@ -9507,11 +9376,7 @@
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 3,
-   "photos": [
-    "photos/bienici_ubiflow-neuf-533871911/0.jpg",
-    "photos/bienici_ubiflow-neuf-533871911/1.jpg",
-    "photos/bienici_ubiflow-neuf-533871911/2.jpg"
-   ]
+   "photos": []
   },
   {
    "id": 25,
@@ -9535,7 +9400,9 @@
    "features": [
     "eau",
     "vue",
-    "vue_panoramique"
+    "vue_panoramique",
+    "terrasse",
+    "piscine"
    ],
    "nuisances": [],
    "altitude": 245.1,
@@ -10072,18 +9939,7 @@
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 10,
-   "photos": [
-    "photos/bienici_apimo-87083931/0.jpg",
-    "photos/bienici_apimo-87083931/1.jpg",
-    "photos/bienici_apimo-87083931/2.jpg",
-    "photos/bienici_apimo-87083931/3.jpg",
-    "photos/bienici_apimo-87083931/4.jpg",
-    "photos/bienici_apimo-87083931/5.jpg",
-    "photos/bienici_apimo-87083931/6.jpg",
-    "photos/bienici_apimo-87083931/7.jpg",
-    "photos/bienici_apimo-87083931/8.jpg",
-    "photos/bienici_apimo-87083931/9.jpg"
-   ]
+   "photos": []
   },
   {
    "id": 1,
@@ -10104,7 +9960,9 @@
    "description": "Entre nature préservée et art de vivre, cette propriété de caractère offre un cadre idéal pour un projet agricole ou une résidence de charme.<br> <br>Au cœur d’un environnement verdoyant et paisible, cette ferme en cours de rénovation développe environ 340 m² habitables et s’inscrit sur un magnifique terrain de plus de 7 hectares (72 159 m²), propice à de nombreux projets : activité agricole, exploitation arboricole, accueil touristique ou lieu de vie en pleine nature.<br> <br>Un véritable atout : la présence de plusieurs sources naturelles sur la propriété, offrant une ressource précieuse pour l’irrigation, les cultures ou un projet d’autonomie.<br> <br>La bâtisse principale, déjà partiellement rénovée, allie authenticité et potentiel d’aménagement :<br> <br>Rez-de-chaussée : entrée, vaste espace de vie avec cuisine ouverte aménagée, WC et superbe cave voûtée.<br>À l’étage : deux chambres avec mezzanine, une chambre à finaliser, une salle de bains, un WC et une bibliothèque en cours d’aménagement.<br> <br>Une cuisine d’été extérieure (à terminer) prolonge les espaces de vie vers l’extérieur, idéale pour profiter pleinement du cadre naturel.<br> <br>Une seconde partie d’environ 100 m² reste à rénover, offrant de multiples possibilités : extension de l’habitation principale, création d’un gîte ou espace d’accueil.<br> <br>Les dépendances (caves, garage à réhabiliter) permettent d’envisager des usages variés : stockage, atelier, transformation ou activité agricole.<br> <br>À l’extérieur, le terrain se compose de vergers, arbres fruitiers et d’une serre, parfaitement adapté à une activité maraîchère, arboricole ou permacole.<br> <br>Que vous recherchiez une résidence principale au vert, une maison secondaire de caractère ou le développement d’un projet agricole, cette propriété rare conjugue potentiel, authenticité et qualité de vie.<br> <br>Les informations sur les risques auxquels ce bien est exposé sont disponibles sur le site Géorisques : www.georisques.gouv.fr<br>Prix de vente : 255 000 €<br>Honoraires charge vendeur<br> <br>Contactez votre conseiller SAFTI : Marie-Noëlle CASSIER, Tél. : <span class=\"importDescriptionDecorator\" data-type=\"phone\">0677843072</span>, E-mail : <span class=\"importDescriptionDecorator\" data-type=\"email\">marienoelle.cassier@safti.fr</span> - EI - Agent commercial immatriculé au RSAC de Aubenas sous le numéro 477 816 037",
    "dpe_classe": "NS",
    "condition": null,
-   "features": [],
+   "features": [
+    "garage"
+   ],
    "nuisances": [],
    "altitude": 784.4,
    "rail_time_min": 217,
@@ -10646,18 +10504,7 @@
    "is_favori": true,
    "favori_note": "Vivarais — isolé, eau, arboré, authentique (match 79.2/score 80.6)",
    "n_photos_source": 10,
-   "photos": [
-    "photos/bienici_safti-1-1666836/0.jpg",
-    "photos/bienici_safti-1-1666836/1.jpg",
-    "photos/bienici_safti-1-1666836/2.jpg",
-    "photos/bienici_safti-1-1666836/3.jpg",
-    "photos/bienici_safti-1-1666836/4.jpg",
-    "photos/bienici_safti-1-1666836/5.jpg",
-    "photos/bienici_safti-1-1666836/6.jpg",
-    "photos/bienici_safti-1-1666836/7.jpg",
-    "photos/bienici_safti-1-1666836/8.jpg",
-    "photos/bienici_safti-1-1666836/9.jpg"
-   ]
+   "photos": []
   },
   {
    "id": 26,
@@ -10678,7 +10525,10 @@
    "description": "\" Et si vous construisiez la maison de vos rêves ?  \"<br> Imaginez une maison parfaitement adaptée à votre style de vie, pensée selon vos envies et construite pour votre confort.<br> Plus qu'un projet, c'est une aventure unique  ou chaque détail compte :<br> - Un accompagnement de A a Z <br> - Un design à votre image <br> - un espace optimisé pour votre bien-être <br>- Des Matériaux modernes et durables <br> - Une vraie valeur patrimoniale <br> Avec Mme Fahem Najoie Maison Punch Bourgon Jallieu , construisez bien plus qu'une maison ; créez un foyer ou grandir, partager et s'épanouir <br> Contactez moi dès aujourd'hui et donnons vie à votre projet <br>tél <span class=\"importDescriptionDecorator\" data-type=\"phone\">06 37 41 29 00</span> <br>  <br> Prix inclus terrain , maison, Vrd , viabilisation\nTerrain proposé et vendu par notre partenaire foncier selon disponibilités, le constructeur n’étant pas mandaté pour réaliser la vente du terrain.  Prix terrain inclus :  77 000 € Frais de notaire non inclus :   € Prix maison inclus :  153 000 € VRD non inclus :  €  Hors aménagements extérieurs (extensions, terrasse, piscine etc), papiers peints, peintures, moquettes dans les chambres (tarif en vigueur au 20 mai 2025, modifiable sans préavis, prix variables suivant les prestations souhaitées). Hors frais d’hypothèque.  Différents modèles disponibles pour chaque terrain.  Assurance RC professionnelle/décennale/dommage ouvrage groupe Aviva.  Garantie de remboursement de l'acompte/livraison à prix et délai convenu CGI.   Partenaire financier : à préciser  Le numéro de TVA intracommunautaire : FR 14 498 627 272 00012  Contact : <span class=\"importDescriptionDecorator\" data-type=\"email\">contact@maisons-punch.fr</span>",
    "dpe_classe": "A",
    "condition": null,
-   "features": [],
+   "features": [
+    "terrasse",
+    "piscine"
+   ],
    "nuisances": [],
    "altitude": 213.7,
    "rail_time_min": 205,
@@ -11219,15 +11069,7 @@
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 7,
-   "photos": [
-    "photos/bienici_entities-1037639-5207060/0.jpg",
-    "photos/bienici_entities-1037639-5207060/1.jpg",
-    "photos/bienici_entities-1037639-5207060/2.jpg",
-    "photos/bienici_entities-1037639-5207060/3.jpg",
-    "photos/bienici_entities-1037639-5207060/4.jpg",
-    "photos/bienici_entities-1037639-5207060/5.jpg",
-    "photos/bienici_entities-1037639-5207060/6.jpg"
-   ]
+   "photos": []
   },
   {
    "id": 12,
@@ -11249,7 +11091,10 @@
    "dpe_classe": "E",
    "condition": null,
    "features": [
-    "arbore"
+    "arbore",
+    "terrasse",
+    "garage",
+    "piscine"
    ],
    "nuisances": [],
    "altitude": 274.8,
@@ -11793,18 +11638,7 @@
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 10,
-   "photos": [
-    "photos/bienici_hektor-105918-334/0.jpg",
-    "photos/bienici_hektor-105918-334/1.jpg",
-    "photos/bienici_hektor-105918-334/2.jpg",
-    "photos/bienici_hektor-105918-334/3.jpg",
-    "photos/bienici_hektor-105918-334/4.jpg",
-    "photos/bienici_hektor-105918-334/5.jpg",
-    "photos/bienici_hektor-105918-334/6.jpg",
-    "photos/bienici_hektor-105918-334/7.jpg",
-    "photos/bienici_hektor-105918-334/8.jpg",
-    "photos/bienici_hektor-105918-334/9.jpg"
-   ]
+   "photos": []
   },
   {
    "id": 17,
@@ -11825,7 +11659,9 @@
    "description": "Située à 2 pas du centre-ville au coeur de cette commune très prisée à Hauterives, cette maison récente de 2013 sans aucuns travaux. Elle vous séduira par son agencement fonctionnel et sa belle luminosité. Vous profitez d'un environnement calme, tout en restant très proche des commerces et des transports scolaires.<br> Elle se compose d'une grande pièce de vie avec cuisine ouverte, entièrement équipée, 3 chambres, implantée sur un terrain plat de 600 m2, ainsi qu'une terrasse exposée Sud-Ouest.<br> Les plus : belle luminosité dans toutes les pièces, sa localisation.<br> Un bien rare à découvrir sans tarder.<br>Cette annonce vous est proposée par MENAGER Cedric - SARL - NoRSAC: 524736162, Enregistré à Greffe du tribunal de commerce de romans<br>  Les informations sur les risques auxquels ce bien est exposé sont disponibles sur le site Géorisques : www.georisques.gouv.fr. Votre conseiller immobilier ikami (EI) - Annonce rédigée et publiée par un Agent Mandataire -",
    "dpe_classe": "C",
    "condition": "habitable",
-   "features": [],
+   "features": [
+    "terrasse"
+   ],
    "nuisances": [],
    "altitude": 311.3,
    "rail_time_min": 210,
@@ -12370,18 +12206,7 @@
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 10,
-   "photos": [
-    "photos/bienici_hektor-716_iparticuliersadmin-29989/0.jpg",
-    "photos/bienici_hektor-716_iparticuliersadmin-29989/1.jpg",
-    "photos/bienici_hektor-716_iparticuliersadmin-29989/2.jpg",
-    "photos/bienici_hektor-716_iparticuliersadmin-29989/3.jpg",
-    "photos/bienici_hektor-716_iparticuliersadmin-29989/4.jpg",
-    "photos/bienici_hektor-716_iparticuliersadmin-29989/5.jpg",
-    "photos/bienici_hektor-716_iparticuliersadmin-29989/6.jpg",
-    "photos/bienici_hektor-716_iparticuliersadmin-29989/7.jpg",
-    "photos/bienici_hektor-716_iparticuliersadmin-29989/8.jpg",
-    "photos/bienici_hektor-716_iparticuliersadmin-29989/9.jpg"
-   ]
+   "photos": []
   },
   {
    "id": 5,
@@ -12402,7 +12227,10 @@
    "description": "Die:\n Maison de plain pied de 98 m2 sur 1480m2 de terrain plat.\n Elle se compose d'une pièce de vie- salon, d'une cuisine complètement aménagée et demie-ouverte, d'un bureau, de 2 chambres et d'une salle d'eau avec toilettes séparées.\n  Chauffage central  au gaz ou  poêle à pellets permettent confort et souplesse.\n Une pièce supplémentaire permet le stockage.\n Le  garage indépendant  est de belle facture.\n Elle se situe dans un environnement privilégié, très dégagé, verdoyant avec une très belle vue, entre-autres sur la montagne du Glandasse.\n Son état est impeccable, les extérieurs sont parfaitement entretenus.\n Cette maison proche des commerces et de la gare, promet une belle qualité de vie, sans aucun souci.\n\nHonoraires à la charge du vendeur\nVotre agent commercial 3G IMMO sur place EI - Aline BRIANÇON inscrite au RSAC de ROMANS n° 415 071 653\nSelon l'article L.561.5 du Code Monétaire et Financier, pour l'organisation de la visite, la présentation d'une pièce d'identité vous sera demandée.\nLes informations sur les risques auxquels ce bien est exposé sont disponibles sur le site Géorisques : www.georisques.gouv.fr",
    "dpe_classe": "D",
    "condition": null,
-   "features": [],
+   "features": [
+    "cheminee",
+    "garage"
+   ],
    "nuisances": [],
    "altitude": 453.6,
    "rail_time_min": 233,
@@ -12944,17 +12772,7 @@
    "is_favori": true,
    "favori_note": "Diois — arboré, eau, vue (match 36.3/score 75.7)",
    "n_photos_source": 9,
-   "photos": [
-    "photos/bienici_ag743447-517894691/0.jpg",
-    "photos/bienici_ag743447-517894691/1.jpg",
-    "photos/bienici_ag743447-517894691/2.jpg",
-    "photos/bienici_ag743447-517894691/3.jpg",
-    "photos/bienici_ag743447-517894691/4.jpg",
-    "photos/bienici_ag743447-517894691/5.jpg",
-    "photos/bienici_ag743447-517894691/6.jpg",
-    "photos/bienici_ag743447-517894691/7.jpg",
-    "photos/bienici_ag743447-517894691/8.jpg"
-   ]
+   "photos": []
   },
   {
    "id": 3,
@@ -12975,7 +12793,10 @@
    "description": "iad France - Pascaline BONNETON vous propose: Située sur les hauteurs de Vals-les-Bains, au cOEur d’un environnement naturel préservé, cette authentique bâtisse du XVe siècle séduira les amoureux de calme, de caractère et de nature. Nichée aux abords d'un paisible hameau du Parc naturel des Monts d’Ardèche, elle offre un cadre de vie rare, sans isolement, avec une vue panoramique exceptionnelle sur les montagnes ardéchoises.<br>Rénovée avec soin dans un esprit rustique chic, cette propriété bénéficie d’une configuration peu commune avec un accès de plain-pied et un accès véhicule direct. Implantée sur un terrain privatif d’environ 1 300 m², elle invite à profiter pleinement d’un véritable havre de paix.<br>Dès l’entrée, le charme opère avec un chaleureux salon aux murs en pierre apparente et fenêtre à meneaux. Dans la continuité, l’espace salle à manger et la cuisine aménagée s’ouvre sur une agréable terrasse couverte dominant la vallée.<br>La maison comprend également au niveau inférieur une vaste chambre avec accès direct au jardin ainsi qu’une cave voûtée d’environ 20 m². À l’étage, une confortable suite parentale dispose de sa salle de bains, d’un WC indépendant, d’un espace buanderie ainsi que d’une pièce supplémentaire pouvant accueillir un dressing sur mesure, un bureau ou une chambre d’enfant.<br>Une troisième chambre indépendante avec salle d’eau offre de nombreuses possibilités : espace invités, chambre d’adolescent ou activité d’accueil touristique.<br>Côté confort, la maison est équipée d’un poêle à bois scandinave ainsi que d’un chauffage central au fioul avec chaudière à condensation permettant une consommation réduite. Assainissement autonome, eau de source, et fibre complètent les prestations.<br>Un bien rare et authentique, idéal pour les amoureux de nature recherchant tranquillité, charme et qualité de vie, à seulement 12 minutes de Vals-les-Bains et 25 minutes de Aubenas.<br>Honoraires d'agence à la charge du vendeur.<br>Information d'affichage énergétique sur ce bien : classe ENERGIE F indice 240 et classe CLIMAT F indice 75. Les informations sur les risques auxquels ce bien est exposé, y compris l'obligation légale de débroussaillement, sont disponibles sur le site Géorisques : http://www.georisques.gouv.fr.<br>La présente annonce immobilière a été rédigée sous la responsabilité éditoriale de Mme Pascaline BONNETON mandataire indépendant en immobilier (sans détention de fonds), agent commercial de la SAS I@D France immatriculé au RSAC de AUBENAS sous le numéro 840110407, titulaire de la carte de démarchage immobilier pour le compte de la société I@D France SAS.",
    "dpe_classe": "F",
    "condition": null,
-   "features": [],
+   "features": [
+    "cheminee",
+    "terrasse"
+   ],
    "nuisances": [],
    "altitude": 680.3,
    "rail_time_min": 225,
@@ -13518,18 +13339,7 @@
    "is_favori": true,
    "favori_note": "Cévennes ard. — authentique, calme, eau, isolé, vue panoramique (match 66.7/score 79.1)",
    "n_photos_source": 10,
-   "photos": [
-    "photos/bienici_iad-france-917018/0.jpg",
-    "photos/bienici_iad-france-917018/1.jpg",
-    "photos/bienici_iad-france-917018/2.jpg",
-    "photos/bienici_iad-france-917018/3.jpg",
-    "photos/bienici_iad-france-917018/4.jpg",
-    "photos/bienici_iad-france-917018/5.jpg",
-    "photos/bienici_iad-france-917018/6.jpg",
-    "photos/bienici_iad-france-917018/7.jpg",
-    "photos/bienici_iad-france-917018/8.jpg",
-    "photos/bienici_iad-france-917018/9.jpg"
-   ]
+   "photos": []
   },
   {
    "id": 18,
@@ -14099,18 +13909,7 @@
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 10,
-   "photos": [
-    "photos/bienici_ag133861-534149270/0.jpg",
-    "photos/bienici_ag133861-534149270/1.jpg",
-    "photos/bienici_ag133861-534149270/2.jpg",
-    "photos/bienici_ag133861-534149270/3.jpg",
-    "photos/bienici_ag133861-534149270/4.jpg",
-    "photos/bienici_ag133861-534149270/5.jpg",
-    "photos/bienici_ag133861-534149270/6.jpg",
-    "photos/bienici_ag133861-534149270/7.jpg",
-    "photos/bienici_ag133861-534149270/8.jpg",
-    "photos/bienici_ag133861-534149270/9.jpg"
-   ]
+   "photos": []
   },
   {
    "id": 4,
@@ -14131,7 +13930,10 @@
    "description": "Nichée sur les hauteurs de Vals-les-Bains, dans un environnement calme et verdoyant, cette authentique maison de village en pierre séduira les amoureux de caractère à la recherche d'un cadre de vie paisible.<br>Dès l'entrée, vous découvrirez une agréable pièce de vie composée d'une cuisine ouverte sur un salon-séjour chaleureux, prolongé par une belle terrasse offrant un espace privilégié pour profiter des beaux jours.<br>À l'étage, l'espace nuit se compose d'une chambre ainsi que d'un bureau pouvant aisément être aménagé en chambre d'appoint ou en coin nuit selon vos besoins.<br>En rez-de-jardin, le charme opère avec une magnifique chambre voûtée en pierre ainsi qu'une salle d'eau, offrant un espace indépendant particulièrement agréable.<br>Cette maison a su préserver toute son authenticité tout en bénéficiant du confort moderne : double vitrage, toiture isolée et prestations permettant une occupation confortable en toutes saisons.<br>Le véritable atout de cette propriété réside dans son superbe jardin privatif, joliment arboré et soigneusement entretenu. Véritable écrin de verdure, il offre une vue dégagée sur les collines environnantes et constitue un lieu idéal pour se ressourcer en toute tranquillité.<br>Un garage complète l'ensemble, parfait pour le stationnement d'une moto, de vélos ou pour du stockage supplémentaire.<br>Une propriété pleine de charme, idéale en résidence principale, résidence secondaire ou investissement locatif au cœur de l'une des communes les plus recherchées du bassin albenassien.",
    "dpe_classe": "E",
    "condition": null,
-   "features": [],
+   "features": [
+    "terrasse",
+    "garage"
+   ],
    "nuisances": [],
    "altitude": 432.8,
    "rail_time_min": 226,
@@ -14674,18 +14476,7 @@
    "is_favori": true,
    "favori_note": "Cévennes ard. — arboré, authentique, calme, eau, isolé, vue panoramique (match 67.1/score 71.3)",
    "n_photos_source": 10,
-   "photos": [
-    "photos/bienici_adapt-immo-07011143/0.jpg",
-    "photos/bienici_adapt-immo-07011143/1.jpg",
-    "photos/bienici_adapt-immo-07011143/2.jpg",
-    "photos/bienici_adapt-immo-07011143/3.jpg",
-    "photos/bienici_adapt-immo-07011143/4.jpg",
-    "photos/bienici_adapt-immo-07011143/5.jpg",
-    "photos/bienici_adapt-immo-07011143/6.jpg",
-    "photos/bienici_adapt-immo-07011143/7.jpg",
-    "photos/bienici_adapt-immo-07011143/8.jpg",
-    "photos/bienici_adapt-immo-07011143/9.jpg"
-   ]
+   "photos": []
   },
   {
    "id": 27,
@@ -14706,7 +14497,10 @@
    "description": "Nouveau<br>Nouveau<br>Et si vous construisiez la maison de vos rêves ?  \"<br> Imaginez une maison parfaitement adaptée à votre style de vie, pensée selon vos envies et construite pour votre confort.<br> Plus qu'un projet, c'est une aventure unique  ou chaque détail compte :<br> - Un accompagnement de A a Z <br> - Un design à votre image <br> - un espace optimisé pour votre bien-être <br>- Des Matériaux modernes et durables <br> - Une vraie valeur patrimoniale <br> Avec Mme Fahem Najoie Maison Punch Bourgon Jallieu , construisez bien plus qu'une maison ; créez un foyer ou grandir, partager et s'épanouir <br> Contactez moi dès aujourd'hui et donnons vie à votre projet <br>tél <span class=\"importDescriptionDecorator\" data-type=\"phone\">06 37 41 29 00</span> <br>  <br> Prix inclus terrain , maison, Vrd , viabilisation\nTerrain proposé et vendu par notre partenaire foncier selon disponibilités, le constructeur n’étant pas mandaté pour réaliser la vente du terrain.  Prix terrain inclus :  70 000 € Frais de notaire non inclus :   € Prix maison inclus :  150 000 € VRD non inclus :  €  Hors aménagements extérieurs (extensions, terrasse, piscine etc), papiers peints, peintures, moquettes dans les chambres (tarif en vigueur au 20 mai 2025, modifiable sans préavis, prix variables suivant les prestations souhaitées). Hors frais d’hypothèque.  Différents modèles disponibles pour chaque terrain.  Assurance RC professionnelle/décennale/dommage ouvrage groupe Aviva.  Garantie de remboursement de l'acompte/livraison à prix et délai convenu CGI.   Partenaire financier : à préciser  Le numéro de TVA intracommunautaire : FR 14 498 627 272 00012  Contact : <span class=\"importDescriptionDecorator\" data-type=\"email\">contact@maisons-punch.fr</span>",
    "dpe_classe": "A",
    "condition": null,
-   "features": [],
+   "features": [
+    "terrasse",
+    "piscine"
+   ],
    "nuisances": [],
    "altitude": 417.8,
    "rail_time_min": 205,
@@ -15248,14 +15042,7 @@
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 6,
-   "photos": [
-    "photos/bienici_entities-1037639-5207012/0.jpg",
-    "photos/bienici_entities-1037639-5207012/1.jpg",
-    "photos/bienici_entities-1037639-5207012/2.jpg",
-    "photos/bienici_entities-1037639-5207012/3.jpg",
-    "photos/bienici_entities-1037639-5207012/4.jpg",
-    "photos/bienici_entities-1037639-5207012/5.jpg"
-   ]
+   "photos": []
   },
   {
    "id": 28,
@@ -15276,7 +15063,10 @@
    "description": "Nouveau<br>Et si vous construisiez la maison de vos rêves ?  \"<br> Imaginez une maison parfaitement adaptée à votre style de vie, pensée selon vos envies et construite pour votre confort.<br> Plus qu'un projet, c'est une aventure unique  ou chaque détail compte :<br> - Un accompagnement de A a Z <br> - Un design à votre image <br> - un espace optimisé pour votre bien-être <br>- Des Matériaux modernes et durables <br> - Une vraie valeur patrimoniale <br> Avec Mme Fahem Najoie Maison Punch Bourgon Jallieu , construisez bien plus qu'une maison ; créez un foyer ou grandir, partager et s'épanouir <br> Contactez moi dès aujourd'hui et donnons vie à votre projet <br>tél <span class=\"importDescriptionDecorator\" data-type=\"phone\">06 37 41 29 00</span> <br>  <br> Prix inclus terrain , maison, Vrd , viabilisation\nTerrain proposé et vendu par notre partenaire foncier selon disponibilités, le constructeur n’étant pas mandaté pour réaliser la vente du terrain.  Prix terrain inclus :  70 000 € Frais de notaire non inclus :   € Prix maison inclus :  160 000 € VRD non inclus :  €  Hors aménagements extérieurs (extensions, terrasse, piscine etc), papiers peints, peintures, moquettes dans les chambres (tarif en vigueur au 20 mai 2025, modifiable sans préavis, prix variables suivant les prestations souhaitées). Hors frais d’hypothèque.  Différents modèles disponibles pour chaque terrain.  Assurance RC professionnelle/décennale/dommage ouvrage groupe Aviva.  Garantie de remboursement de l'acompte/livraison à prix et délai convenu CGI.   Partenaire financier : à préciser  Le numéro de TVA intracommunautaire : FR 14 498 627 272 00012  Contact : <span class=\"importDescriptionDecorator\" data-type=\"email\">contact@maisons-punch.fr</span>",
    "dpe_classe": "A",
    "condition": null,
-   "features": [],
+   "features": [
+    "terrasse",
+    "piscine"
+   ],
    "nuisances": [],
    "altitude": 417.8,
    "rail_time_min": 205,
@@ -15818,15 +15608,7 @@
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 7,
-   "photos": [
-    "photos/bienici_entities-1037639-5207250/0.jpg",
-    "photos/bienici_entities-1037639-5207250/1.jpg",
-    "photos/bienici_entities-1037639-5207250/2.jpg",
-    "photos/bienici_entities-1037639-5207250/3.jpg",
-    "photos/bienici_entities-1037639-5207250/4.jpg",
-    "photos/bienici_entities-1037639-5207250/5.jpg",
-    "photos/bienici_entities-1037639-5207250/6.jpg"
-   ]
+   "photos": []
   },
   {
    "id": 2,
@@ -15847,7 +15629,10 @@
    "description": "Venez découvrir cette belle villa ayant bénéficié d'une rénovation récente :<br> A l'étage une entrée desservant une grande et très lumineuse pièce de vie avec son accès sur la véranda, une cuisine indépendante s'ouvrant sur le jardin.<br> Un couloir distribuant 3 chambres toutes avec placards, une salle d'eau, un wc séparé.<br> En rez de chaussée un hall desservant une pièce chauffée potentiellement indépendante depuis un accès aussi par l'extérieur, un atelier, une partie vide sanitaire, une buanderie/chaufferie point d'eau et douche, un garage isolé avec porte sectionnelle télécommandée.<br> LES PLUS ! De nombreux travaux effectués (sur factures) tels que la toiture, pompe à chaleur, menuiseries extérieures et intérieures, poêle à bois, volets roulants solaires, mise aux normes électriques, vmc hygro, adoucisseur, fibre, tout à l'égout.<br> Le tout sur un terrain clos et arboré de 678m2.<br>Prix : 275.000 EUR (honoraires charge vendeur)<br> <br>Réf: 4930<br> <br>Dpe : D Montant estimé des dépenses annuelles d'énergie pour un usage standard selon le prix moyen des énergies indexés au 1er janvier 2023: entre 1800EUR et 2500EUR.<br> <br>Votre contact FOROT Immobilier : Valéry VANISCOTTE (E.I) RSAC 852 777 820 au <span class=\"importDescriptionDecorator\" data-type=\"phone\">06 89 40 95 02</span>.<br> <br> Les informations sur les risques auxquels ce bien est exposé sont disponibles sur le site Géorisques : www.georisques.gouv.fr<br>  Depuis 1987 à votre service!",
    "dpe_classe": "D",
    "condition": null,
-   "features": [],
+   "features": [
+    "cheminee",
+    "garage"
+   ],
    "nuisances": [],
    "altitude": 401.0,
    "rail_time_min": 215,
@@ -16387,18 +16172,7 @@
    "is_favori": true,
    "favori_note": "Vivarais — isolé, eau, arboré (match 78.8/score 72.4)",
    "n_photos_source": 10,
-   "photos": [
-    "photos/bienici_hektor-forotimmo-2317/0.jpg",
-    "photos/bienici_hektor-forotimmo-2317/1.jpg",
-    "photos/bienici_hektor-forotimmo-2317/2.jpg",
-    "photos/bienici_hektor-forotimmo-2317/3.jpg",
-    "photos/bienici_hektor-forotimmo-2317/4.jpg",
-    "photos/bienici_hektor-forotimmo-2317/5.jpg",
-    "photos/bienici_hektor-forotimmo-2317/6.jpg",
-    "photos/bienici_hektor-forotimmo-2317/7.jpg",
-    "photos/bienici_hektor-forotimmo-2317/8.jpg",
-    "photos/bienici_hektor-forotimmo-2317/9.jpg"
-   ]
+   "photos": []
   }
  ],
  "searches": [
