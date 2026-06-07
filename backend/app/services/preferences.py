@@ -27,6 +27,8 @@ PREFERENCE_KINDS = [
     "near_city",
     "temps_acces",
     "nuisance_sonore",
+    "commerces",
+    "ski",
     "population_jeune",
     "orientation_gauche",
     # Dépendent d'un provider d'enrichissement (Lot A) :
@@ -218,6 +220,23 @@ def _eval_one(item, kind: str, params: dict):
         if dr is not None:
             parts.append(f"voie ferrée {dr} m")
         return sub, "ok", " · ".join(parts)
+
+    if kind == "commerces":
+        n = flags.get("n_commerces")
+        if n is None:
+            return None, "pending", "commerces non vérifiés"
+        ref = params.get("ref", 15)
+        return _clamp(n / ref), "ok", f"{n} commerces/services à vélo (≤ 3 km)"
+
+    if kind == "ski":
+        if not flags.get("ski_checked"):
+            return None, "pending", "ski non vérifié"
+        d = flags.get("dist_ski_m")
+        if d is None:
+            return 0.15, "ok", "pas de remontée de ski à proximité"
+        km = round(d / 1000, 1)
+        max_km = params.get("max_km", 30)
+        return _clamp(1 - km / max_km), "ok", f"remontée de ski à {km} km"
 
     if kind == "population_jeune":
         v = flags.get("pop_jeune_score")

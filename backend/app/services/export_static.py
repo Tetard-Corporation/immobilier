@@ -55,6 +55,67 @@ def _load_infra_cache() -> dict:
         return {}
 
 
+_POI_CACHE = os.path.join(os.path.dirname(__file__), "..", "..", "data", "poi_cache.json")
+
+
+def _query_poi(lat: float, lon: float) -> dict | None:
+    """Commerces/services de proximité (≤3 km) + remontée de ski la plus proche (≤25 km)."""
+    q = (f'[out:json][timeout:30];('
+         f'nwr(around:3000,{lat},{lon})[shop~"^(supermarket|bakery|convenience|butcher|greengrocer|grocery)$"];'
+         f'nwr(around:3000,{lat},{lon})[amenity~"^(pharmacy|school|doctors|marketplace|post_office|bank)$"];'
+         f'way(around:25000,{lat},{lon})[aerialway~"gondola|chair_lift|cable_car|mixed_lift"];);out center 500;')
+    try:
+        data = urllib.parse.urlencode({"data": q}).encode()
+        req = urllib.request.Request(_OVERPASS, data=data, headers={"User-Agent": _UA})
+        with urllib.request.urlopen(req, timeout=45) as r:
+            payload = json.loads(r.read())
+    except Exception:
+        return None
+    n_commerces, ski = 0, None
+    for el in payload.get("elements", []):
+        t = el.get("tags", {})
+        if t.get("shop") or t.get("amenity"):
+            n_commerces += 1
+        elif t.get("aerialway"):
+            c = el.get("center") or ({"lat": el.get("lat"), "lon": el.get("lon")} if el.get("lat") else None)
+            if c and c.get("lat") is not None:
+                dm = round(haversine_km(lat, lon, c["lat"], c["lon"]) * 1000)
+                if ski is None or dm < ski:
+                    ski = dm
+    return {"n_commerces": n_commerces, "dist_ski_m": ski, "ski_checked": True}
+
+
+def _poi_distances(lat: float, lon: float, cache: dict) -> dict:
+    if lat is None or lon is None:
+        return {}
+    key = f"{round(lat, 4)},{round(lon, 4)}"
+    if key in cache:
+        return cache[key]
+    res = None
+    for attempt in range(3):
+        res = _query_poi(lat, lon)
+        if res is not None:
+            break
+        time.sleep(4 * (attempt + 1))
+    if res is not None:
+        cache[key] = res
+        try:
+            with open(_POI_CACHE, "w", encoding="utf-8") as fh:
+                json.dump(cache, fh)
+        except Exception:
+            pass
+        return res
+    return {}
+
+
+def _load_poi_cache() -> dict:
+    try:
+        with open(_POI_CACHE, encoding="utf-8") as fh:
+            return json.load(fh)
+    except Exception:
+        return {}
+
+
 _FIBRE_LUT = os.path.join(os.path.dirname(__file__), "..", "..", "data", "fibre_communes.json")
 
 
@@ -265,6 +326,7 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
 
     biens_out = []
     infra_cache = _load_infra_cache()
+    poi_cache = _load_poi_cache()
     fibre_lut = _load_fibre_lut()
     rows = (
         db.query(Listing)
@@ -274,11 +336,12 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
     )
     for row in rows:
         infra = _infra_distances(row.latitude, row.longitude, infra_cache)
+        poi = _poi_distances(row.latitude, row.longitude, poi_cache)
         feats = list(row.features or [])
         for e in _detect_equipements(row.description):
             if e not in feats:
                 feats.append(e)
-        extra = {**infra, **_fibre_flags(row.code_commune, fibre_lut), "features": feats}
+        extra = {**infra, **poi, **_fibre_flags(row.code_commune, fibre_lut), "features": feats}
         item = _RowItem(row, extra_flags=extra)
         scores_by_set = {}
         for fs_id, prefs in set_prefs.items():
