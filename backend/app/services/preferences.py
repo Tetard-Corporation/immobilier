@@ -25,6 +25,7 @@ PREFERENCE_KINDS = [
     "near_gare",
     "near_city",
     "temps_acces",
+    "nuisance_sonore",
     "population_jeune",
     "orientation_gauche",
     # Dépendent d'un provider d'enrichissement (Lot A) :
@@ -169,6 +170,25 @@ def _eval_one(item, kind: str, params: dict):
         max_min = params.get("max_minutes", 240)
         h, m = divmod(minutes, 60)
         return _clamp(1 - (minutes - 120) / (max_min - 120)) if max_min > 120 else (1.0 if minutes <= max_min else 0.0), "ok", f"~{h}h{m:02d} porte-à-porte"
+
+    if kind == "nuisance_sonore":
+        # Critère "calme" : pénalise la proximité d'une autoroute/voie ferrée (bruit).
+        # subscore élevé = éloigné = calme. Données injectées à l'enrichissement/export.
+        if not flags.get("infra_checked"):
+            return None, "pending", "proximité infrastructures non vérifiée"
+        da, dr = flags.get("dist_autoroute_m"), flags.get("dist_rail_m")
+        vals = [d for d in (da, dr) if d is not None]
+        if not vals:
+            return 1.0, "ok", "aucune autoroute/voie ferrée à proximité"
+        min_m = params.get("min_m", 200)
+        ref_m = params.get("ref_m", 1000)
+        sub = _clamp((min(vals) - min_m) / (ref_m - min_m))
+        parts = []
+        if da is not None:
+            parts.append(f"autoroute {da} m")
+        if dr is not None:
+            parts.append(f"voie ferrée {dr} m")
+        return sub, "ok", " · ".join(parts)
 
     if kind == "population_jeune":
         v = flags.get("pop_jeune_score")
