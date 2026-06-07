@@ -100,6 +100,14 @@ const Votes = (() => {
   }
   function toggleFavori(id) { return setMine(id, isFavori(id) ? null : 1, FAVORI); }
 
+  // L'utilisateur courant a-t-il déjà noté ce bien (un critère quelconque, hors favori) ?
+  function hasRated(id) {
+    if (!voter) return false;
+    const byCrit = cache[id] || {};
+    return Object.keys(byCrit).some((crit) =>
+      crit !== FAVORI && byCrit[crit][voter] && typeof byCrit[crit][voter].stars === "number");
+  }
+
   // Tous les commentaires d'un bien, tous critères confondus.
   function allComments(id) {
     const out = [];
@@ -119,7 +127,7 @@ const Votes = (() => {
 
   return {
     init, reload, forBien, setMine, setComment, setVoter, onChange, allComments,
-    isFavori, favCount, toggleFavori, OVERALL,
+    isFavori, favCount, toggleFavori, hasRated, OVERALL,
     get voter() { return voter; },
     get users() { return users; },
     get backend() { return backend; },

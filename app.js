@@ -34,6 +34,7 @@ async function boot() {
   setSel.addEventListener("change", (e) => { currentSetId = e.target.value; render(); });
   $("#sortSelect").addEventListener("change", render);
   $("#favOnly").addEventListener("change", render);
+  $("#hideRated").addEventListener("change", render);
   $("#scoreMin").addEventListener("input", (e) => { $("#scoreOut").textContent = e.target.value; render(); });
   $("#modeScroll").addEventListener("click", () => setMode("scroll"));
   $("#modeMap").addEventListener("click", () => setMode("map"));
@@ -68,6 +69,7 @@ function sortValue(bien, mode) {
 
 function visibleBiens() {
   const favOnly = $("#favOnly").checked;
+  const hideRated = $("#hideRated").checked;
   const min = Number($("#scoreMin").value);
   const sortMode = $("#sortSelect").value;
   let list = (DATA.biens || []).filter((b) => {
@@ -76,6 +78,8 @@ function visibleBiens() {
       const fav = Votes.voter ? Votes.isFavori(voteKey(b)) : b.is_favori;
       if (!fav) return false;
     }
+    // Masquer les biens que l'utilisateur courant a déjà notés.
+    if (hideRated && Votes.hasRated(voteKey(b))) return false;
     const ref = sortMode === "score" ? b.score : matchOf(b, currentSetId);
     if (min > 0 && (ref == null || ref < min)) return false;
     return true;
