@@ -37,6 +37,10 @@ PREFERENCE_KINDS = [
 
 _PENDING_KINDS = {"rail_time_from", "fiber", "relief_mountain", "hiking"}
 _LIGHT_OK = {"habitable": 1.0, "rafraichir": 1.0, "renover": 0.85, "gros_travaux": 0.4, "ruine": 0.1}
+_COND_LABELS = {
+    "habitable": "habitable de suite", "rafraichir": "à rafraîchir", "renover": "à rénover",
+    "gros_travaux": "gros travaux", "ruine": "ruine / à reconstruire",
+}
 
 
 def _clamp(x: float) -> float:
@@ -81,8 +85,9 @@ def _eval_one(item, kind: str, params: dict):
         if not budget:
             return None, "n/a", "budget non défini"
         if item.prix <= budget:
-            return 1.0, "ok", f"≤ budget {int(budget)}€"
-        return _clamp(1 - (item.prix - budget) / budget), "ok", f"> budget {int(budget)}€"
+            return 1.0, "ok", f"{int(item.prix)}€ ≤ budget {int(budget)}€"
+        dep = round((item.prix - budget) / budget * 100)
+        return _clamp(1 - (item.prix - budget) / budget), "ok", f"{int(item.prix)}€ > budget {int(budget)}€ (+{dep}%)"
 
     if kind == "chambres_min":
         mn = params.get("min", 1)
@@ -100,13 +105,14 @@ def _eval_one(item, kind: str, params: dict):
         if item.surface_terrain is None:
             return None, "n/a", "surface terrain inconnue"
         mn = params.get("min_surface", 1)
-        return (1.0 if item.surface_terrain >= mn else _clamp(item.surface_terrain / mn)), "ok", f"{item.surface_terrain} m²"
+        seuil = f" (souhait ≥ {int(mn)} m²)" if mn and mn > 1 else ""
+        return (1.0 if item.surface_terrain >= mn else _clamp(item.surface_terrain / mn)), "ok", f"{int(item.surface_terrain)} m²{seuil}"
 
     if kind == "light_works":
         cond = flags.get("condition")
         if cond is None:
             return None, "n/a", "état inconnu"
-        return _LIGHT_OK.get(cond, 0.6), "ok", cond
+        return _LIGHT_OK.get(cond, 0.6), "ok", f"état : {_COND_LABELS.get(cond, cond)}"
 
     if kind == "no_vis_a_vis":
         if "sans_vis_a_vis" in (flags.get("features") or []):
@@ -116,10 +122,14 @@ def _eval_one(item, kind: str, params: dict):
         return 0.6, "ok", "non précisé"
 
     if kind == "nature_exception":
-        return (1.0 if flags.get("nature_exception") else _clamp(0.4 + 0.1 * (flags.get("nature_score") or 0))), "ok", ""
+        ns = flags.get("nature_score") or 0
+        if flags.get("nature_exception"):
+            return 1.0, "ok", "site d'exception (nature remarquable)"
+        return _clamp(0.4 + 0.1 * ns), "ok", f"qualité nature {ns}/4"
 
     if kind == "authentic":
-        return (1.0 if "authentique" in (flags.get("features") or []) else 0.3), "ok", ""
+        present = "authentique" in (flags.get("features") or [])
+        return (1.0 if present else 0.3), "ok", "cachet / authentique mentionné" if present else "cachet non mentionné"
 
     if kind == "feature":
         name = params.get("name")
@@ -131,9 +141,9 @@ def _eval_one(item, kind: str, params: dict):
             if present and iso is not None:
                 return _clamp(0.7 + 0.3 * iso), "ok", f"isolé (commune {pop} hab.)"
             if iso is not None:
-                detail = f"commune {pop} hab." if pop is not None else "densité connue"
+                detail = f"commune de {pop} hab." if pop is not None else "densité connue"
                 return _clamp(iso), "ok", detail
-        return (1.0 if present else 0.2), "ok", str(name)
+        return (1.0 if present else 0.2), "ok", f"{name} : mentionné" if present else f"{name} : non mentionné"
 
     if kind == "near_corridor":
         if item.latitude is None or item.longitude is None:
@@ -143,7 +153,9 @@ def _eval_one(item, kind: str, params: dict):
         if dist is None:
             return None, "n/a", "corridor non défini"
         max_km = params.get("max_km", 40)
-        return _clamp(1 - dist / max_km), "ok", f"{round(dist)} km de l'axe"
+        villes = params.get("villes") or params.get("cities") or []
+        axe = " – ".join(v.capitalize() for v in villes) if villes else None
+        return _clamp(1 - dist / max_km), "ok", f"{round(dist)} km de l'axe" + (f" {axe}" if axe else "")
 
     if kind == "near_gare":
         if item.latitude is None or item.longitude is None:
@@ -177,7 +189,8 @@ def _eval_one(item, kind: str, params: dict):
             return None, "n/a", "trajet indéterminé"
         max_min = params.get("max_minutes", 240)
         h, m = divmod(minutes, 60)
-        return _clamp(1 - (minutes - 120) / (max_min - 120)) if max_min > 120 else (1.0 if minutes <= max_min else 0.0), "ok", f"~{h}h{m:02d} porte-à-porte"
+        hmax = max_min // 60
+        return _clamp(1 - (minutes - 120) / (max_min - 120)) if max_min > 120 else (1.0 if minutes <= max_min else 0.0), "ok", f"~{h}h{m:02d} porte-à-porte depuis Paris (max {hmax}h)"
 
     if kind == "nuisance_sonore":
         # Critère "calme" : pénalise la proximité d'une autoroute/voie ferrée (bruit).
@@ -203,7 +216,7 @@ def _eval_one(item, kind: str, params: dict):
         if v is None:
             return None, "pending", "données socio (enrich)"
         age = flags.get("age_median")
-        return _clamp(v), "ok", f"âge médian {age}" if age else "population jeune"
+        return _clamp(v), "ok", f"âge médian {age} ans" if age else "population plutôt jeune"
 
     if kind == "orientation_gauche":
         v = flags.get("orientation_gauche_score")
@@ -226,7 +239,8 @@ def _eval_one(item, kind: str, params: dict):
                 return _clamp(pct / 100), "ok", f"{pct}% des locaux éligibles fibre"
             return (1.0 if val else 0.0), "ok", "fibre" if val else "pas de fibre"
         if kind == "relief_mountain":
-            return _clamp((val or 0) / params.get("ref_altitude", 600)), "ok", f"{val} m"
+            ref = params.get("ref_altitude", 600)
+            return _clamp((val or 0) / ref), "ok", f"altitude {val} m (réf montagne {ref} m)"
         if kind == "hiking":
             n = flags.get("rando_count")
             detail = f"{n} sentiers/itinéraires à proximité" if n is not None else ("sentiers à proximité" if val else "peu de sentiers")

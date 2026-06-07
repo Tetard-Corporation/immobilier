@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-07T15:24:42.282276+00:00",
+ "generated_at": "2026-06-07T15:29:56.536857+00:00",
  "sets": [
   {
    "id": 1,
@@ -479,7 +479,7 @@
        "label": "Budget (apport 150000€)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "≤ budget 600000€",
+       "detail": "310000€ ≤ budget 600000€",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -488,7 +488,7 @@
        "label": "Axe Paris-Marseille",
        "weight": 1.5,
        "status": "ok",
-       "detail": "4 km de l'axe",
+       "detail": "4 km de l'axe Paris – Marseille",
        "subscore": 0.901,
        "contribution": 1.351
       },
@@ -497,7 +497,7 @@
        "label": "Nature d'exception",
        "weight": 2.0,
        "status": "ok",
-       "detail": "",
+       "detail": "qualité nature 2/4",
        "subscore": 0.6,
        "contribution": 1.2
       },
@@ -506,7 +506,7 @@
        "label": "Avec terrain",
        "weight": 1.0,
        "status": "ok",
-       "detail": "2910.0 m²",
+       "detail": "2910 m²",
        "subscore": 1.0,
        "contribution": 1.0
       },
@@ -542,7 +542,7 @@
        "label": "≤ 4h porte-à-porte depuis Paris",
        "weight": 2.0,
        "status": "ok",
-       "detail": "~3h06 porte-à-porte",
+       "detail": "~3h06 porte-à-porte depuis Paris (max 4h)",
        "subscore": 0.45,
        "contribution": 0.9
       },
@@ -560,7 +560,7 @@
        "label": "Authentique / cachet",
        "weight": 1.5,
        "status": "ok",
-       "detail": "",
+       "detail": "cachet non mentionné",
        "subscore": 0.3,
        "contribution": 0.45
       },
@@ -578,7 +578,7 @@
        "label": "Relief / montagne",
        "weight": 1.0,
        "status": "ok",
-       "detail": "106.8 m",
+       "detail": "altitude 106.8 m (réf montagne 600 m)",
        "subscore": 0.178,
        "contribution": 0.178
       },
@@ -609,7 +609,7 @@
        "label": "Grand terrain (>1500 m²)",
        "weight": 3.0,
        "status": "ok",
-       "detail": "2910.0 m²",
+       "detail": "2910 m² (souhait ≥ 1500 m²)",
        "subscore": 1.0,
        "contribution": 3.0
       },
@@ -618,7 +618,7 @@
        "label": "Budget (apport 150000€)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "≤ budget 600000€",
+       "detail": "310000€ ≤ budget 600000€",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -627,7 +627,7 @@
        "label": "Axe Paris-Marseille",
        "weight": 1.5,
        "status": "ok",
-       "detail": "4 km de l'axe",
+       "detail": "4 km de l'axe Paris – Marseille",
        "subscore": 0.901,
        "contribution": 1.351
       },
@@ -636,7 +636,7 @@
        "label": "Nature d'exception",
        "weight": 2.0,
        "status": "ok",
-       "detail": "",
+       "detail": "qualité nature 2/4",
        "subscore": 0.6,
        "contribution": 1.2
       },
@@ -672,7 +672,7 @@
        "label": "≤ 4h porte-à-porte depuis Paris",
        "weight": 2.0,
        "status": "ok",
-       "detail": "~3h06 porte-à-porte",
+       "detail": "~3h06 porte-à-porte depuis Paris (max 4h)",
        "subscore": 0.45,
        "contribution": 0.9
       },
@@ -690,7 +690,7 @@
        "label": "Vue panoramique",
        "weight": 3.0,
        "status": "ok",
-       "detail": "vue_panoramique",
+       "detail": "vue_panoramique : non mentionné",
        "subscore": 0.2,
        "contribution": 0.6
       },
@@ -699,7 +699,7 @@
        "label": "Authentique / cachet",
        "weight": 1.5,
        "status": "ok",
-       "detail": "",
+       "detail": "cachet non mentionné",
        "subscore": 0.3,
        "contribution": 0.45
       },
@@ -717,7 +717,7 @@
        "label": "Relief / montagne",
        "weight": 1.0,
        "status": "ok",
-       "detail": "106.8 m",
+       "detail": "altitude 106.8 m (réf montagne 600 m)",
        "subscore": 0.178,
        "contribution": 0.178
       },
@@ -1015,7 +1015,7 @@
        "label": "Budget (apport 150000€)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "≤ budget 600000€",
+       "detail": "390000€ ≤ budget 600000€",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -1024,7 +1024,7 @@
        "label": "Nature d'exception",
        "weight": 2.0,
        "status": "ok",
-       "detail": "",
+       "detail": "site d'exception (nature remarquable)",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -1033,7 +1033,7 @@
        "label": "≤ 4h porte-à-porte depuis Paris",
        "weight": 2.0,
        "status": "ok",
-       "detail": "~2h30 porte-à-porte",
+       "detail": "~2h30 porte-à-porte depuis Paris (max 4h)",
        "subscore": 0.75,
        "contribution": 1.5
       },
@@ -1042,7 +1042,7 @@
        "label": "Axe Paris-Marseille",
        "weight": 1.5,
        "status": "ok",
-       "detail": "1 km de l'axe",
+       "detail": "1 km de l'axe Paris – Marseille",
        "subscore": 0.98,
        "contribution": 1.47
       },
@@ -1051,7 +1051,7 @@
        "label": "Avec terrain",
        "weight": 1.0,
        "status": "ok",
-       "detail": "363.0 m²",
+       "detail": "363 m²",
        "subscore": 1.0,
        "contribution": 1.0
       },
@@ -1060,7 +1060,7 @@
        "label": "Travaux légers",
        "weight": 1.0,
        "status": "ok",
-       "detail": "rafraichir",
+       "detail": "état : à rafraîchir",
        "subscore": 1.0,
        "contribution": 1.0
       },
@@ -1114,7 +1114,7 @@
        "label": "Authentique / cachet",
        "weight": 1.5,
        "status": "ok",
-       "detail": "",
+       "detail": "cachet non mentionné",
        "subscore": 0.3,
        "contribution": 0.45
       },
@@ -1123,7 +1123,7 @@
        "label": "Relief / montagne",
        "weight": 1.0,
        "status": "ok",
-       "detail": "116.3 m",
+       "detail": "altitude 116.3 m (réf montagne 600 m)",
        "subscore": 0.194,
        "contribution": 0.194
       }
@@ -1146,7 +1146,7 @@
        "label": "Vue panoramique",
        "weight": 3.0,
        "status": "ok",
-       "detail": "vue_panoramique",
+       "detail": "vue_panoramique : mentionné",
        "subscore": 1.0,
        "contribution": 3.0
       },
@@ -1155,7 +1155,7 @@
        "label": "Budget (apport 150000€)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "≤ budget 600000€",
+       "detail": "390000€ ≤ budget 600000€",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -1164,7 +1164,7 @@
        "label": "Nature d'exception",
        "weight": 2.0,
        "status": "ok",
-       "detail": "",
+       "detail": "site d'exception (nature remarquable)",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -1173,7 +1173,7 @@
        "label": "≤ 4h porte-à-porte depuis Paris",
        "weight": 2.0,
        "status": "ok",
-       "detail": "~2h30 porte-à-porte",
+       "detail": "~2h30 porte-à-porte depuis Paris (max 4h)",
        "subscore": 0.75,
        "contribution": 1.5
       },
@@ -1182,7 +1182,7 @@
        "label": "Axe Paris-Marseille",
        "weight": 1.5,
        "status": "ok",
-       "detail": "1 km de l'axe",
+       "detail": "1 km de l'axe Paris – Marseille",
        "subscore": 0.98,
        "contribution": 1.47
       },
@@ -1191,7 +1191,7 @@
        "label": "Travaux légers",
        "weight": 1.0,
        "status": "ok",
-       "detail": "rafraichir",
+       "detail": "état : à rafraîchir",
        "subscore": 1.0,
        "contribution": 1.0
       },
@@ -1245,7 +1245,7 @@
        "label": "Grand terrain (>1500 m²)",
        "weight": 3.0,
        "status": "ok",
-       "detail": "363.0 m²",
+       "detail": "363 m² (souhait ≥ 1500 m²)",
        "subscore": 0.242,
        "contribution": 0.726
       },
@@ -1254,7 +1254,7 @@
        "label": "Authentique / cachet",
        "weight": 1.5,
        "status": "ok",
-       "detail": "",
+       "detail": "cachet non mentionné",
        "subscore": 0.3,
        "contribution": 0.45
       },
@@ -1263,7 +1263,7 @@
        "label": "Relief / montagne",
        "weight": 1.0,
        "status": "ok",
-       "detail": "116.3 m",
+       "detail": "altitude 116.3 m (réf montagne 600 m)",
        "subscore": 0.194,
        "contribution": 0.194
       }
@@ -1541,7 +1541,7 @@
        "label": "Budget (apport 150000€)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "≤ budget 600000€",
+       "detail": "209000€ ≤ budget 600000€",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -1550,7 +1550,7 @@
        "label": "≤ 4h porte-à-porte depuis Paris",
        "weight": 2.0,
        "status": "ok",
-       "detail": "~2h44 porte-à-porte",
+       "detail": "~2h44 porte-à-porte depuis Paris (max 4h)",
        "subscore": 0.633,
        "contribution": 1.267
       },
@@ -1559,7 +1559,7 @@
        "label": "Axe Paris-Marseille",
        "weight": 1.5,
        "status": "ok",
-       "detail": "7 km de l'axe",
+       "detail": "7 km de l'axe Paris – Marseille",
        "subscore": 0.832,
        "contribution": 1.247
       },
@@ -1568,7 +1568,7 @@
        "label": "Nature d'exception",
        "weight": 2.0,
        "status": "ok",
-       "detail": "",
+       "detail": "qualité nature 1/4",
        "subscore": 0.5,
        "contribution": 1.0
       },
@@ -1604,7 +1604,7 @@
        "label": "Travaux légers",
        "weight": 1.0,
        "status": "ok",
-       "detail": "renover",
+       "detail": "état : à rénover",
        "subscore": 0.85,
        "contribution": 0.85
       },
@@ -1622,7 +1622,7 @@
        "label": "Authentique / cachet",
        "weight": 1.5,
        "status": "ok",
-       "detail": "",
+       "detail": "cachet non mentionné",
        "subscore": 0.3,
        "contribution": 0.45
       },
@@ -1640,7 +1640,7 @@
        "label": "Relief / montagne",
        "weight": 1.0,
        "status": "ok",
-       "detail": "99.9 m",
+       "detail": "altitude 99.9 m (réf montagne 600 m)",
        "subscore": 0.167,
        "contribution": 0.167
       },
@@ -1671,7 +1671,7 @@
        "label": "Budget (apport 150000€)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "≤ budget 600000€",
+       "detail": "209000€ ≤ budget 600000€",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -1680,7 +1680,7 @@
        "label": "≤ 4h porte-à-porte depuis Paris",
        "weight": 2.0,
        "status": "ok",
-       "detail": "~2h44 porte-à-porte",
+       "detail": "~2h44 porte-à-porte depuis Paris (max 4h)",
        "subscore": 0.633,
        "contribution": 1.267
       },
@@ -1689,7 +1689,7 @@
        "label": "Axe Paris-Marseille",
        "weight": 1.5,
        "status": "ok",
-       "detail": "7 km de l'axe",
+       "detail": "7 km de l'axe Paris – Marseille",
        "subscore": 0.832,
        "contribution": 1.247
       },
@@ -1698,7 +1698,7 @@
        "label": "Nature d'exception",
        "weight": 2.0,
        "status": "ok",
-       "detail": "",
+       "detail": "qualité nature 1/4",
        "subscore": 0.5,
        "contribution": 1.0
       },
@@ -1734,7 +1734,7 @@
        "label": "Travaux légers",
        "weight": 1.0,
        "status": "ok",
-       "detail": "renover",
+       "detail": "état : à rénover",
        "subscore": 0.85,
        "contribution": 0.85
       },
@@ -1752,7 +1752,7 @@
        "label": "Vue panoramique",
        "weight": 3.0,
        "status": "ok",
-       "detail": "vue_panoramique",
+       "detail": "vue_panoramique : non mentionné",
        "subscore": 0.2,
        "contribution": 0.6
       },
@@ -1761,7 +1761,7 @@
        "label": "Authentique / cachet",
        "weight": 1.5,
        "status": "ok",
-       "detail": "",
+       "detail": "cachet non mentionné",
        "subscore": 0.3,
        "contribution": 0.45
       },
@@ -1779,7 +1779,7 @@
        "label": "Relief / montagne",
        "weight": 1.0,
        "status": "ok",
-       "detail": "99.9 m",
+       "detail": "altitude 99.9 m (réf montagne 600 m)",
        "subscore": 0.167,
        "contribution": 0.167
       },
@@ -2056,7 +2056,7 @@
        "label": "Budget (apport 150000€)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "≤ budget 600000€",
+       "detail": "195000€ ≤ budget 600000€",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -2074,7 +2074,7 @@
        "label": "Avec terrain",
        "weight": 1.0,
        "status": "ok",
-       "detail": "902.0 m²",
+       "detail": "902 m²",
        "subscore": 1.0,
        "contribution": 1.0
       },
@@ -2101,7 +2101,7 @@
        "label": "Travaux légers",
        "weight": 1.0,
        "status": "ok",
-       "detail": "renover",
+       "detail": "état : à rénover",
        "subscore": 0.85,
        "contribution": 0.85
       },
@@ -2110,7 +2110,7 @@
        "label": "Nature d'exception",
        "weight": 2.0,
        "status": "ok",
-       "detail": "",
+       "detail": "qualité nature 0/4",
        "subscore": 0.4,
        "contribution": 0.8
       },
@@ -2128,7 +2128,7 @@
        "label": "Authentique / cachet",
        "weight": 1.5,
        "status": "ok",
-       "detail": "",
+       "detail": "cachet non mentionné",
        "subscore": 0.3,
        "contribution": 0.45
       },
@@ -2137,7 +2137,7 @@
        "label": "≤ 4h porte-à-porte depuis Paris",
        "weight": 2.0,
        "status": "ok",
-       "detail": "~3h34 porte-à-porte",
+       "detail": "~3h34 porte-à-porte depuis Paris (max 4h)",
        "subscore": 0.217,
        "contribution": 0.433
       },
@@ -2146,7 +2146,7 @@
        "label": "Relief / montagne",
        "weight": 1.0,
        "status": "ok",
-       "detail": "115.4 m",
+       "detail": "altitude 115.4 m (réf montagne 600 m)",
        "subscore": 0.192,
        "contribution": 0.192
       },
@@ -2173,7 +2173,7 @@
        "label": "Axe Paris-Marseille",
        "weight": 1.5,
        "status": "ok",
-       "detail": "41 km de l'axe",
+       "detail": "41 km de l'axe Paris – Marseille",
        "subscore": 0.0,
        "contribution": 0.0
       }
@@ -2187,7 +2187,7 @@
        "label": "Budget (apport 150000€)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "≤ budget 600000€",
+       "detail": "195000€ ≤ budget 600000€",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -2205,7 +2205,7 @@
        "label": "Grand terrain (>1500 m²)",
        "weight": 3.0,
        "status": "ok",
-       "detail": "902.0 m²",
+       "detail": "902 m² (souhait ≥ 1500 m²)",
        "subscore": 0.601,
        "contribution": 1.804
       },
@@ -2232,7 +2232,7 @@
        "label": "Travaux légers",
        "weight": 1.0,
        "status": "ok",
-       "detail": "renover",
+       "detail": "état : à rénover",
        "subscore": 0.85,
        "contribution": 0.85
       },
@@ -2241,7 +2241,7 @@
        "label": "Nature d'exception",
        "weight": 2.0,
        "status": "ok",
-       "detail": "",
+       "detail": "qualité nature 0/4",
        "subscore": 0.4,
        "contribution": 0.8
       },
@@ -2259,7 +2259,7 @@
        "label": "Vue panoramique",
        "weight": 3.0,
        "status": "ok",
-       "detail": "vue_panoramique",
+       "detail": "vue_panoramique : non mentionné",
        "subscore": 0.2,
        "contribution": 0.6
       },
@@ -2268,7 +2268,7 @@
        "label": "Authentique / cachet",
        "weight": 1.5,
        "status": "ok",
-       "detail": "",
+       "detail": "cachet non mentionné",
        "subscore": 0.3,
        "contribution": 0.45
       },
@@ -2277,7 +2277,7 @@
        "label": "≤ 4h porte-à-porte depuis Paris",
        "weight": 2.0,
        "status": "ok",
-       "detail": "~3h34 porte-à-porte",
+       "detail": "~3h34 porte-à-porte depuis Paris (max 4h)",
        "subscore": 0.217,
        "contribution": 0.433
       },
@@ -2286,7 +2286,7 @@
        "label": "Relief / montagne",
        "weight": 1.0,
        "status": "ok",
-       "detail": "115.4 m",
+       "detail": "altitude 115.4 m (réf montagne 600 m)",
        "subscore": 0.192,
        "contribution": 0.192
       },
@@ -2313,7 +2313,7 @@
        "label": "Axe Paris-Marseille",
        "weight": 1.5,
        "status": "ok",
-       "detail": "41 km de l'axe",
+       "detail": "41 km de l'axe Paris – Marseille",
        "subscore": 0.0,
        "contribution": 0.0
       }
@@ -2584,7 +2584,7 @@
        "label": "Budget (apport 150000€)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "≤ budget 600000€",
+       "detail": "474000€ ≤ budget 600000€",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -2602,7 +2602,7 @@
        "label": "Axe Paris-Marseille",
        "weight": 1.5,
        "status": "ok",
-       "detail": "6 km de l'axe",
+       "detail": "6 km de l'axe Paris – Marseille",
        "subscore": 0.844,
        "contribution": 1.266
       },
@@ -2611,7 +2611,7 @@
        "label": "Avec terrain",
        "weight": 1.0,
        "status": "ok",
-       "detail": "1929.0 m²",
+       "detail": "1929 m²",
        "subscore": 1.0,
        "contribution": 1.0
       },
@@ -2638,7 +2638,7 @@
        "label": "Nature d'exception",
        "weight": 2.0,
        "status": "ok",
-       "detail": "",
+       "detail": "qualité nature 0/4",
        "subscore": 0.4,
        "contribution": 0.8
       },
@@ -2647,7 +2647,7 @@
        "label": "≤ 4h porte-à-porte depuis Paris",
        "weight": 2.0,
        "status": "ok",
-       "detail": "~3h22 porte-à-porte",
+       "detail": "~3h22 porte-à-porte depuis Paris (max 4h)",
        "subscore": 0.317,
        "contribution": 0.633
       },
@@ -2665,7 +2665,7 @@
        "label": "Authentique / cachet",
        "weight": 1.5,
        "status": "ok",
-       "detail": "",
+       "detail": "cachet non mentionné",
        "subscore": 0.3,
        "contribution": 0.45
       },
@@ -2674,7 +2674,7 @@
        "label": "Relief / montagne",
        "weight": 1.0,
        "status": "ok",
-       "detail": "207.8 m",
+       "detail": "altitude 207.8 m (réf montagne 600 m)",
        "subscore": 0.346,
        "contribution": 0.346
       },
@@ -2714,7 +2714,7 @@
        "label": "Grand terrain (>1500 m²)",
        "weight": 3.0,
        "status": "ok",
-       "detail": "1929.0 m²",
+       "detail": "1929 m² (souhait ≥ 1500 m²)",
        "subscore": 1.0,
        "contribution": 3.0
       },
@@ -2723,7 +2723,7 @@
        "label": "Budget (apport 150000€)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "≤ budget 600000€",
+       "detail": "474000€ ≤ budget 600000€",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -2741,7 +2741,7 @@
        "label": "Axe Paris-Marseille",
        "weight": 1.5,
        "status": "ok",
-       "detail": "6 km de l'axe",
+       "detail": "6 km de l'axe Paris – Marseille",
        "subscore": 0.844,
        "contribution": 1.266
       },
@@ -2768,7 +2768,7 @@
        "label": "Nature d'exception",
        "weight": 2.0,
        "status": "ok",
-       "detail": "",
+       "detail": "qualité nature 0/4",
        "subscore": 0.4,
        "contribution": 0.8
       },
@@ -2777,7 +2777,7 @@
        "label": "≤ 4h porte-à-porte depuis Paris",
        "weight": 2.0,
        "status": "ok",
-       "detail": "~3h22 porte-à-porte",
+       "detail": "~3h22 porte-à-porte depuis Paris (max 4h)",
        "subscore": 0.317,
        "contribution": 0.633
       },
@@ -2786,7 +2786,7 @@
        "label": "Vue panoramique",
        "weight": 3.0,
        "status": "ok",
-       "detail": "vue_panoramique",
+       "detail": "vue_panoramique : non mentionné",
        "subscore": 0.2,
        "contribution": 0.6
       },
@@ -2804,7 +2804,7 @@
        "label": "Authentique / cachet",
        "weight": 1.5,
        "status": "ok",
-       "detail": "",
+       "detail": "cachet non mentionné",
        "subscore": 0.3,
        "contribution": 0.45
       },
@@ -2813,7 +2813,7 @@
        "label": "Relief / montagne",
        "weight": 1.0,
        "status": "ok",
-       "detail": "207.8 m",
+       "detail": "altitude 207.8 m (réf montagne 600 m)",
        "subscore": 0.346,
        "contribution": 0.346
       },
@@ -3107,7 +3107,7 @@
        "label": "Budget (apport 150000€)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "≤ budget 600000€",
+       "detail": "340000€ ≤ budget 600000€",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -3116,7 +3116,7 @@
        "label": "Nature d'exception",
        "weight": 2.0,
        "status": "ok",
-       "detail": "",
+       "detail": "site d'exception (nature remarquable)",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -3134,7 +3134,7 @@
        "label": "≤ 4h porte-à-porte depuis Paris",
        "weight": 2.0,
        "status": "ok",
-       "detail": "~2h52 porte-à-porte",
+       "detail": "~2h52 porte-à-porte depuis Paris (max 4h)",
        "subscore": 0.567,
        "contribution": 1.133
       },
@@ -3143,7 +3143,7 @@
        "label": "Axe Paris-Marseille",
        "weight": 1.5,
        "status": "ok",
-       "detail": "12 km de l'axe",
+       "detail": "12 km de l'axe Paris – Marseille",
        "subscore": 0.691,
        "contribution": 1.037
       },
@@ -3152,7 +3152,7 @@
        "label": "Avec terrain",
        "weight": 1.0,
        "status": "ok",
-       "detail": "749.0 m²",
+       "detail": "749 m²",
        "subscore": 1.0,
        "contribution": 1.0
       },
@@ -3197,7 +3197,7 @@
        "label": "Relief / montagne",
        "weight": 1.0,
        "status": "ok",
-       "detail": "396.9 m",
+       "detail": "altitude 396.9 m (réf montagne 600 m)",
        "subscore": 0.661,
        "contribution": 0.661
       },
@@ -3206,7 +3206,7 @@
        "label": "Authentique / cachet",
        "weight": 1.5,
        "status": "ok",
-       "detail": "",
+       "detail": "cachet non mentionné",
        "subscore": 0.3,
        "contribution": 0.45
       },
@@ -3237,7 +3237,7 @@
        "label": "Budget (apport 150000€)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "≤ budget 600000€",
+       "detail": "340000€ ≤ budget 600000€",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -3246,7 +3246,7 @@
        "label": "Nature d'exception",
        "weight": 2.0,
        "status": "ok",
-       "detail": "",
+       "detail": "site d'exception (nature remarquable)",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -3264,7 +3264,7 @@
        "label": "Grand terrain (>1500 m²)",
        "weight": 3.0,
        "status": "ok",
-       "detail": "749.0 m²",
+       "detail": "749 m² (souhait ≥ 1500 m²)",
        "subscore": 0.499,
        "contribution": 1.498
       },
@@ -3273,7 +3273,7 @@
        "label": "≤ 4h porte-à-porte depuis Paris",
        "weight": 2.0,
        "status": "ok",
-       "detail": "~2h52 porte-à-porte",
+       "detail": "~2h52 porte-à-porte depuis Paris (max 4h)",
        "subscore": 0.567,
        "contribution": 1.133
       },
@@ -3282,7 +3282,7 @@
        "label": "Axe Paris-Marseille",
        "weight": 1.5,
        "status": "ok",
-       "detail": "12 km de l'axe",
+       "detail": "12 km de l'axe Paris – Marseille",
        "subscore": 0.691,
        "contribution": 1.037
       },
@@ -3327,7 +3327,7 @@
        "label": "Relief / montagne",
        "weight": 1.0,
        "status": "ok",
-       "detail": "396.9 m",
+       "detail": "altitude 396.9 m (réf montagne 600 m)",
        "subscore": 0.661,
        "contribution": 0.661
       },
@@ -3336,7 +3336,7 @@
        "label": "Vue panoramique",
        "weight": 3.0,
        "status": "ok",
-       "detail": "vue_panoramique",
+       "detail": "vue_panoramique : non mentionné",
        "subscore": 0.2,
        "contribution": 0.6
       },
@@ -3345,7 +3345,7 @@
        "label": "Authentique / cachet",
        "weight": 1.5,
        "status": "ok",
-       "detail": "",
+       "detail": "cachet non mentionné",
        "subscore": 0.3,
        "contribution": 0.45
       },
@@ -3628,7 +3628,7 @@
        "label": "Budget (apport 150000€)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "≤ budget 600000€",
+       "detail": "399000€ ≤ budget 600000€",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -3646,7 +3646,7 @@
        "label": "Avec terrain",
        "weight": 1.0,
        "status": "ok",
-       "detail": "1102.0 m²",
+       "detail": "1102 m²",
        "subscore": 1.0,
        "contribution": 1.0
       },
@@ -3691,7 +3691,7 @@
        "label": "Nature d'exception",
        "weight": 2.0,
        "status": "ok",
-       "detail": "",
+       "detail": "qualité nature 0/4",
        "subscore": 0.4,
        "contribution": 0.8
       },
@@ -3700,7 +3700,7 @@
        "label": "Axe Paris-Marseille",
        "weight": 1.5,
        "status": "ok",
-       "detail": "24 km de l'axe",
+       "detail": "24 km de l'axe Paris – Marseille",
        "subscore": 0.388,
        "contribution": 0.582
       },
@@ -3709,7 +3709,7 @@
        "label": "≤ 4h porte-à-porte depuis Paris",
        "weight": 2.0,
        "status": "ok",
-       "detail": "~3h27 porte-à-porte",
+       "detail": "~3h27 porte-à-porte depuis Paris (max 4h)",
        "subscore": 0.275,
        "contribution": 0.55
       },
@@ -3718,7 +3718,7 @@
        "label": "Relief / montagne",
        "weight": 1.0,
        "status": "ok",
-       "detail": "301.3 m",
+       "detail": "altitude 301.3 m (réf montagne 600 m)",
        "subscore": 0.502,
        "contribution": 0.502
       },
@@ -3727,7 +3727,7 @@
        "label": "Authentique / cachet",
        "weight": 1.5,
        "status": "ok",
-       "detail": "",
+       "detail": "cachet non mentionné",
        "subscore": 0.3,
        "contribution": 0.45
       },
@@ -3758,7 +3758,7 @@
        "label": "Grand terrain (>1500 m²)",
        "weight": 3.0,
        "status": "ok",
-       "detail": "1102.0 m²",
+       "detail": "1102 m² (souhait ≥ 1500 m²)",
        "subscore": 0.735,
        "contribution": 2.204
       },
@@ -3767,7 +3767,7 @@
        "label": "Budget (apport 150000€)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "≤ budget 600000€",
+       "detail": "399000€ ≤ budget 600000€",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -3821,7 +3821,7 @@
        "label": "Nature d'exception",
        "weight": 2.0,
        "status": "ok",
-       "detail": "",
+       "detail": "qualité nature 0/4",
        "subscore": 0.4,
        "contribution": 0.8
       },
@@ -3830,7 +3830,7 @@
        "label": "Vue panoramique",
        "weight": 3.0,
        "status": "ok",
-       "detail": "vue_panoramique",
+       "detail": "vue_panoramique : non mentionné",
        "subscore": 0.2,
        "contribution": 0.6
       },
@@ -3839,7 +3839,7 @@
        "label": "Axe Paris-Marseille",
        "weight": 1.5,
        "status": "ok",
-       "detail": "24 km de l'axe",
+       "detail": "24 km de l'axe Paris – Marseille",
        "subscore": 0.388,
        "contribution": 0.582
       },
@@ -3848,7 +3848,7 @@
        "label": "≤ 4h porte-à-porte depuis Paris",
        "weight": 2.0,
        "status": "ok",
-       "detail": "~3h27 porte-à-porte",
+       "detail": "~3h27 porte-à-porte depuis Paris (max 4h)",
        "subscore": 0.275,
        "contribution": 0.55
       },
@@ -3857,7 +3857,7 @@
        "label": "Relief / montagne",
        "weight": 1.0,
        "status": "ok",
-       "detail": "301.3 m",
+       "detail": "altitude 301.3 m (réf montagne 600 m)",
        "subscore": 0.502,
        "contribution": 0.502
       },
@@ -3866,7 +3866,7 @@
        "label": "Authentique / cachet",
        "weight": 1.5,
        "status": "ok",
-       "detail": "",
+       "detail": "cachet non mentionné",
        "subscore": 0.3,
        "contribution": 0.45
       },
@@ -4153,7 +4153,7 @@
        "label": "Budget (apport 150000€)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "≤ budget 600000€",
+       "detail": "258000€ ≤ budget 600000€",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -4162,7 +4162,7 @@
        "label": "Axe Paris-Marseille",
        "weight": 1.5,
        "status": "ok",
-       "detail": "4 km de l'axe",
+       "detail": "4 km de l'axe Paris – Marseille",
        "subscore": 0.901,
        "contribution": 1.352
       },
@@ -4171,7 +4171,7 @@
        "label": "≤ 4h porte-à-porte depuis Paris",
        "weight": 2.0,
        "status": "ok",
-       "detail": "~2h55 porte-à-porte",
+       "detail": "~2h55 porte-à-porte depuis Paris (max 4h)",
        "subscore": 0.542,
        "contribution": 1.083
       },
@@ -4180,7 +4180,7 @@
        "label": "Avec terrain",
        "weight": 1.0,
        "status": "ok",
-       "detail": "237.0 m²",
+       "detail": "237 m²",
        "subscore": 1.0,
        "contribution": 1.0
       },
@@ -4189,7 +4189,7 @@
        "label": "Travaux légers",
        "weight": 1.0,
        "status": "ok",
-       "detail": "habitable",
+       "detail": "état : habitable de suite",
        "subscore": 1.0,
        "contribution": 1.0
       },
@@ -4198,7 +4198,7 @@
        "label": "Nature d'exception",
        "weight": 2.0,
        "status": "ok",
-       "detail": "",
+       "detail": "qualité nature 1/4",
        "subscore": 0.5,
        "contribution": 1.0
       },
@@ -4261,7 +4261,7 @@
        "label": "Authentique / cachet",
        "weight": 1.5,
        "status": "ok",
-       "detail": "",
+       "detail": "cachet non mentionné",
        "subscore": 0.3,
        "contribution": 0.45
       },
@@ -4270,7 +4270,7 @@
        "label": "Relief / montagne",
        "weight": 1.0,
        "status": "ok",
-       "detail": "156.9 m",
+       "detail": "altitude 156.9 m (réf montagne 600 m)",
        "subscore": 0.262,
        "contribution": 0.262
       }
@@ -4284,7 +4284,7 @@
        "label": "Budget (apport 150000€)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "≤ budget 600000€",
+       "detail": "258000€ ≤ budget 600000€",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -4293,7 +4293,7 @@
        "label": "Axe Paris-Marseille",
        "weight": 1.5,
        "status": "ok",
-       "detail": "4 km de l'axe",
+       "detail": "4 km de l'axe Paris – Marseille",
        "subscore": 0.901,
        "contribution": 1.352
       },
@@ -4302,7 +4302,7 @@
        "label": "≤ 4h porte-à-porte depuis Paris",
        "weight": 2.0,
        "status": "ok",
-       "detail": "~2h55 porte-à-porte",
+       "detail": "~2h55 porte-à-porte depuis Paris (max 4h)",
        "subscore": 0.542,
        "contribution": 1.083
       },
@@ -4311,7 +4311,7 @@
        "label": "Travaux légers",
        "weight": 1.0,
        "status": "ok",
-       "detail": "habitable",
+       "detail": "état : habitable de suite",
        "subscore": 1.0,
        "contribution": 1.0
       },
@@ -4320,7 +4320,7 @@
        "label": "Nature d'exception",
        "weight": 2.0,
        "status": "ok",
-       "detail": "",
+       "detail": "qualité nature 1/4",
        "subscore": 0.5,
        "contribution": 1.0
       },
@@ -4374,7 +4374,7 @@
        "label": "Vue panoramique",
        "weight": 3.0,
        "status": "ok",
-       "detail": "vue_panoramique",
+       "detail": "vue_panoramique : non mentionné",
        "subscore": 0.2,
        "contribution": 0.6
       },
@@ -4392,7 +4392,7 @@
        "label": "Grand terrain (>1500 m²)",
        "weight": 3.0,
        "status": "ok",
-       "detail": "237.0 m²",
+       "detail": "237 m² (souhait ≥ 1500 m²)",
        "subscore": 0.158,
        "contribution": 0.474
       },
@@ -4401,7 +4401,7 @@
        "label": "Authentique / cachet",
        "weight": 1.5,
        "status": "ok",
-       "detail": "",
+       "detail": "cachet non mentionné",
        "subscore": 0.3,
        "contribution": 0.45
       },
@@ -4410,7 +4410,7 @@
        "label": "Relief / montagne",
        "weight": 1.0,
        "status": "ok",
-       "detail": "156.9 m",
+       "detail": "altitude 156.9 m (réf montagne 600 m)",
        "subscore": 0.262,
        "contribution": 0.262
       }
@@ -4676,7 +4676,7 @@
        "label": "Budget (apport 150000€)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "≤ budget 600000€",
+       "detail": "368000€ ≤ budget 600000€",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -4694,7 +4694,7 @@
        "label": "Avec terrain",
        "weight": 1.0,
        "status": "ok",
-       "detail": "205620.0 m²",
+       "detail": "205620 m²",
        "subscore": 1.0,
        "contribution": 1.0
       },
@@ -4703,7 +4703,7 @@
        "label": "Nature d'exception",
        "weight": 2.0,
        "status": "ok",
-       "detail": "",
+       "detail": "qualité nature 1/4",
        "subscore": 0.5,
        "contribution": 1.0
       },
@@ -4712,7 +4712,7 @@
        "label": "Relief / montagne",
        "weight": 1.0,
        "status": "ok",
-       "detail": "1137.8 m",
+       "detail": "altitude 1137.8 m (réf montagne 600 m)",
        "subscore": 1.0,
        "contribution": 1.0
       },
@@ -4748,7 +4748,7 @@
        "label": "≤ 4h porte-à-porte depuis Paris",
        "weight": 2.0,
        "status": "ok",
-       "detail": "~3h11 porte-à-porte",
+       "detail": "~3h11 porte-à-porte depuis Paris (max 4h)",
        "subscore": 0.408,
        "contribution": 0.817
       },
@@ -4757,7 +4757,7 @@
        "label": "Authentique / cachet",
        "weight": 1.5,
        "status": "ok",
-       "detail": "",
+       "detail": "cachet non mentionné",
        "subscore": 0.3,
        "contribution": 0.45
       },
@@ -4784,7 +4784,7 @@
        "label": "Axe Paris-Marseille",
        "weight": 1.5,
        "status": "ok",
-       "detail": "42 km de l'axe",
+       "detail": "42 km de l'axe Paris – Marseille",
        "subscore": 0.0,
        "contribution": 0.0
       },
@@ -4806,7 +4806,7 @@
        "label": "Grand terrain (>1500 m²)",
        "weight": 3.0,
        "status": "ok",
-       "detail": "205620.0 m²",
+       "detail": "205620 m² (souhait ≥ 1500 m²)",
        "subscore": 1.0,
        "contribution": 3.0
       },
@@ -4815,7 +4815,7 @@
        "label": "Budget (apport 150000€)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "≤ budget 600000€",
+       "detail": "368000€ ≤ budget 600000€",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -4833,7 +4833,7 @@
        "label": "Nature d'exception",
        "weight": 2.0,
        "status": "ok",
-       "detail": "",
+       "detail": "qualité nature 1/4",
        "subscore": 0.5,
        "contribution": 1.0
       },
@@ -4842,7 +4842,7 @@
        "label": "Relief / montagne",
        "weight": 1.0,
        "status": "ok",
-       "detail": "1137.8 m",
+       "detail": "altitude 1137.8 m (réf montagne 600 m)",
        "subscore": 1.0,
        "contribution": 1.0
       },
@@ -4878,7 +4878,7 @@
        "label": "≤ 4h porte-à-porte depuis Paris",
        "weight": 2.0,
        "status": "ok",
-       "detail": "~3h11 porte-à-porte",
+       "detail": "~3h11 porte-à-porte depuis Paris (max 4h)",
        "subscore": 0.408,
        "contribution": 0.817
       },
@@ -4887,7 +4887,7 @@
        "label": "Vue panoramique",
        "weight": 3.0,
        "status": "ok",
-       "detail": "vue_panoramique",
+       "detail": "vue_panoramique : non mentionné",
        "subscore": 0.2,
        "contribution": 0.6
       },
@@ -4896,7 +4896,7 @@
        "label": "Authentique / cachet",
        "weight": 1.5,
        "status": "ok",
-       "detail": "",
+       "detail": "cachet non mentionné",
        "subscore": 0.3,
        "contribution": 0.45
       },
@@ -4923,7 +4923,7 @@
        "label": "Axe Paris-Marseille",
        "weight": 1.5,
        "status": "ok",
-       "detail": "42 km de l'axe",
+       "detail": "42 km de l'axe Paris – Marseille",
        "subscore": 0.0,
        "contribution": 0.0
       },
@@ -5200,7 +5200,7 @@
        "label": "Budget (apport 150000€)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "≤ budget 600000€",
+       "detail": "176000€ ≤ budget 600000€",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -5209,7 +5209,7 @@
        "label": "Nature d'exception",
        "weight": 2.0,
        "status": "ok",
-       "detail": "",
+       "detail": "site d'exception (nature remarquable)",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -5227,7 +5227,7 @@
        "label": "≤ 4h porte-à-porte depuis Paris",
        "weight": 2.0,
        "status": "ok",
-       "detail": "~2h46 porte-à-porte",
+       "detail": "~2h46 porte-à-porte depuis Paris (max 4h)",
        "subscore": 0.617,
        "contribution": 1.233
       },
@@ -5236,7 +5236,7 @@
        "label": "Avec terrain",
        "weight": 1.0,
        "status": "ok",
-       "detail": "865.0 m²",
+       "detail": "865 m²",
        "subscore": 1.0,
        "contribution": 1.0
       },
@@ -5245,7 +5245,7 @@
        "label": "Travaux légers",
        "weight": 1.0,
        "status": "ok",
-       "detail": "habitable",
+       "detail": "état : habitable de suite",
        "subscore": 1.0,
        "contribution": 1.0
       },
@@ -5254,7 +5254,7 @@
        "label": "Relief / montagne",
        "weight": 1.0,
        "status": "ok",
-       "detail": "600.5 m",
+       "detail": "altitude 600.5 m (réf montagne 600 m)",
        "subscore": 1.0,
        "contribution": 1.0
       },
@@ -5281,7 +5281,7 @@
        "label": "Axe Paris-Marseille",
        "weight": 1.5,
        "status": "ok",
-       "detail": "19 km de l'axe",
+       "detail": "19 km de l'axe Paris – Marseille",
        "subscore": 0.526,
        "contribution": 0.79
       },
@@ -5299,7 +5299,7 @@
        "label": "Authentique / cachet",
        "weight": 1.5,
        "status": "ok",
-       "detail": "",
+       "detail": "cachet non mentionné",
        "subscore": 0.3,
        "contribution": 0.45
       },
@@ -5331,7 +5331,7 @@
        "label": "Vue panoramique",
        "weight": 3.0,
        "status": "ok",
-       "detail": "vue_panoramique",
+       "detail": "vue_panoramique : mentionné",
        "subscore": 1.0,
        "contribution": 3.0
       },
@@ -5340,7 +5340,7 @@
        "label": "Budget (apport 150000€)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "≤ budget 600000€",
+       "detail": "176000€ ≤ budget 600000€",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -5349,7 +5349,7 @@
        "label": "Nature d'exception",
        "weight": 2.0,
        "status": "ok",
-       "detail": "",
+       "detail": "site d'exception (nature remarquable)",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -5367,7 +5367,7 @@
        "label": "Grand terrain (>1500 m²)",
        "weight": 3.0,
        "status": "ok",
-       "detail": "865.0 m²",
+       "detail": "865 m² (souhait ≥ 1500 m²)",
        "subscore": 0.577,
        "contribution": 1.73
       },
@@ -5376,7 +5376,7 @@
        "label": "≤ 4h porte-à-porte depuis Paris",
        "weight": 2.0,
        "status": "ok",
-       "detail": "~2h46 porte-à-porte",
+       "detail": "~2h46 porte-à-porte depuis Paris (max 4h)",
        "subscore": 0.617,
        "contribution": 1.233
       },
@@ -5385,7 +5385,7 @@
        "label": "Travaux légers",
        "weight": 1.0,
        "status": "ok",
-       "detail": "habitable",
+       "detail": "état : habitable de suite",
        "subscore": 1.0,
        "contribution": 1.0
       },
@@ -5394,7 +5394,7 @@
        "label": "Relief / montagne",
        "weight": 1.0,
        "status": "ok",
-       "detail": "600.5 m",
+       "detail": "altitude 600.5 m (réf montagne 600 m)",
        "subscore": 1.0,
        "contribution": 1.0
       },
@@ -5421,7 +5421,7 @@
        "label": "Axe Paris-Marseille",
        "weight": 1.5,
        "status": "ok",
-       "detail": "19 km de l'axe",
+       "detail": "19 km de l'axe Paris – Marseille",
        "subscore": 0.526,
        "contribution": 0.79
       },
@@ -5439,7 +5439,7 @@
        "label": "Authentique / cachet",
        "weight": 1.5,
        "status": "ok",
-       "detail": "",
+       "detail": "cachet non mentionné",
        "subscore": 0.3,
        "contribution": 0.45
       },
@@ -5722,7 +5722,7 @@
        "label": "Budget (apport 150000€)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "≤ budget 600000€",
+       "detail": "255000€ ≤ budget 600000€",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -5740,7 +5740,7 @@
        "label": "≤ 4h porte-à-porte depuis Paris",
        "weight": 2.0,
        "status": "ok",
-       "detail": "~2h50 porte-à-porte",
+       "detail": "~2h50 porte-à-porte depuis Paris (max 4h)",
        "subscore": 0.583,
        "contribution": 1.167
       },
@@ -5749,7 +5749,7 @@
        "label": "Avec terrain",
        "weight": 1.0,
        "status": "ok",
-       "detail": "72864.0 m²",
+       "detail": "72864 m²",
        "subscore": 1.0,
        "contribution": 1.0
       },
@@ -5758,7 +5758,7 @@
        "label": "Relief / montagne",
        "weight": 1.0,
        "status": "ok",
-       "detail": "784.4 m",
+       "detail": "altitude 784.4 m (réf montagne 600 m)",
        "subscore": 1.0,
        "contribution": 1.0
       },
@@ -5803,7 +5803,7 @@
        "label": "Nature d'exception",
        "weight": 2.0,
        "status": "ok",
-       "detail": "",
+       "detail": "qualité nature 0/4",
        "subscore": 0.4,
        "contribution": 0.8
       },
@@ -5812,7 +5812,7 @@
        "label": "Axe Paris-Marseille",
        "weight": 1.5,
        "status": "ok",
-       "detail": "23 km de l'axe",
+       "detail": "23 km de l'axe Paris – Marseille",
        "subscore": 0.433,
        "contribution": 0.649
       },
@@ -5821,7 +5821,7 @@
        "label": "Authentique / cachet",
        "weight": 1.5,
        "status": "ok",
-       "detail": "",
+       "detail": "cachet non mentionné",
        "subscore": 0.3,
        "contribution": 0.45
       },
@@ -5852,7 +5852,7 @@
        "label": "Grand terrain (>1500 m²)",
        "weight": 3.0,
        "status": "ok",
-       "detail": "72864.0 m²",
+       "detail": "72864 m² (souhait ≥ 1500 m²)",
        "subscore": 1.0,
        "contribution": 3.0
       },
@@ -5861,7 +5861,7 @@
        "label": "Budget (apport 150000€)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "≤ budget 600000€",
+       "detail": "255000€ ≤ budget 600000€",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -5879,7 +5879,7 @@
        "label": "≤ 4h porte-à-porte depuis Paris",
        "weight": 2.0,
        "status": "ok",
-       "detail": "~2h50 porte-à-porte",
+       "detail": "~2h50 porte-à-porte depuis Paris (max 4h)",
        "subscore": 0.583,
        "contribution": 1.167
       },
@@ -5888,7 +5888,7 @@
        "label": "Relief / montagne",
        "weight": 1.0,
        "status": "ok",
-       "detail": "784.4 m",
+       "detail": "altitude 784.4 m (réf montagne 600 m)",
        "subscore": 1.0,
        "contribution": 1.0
       },
@@ -5933,7 +5933,7 @@
        "label": "Nature d'exception",
        "weight": 2.0,
        "status": "ok",
-       "detail": "",
+       "detail": "qualité nature 0/4",
        "subscore": 0.4,
        "contribution": 0.8
       },
@@ -5942,7 +5942,7 @@
        "label": "Axe Paris-Marseille",
        "weight": 1.5,
        "status": "ok",
-       "detail": "23 km de l'axe",
+       "detail": "23 km de l'axe Paris – Marseille",
        "subscore": 0.433,
        "contribution": 0.649
       },
@@ -5951,7 +5951,7 @@
        "label": "Vue panoramique",
        "weight": 3.0,
        "status": "ok",
-       "detail": "vue_panoramique",
+       "detail": "vue_panoramique : non mentionné",
        "subscore": 0.2,
        "contribution": 0.6
       },
@@ -5960,7 +5960,7 @@
        "label": "Authentique / cachet",
        "weight": 1.5,
        "status": "ok",
-       "detail": "",
+       "detail": "cachet non mentionné",
        "subscore": 0.3,
        "contribution": 0.45
       },
@@ -6254,7 +6254,7 @@
        "label": "Budget (apport 150000€)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "≤ budget 600000€",
+       "detail": "360000€ ≤ budget 600000€",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -6272,7 +6272,7 @@
        "label": "Avec terrain",
        "weight": 1.0,
        "status": "ok",
-       "detail": "1529.0 m²",
+       "detail": "1529 m²",
        "subscore": 1.0,
        "contribution": 1.0
       },
@@ -6281,7 +6281,7 @@
        "label": "Nature d'exception",
        "weight": 2.0,
        "status": "ok",
-       "detail": "",
+       "detail": "qualité nature 1/4",
        "subscore": 0.5,
        "contribution": 1.0
       },
@@ -6317,7 +6317,7 @@
        "label": "≤ 4h porte-à-porte depuis Paris",
        "weight": 2.0,
        "status": "ok",
-       "detail": "~3h21 porte-à-porte",
+       "detail": "~3h21 porte-à-porte depuis Paris (max 4h)",
        "subscore": 0.325,
        "contribution": 0.65
       },
@@ -6326,7 +6326,7 @@
        "label": "Relief / montagne",
        "weight": 1.0,
        "status": "ok",
-       "detail": "274.8 m",
+       "detail": "altitude 274.8 m (réf montagne 600 m)",
        "subscore": 0.458,
        "contribution": 0.458
       },
@@ -6335,7 +6335,7 @@
        "label": "Authentique / cachet",
        "weight": 1.5,
        "status": "ok",
-       "detail": "",
+       "detail": "cachet non mentionné",
        "subscore": 0.3,
        "contribution": 0.45
       },
@@ -6344,7 +6344,7 @@
        "label": "Axe Paris-Marseille",
        "weight": 1.5,
        "status": "ok",
-       "detail": "38 km de l'axe",
+       "detail": "38 km de l'axe Paris – Marseille",
        "subscore": 0.038,
        "contribution": 0.057
       },
@@ -6384,7 +6384,7 @@
        "label": "Grand terrain (>1500 m²)",
        "weight": 3.0,
        "status": "ok",
-       "detail": "1529.0 m²",
+       "detail": "1529 m² (souhait ≥ 1500 m²)",
        "subscore": 1.0,
        "contribution": 3.0
       },
@@ -6393,7 +6393,7 @@
        "label": "Budget (apport 150000€)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "≤ budget 600000€",
+       "detail": "360000€ ≤ budget 600000€",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -6411,7 +6411,7 @@
        "label": "Nature d'exception",
        "weight": 2.0,
        "status": "ok",
-       "detail": "",
+       "detail": "qualité nature 1/4",
        "subscore": 0.5,
        "contribution": 1.0
       },
@@ -6447,7 +6447,7 @@
        "label": "≤ 4h porte-à-porte depuis Paris",
        "weight": 2.0,
        "status": "ok",
-       "detail": "~3h21 porte-à-porte",
+       "detail": "~3h21 porte-à-porte depuis Paris (max 4h)",
        "subscore": 0.325,
        "contribution": 0.65
       },
@@ -6456,7 +6456,7 @@
        "label": "Vue panoramique",
        "weight": 3.0,
        "status": "ok",
-       "detail": "vue_panoramique",
+       "detail": "vue_panoramique : non mentionné",
        "subscore": 0.2,
        "contribution": 0.6
       },
@@ -6465,7 +6465,7 @@
        "label": "Relief / montagne",
        "weight": 1.0,
        "status": "ok",
-       "detail": "274.8 m",
+       "detail": "altitude 274.8 m (réf montagne 600 m)",
        "subscore": 0.458,
        "contribution": 0.458
       },
@@ -6474,7 +6474,7 @@
        "label": "Authentique / cachet",
        "weight": 1.5,
        "status": "ok",
-       "detail": "",
+       "detail": "cachet non mentionné",
        "subscore": 0.3,
        "contribution": 0.45
       },
@@ -6483,7 +6483,7 @@
        "label": "Axe Paris-Marseille",
        "weight": 1.5,
        "status": "ok",
-       "detail": "38 km de l'axe",
+       "detail": "38 km de l'axe Paris – Marseille",
        "subscore": 0.038,
        "contribution": 0.057
       },
@@ -6766,7 +6766,7 @@
        "label": "Budget (apport 150000€)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "≤ budget 600000€",
+       "detail": "269000€ ≤ budget 600000€",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -6784,7 +6784,7 @@
        "label": "≤ 4h porte-à-porte depuis Paris",
        "weight": 2.0,
        "status": "ok",
-       "detail": "~2h49 porte-à-porte",
+       "detail": "~2h49 porte-à-porte depuis Paris (max 4h)",
        "subscore": 0.592,
        "contribution": 1.183
       },
@@ -6793,7 +6793,7 @@
        "label": "Axe Paris-Marseille",
        "weight": 1.5,
        "status": "ok",
-       "detail": "13 km de l'axe",
+       "detail": "13 km de l'axe Paris – Marseille",
        "subscore": 0.684,
        "contribution": 1.026
       },
@@ -6802,7 +6802,7 @@
        "label": "Avec terrain",
        "weight": 1.0,
        "status": "ok",
-       "detail": "600.0 m²",
+       "detail": "600 m²",
        "subscore": 1.0,
        "contribution": 1.0
       },
@@ -6811,7 +6811,7 @@
        "label": "Travaux légers",
        "weight": 1.0,
        "status": "ok",
-       "detail": "habitable",
+       "detail": "état : habitable de suite",
        "subscore": 1.0,
        "contribution": 1.0
       },
@@ -6856,7 +6856,7 @@
        "label": "Nature d'exception",
        "weight": 2.0,
        "status": "ok",
-       "detail": "",
+       "detail": "qualité nature 0/4",
        "subscore": 0.4,
        "contribution": 0.8
       },
@@ -6865,7 +6865,7 @@
        "label": "Relief / montagne",
        "weight": 1.0,
        "status": "ok",
-       "detail": "311.3 m",
+       "detail": "altitude 311.3 m (réf montagne 600 m)",
        "subscore": 0.519,
        "contribution": 0.519
       },
@@ -6874,7 +6874,7 @@
        "label": "Authentique / cachet",
        "weight": 1.5,
        "status": "ok",
-       "detail": "",
+       "detail": "cachet non mentionné",
        "subscore": 0.3,
        "contribution": 0.45
       },
@@ -6897,7 +6897,7 @@
        "label": "Budget (apport 150000€)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "≤ budget 600000€",
+       "detail": "269000€ ≤ budget 600000€",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -6915,7 +6915,7 @@
        "label": "Grand terrain (>1500 m²)",
        "weight": 3.0,
        "status": "ok",
-       "detail": "600.0 m²",
+       "detail": "600 m² (souhait ≥ 1500 m²)",
        "subscore": 0.4,
        "contribution": 1.2
       },
@@ -6924,7 +6924,7 @@
        "label": "≤ 4h porte-à-porte depuis Paris",
        "weight": 2.0,
        "status": "ok",
-       "detail": "~2h49 porte-à-porte",
+       "detail": "~2h49 porte-à-porte depuis Paris (max 4h)",
        "subscore": 0.592,
        "contribution": 1.183
       },
@@ -6933,7 +6933,7 @@
        "label": "Axe Paris-Marseille",
        "weight": 1.5,
        "status": "ok",
-       "detail": "13 km de l'axe",
+       "detail": "13 km de l'axe Paris – Marseille",
        "subscore": 0.684,
        "contribution": 1.026
       },
@@ -6942,7 +6942,7 @@
        "label": "Travaux légers",
        "weight": 1.0,
        "status": "ok",
-       "detail": "habitable",
+       "detail": "état : habitable de suite",
        "subscore": 1.0,
        "contribution": 1.0
       },
@@ -6987,7 +6987,7 @@
        "label": "Nature d'exception",
        "weight": 2.0,
        "status": "ok",
-       "detail": "",
+       "detail": "qualité nature 0/4",
        "subscore": 0.4,
        "contribution": 0.8
       },
@@ -6996,7 +6996,7 @@
        "label": "Vue panoramique",
        "weight": 3.0,
        "status": "ok",
-       "detail": "vue_panoramique",
+       "detail": "vue_panoramique : non mentionné",
        "subscore": 0.2,
        "contribution": 0.6
       },
@@ -7005,7 +7005,7 @@
        "label": "Relief / montagne",
        "weight": 1.0,
        "status": "ok",
-       "detail": "311.3 m",
+       "detail": "altitude 311.3 m (réf montagne 600 m)",
        "subscore": 0.519,
        "contribution": 0.519
       },
@@ -7014,7 +7014,7 @@
        "label": "Authentique / cachet",
        "weight": 1.5,
        "status": "ok",
-       "detail": "",
+       "detail": "cachet non mentionné",
        "subscore": 0.3,
        "contribution": 0.45
       },
@@ -7288,7 +7288,7 @@
        "label": "Budget (apport 150000€)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "≤ budget 600000€",
+       "detail": "335000€ ≤ budget 600000€",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -7306,7 +7306,7 @@
        "label": "≤ 4h porte-à-porte depuis Paris",
        "weight": 2.0,
        "status": "ok",
-       "detail": "~2h57 porte-à-porte",
+       "detail": "~2h57 porte-à-porte depuis Paris (max 4h)",
        "subscore": 0.525,
        "contribution": 1.05
       },
@@ -7315,7 +7315,7 @@
        "label": "Avec terrain",
        "weight": 1.0,
        "status": "ok",
-       "detail": "1480.0 m²",
+       "detail": "1480 m²",
        "subscore": 1.0,
        "contribution": 1.0
       },
@@ -7360,7 +7360,7 @@
        "label": "Nature d'exception",
        "weight": 2.0,
        "status": "ok",
-       "detail": "",
+       "detail": "qualité nature 0/4",
        "subscore": 0.4,
        "contribution": 0.8
       },
@@ -7369,7 +7369,7 @@
        "label": "Relief / montagne",
        "weight": 1.0,
        "status": "ok",
-       "detail": "453.6 m",
+       "detail": "altitude 453.6 m (réf montagne 600 m)",
        "subscore": 0.756,
        "contribution": 0.756
       },
@@ -7378,7 +7378,7 @@
        "label": "Authentique / cachet",
        "weight": 1.5,
        "status": "ok",
-       "detail": "",
+       "detail": "cachet non mentionné",
        "subscore": 0.3,
        "contribution": 0.45
       },
@@ -7387,7 +7387,7 @@
        "label": "Axe Paris-Marseille",
        "weight": 1.5,
        "status": "ok",
-       "detail": "37 km de l'axe",
+       "detail": "37 km de l'axe Paris – Marseille",
        "subscore": 0.065,
        "contribution": 0.098
       },
@@ -7418,7 +7418,7 @@
        "label": "Grand terrain (>1500 m²)",
        "weight": 3.0,
        "status": "ok",
-       "detail": "1480.0 m²",
+       "detail": "1480 m² (souhait ≥ 1500 m²)",
        "subscore": 0.987,
        "contribution": 2.96
       },
@@ -7427,7 +7427,7 @@
        "label": "Budget (apport 150000€)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "≤ budget 600000€",
+       "detail": "335000€ ≤ budget 600000€",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -7445,7 +7445,7 @@
        "label": "≤ 4h porte-à-porte depuis Paris",
        "weight": 2.0,
        "status": "ok",
-       "detail": "~2h57 porte-à-porte",
+       "detail": "~2h57 porte-à-porte depuis Paris (max 4h)",
        "subscore": 0.525,
        "contribution": 1.05
       },
@@ -7490,7 +7490,7 @@
        "label": "Nature d'exception",
        "weight": 2.0,
        "status": "ok",
-       "detail": "",
+       "detail": "qualité nature 0/4",
        "subscore": 0.4,
        "contribution": 0.8
       },
@@ -7499,7 +7499,7 @@
        "label": "Relief / montagne",
        "weight": 1.0,
        "status": "ok",
-       "detail": "453.6 m",
+       "detail": "altitude 453.6 m (réf montagne 600 m)",
        "subscore": 0.756,
        "contribution": 0.756
       },
@@ -7508,7 +7508,7 @@
        "label": "Vue panoramique",
        "weight": 3.0,
        "status": "ok",
-       "detail": "vue_panoramique",
+       "detail": "vue_panoramique : non mentionné",
        "subscore": 0.2,
        "contribution": 0.6
       },
@@ -7517,7 +7517,7 @@
        "label": "Authentique / cachet",
        "weight": 1.5,
        "status": "ok",
-       "detail": "",
+       "detail": "cachet non mentionné",
        "subscore": 0.3,
        "contribution": 0.45
       },
@@ -7526,7 +7526,7 @@
        "label": "Axe Paris-Marseille",
        "weight": 1.5,
        "status": "ok",
-       "detail": "37 km de l'axe",
+       "detail": "37 km de l'axe Paris – Marseille",
        "subscore": 0.065,
        "contribution": 0.098
       },
@@ -7808,7 +7808,7 @@
        "label": "Budget (apport 150000€)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "≤ budget 600000€",
+       "detail": "295000€ ≤ budget 600000€",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -7826,7 +7826,7 @@
        "label": "Avec terrain",
        "weight": 1.0,
        "status": "ok",
-       "detail": "1300.0 m²",
+       "detail": "1300 m²",
        "subscore": 1.0,
        "contribution": 1.0
       },
@@ -7835,7 +7835,7 @@
        "label": "Relief / montagne",
        "weight": 1.0,
        "status": "ok",
-       "detail": "680.3 m",
+       "detail": "altitude 680.3 m (réf montagne 600 m)",
        "subscore": 1.0,
        "contribution": 1.0
       },
@@ -7880,7 +7880,7 @@
        "label": "Nature d'exception",
        "weight": 2.0,
        "status": "ok",
-       "detail": "",
+       "detail": "qualité nature 0/4",
        "subscore": 0.4,
        "contribution": 0.8
       },
@@ -7889,7 +7889,7 @@
        "label": "≤ 4h porte-à-porte depuis Paris",
        "weight": 2.0,
        "status": "ok",
-       "detail": "~3h20 porte-à-porte",
+       "detail": "~3h20 porte-à-porte depuis Paris (max 4h)",
        "subscore": 0.333,
        "contribution": 0.667
       },
@@ -7898,7 +7898,7 @@
        "label": "Authentique / cachet",
        "weight": 1.5,
        "status": "ok",
-       "detail": "",
+       "detail": "cachet non mentionné",
        "subscore": 0.3,
        "contribution": 0.45
       },
@@ -7916,7 +7916,7 @@
        "label": "Axe Paris-Marseille",
        "weight": 1.5,
        "status": "ok",
-       "detail": "44 km de l'axe",
+       "detail": "44 km de l'axe Paris – Marseille",
        "subscore": 0.0,
        "contribution": 0.0
       },
@@ -7938,7 +7938,7 @@
        "label": "Grand terrain (>1500 m²)",
        "weight": 3.0,
        "status": "ok",
-       "detail": "1300.0 m²",
+       "detail": "1300 m² (souhait ≥ 1500 m²)",
        "subscore": 0.867,
        "contribution": 2.6
       },
@@ -7947,7 +7947,7 @@
        "label": "Budget (apport 150000€)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "≤ budget 600000€",
+       "detail": "295000€ ≤ budget 600000€",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -7965,7 +7965,7 @@
        "label": "Relief / montagne",
        "weight": 1.0,
        "status": "ok",
-       "detail": "680.3 m",
+       "detail": "altitude 680.3 m (réf montagne 600 m)",
        "subscore": 1.0,
        "contribution": 1.0
       },
@@ -8010,7 +8010,7 @@
        "label": "Nature d'exception",
        "weight": 2.0,
        "status": "ok",
-       "detail": "",
+       "detail": "qualité nature 0/4",
        "subscore": 0.4,
        "contribution": 0.8
       },
@@ -8019,7 +8019,7 @@
        "label": "≤ 4h porte-à-porte depuis Paris",
        "weight": 2.0,
        "status": "ok",
-       "detail": "~3h20 porte-à-porte",
+       "detail": "~3h20 porte-à-porte depuis Paris (max 4h)",
        "subscore": 0.333,
        "contribution": 0.667
       },
@@ -8028,7 +8028,7 @@
        "label": "Vue panoramique",
        "weight": 3.0,
        "status": "ok",
-       "detail": "vue_panoramique",
+       "detail": "vue_panoramique : non mentionné",
        "subscore": 0.2,
        "contribution": 0.6
       },
@@ -8037,7 +8037,7 @@
        "label": "Authentique / cachet",
        "weight": 1.5,
        "status": "ok",
-       "detail": "",
+       "detail": "cachet non mentionné",
        "subscore": 0.3,
        "contribution": 0.45
       },
@@ -8055,7 +8055,7 @@
        "label": "Axe Paris-Marseille",
        "weight": 1.5,
        "status": "ok",
-       "detail": "44 km de l'axe",
+       "detail": "44 km de l'axe Paris – Marseille",
        "subscore": 0.0,
        "contribution": 0.0
       },
@@ -8333,7 +8333,7 @@
        "label": "Budget (apport 150000€)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "≤ budget 600000€",
+       "detail": "245000€ ≤ budget 600000€",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -8342,7 +8342,7 @@
        "label": "Axe Paris-Marseille",
        "weight": 1.5,
        "status": "ok",
-       "detail": "9 km de l'axe",
+       "detail": "9 km de l'axe Paris – Marseille",
        "subscore": 0.765,
        "contribution": 1.147
       },
@@ -8351,7 +8351,7 @@
        "label": "Avec terrain",
        "weight": 1.0,
        "status": "ok",
-       "detail": "323.0 m²",
+       "detail": "323 m²",
        "subscore": 1.0,
        "contribution": 1.0
       },
@@ -8360,7 +8360,7 @@
        "label": "Nature d'exception",
        "weight": 2.0,
        "status": "ok",
-       "detail": "",
+       "detail": "qualité nature 1/4",
        "subscore": 0.5,
        "contribution": 1.0
       },
@@ -8414,7 +8414,7 @@
        "label": "Travaux légers",
        "weight": 1.0,
        "status": "ok",
-       "detail": "renover",
+       "detail": "état : à rénover",
        "subscore": 0.85,
        "contribution": 0.85
       },
@@ -8423,7 +8423,7 @@
        "label": "≤ 4h porte-à-porte depuis Paris",
        "weight": 2.0,
        "status": "ok",
-       "detail": "~3h10 porte-à-porte",
+       "detail": "~3h10 porte-à-porte depuis Paris (max 4h)",
        "subscore": 0.417,
        "contribution": 0.833
       },
@@ -8432,7 +8432,7 @@
        "label": "Authentique / cachet",
        "weight": 1.5,
        "status": "ok",
-       "detail": "",
+       "detail": "cachet non mentionné",
        "subscore": 0.3,
        "contribution": 0.45
       },
@@ -8441,7 +8441,7 @@
        "label": "Relief / montagne",
        "weight": 1.0,
        "status": "ok",
-       "detail": "77.5 m",
+       "detail": "altitude 77.5 m (réf montagne 600 m)",
        "subscore": 0.129,
        "contribution": 0.129
       },
@@ -8464,7 +8464,7 @@
        "label": "Budget (apport 150000€)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "≤ budget 600000€",
+       "detail": "245000€ ≤ budget 600000€",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -8473,7 +8473,7 @@
        "label": "Axe Paris-Marseille",
        "weight": 1.5,
        "status": "ok",
-       "detail": "9 km de l'axe",
+       "detail": "9 km de l'axe Paris – Marseille",
        "subscore": 0.765,
        "contribution": 1.147
       },
@@ -8482,7 +8482,7 @@
        "label": "Nature d'exception",
        "weight": 2.0,
        "status": "ok",
-       "detail": "",
+       "detail": "qualité nature 1/4",
        "subscore": 0.5,
        "contribution": 1.0
       },
@@ -8536,7 +8536,7 @@
        "label": "Travaux légers",
        "weight": 1.0,
        "status": "ok",
-       "detail": "renover",
+       "detail": "état : à rénover",
        "subscore": 0.85,
        "contribution": 0.85
       },
@@ -8545,7 +8545,7 @@
        "label": "≤ 4h porte-à-porte depuis Paris",
        "weight": 2.0,
        "status": "ok",
-       "detail": "~3h10 porte-à-porte",
+       "detail": "~3h10 porte-à-porte depuis Paris (max 4h)",
        "subscore": 0.417,
        "contribution": 0.833
       },
@@ -8554,7 +8554,7 @@
        "label": "Grand terrain (>1500 m²)",
        "weight": 3.0,
        "status": "ok",
-       "detail": "323.0 m²",
+       "detail": "323 m² (souhait ≥ 1500 m²)",
        "subscore": 0.215,
        "contribution": 0.646
       },
@@ -8563,7 +8563,7 @@
        "label": "Vue panoramique",
        "weight": 3.0,
        "status": "ok",
-       "detail": "vue_panoramique",
+       "detail": "vue_panoramique : non mentionné",
        "subscore": 0.2,
        "contribution": 0.6
       },
@@ -8572,7 +8572,7 @@
        "label": "Authentique / cachet",
        "weight": 1.5,
        "status": "ok",
-       "detail": "",
+       "detail": "cachet non mentionné",
        "subscore": 0.3,
        "contribution": 0.45
       },
@@ -8581,7 +8581,7 @@
        "label": "Relief / montagne",
        "weight": 1.0,
        "status": "ok",
-       "detail": "77.5 m",
+       "detail": "altitude 77.5 m (réf montagne 600 m)",
        "subscore": 0.129,
        "contribution": 0.129
       },
@@ -8856,7 +8856,7 @@
        "label": "Budget (apport 150000€)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "≤ budget 600000€",
+       "detail": "159000€ ≤ budget 600000€",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -8874,7 +8874,7 @@
        "label": "Avec terrain",
        "weight": 1.0,
        "status": "ok",
-       "detail": "257.0 m²",
+       "detail": "257 m²",
        "subscore": 1.0,
        "contribution": 1.0
       },
@@ -8919,7 +8919,7 @@
        "label": "Nature d'exception",
        "weight": 2.0,
        "status": "ok",
-       "detail": "",
+       "detail": "qualité nature 0/4",
        "subscore": 0.4,
        "contribution": 0.8
       },
@@ -8928,7 +8928,7 @@
        "label": "Relief / montagne",
        "weight": 1.0,
        "status": "ok",
-       "detail": "432.8 m",
+       "detail": "altitude 432.8 m (réf montagne 600 m)",
        "subscore": 0.721,
        "contribution": 0.721
       },
@@ -8937,7 +8937,7 @@
        "label": "≤ 4h porte-à-porte depuis Paris",
        "weight": 2.0,
        "status": "ok",
-       "detail": "~3h19 porte-à-porte",
+       "detail": "~3h19 porte-à-porte depuis Paris (max 4h)",
        "subscore": 0.342,
        "contribution": 0.683
       },
@@ -8946,7 +8946,7 @@
        "label": "Authentique / cachet",
        "weight": 1.5,
        "status": "ok",
-       "detail": "",
+       "detail": "cachet non mentionné",
        "subscore": 0.3,
        "contribution": 0.45
       },
@@ -8964,7 +8964,7 @@
        "label": "Axe Paris-Marseille",
        "weight": 1.5,
        "status": "ok",
-       "detail": "41 km de l'axe",
+       "detail": "41 km de l'axe Paris – Marseille",
        "subscore": 0.0,
        "contribution": 0.0
       },
@@ -8986,7 +8986,7 @@
        "label": "Budget (apport 150000€)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "≤ budget 600000€",
+       "detail": "159000€ ≤ budget 600000€",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -9040,7 +9040,7 @@
        "label": "Nature d'exception",
        "weight": 2.0,
        "status": "ok",
-       "detail": "",
+       "detail": "qualité nature 0/4",
        "subscore": 0.4,
        "contribution": 0.8
       },
@@ -9049,7 +9049,7 @@
        "label": "Relief / montagne",
        "weight": 1.0,
        "status": "ok",
-       "detail": "432.8 m",
+       "detail": "altitude 432.8 m (réf montagne 600 m)",
        "subscore": 0.721,
        "contribution": 0.721
       },
@@ -9058,7 +9058,7 @@
        "label": "≤ 4h porte-à-porte depuis Paris",
        "weight": 2.0,
        "status": "ok",
-       "detail": "~3h19 porte-à-porte",
+       "detail": "~3h19 porte-à-porte depuis Paris (max 4h)",
        "subscore": 0.342,
        "contribution": 0.683
       },
@@ -9067,7 +9067,7 @@
        "label": "Vue panoramique",
        "weight": 3.0,
        "status": "ok",
-       "detail": "vue_panoramique",
+       "detail": "vue_panoramique : non mentionné",
        "subscore": 0.2,
        "contribution": 0.6
       },
@@ -9076,7 +9076,7 @@
        "label": "Grand terrain (>1500 m²)",
        "weight": 3.0,
        "status": "ok",
-       "detail": "257.0 m²",
+       "detail": "257 m² (souhait ≥ 1500 m²)",
        "subscore": 0.171,
        "contribution": 0.514
       },
@@ -9085,7 +9085,7 @@
        "label": "Authentique / cachet",
        "weight": 1.5,
        "status": "ok",
-       "detail": "",
+       "detail": "cachet non mentionné",
        "subscore": 0.3,
        "contribution": 0.45
       },
@@ -9103,7 +9103,7 @@
        "label": "Axe Paris-Marseille",
        "weight": 1.5,
        "status": "ok",
-       "detail": "41 km de l'axe",
+       "detail": "41 km de l'axe Paris – Marseille",
        "subscore": 0.0,
        "contribution": 0.0
       },
@@ -9376,7 +9376,7 @@
        "label": "Budget (apport 150000€)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "≤ budget 600000€",
+       "detail": "275000€ ≤ budget 600000€",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -9394,7 +9394,7 @@
        "label": "≤ 4h porte-à-porte depuis Paris",
        "weight": 2.0,
        "status": "ok",
-       "detail": "~2h51 porte-à-porte",
+       "detail": "~2h51 porte-à-porte depuis Paris (max 4h)",
        "subscore": 0.575,
        "contribution": 1.15
       },
@@ -9439,7 +9439,7 @@
        "label": "Nature d'exception",
        "weight": 2.0,
        "status": "ok",
-       "detail": "",
+       "detail": "qualité nature 0/4",
        "subscore": 0.4,
        "contribution": 0.8
       },
@@ -9448,7 +9448,7 @@
        "label": "Relief / montagne",
        "weight": 1.0,
        "status": "ok",
-       "detail": "401.0 m",
+       "detail": "altitude 401.0 m (réf montagne 600 m)",
        "subscore": 0.668,
        "contribution": 0.668
       },
@@ -9457,7 +9457,7 @@
        "label": "Axe Paris-Marseille",
        "weight": 1.5,
        "status": "ok",
-       "detail": "25 km de l'axe",
+       "detail": "25 km de l'axe Paris – Marseille",
        "subscore": 0.387,
        "contribution": 0.581
       },
@@ -9466,7 +9466,7 @@
        "label": "Authentique / cachet",
        "weight": 1.5,
        "status": "ok",
-       "detail": "",
+       "detail": "cachet non mentionné",
        "subscore": 0.3,
        "contribution": 0.45
       },
@@ -9505,7 +9505,7 @@
        "label": "Budget (apport 150000€)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "≤ budget 600000€",
+       "detail": "275000€ ≤ budget 600000€",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -9523,7 +9523,7 @@
        "label": "≤ 4h porte-à-porte depuis Paris",
        "weight": 2.0,
        "status": "ok",
-       "detail": "~2h51 porte-à-porte",
+       "detail": "~2h51 porte-à-porte depuis Paris (max 4h)",
        "subscore": 0.575,
        "contribution": 1.15
       },
@@ -9568,7 +9568,7 @@
        "label": "Nature d'exception",
        "weight": 2.0,
        "status": "ok",
-       "detail": "",
+       "detail": "qualité nature 0/4",
        "subscore": 0.4,
        "contribution": 0.8
       },
@@ -9577,7 +9577,7 @@
        "label": "Relief / montagne",
        "weight": 1.0,
        "status": "ok",
-       "detail": "401.0 m",
+       "detail": "altitude 401.0 m (réf montagne 600 m)",
        "subscore": 0.668,
        "contribution": 0.668
       },
@@ -9586,7 +9586,7 @@
        "label": "Vue panoramique",
        "weight": 3.0,
        "status": "ok",
-       "detail": "vue_panoramique",
+       "detail": "vue_panoramique : non mentionné",
        "subscore": 0.2,
        "contribution": 0.6
       },
@@ -9595,7 +9595,7 @@
        "label": "Axe Paris-Marseille",
        "weight": 1.5,
        "status": "ok",
-       "detail": "25 km de l'axe",
+       "detail": "25 km de l'axe Paris – Marseille",
        "subscore": 0.387,
        "contribution": 0.581
       },
@@ -9604,7 +9604,7 @@
        "label": "Authentique / cachet",
        "weight": 1.5,
        "status": "ok",
-       "detail": "",
+       "detail": "cachet non mentionné",
        "subscore": 0.3,
        "contribution": 0.45
       },
