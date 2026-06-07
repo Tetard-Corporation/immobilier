@@ -12,7 +12,8 @@ import re
 import unicodedata
 
 # Aménités positives. Les "fortes" suffisent à elles seules à marquer le caractère nature.
-VUE = "vue"
+VUE = "vue"  # vue sur un élément (mer, montagne, vallée...)
+VUE_PANORAMIQUE = "vue_panoramique"  # vue dégagée / panoramique / imprenable / 360°
 FORET = "foret"
 EAU = "eau"
 CALME = "calme"
@@ -22,8 +23,10 @@ ARBORE = "arbore"
 ENSOLEILLE = "ensoleille"
 AUTHENTIQUE = "authentique"
 
-FEATURES = [VUE, FORET, EAU, CALME, ISOLE, SANS_VIS_A_VIS, ARBORE, ENSOLEILLE, AUTHENTIQUE]
-_STRONG = {VUE, FORET, EAU, ISOLE}
+FEATURES = [
+    VUE, VUE_PANORAMIQUE, FORET, EAU, CALME, ISOLE, SANS_VIS_A_VIS, ARBORE, ENSOLEILLE, AUTHENTIQUE
+]
+_STRONG = {VUE, VUE_PANORAMIQUE, FORET, EAU, ISOLE}
 
 # Nuisances négatives.
 VIS_A_VIS = "vis_a_vis"
@@ -31,20 +34,59 @@ NUISANCES = "nuisances"
 MITOYEN = "mitoyen"
 
 _POSITIVE_KEYWORDS: dict[str, list[str]] = {
-    VUE: [
-        "vue degagee",
+    # Vue DÉGAGÉE / PANORAMIQUE : un champ de vision large, sans obstacle (critère "Léo").
+    VUE_PANORAMIQUE: [
         "vue panoramique",
+        "panorama",
+        "vue a 360",
+        "vue a 180",
+        "vue degagee",
+        "vue tres degagee",
         "vue imprenable",
+        "vue sans vis-a-vis",
+        "vue sans aucun obstacle",
+        "vue plongeante",
+        "vue dominante",
+        "position dominante",
+        "domine la vallee",
+        "surplombant",
+        "surplombe",
+        "en surplomb",
+        "a flanc de coteau",
+        "a flanc de montagne",
+        "balcon sur la vallee",
+        "belvedere",
+        "plein ciel",
+        "vue grand large",
+        "vue a perte de vue",
+        "vue lointaine",
+        "horizon degage",
         "vue exceptionnelle",
+        "vue spectaculaire",
+        "vue epoustouflante",
+        "vue grandiose",
+    ],
+    # Vue sur un élément précis (sans nécessairement être panoramique).
+    VUE: [
         "vue mer",
         "vue sur mer",
+        "vue sur la mer",
         "vue montagne",
         "vue sur la montagne",
+        "vue sur les montagnes",
         "vue sur la vallee",
+        "vue sur le massif",
+        "vue sur les sommets",
+        "vue sur le lac",
+        "vue sur la campagne",
+        "vue sur les vignes",
         "belle vue",
+        "tres belle vue",
         "magnifique vue",
+        "superbe vue",
+        "jolie vue",
         "point de vue",
-        "vue dominante",
+        "avec vue",
     ],
     FORET: [
         "foret",
@@ -135,6 +177,9 @@ def classify_quality(*parts: str | None) -> dict:
     features = {
         tag for tag, kws in _POSITIVE_KEYWORDS.items() if any(kw in text for kw in kws)
     }
+    # Une vue panoramique est aussi une vue.
+    if VUE_PANORAMIQUE in features:
+        features.add(VUE)
 
     # « sans vis-à-vis » ne doit pas compter comme une nuisance « vis-à-vis ».
     neg_text = text

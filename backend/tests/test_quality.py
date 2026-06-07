@@ -29,6 +29,21 @@ def test_exception_requiert_amenite_forte():
     assert res["nature_exception"] is False
 
 
+def test_vue_panoramique_distincte_de_vue_simple():
+    pano = classify_quality("Maison", "Position dominante, vue panoramique imprenable sur la vallée")
+    assert "vue_panoramique" in pano["features"]
+    assert "vue" in pano["features"]  # panoramique implique vue
+
+    simple = classify_quality("Maison", "Jolie maison avec vue sur le lac")
+    assert "vue" in simple["features"]
+    assert "vue_panoramique" not in simple["features"]
+
+
+def test_vue_panoramique_synonymes():
+    for txt in ["à flanc de coteau, belvédère", "vue à 360 degrés", "surplombant la vallée, horizon dégagé"]:
+        assert "vue_panoramique" in classify_quality(txt)["features"], txt
+
+
 def test_eau_riviere():
     res = classify_quality("Terrain en bord de rivière avec accès à l'étang")
     assert "eau" in res["features"]
