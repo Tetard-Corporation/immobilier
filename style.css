@@ -190,16 +190,42 @@ table.scores td.num { text-align: right; font-variant-numeric: tabular-nums; whi
 .stars.xs { white-space: nowrap; }
 .vavg { font-size: 12px; color: var(--muted); }
 
-/* Tableaux de votes (Match / Investissement / Risques) */
+/* Tableaux de votes (Match / Investissement / Risques) — barres uniformes /5 */
 .tablewrap { overflow-x: auto; -webkit-overflow-scrolling: touch; margin-bottom: 4px; }
 table.votegrid { min-width: max-content; font-size: 12px; }
-table.votegrid th, table.votegrid td { padding: 6px 8px; }
+table.votegrid th, table.votegrid td { padding: 7px 6px; text-align: center; }
 table.votegrid th.pcol.me { color: var(--accent); }
 table.votegrid th:first-child, table.votegrid td:first-child {
-  position: sticky; left: 0; background: var(--card); max-width: 150px;
+  position: sticky; left: 0; background: var(--card); max-width: 160px; text-align: left;
 }
 table.votegrid tr.global-row td { background: rgba(56,189,248,.07); }
+.critrow { cursor: pointer; }
+.critrow:hover td { background: rgba(255,255,255,.04); }
+.critmore { color: var(--muted); float: right; padding-left: 6px; }
+
+/* barre compacte de score (0..5) */
+.cbar {
+  display: inline-block; width: 30px; height: 8px; border-radius: 4px;
+  background: var(--card2); overflow: hidden; vertical-align: middle;
+}
+.cbar > i { display: block; height: 100%; border-radius: 4px; }
+.cbar.algo > i { background: var(--accent2); }
+.cbar.user > i, .cbar.me > i { background: #fbbf24; }
+.cbar.risk > i { background: var(--bad); }
+.cbar.me { outline: 1px solid var(--accent); outline-offset: 1px; }
+.cbar.empty { opacity: .4; }
 .ministars { color: #fbbf24; font-size: 11px; letter-spacing: -1.5px; }
+
+/* Popup d'un critère (vote + commentaire) */
+#critPopup { position: fixed; inset: 0; z-index: 3500; display: grid; place-items: center; }
+#critPopup .crit-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,.72); }
+#critPopup .crit-card {
+  position: relative; background: var(--card); border: 1px solid var(--line);
+  border-radius: 16px; width: min(560px, 94vw); max-height: 88vh; overflow: auto; padding: 18px 20px;
+}
+#critPopup h3 { margin: 0 0 10px; }
+.algo-detail { background: var(--card2); border-radius: 8px; padding: 8px 11px; font-size: 13px; margin: 6px 0 4px; }
+.algo-detail > div { margin: 2px 0; }
 
 /* Galerie + description dans la fiche */
 .modal-gallery { margin: 12px 0 6px; border-radius: 12px; overflow: hidden; }

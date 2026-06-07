@@ -8,6 +8,7 @@ let currentSetId = null;
 let map = null, markerLayer = null;
 let openBien = null;   // bien actuellement ouvert dans la modale (pour rafraîchir les votes)
 let modalMapInstance = null;   // carte Leaflet interactive de la fiche
+let openCrit = null;           // critère ouvert dans le popup (vote/commentaire par critère)
 
 const $ = (s) => document.querySelector(s);
 const euros = (n) => (n == null ? "—" : Number(n).toLocaleString("fr-FR") + " €");
@@ -37,13 +38,13 @@ async function boot() {
   $("#modeScroll").addEventListener("click", () => setMode("scroll"));
   $("#modeMap").addEventListener("click", () => setMode("map"));
   $("#modal .modal-backdrop").addEventListener("click", closeModal);
-  document.addEventListener("keydown", (e) => { if (e.key === "Escape") { closeModal(); closeIdentityIfAllowed(); } });
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape") { if (openCrit) closeCritPopup(); else { closeModal(); closeIdentityIfAllowed(); } } });
   // Relâche du clic/doigt n'importe où -> ferme la grande carte (appui maintenu).
   ["pointerup", "pointercancel"].forEach((ev) => window.addEventListener(ev, hideBigMap));
 
   // Votes (étoiles) : init backend + identité de session.
   await Votes.init(window.APP_CONFIG || {});
-  Votes.onChange(() => { render(); if (openBien) refreshModal(); });
+  Votes.onChange(() => { render(); if (openBien) refreshModal(); if (openCrit) renderCritPopup(); });
   $("#whoami").addEventListener("click", openIdentity);
   $("#identity .id-backdrop").addEventListener("click", closeIdentityIfAllowed);
   renderWhoami();
@@ -122,7 +123,7 @@ function renderScroll(list) {
           <div class="price">${euros(b.prix)}</div>
           <h3>${b.commune || "?"} <span class="sub">(${b.departement || "—"})</span></h3>
           <div class="sub">${b.type_bien || "bien"} · ${b.nb_chambres ?? "?"} ch · terrain ${b.surface_terrain != null ? b.surface_terrain + " m²" : "—"}</div>
-          <div class="chips">${(b.features || []).slice(0, 6).map((f) => `<span class="chip">${f}</span>`).join("")}</div>
+          <div class="chips">${(b.features || []).slice(0, 6).map((f) => `<span class="chip">${featLabel(f)}</span>`).join("")}</div>
           ${b.favori_note ? `<div class="note">⭐ ${b.favori_note}</div>` : ""}
           ${starsRow(b)}
         </div>
@@ -250,10 +251,41 @@ function setMode(mode) {
   if (!scroll) { renderMap(visibleBiens()); setTimeout(() => map.invalidateSize(), 50); }
 }
 
-// --- modal: tableau comparatif des scores -------------------------------
+// --- libellés lisibles ---------------------------------------------------
+const FEATURE_LABELS = {
+  arbore: "Arboré", calme: "Calme", eau: "Eau (rivière/source/étang)",
+  isole: "Isolé", vue: "Vue dégagée", vue_panoramique: "Vue panoramique",
+  authentique: "Authentique / cachet", sans_vis_a_vis: "Sans vis-à-vis",
+};
+const RISK_LABELS = {
+  inondation: "Inondation", remonteeNappe: "Remontée de nappe", seisme: "Séisme",
+  retraitGonflementArgile: "Retrait-gonflement argiles", radon: "Radon",
+  mouvementTerrain: "Mouvement de terrain", feuForet: "Feu de forêt",
+  icpe: "Site industriel (ICPE)", nucleaire: "Risque nucléaire",
+  pollutionSols: "Pollution des sols", ruptureBarrage: "Rupture de barrage",
+  canalisationsMatieresDangereuses: "Canalisation matières dangereuses",
+};
+const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+const featLabel = (f) => FEATURE_LABELS[f] || cap(String(f).replace(/_/g, " "));
+const riskLabel = (r) => RISK_LABELS[r] || cap(String(r).replace(/([A-Z])/g, " $1"));
+function critLabel(key) {
+  if (key === Votes.OVERALL) return "Note globale";
+  if (key === "invest__global") return "Investissement global";
+  if (key === "risk__global") return "Risque global";
+  if (key.startsWith("invest:")) return key.slice(7);
+  if (key.startsWith("risk:")) return riskLabel(key.slice(5));
+  return key;
+}
 
-// Construit les lignes d'une section (Match / Investissement / Risques) :
-// { globalKey, globalLabel, globalAlgo, rows:[{key,label,algo}] }.
+// --- modal: 3 sections au même format (Match / Investissement / Risques) ---
+// Tout est ramené sur une échelle /5 affichée par une barre compacte uniforme.
+const to5 = (x) => (x == null ? null : Math.max(0, Math.min(5, x)));
+function bar5(v, kind) {
+  if (v == null) return `<span class="cbar empty" title="—"></span>`;
+  const pct = Math.max(6, Math.min(100, v / 5 * 100));
+  return `<span class="cbar ${kind}" title="${v.toFixed(1)}/5"><i style="width:${pct}%"></i></span>`;
+}
+
 function sectionData(bien, section) {
   if (section === "match") {
     const set = SET_BY_ID[String(currentSetId)] || {};
@@ -263,75 +295,123 @@ function sectionData(bien, section) {
     const rows = (set.preferences || []).map((p) => {
       const label = p.label || p.kind;
       const d = algoBy[label];
-      const algo = d ? (d.subscore != null ? Math.round(d.subscore * 100) + "%" : d.status) : "—";
-      return { key: label, label, algo };
+      return {
+        key: label, label,
+        algoVal: d && d.subscore != null ? to5(d.subscore * 5) : null,
+        algoDetail: d ? (d.detail ? escHtml(d.detail) : `<span class="detailtxt">${d.status}</span>`) : "",
+      };
     });
-    return { globalKey: Votes.OVERALL, globalLabel: `Score global (set ${set.name || "—"})`, globalAlgo: fix1(sb.match_score), rows };
+    return { global: { key: Votes.OVERALL, label: `Score global (set ${set.name || "—"})`, algoVal: to5(sb.match_score / 20), algoDetail: "" }, rows };
   }
   if (section === "invest") {
-    const rows = (bien.score_details || []).map((p) => ({
-      key: "invest:" + (p.label || p.key), label: p.label || p.key,
-      algo: p.score != null ? fix1(p.score) : "—",
-    }));
-    return { globalKey: "invest__global", globalLabel: "Score global", globalAlgo: fix1(bien.score), rows };
+    const rows = (bien.score_details || []).map((p) => {
+      const subs = (p.subpillars || []).map((sp) =>
+        `<div>${escHtml(sp.label)} — <b>${sp.subscore != null ? (sp.subscore * 5).toFixed(1) : "—"}/5</b>${sp.detail ? ` <span class="detailtxt">${escHtml(sp.detail)}</span>` : ""}</div>`).join("");
+      return { key: "invest:" + (p.label || p.key), label: p.label || p.key, algoVal: to5(p.score / 20), algoDetail: subs };
+    });
+    return { global: { key: "invest__global", label: "Score global", algoVal: to5(bien.score / 20), algoDetail: "" }, rows };
   }
-  // risques
-  const risks = (bien.risques || []).map((r) => (typeof r === "string" ? { label: r } : r));
-  const rows = risks.map((r) => {
-    const label = r.label || r.type || r.nom || JSON.stringify(r);
-    const algo = r.niveau != null ? String(r.niveau) : (r.level != null ? String(r.level) : "⚠️");
-    return { key: "risk:" + label, label, algo };
-  });
+  // risques (codes -> libellés ; aléa présent = barre pleine)
+  const codes = (bien.risques || []).map((r) => (typeof r === "string" ? r : (r.label || r.type || JSON.stringify(r))));
+  const rows = codes.map((c) => ({ key: "risk:" + c, label: riskLabel(c), algoVal: 5, algoDetail: `<span class="detailtxt">Aléa signalé sur la commune.</span>` }));
   return {
-    globalKey: "risk__global",
-    globalLabel: risks.length ? "Risque global" : "Risque global (aucun signalé)",
-    globalAlgo: risks.length ? String(risks.length) : "0", rows,
+    global: {
+      key: "risk__global",
+      label: codes.length ? `Niveau de risque (${codes.length})` : "Aucun risque signalé",
+      algoVal: codes.length ? to5(codes.length) : 0,
+      algoDetail: codes.length ? codes.map(riskLabel).join(", ") : `<span class="detailtxt">Aucun aléa signalé sur la commune.</span>`,
+    },
+    rows,
   };
 }
 
-// Tableau générique d'une section : colonnes = Algo + une par personne ;
-// lignes = score global puis un sous-critère par ligne. La colonne de l'utilisateur
-// courant est interactive (étoiles), les autres affichent leur note.
+// Tableau : colonnes = Algo + une par personne ; lignes = score global + sous-critères.
+// Cellules = barres /5 (lecture seule) ; un clic sur la ligne ouvre le popup du critère.
 function voteTable(bien, section) {
   const id = voteKey(bien);
   const d = sectionData(bien, section);
   const persons = Votes.users;
   const head = `<tr><th>Critère</th><th class="num">Algo</th>${persons.map((u) =>
-    `<th class="num pcol${u === Votes.voter ? " me" : ""}">${u}</th>`).join("")}</tr>`;
-  const row = (key, label, algo, isGlobal) => {
+    `<th class="num pcol${u === Votes.voter ? " me" : ""}">${escHtml(u.slice(0, 3))}</th>`).join("")}</tr>`;
+  const rowHtml = (r, isGlobal) => {
     const cells = persons.map((u) => {
-      if (u === Votes.voter) return `<td class="num">${starsWidget(id, "xs", key)}</td>`;
-      const e = Votes.forBien(id, key).byUser[u];
-      const has = e && typeof e.stars === "number";
-      return `<td class="num">${has ? `<span class="ministars">${"★".repeat(e.stars)}</span>` : '<span class="detailtxt">·</span>'}</td>`;
+      const e = Votes.forBien(id, r.key).byUser[u];
+      const v = (e && typeof e.stars === "number") ? e.stars : null;
+      return `<td class="num">${bar5(v, u === Votes.voter ? "me" : "user")}</td>`;
     }).join("");
-    const lab = isGlobal ? `<b>${label}</b>` : label;
-    const alg = isGlobal ? `<b>${algo}</b>` : algo;
-    return `<tr class="${isGlobal ? "global-row" : ""}"><td>${lab}</td><td class="num">${alg}</td>${cells}</tr>`;
+    const lab = isGlobal ? `<b>${r.label}</b>` : r.label;
+    return `<tr class="critrow${isGlobal ? " global-row" : ""}" data-section="${section}" data-key="${escAttr(r.key)}">
+      <td>${lab} <span class="critmore">›</span></td>
+      <td class="num">${bar5(r.algoVal, section === "risk" ? "risk" : "algo")}</td>${cells}</tr>`;
   };
-  const body = row(d.globalKey, d.globalLabel, d.globalAlgo, true) +
-    d.rows.map((r) => row(r.key, r.label, r.algo, false)).join("");
-  return `<div class="tablewrap"><table class="scores votegrid">${head}${body}</table></div>`;
+  return `<div class="tablewrap"><table class="scores votegrid">${head}${rowHtml(d.global, true)}${d.rows.map((r) => rowHtml(r, false)).join("")}</table></div>`;
 }
 
-// Section finale : tous les commentaires (note globale) + l'éditeur de l'utilisateur.
-function commentsSection(bien) {
+// Section finale : tous les commentaires du bien, tous critères confondus (lecture).
+function allCommentsSection(bien) {
+  const all = (Votes.allComments ? Votes.allComments(voteKey(bien)) : []);
+  if (!all.length) return `<p class="detailtxt">Aucun commentaire. Clique un critère pour en laisser un.</p>`;
+  return all.map((c) => {
+    const st = typeof c.stars === "number" ? `<span class="ministars">${"★".repeat(c.stars)}</span>` : "";
+    return `<div class="acomment"><b>${c.voter}</b> · <span class="detailtxt">${critLabel(c.criterion)}</span> ${st}
+      <div class="vcomment">“${escHtml(c.comment)}”</div></div>`;
+  }).join("");
+}
+
+// --- popup d'un critère : détail algo + vote + commentaire + commentaires du critère ---
+function openCritPopup(bien, section, key) {
+  openCrit = { bien, section, key };
+  let el = document.getElementById("critPopup");
+  if (!el) {
+    el = document.createElement("div");
+    el.id = "critPopup";
+    el.innerHTML = `<div class="crit-backdrop"></div><div class="crit-card" id="critCard"></div>`;
+    document.body.appendChild(el);
+    el.querySelector(".crit-backdrop").addEventListener("click", closeCritPopup);
+  }
+  renderCritPopup();
+}
+function renderCritPopup() {
+  if (!openCrit) return;
+  const card = document.getElementById("critCard");
+  if (!card) return;
+  const { bien, section, key } = openCrit;
   const id = voteKey(bien);
-  const info = Votes.forBien(id);
-  const list = Votes.users.map((u) => {
+  const d = sectionData(bien, section);
+  const row = key === d.global.key ? d.global : (d.rows.find((r) => r.key === key) || { label: critLabel(key), algoVal: null, algoDetail: "" });
+  const info = Votes.forBien(id, key);
+  const comments = Votes.users.map((u) => {
     const e = info.byUser[u];
     if (!e || !e.comment) return "";
-    const stars = typeof e.stars === "number" ? `<span style="color:#fbbf24">${"★".repeat(e.stars)}</span>` : "";
-    return `<div class="acomment"><b>${u}</b> ${stars}
-      <div class="vcomment">“${escHtml(e.comment)}”</div></div>`;
-  }).filter(Boolean).join("") || `<p class="detailtxt">Aucun commentaire pour l'instant.</p>`;
-  const editor = Votes.voter ? `
-    <div class="comment-edit">
-      <textarea id="myComment" rows="2" placeholder="Ton commentaire (optionnel)">${escHtml(info.mineComment || "")}</textarea>
-      <div class="comment-actions"><span id="commentMsg" class="detailtxt"></span><button class="btn" id="saveComment">Enregistrer</button></div>
-    </div>` : "";
-  return `${editor}<div class="comments-list">${list}</div>`;
+    const st = typeof e.stars === "number" ? `<span class="ministars">${"★".repeat(e.stars)}</span>` : "";
+    return `<div class="acomment"><b>${u}</b> ${st}<div class="vcomment">“${escHtml(e.comment)}”</div></div>`;
+  }).filter(Boolean).join("") || `<p class="detailtxt">Aucun commentaire sur ce critère.</p>`;
+  const pending = document.getElementById("critComment") ? document.getElementById("critComment").value : null;
+  const editor = Votes.voter
+    ? `<div class="comment-edit"><textarea id="critComment" rows="2" placeholder="Ton commentaire sur ce critère (optionnel)">${escHtml(info.mineComment || "")}</textarea>
+        <div class="comment-actions"><span id="critMsg" class="detailtxt"></span><button class="btn" id="critSave">Enregistrer</button></div></div>`
+    : `<p class="detailtxt">Choisis ton identité (en haut) pour voter et commenter.</p>`;
+  card.innerHTML = `
+    <button class="modal-close" id="critClose">×</button>
+    <h3>${row.label}</h3>
+    <div class="myvote"><span>Algo</span> ${bar5(row.algoVal, section === "risk" ? "risk" : "algo")}
+      <span class="detailtxt">${row.algoVal != null ? row.algoVal.toFixed(1) + "/5" : "—"}</span></div>
+    ${row.algoDetail ? `<div class="algo-detail">${row.algoDetail}</div>` : ""}
+    <div class="myvote"><span>Ta note</span> ${starsWidget(id, "big", key)}</div>
+    ${editor}
+    <div class="section-title">Commentaires du critère</div>${comments}`;
+  if (pending != null) { const ta = document.getElementById("critComment"); if (ta) ta.value = pending; }
+  card.querySelector("#critClose").addEventListener("click", closeCritPopup);
+  card.querySelectorAll(".star").forEach((st) => st.addEventListener("click", () => handleStar(st)));
+  const cs = document.getElementById("critSave");
+  if (cs) cs.addEventListener("click", () => {
+    Votes.setComment(id, document.getElementById("critComment").value.trim(), key).then((res) => {
+      const ta = document.getElementById("critComment"); if (ta) ta.value = "";   // champ vidé = enregistré
+      const m = document.getElementById("critMsg"); if (m) m.textContent = (res && res.ok) ? "✓ Enregistré" : "Échec — réessaie";
+    });
+  });
 }
+function closeCritPopup() { openCrit = null; const el = document.getElementById("critPopup"); if (el) el.remove(); }
 
 function openModal(bien) {
   if (!bien) return;
@@ -403,29 +483,20 @@ function infoGrid(bien) {
 }
 
 // Partie dynamique (tableaux de votes + commentaires), re-rendue à chaque vote
-// sans toucher aux photos/description.
+// sans toucher aux photos/description. Un clic sur une ligne ouvre le popup du critère.
 function renderModalDynamic(bien) {
   const host = $("#modalDynamic");
-  const pending = $("#myComment") ? $("#myComment").value : null;   // préserve la saisie en cours
   host.innerHTML = `
-    <div class="section-title">Match <span class="detailtxt">— algo + ${Votes.backend === "supabase" ? "votes partagés" : "votes locaux"}</span></div>
+    <div class="section-title">Match</div>
     ${voteTable(bien, "match")}
     <div class="section-title">Investissement</div>
     ${voteTable(bien, "invest")}
     <div class="section-title">Risques</div>
     ${voteTable(bien, "risk")}
-    <div class="section-title">Commentaires</div>
-    ${commentsSection(bien)}`;
-  if (pending != null && $("#myComment")) $("#myComment").value = pending;
-  host.querySelectorAll(".star").forEach((st) => st.addEventListener("click", () => handleStar(st)));
-  const saveBtn = $("#saveComment");
-  if (saveBtn) saveBtn.addEventListener("click", () => {
-    Votes.setComment(voteKey(bien), $("#myComment").value.trim()).then((res) => {
-      const msg = $("#commentMsg");   // re-requête : le DOM dynamique a pu être reconstruit
-      if (msg) msg.textContent = (res && res.ok)
-        ? "✓ Commentaire enregistré" : "Échec de l'enregistrement — réessaie";
-    });
-  });
+    <div class="section-title">Tous les commentaires</div>
+    ${allCommentsSection(bien)}`;
+  host.querySelectorAll(".critrow").forEach((tr) =>
+    tr.addEventListener("click", () => openCritPopup(bien, tr.dataset.section, tr.dataset.key)));
 }
 function closeModal() {
   $("#modal").classList.add("hidden"); openBien = null;
