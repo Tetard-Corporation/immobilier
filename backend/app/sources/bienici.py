@@ -112,6 +112,88 @@ class BienIciSource(ScraperSource):
             ids.extend(z for z in item["zoneIds"] if z not in ids)
         return ids[:30]
 
+    # -- recherche exhaustive par petit rayon (évite le plafond des 100 récentes) ---- #
+    _zone_cache: dict[str, str | None] = {}
+
+    def _commune_zone_id(self, commune: dict) -> str | None:
+        """Résout le zoneId Bien'ici d'une commune via suggest, désambiguïsé par proximité."""
+        from ..services.geo import haversine_km
+
+        code = commune.get("code")
+        if code in self._zone_cache:
+            return self._zone_cache[code]
+        best, best_d = None, 1e9
+        for item in self._suggest(commune["nom"]):
+            if item.get("type") not in (None, "city") or not item.get("zoneIds"):
+                continue
+            ctr = self._item_center(item)
+            if ctr is None:
+                continue
+            d = haversine_km(commune["lat"], commune["lon"], ctr[0], ctr[1])
+            if d < best_d:
+                best_d, best = d, item["zoneIds"][0]
+        zid = best if best_d <= 8 else None  # rejette les homonymes lointains
+        self._zone_cache[code] = zid
+        return zid
+
+    def zone_ids_around(self, lat: float, lon: float, radius_km: float, depts: list[str]) -> list[str]:
+        """zoneIds de TOUTES les communes du rayon (pas seulement l'homonyme du pivot)."""
+        from ..services.geo_communes import communes_within
+
+        ids: list[str] = []
+        for c in communes_within(lat, lon, radius_km, depts):
+            zid = self._commune_zone_id(c)
+            if zid and zid not in ids:
+                ids.append(zid)
+        return ids
+
+    def search_zones(self, criteria: SearchCriteria, zone_ids: list[str], max_pages: int = 6) -> list[NormalizedListing]:
+        """Récupère TOUTES les annonces d'un jeu de zones (paginé jusqu'au total)."""
+        base = self._build_filters(criteria)
+        base["zoneIdsByTypes"] = {"zoneIds": zone_ids}
+        items, page = [], 0
+        while page < max_pages:
+            f = dict(base, **{"from": page * 100, "size": 100})
+            resp = self._get("/realEstateAds.json", params={"filters": json.dumps(f)})
+            data = resp.json()
+            ads = data.get("realEstateAds") or []
+            items.extend(annotate(self._normalize(ad)) for ad in ads)
+            page += 1
+            if not ads or page * 100 >= (data.get("total") or 0):
+                break
+        return [it for it in items if matches(it, criteria)]
+
+    def collect_around(self, criteria: SearchCriteria, lat: float, lon: float, depts: list[str],
+                       radii: tuple[float, ...] = (8, 16, 25, 35), cap: int | None = None) -> list[NormalizedListing]:
+        """Collecte progressive : petit rayon puis on étend, en dédupliquant. Exhaustif par zone.
+
+        Filtre par CODE COMMUNE (et non par coordonnées d'affichage, parfois floutées par
+        Bien'ici), donc immunisé contre les annonces dont la géoloc est approximée.
+        """
+        from ..services.geo_communes import communes_within
+
+        seen: set[str] = set()
+        out: list[NormalizedListing] = []
+        for r in radii:
+            communes = communes_within(lat, lon, r, depts)
+            codes = {c["code"] for c in communes}
+            zids: list[str] = []
+            for c in communes:
+                zid = self._commune_zone_id(c)
+                if zid and zid not in zids:
+                    zids.append(zid)
+            if not zids:
+                continue
+            for it in self.search_zones(criteria, zids):
+                if it.external_id in seen:
+                    continue
+                if it.code_commune in codes:
+                    seen.add(it.external_id)
+                    out.append(it)
+            if cap and len(out) >= cap:
+                break
+        return out
+
     def _build_filters(self, c: SearchCriteria) -> dict:
         property_types = c.property_types or ["terrain", "maison", "appartement"]
         bi_types = sorted({_PROPERTY_MAP.get(t, "house") for t in property_types})
