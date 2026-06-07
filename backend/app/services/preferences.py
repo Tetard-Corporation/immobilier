@@ -89,8 +89,10 @@ def _eval_one(item, kind: str, params: dict):
             return None, "n/a", "budget non défini"
         if item.prix <= budget:
             return 1.0, "ok", f"{int(item.prix)}€ ≤ budget {int(budget)}€"
-        dep = round((item.prix - budget) / budget * 100)
-        return _clamp(1 - (item.prix - budget) / budget), "ok", f"{int(item.prix)}€ > budget {int(budget)}€ (+{dep}%)"
+        # Hors budget = quasi rédhibitoire (retour récurrent du groupe) -> pénalité forte :
+        # +10% ~70%, +20% ~40%, +33% et plus ~0% (au lieu d'une décote linéaire trop clémente).
+        over = (item.prix - budget) / budget
+        return _clamp(1 - over * 3), "ok", f"{int(item.prix)}€ > budget {int(budget)}€ (+{round(over * 100)}%, hors budget)"
 
     if kind == "chambres_min":
         mn = params.get("min", 1)
