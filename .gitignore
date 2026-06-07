@@ -18,3 +18,6 @@ venv/
 # Node (front, à venir)
 node_modules/
 dist/
+
+# Skill converge-filters : artefact généré (données votes)
+.claude/skills/converge-filters/proposal.json
