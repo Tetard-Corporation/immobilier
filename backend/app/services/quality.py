@@ -129,16 +129,37 @@ _POSITIVE_KEYWORDS: dict[str, list[str]] = {
         "authentique",
         "de caractere",
         "plein de charme",
+        "beaucoup de charme",
         "beaucoup de cachet",
         "du cachet",
+        "plein de cachet",
+        "avec cachet",
+        "cachet",
+        "caractere",
+        "charme de l'ancien",
         "pierres apparentes",
         "poutres apparentes",
+        "en pierre",
+        "vieilles pierres",
+        "belles pierres",
+        "pierres de taille",
+        "pierre de pays",
+        "tomettes",
+        "tommettes",
+        "four a pain",
         "cheminee",
         "colombages",
         "batisse de caractere",
+        "batisse",
         "corps de ferme",
+        "ancienne ferme",
+        "ferme renovee",
         "longere",
+        "grange attenante",
+        "maison de maitre",
+        "demeure de caractere",
         "mas en pierre",
+        "vieux mas",
     ],
 }
 
@@ -190,9 +211,11 @@ def classify_quality(*parts: str | None) -> dict:
     }
 
     nature_score = len(features) - len(nuisances)
+    # « authentique » = cachet du bâti, pas le cadre naturel : exclu du caractère d'exception.
+    nature_feats = features - {AUTHENTIQUE}
     nature_exception = (
-        bool(features & _STRONG)
-        and len(features) >= 3
+        bool(nature_feats & _STRONG)
+        and len(nature_feats) >= 3
         and NUISANCES not in nuisances
         and VIS_A_VIS not in nuisances
     )
