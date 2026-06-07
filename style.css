@@ -74,7 +74,16 @@ select {
 .card:hover .gnav { opacity: 1; }
 .gnav.prev { left: 8px; } .gnav.next { right: 8px; }
 .badges { position: absolute; top: 8px; left: 8px; display: flex; gap: 6px; }
-.fav-star { position: absolute; top: 8px; right: 8px; font-size: 18px; }
+.fav-btn {
+  position: absolute; top: 8px; right: 8px; z-index: 3;
+  display: inline-flex; align-items: center; gap: 3px;
+  min-width: 34px; height: 34px; padding: 0 9px; border: 0; border-radius: 999px;
+  background: rgba(0,0,0,.55); color: #fff; font-size: 17px; line-height: 1;
+  cursor: pointer; transition: transform .1s, color .1s;
+}
+.fav-btn:hover { transform: scale(1.08); }
+.fav-btn.on { color: var(--fav); }
+.fav-btn .fav-n { font-size: 12px; font-weight: 600; }
 
 .badge {
   font-size: 12px; font-weight: 600; padding: 3px 8px; border-radius: 999px;

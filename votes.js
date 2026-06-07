@@ -91,6 +91,15 @@ const Votes = (() => {
     return setMine(id, stars, crit, comment || null);
   }
 
+  // Favoris : stockés comme un "vote" sur le critère réservé FAVORI (stars=1 = favori).
+  const FAVORI = "__favori__";
+  function isFavori(id) { return forBien(id, FAVORI).mine === 1; }
+  function favCount(id) {
+    const by = (cache[id] || {})[FAVORI] || {};
+    return Object.values(by).filter((e) => e.stars === 1).length;
+  }
+  function toggleFavori(id) { return setMine(id, isFavori(id) ? null : 1, FAVORI); }
+
   // Tous les commentaires d'un bien, tous critères confondus.
   function allComments(id) {
     const out = [];
@@ -110,7 +119,7 @@ const Votes = (() => {
 
   return {
     init, reload, forBien, setMine, setComment, setVoter, onChange, allComments,
-    OVERALL,
+    isFavori, favCount, toggleFavori, OVERALL,
     get voter() { return voter; },
     get users() { return users; },
     get backend() { return backend; },
