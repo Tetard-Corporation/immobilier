@@ -152,8 +152,16 @@ table.scores td.num { text-align: right; font-variant-numeric: tabular-nums; whi
 table.crit-tbl td.num { white-space: nowrap; }
 table.crit-tbl .stars.sm { white-space: nowrap; }
 
-.votewrap .myvote { margin: 6px 0 12px; display: flex; align-items: center; gap: 10px; }
+.votewrap .myvote { margin: 6px 0 10px; display: flex; align-items: center; gap: 10px; }
 table.votes-tbl td, table.votes-tbl th { padding: 6px 9px; }
+.vcomment { color: var(--muted); font-size: 12px; font-style: italic; margin-top: 2px; }
+.comment-edit { margin: 4px 0 12px; }
+.comment-edit textarea {
+  width: 100%; background: var(--card2); color: var(--txt); border: 1px solid var(--line);
+  border-radius: 10px; padding: 9px 11px; font: inherit; font-size: 13px; resize: vertical;
+}
+.comment-actions { display: flex; align-items: center; justify-content: flex-end; gap: 10px; margin-top: 6px; }
+.comment-actions .btn { padding: 7px 12px; }
 
 /* ---------- Overlay identité ---------- */
 .idoverlay { position: fixed; inset: 0; z-index: 3000; display: grid; place-items: center; }

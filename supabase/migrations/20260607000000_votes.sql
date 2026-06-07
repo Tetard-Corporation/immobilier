@@ -8,6 +8,7 @@ create table if not exists votes (
   voter      text not null,
   criterion  text not null default '__overall__',  -- '__overall__' = note globale
   stars      int  not null check (stars between 1 and 5),
+  comment    text,                                 -- commentaire optionnel
   updated_at timestamptz not null default now(),
   unique (bien_id, voter, criterion)               -- 1 vote par (bien, personne, critère)
 );

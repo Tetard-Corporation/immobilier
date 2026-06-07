@@ -272,12 +272,22 @@ function openModal(bien) {
   $("#mclose2").addEventListener("click", closeModal);
   card.querySelectorAll(".star").forEach((st) =>
     st.addEventListener("click", () => handleStar(st)));
+  const saveBtn = $("#saveComment");
+  if (saveBtn) saveBtn.addEventListener("click", () => {
+    const val = $("#myComment").value.trim();
+    Votes.setComment(voteKey(bien), val).then((res) => {
+      if (res && res.ok === false && res.reason === "no-stars") {
+        $("#commentMsg").textContent = "Donne d'abord une note ⭐ pour commenter.";
+      }
+    });
+  });
 }
 function closeModal() { $("#modal").classList.add("hidden"); openBien = null; }
 function refreshModal() { if (openBien && !$("#modal").classList.contains("hidden")) openModal(openBien); }
 
 // ---------- Votes (étoiles) ----------
 const escAttr = (s) => String(s).replace(/&/g, "&amp;").replace(/"/g, "&quot;");
+const escHtml = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 function starsWidget(id, size, criterion) {
   const crit = criterion || Votes.OVERALL;
   const mine = Votes.forBien(id, crit).mine || 0;
@@ -296,14 +306,21 @@ function votesBlock(b) {
   const id = voteKey(b);
   const info = Votes.forBien(id);
   const rows = Votes.users.map((u) => {
-    const s = info.byUser[u];
-    const cell = s ? `<span style="color:#fbbf24">${"★".repeat(s)}</span><span class="detailtxt">${"☆".repeat(5 - s)}</span>`
+    const e = info.byUser[u];
+    const cell = e ? `<span style="color:#fbbf24">${"★".repeat(e.stars)}</span><span class="detailtxt">${"☆".repeat(5 - e.stars)}</span>`
                    : `<span class="detailtxt">—</span>`;
-    return `<tr><td>${u}${u === Votes.voter ? ' <span class="weighttag">(toi)</span>' : ""}</td><td class="num">${cell}</td></tr>`;
+    const com = (e && e.comment) ? `<div class="vcomment">“${escHtml(e.comment)}”</div>` : "";
+    return `<tr><td>${u}${u === Votes.voter ? ' <span class="weighttag">(toi)</span>' : ""}${com}</td><td class="num">${cell}</td></tr>`;
   }).join("");
   const myLabel = Votes.voter ? "Ta note" : "Choisis ton identité pour noter";
+  const editor = Votes.voter ? `
+    <div class="comment-edit">
+      <textarea id="myComment" rows="2" placeholder="Un mot sur ce bien ? (optionnel, avec ta note)">${escHtml(info.mineComment || "")}</textarea>
+      <div class="comment-actions"><span id="commentMsg" class="detailtxt"></span><button class="btn" id="saveComment">Enregistrer</button></div>
+    </div>` : "";
   return `<div class="votewrap">
     <div class="myvote"><span>${myLabel} :</span> ${starsWidget(id, "big")}</div>
+    ${editor}
     <table class="scores votes-tbl"><tr><th>Qui</th><th class="num">Note</th></tr>${rows}
       <tr><th>Moyenne</th><td class="num"><b>${info.avg != null ? info.avg.toFixed(1) : "—"}</b> (${info.count})</td></tr></table>
   </div>`;

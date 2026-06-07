@@ -31,7 +31,8 @@ Vote 1–5 ⭐ par bien et par personne, **sans login** (on se fait confiance). 
 `localStorage`). La **note globale** s'affiche dans le feed (ta note + moyenne) et
 le détail par personne dans la fiche. Dans la fiche, on peut **aussi (en option)
 noter chaque critère** du set : le tableau « Critères » place côte à côte le score
-**algo**, **ton vote** et la **moyenne du groupe**.
+**algo**, **ton vote** et la **moyenne du groupe**. On peut enfin laisser un
+**commentaire optionnel** avec sa note globale (affiché sous l'avis de chacun).
 
 **Sans Supabase configuré**, le vote fonctionne quand même en mode *local*
 (localStorage, par navigateur) — pratique pour tester l'UX, mais non partagé.
@@ -46,6 +47,7 @@ noter chaque critère** du set : le tableau « Critères » place côte à côte
      voter      text not null,
      criterion  text not null default '__overall__',  -- '__overall__' = note globale
      stars      int  not null check (stars between 1 and 5),
+     comment    text,                                 -- commentaire optionnel
      updated_at timestamptz not null default now(),
      unique (bien_id, voter, criterion)   -- 1 vote par (bien, personne, critère)
    );
