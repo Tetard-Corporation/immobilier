@@ -42,7 +42,8 @@ def test_enrichi_active_piliers_affaire_et_risques():
         "condition": "renover", "price_decreased": False, "nuisances": [], "nature_score": 1,
         "rail_time_min": 60, "fibre": True,
     }
-    res = compute_score(flags, {"has_text": True, "surface_terrain": 800})
+    res = compute_score(flags, {"has_text": True, "surface_terrain": 800,
+                                "latitude": 44.93, "longitude": 4.89})
     assert _sub(_pillar(res, "prix"), "affaire")["status"] == "ok"
     assert _sub(_pillar(res, "foncier"), "zonage")["subscore"] == 1.0  # zone U
     assert _sub(_pillar(res, "accessibilite"), "train")["status"] == "ok"

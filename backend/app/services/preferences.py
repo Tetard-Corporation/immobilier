@@ -21,6 +21,7 @@ PREFERENCE_KINDS = [
     "no_vis_a_vis",
     "nature_exception",
     "authentic",
+    "pas_pavillon",
     "feature",
     "near_corridor",
     "near_gare",
@@ -142,6 +143,13 @@ def _eval_one(item, kind: str, params: dict):
     if kind == "authentic":
         present = "authentique" in (flags.get("features") or [])
         return (1.0 if present else 0.3), "ok", "cachet / authentique mentionné" if present else "cachet non mentionné"
+
+    if kind == "pas_pavillon":
+        # Critère négatif (retour du groupe : « pavillon, on ne veut pas du neuf »).
+        pav = flags.get("pavillon_neuf")
+        if pav is None:
+            return 0.7, "ok", "style indéterminé"
+        return (0.15 if pav else 1.0), "ok", "pavillon / neuf détecté" if pav else "pas de signe pavillon/neuf"
 
     if kind == "feature":
         name = params.get("name")

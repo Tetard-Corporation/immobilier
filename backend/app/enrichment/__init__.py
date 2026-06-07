@@ -107,6 +107,8 @@ def enrich_listing(item):
         "has_text": bool(item.description or item.adresse),
         "surface_terrain": item.surface_terrain,
         "type_bien": item.type_bien,
+        "latitude": item.latitude,
+        "longitude": item.longitude,
     }
     result = compute_score(flags, ctx)
     flags["score"] = result.score
