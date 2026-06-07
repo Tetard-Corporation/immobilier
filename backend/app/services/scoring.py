@@ -115,18 +115,29 @@ def _travaux(flags, ctx):
 
 
 def _train(flags, ctx):
-    t = flags.get("rail_time_min")
-    if t is None:
-        return None, "pending", "trajet train indisponible"
-    suffixe = " (estimé)" if flags.get("rail_time_estime") else ""
-    return _clamp(1 - t / 180), "ok", f"{t} min en train{suffixe}"
+    # Accès porte-à-porte depuis Paris (TGV vers le meilleur hub + voiture) : réaliste,
+    # remplace l'ancienne estimation à vol d'oiseau (rail_time_min) jugée fausse.
+    lat, lon = ctx.get("latitude"), ctx.get("longitude")
+    if lat is None or lon is None:
+        return None, "pending", "géoloc manquante"
+    from .geo import porte_a_porte_min
+    m = porte_a_porte_min(lat, lon)
+    if m is None:
+        return None, "pending", "trajet indéterminé"
+    h, mm = divmod(m, 60)
+    return _clamp(1 - (m - 90) / (300 - 90)), "ok", f"~{h}h{mm:02d} porte-à-porte (Paris)"
 
 
 def _gare(flags, ctx):
-    d = flags.get("dist_gare_km")
-    if d is None:
-        return None, "pending", "proximité gare (enrich)"
-    return _clamp(1 - d / 15), "ok", f"gare à {d} km"
+    lat, lon = ctx.get("latitude"), ctx.get("longitude")
+    if lat is None or lon is None:
+        return None, "pending", "géoloc manquante"
+    from .gares import nearest_gare
+    res = nearest_gare(lat, lon)
+    if res is None:
+        return None, "pending", "données gares indispo"
+    nom, d = res
+    return _clamp(1 - d / 30), "ok", f"gare de {nom} à {d} km"
 
 
 def _fibre(flags, ctx):
