@@ -91,12 +91,25 @@ const Votes = (() => {
     return setMine(id, stars, crit, comment || null);
   }
 
+  // Tous les commentaires d'un bien, tous critères confondus.
+  function allComments(id) {
+    const out = [];
+    const byCrit = cache[id] || {};
+    for (const crit of Object.keys(byCrit)) {
+      for (const u of Object.keys(byCrit[crit])) {
+        const e = byCrit[crit][u];
+        if (e && e.comment) out.push({ criterion: crit, voter: u, stars: e.stars, comment: e.comment });
+      }
+    }
+    return out;
+  }
+
   function setVoter(v) { voter = v; localStorage.setItem(LS_VOTER, v); emit(); }
   function emit() { listeners.forEach((f) => f()); }
   function onChange(f) { listeners.push(f); }
 
   return {
-    init, reload, forBien, setMine, setComment, setVoter, onChange,
+    init, reload, forBien, setMine, setComment, setVoter, onChange, allComments,
     OVERALL,
     get voter() { return voter; },
     get users() { return users; },
