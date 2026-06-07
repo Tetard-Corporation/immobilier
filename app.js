@@ -473,7 +473,6 @@ function infoGrid(bien) {
     ["Code postal", bien.code_postal],
     ["Surface bâtie", bien.surface_bati != null ? bien.surface_bati + " m²" : null],
     ["DPE", bien.dpe_classe],
-    ["Gare la + proche", bien.rail_time_min != null ? bien.rail_time_min + " min" : null],
     ["Population commune", bien.population_commune != null ? bien.population_commune + " hab." : null],
     ["Isolement", bien.isolement_score != null ? Math.round(bien.isolement_score * 100) + " %" : null],
   ].filter(([, v]) => v != null && v !== "");
