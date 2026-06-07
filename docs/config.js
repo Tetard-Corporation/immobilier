@@ -8,6 +8,9 @@ window.APP_CONFIG = {
   SUPABASE_ANON_KEY: "",   // clé "anon" (publique, protégée par RLS)
 
   // 3) Les participants : c'est la liste du "Qui es-tu ?" en début de session.
-  //    Remplace par vos vrais prénoms.
-  USERS: ["Léo", "Copain 2", "Copain 3", "Copain 4"],
+  USERS: ["Henri", "Max", "Mathurin", "Juliette", "Léo", "Timothé"],
+
+  // Le code d'accès au vote N'EST PAS ici (sinon il serait public sur GitHub).
+  // Il vit uniquement dans la fonction Supabase `cast_vote` (ta base privée), et
+  // chaque personne le saisit une fois dans le front (stocké sur son appareil).
 };
