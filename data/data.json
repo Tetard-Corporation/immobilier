@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-07T15:55:58.424522+00:00",
+ "generated_at": "2026-06-07T16:10:11.006949+00:00",
  "sets": [
   {
    "id": 1,
@@ -141,6 +141,22 @@
      "params": {
       "name": "terrasse"
      }
+    },
+    {
+     "kind": "commerces",
+     "label": "Commerces/services à vélo",
+     "weight": 2,
+     "params": {
+      "ref": 15
+     }
+    },
+    {
+     "kind": "ski",
+     "label": "Proximité station de ski",
+     "weight": 2,
+     "params": {
+      "max_km": 30
+     }
     }
    ]
   },
@@ -277,6 +293,22 @@
      "weight": 3,
      "params": {
       "name": "vue_panoramique"
+     }
+    },
+    {
+     "kind": "commerces",
+     "label": "Commerces/services à vélo",
+     "weight": 2,
+     "params": {
+      "ref": 15
+     }
+    },
+    {
+     "kind": "ski",
+     "label": "Proximité station de ski",
+     "weight": 2,
+     "params": {
+      "max_km": 30
      }
     }
    ]
@@ -523,7 +555,7 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 53.9,
+     "match_score": 49.5,
      "details": [
       {
        "kind": "budget",
@@ -625,6 +657,15 @@
        "contribution": 0.66
       },
       {
+       "kind": "commerces",
+       "label": "Commerces/services à vélo",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "4 commerces/services à vélo (≤ 3 km)",
+       "subscore": 0.267,
+       "contribution": 0.533
+      },
+      {
        "kind": "authentic",
        "label": "Authentique / cachet",
        "weight": 1.5,
@@ -640,6 +681,15 @@
        "status": "ok",
        "detail": "1 sentiers/itinéraires à proximité",
        "subscore": 0.3,
+       "contribution": 0.3
+      },
+      {
+       "kind": "ski",
+       "label": "Proximité station de ski",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de remontée de ski à proximité",
+       "subscore": 0.15,
        "contribution": 0.3
       },
       {
@@ -689,7 +739,7 @@
      ]
     },
     "2": {
-     "match_score": 55.9,
+     "match_score": 51.7,
      "details": [
       {
        "kind": "has_terrain",
@@ -800,6 +850,15 @@
        "contribution": 0.6
       },
       {
+       "kind": "commerces",
+       "label": "Commerces/services à vélo",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "4 commerces/services à vélo (≤ 3 km)",
+       "subscore": 0.267,
+       "contribution": 0.533
+      },
+      {
        "kind": "authentic",
        "label": "Authentique / cachet",
        "weight": 1.5,
@@ -815,6 +874,15 @@
        "status": "ok",
        "detail": "1 sentiers/itinéraires à proximité",
        "subscore": 0.3,
+       "contribution": 0.3
+      },
+      {
+       "kind": "ski",
+       "label": "Proximité station de ski",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de remontée de ski à proximité",
+       "subscore": 0.15,
        "contribution": 0.3
       },
       {
@@ -849,7 +917,18 @@
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 10,
-   "photos": []
+   "photos": [
+    "photos/bienici_century-21-202_3293_4975/0.jpg",
+    "photos/bienici_century-21-202_3293_4975/1.jpg",
+    "photos/bienici_century-21-202_3293_4975/2.jpg",
+    "photos/bienici_century-21-202_3293_4975/3.jpg",
+    "photos/bienici_century-21-202_3293_4975/4.jpg",
+    "photos/bienici_century-21-202_3293_4975/5.jpg",
+    "photos/bienici_century-21-202_3293_4975/6.jpg",
+    "photos/bienici_century-21-202_3293_4975/7.jpg",
+    "photos/bienici_century-21-202_3293_4975/8.jpg",
+    "photos/bienici_century-21-202_3293_4975/9.jpg"
+   ]
   },
   {
    "id": 19,
@@ -1087,7 +1166,7 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 53.2,
+     "match_score": 50.6,
      "details": [
       {
        "kind": "budget",
@@ -1124,6 +1203,15 @@
        "detail": "qualité nature 2/4",
        "subscore": 0.6,
        "contribution": 1.2
+      },
+      {
+       "kind": "ski",
+       "label": "Proximité station de ski",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "remontée de ski à 14.5 km",
+       "subscore": 0.517,
+       "contribution": 1.033
       },
       {
        "kind": "has_terrain",
@@ -1216,6 +1304,15 @@
        "contribution": 0.324
       },
       {
+       "kind": "commerces",
+       "label": "Commerces/services à vélo",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "2 commerces/services à vélo (≤ 3 km)",
+       "subscore": 0.133,
+       "contribution": 0.267
+      },
+      {
        "kind": "feature",
        "label": "Cheminée / poêle",
        "weight": 1.0,
@@ -1254,7 +1351,7 @@
      ]
     },
     "2": {
-     "match_score": 54.5,
+     "match_score": 52.0,
      "details": [
       {
        "kind": "has_terrain",
@@ -1300,6 +1397,15 @@
        "detail": "qualité nature 2/4",
        "subscore": 0.6,
        "contribution": 1.2
+      },
+      {
+       "kind": "ski",
+       "label": "Proximité station de ski",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "remontée de ski à 14.5 km",
+       "subscore": 0.517,
+       "contribution": 1.033
       },
       {
        "kind": "relief_mountain",
@@ -1392,6 +1498,15 @@
        "contribution": 0.324
       },
       {
+       "kind": "commerces",
+       "label": "Commerces/services à vélo",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "2 commerces/services à vélo (≤ 3 km)",
+       "subscore": 0.133,
+       "contribution": 0.267
+      },
+      {
        "kind": "chambres_min",
        "label": "≥ 4 chambres (min strict)",
        "weight": 3.0,
@@ -1415,7 +1530,12 @@
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 4,
-   "photos": []
+   "photos": [
+    "photos/bienici_ag440414-534117671/0.jpg",
+    "photos/bienici_ag440414-534117671/1.jpg",
+    "photos/bienici_ag440414-534117671/2.jpg",
+    "photos/bienici_ag440414-534117671/3.jpg"
+   ]
   },
   {
    "id": 14,
@@ -1661,7 +1781,7 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 76.4,
+     "match_score": 74.0,
      "details": [
       {
        "kind": "chambres_min",
@@ -1696,6 +1816,15 @@
        "weight": 2.0,
        "status": "ok",
        "detail": "158 m² habitables (souhait ≥ 90 m²)",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "commerces",
+       "label": "Commerces/services à vélo",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "131 commerces/services à vélo (≤ 3 km)",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -1808,6 +1937,15 @@
        "contribution": 0.45
       },
       {
+       "kind": "ski",
+       "label": "Proximité station de ski",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de remontée de ski à proximité",
+       "subscore": 0.15,
+       "contribution": 0.3
+      },
+      {
        "kind": "feature",
        "label": "Cheminée / poêle",
        "weight": 1.0,
@@ -1828,7 +1966,7 @@
      ]
     },
     "2": {
-     "match_score": 73.9,
+     "match_score": 72.0,
      "details": [
       {
        "kind": "chambres_min",
@@ -1872,6 +2010,15 @@
        "weight": 2.0,
        "status": "ok",
        "detail": "158 m² habitables (souhait ≥ 90 m²)",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "commerces",
+       "label": "Commerces/services à vélo",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "131 commerces/services à vélo (≤ 3 km)",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -1975,6 +2122,15 @@
        "contribution": 0.45
       },
       {
+       "kind": "ski",
+       "label": "Proximité station de ski",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de remontée de ski à proximité",
+       "subscore": 0.15,
+       "contribution": 0.3
+      },
+      {
        "kind": "relief_mountain",
        "label": "Relief / montagne",
        "weight": 1.0,
@@ -1989,7 +2145,18 @@
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 10,
-   "photos": []
+   "photos": [
+    "photos/bienici_iad-france-937673/0.jpg",
+    "photos/bienici_iad-france-937673/1.jpg",
+    "photos/bienici_iad-france-937673/2.jpg",
+    "photos/bienici_iad-france-937673/3.jpg",
+    "photos/bienici_iad-france-937673/4.jpg",
+    "photos/bienici_iad-france-937673/5.jpg",
+    "photos/bienici_iad-france-937673/6.jpg",
+    "photos/bienici_iad-france-937673/7.jpg",
+    "photos/bienici_iad-france-937673/8.jpg",
+    "photos/bienici_iad-france-937673/9.jpg"
+   ]
   },
   {
    "id": 20,
@@ -2232,7 +2399,7 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 64.0,
+     "match_score": 62.1,
      "details": [
       {
        "kind": "budget",
@@ -2269,6 +2436,15 @@
        "detail": "93 m² habitables (souhait ≥ 90 m²)",
        "subscore": 1.0,
        "contribution": 2.0
+      },
+      {
+       "kind": "ski",
+       "label": "Proximité station de ski",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "remontée de ski à 3.2 km",
+       "subscore": 0.893,
+       "contribution": 1.787
       },
       {
        "kind": "authentic",
@@ -2334,6 +2510,15 @@
        "contribution": 0.368
       },
       {
+       "kind": "commerces",
+       "label": "Commerces/services à vélo",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "2 commerces/services à vélo (≤ 3 km)",
+       "subscore": 0.133,
+       "contribution": 0.267
+      },
+      {
        "kind": "feature",
        "label": "Cheminée / poêle",
        "weight": 1.0,
@@ -2397,7 +2582,7 @@
      ]
     },
     "2": {
-     "match_score": 63.7,
+     "match_score": 62.1,
      "details": [
       {
        "kind": "feature",
@@ -2443,6 +2628,15 @@
        "detail": "93 m² habitables (souhait ≥ 90 m²)",
        "subscore": 1.0,
        "contribution": 2.0
+      },
+      {
+       "kind": "ski",
+       "label": "Proximité station de ski",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "remontée de ski à 3.2 km",
+       "subscore": 0.893,
+       "contribution": 1.787
       },
       {
        "kind": "authentic",
@@ -2497,6 +2691,15 @@
        "detail": "245 km de Marseille",
        "subscore": 0.184,
        "contribution": 0.368
+      },
+      {
+       "kind": "commerces",
+       "label": "Commerces/services à vélo",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "2 commerces/services à vélo (≤ 3 km)",
+       "subscore": 0.133,
+       "contribution": 0.267
       },
       {
        "kind": "has_terrain",
@@ -2556,7 +2759,18 @@
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 10,
-   "photos": []
+   "photos": [
+    "photos/bienici_iad-france-932267/0.jpg",
+    "photos/bienici_iad-france-932267/1.jpg",
+    "photos/bienici_iad-france-932267/2.jpg",
+    "photos/bienici_iad-france-932267/3.jpg",
+    "photos/bienici_iad-france-932267/4.jpg",
+    "photos/bienici_iad-france-932267/5.jpg",
+    "photos/bienici_iad-france-932267/6.jpg",
+    "photos/bienici_iad-france-932267/7.jpg",
+    "photos/bienici_iad-france-932267/8.jpg",
+    "photos/bienici_iad-france-932267/9.jpg"
+   ]
   },
   {
    "id": 21,
@@ -2798,7 +3012,7 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 66.2,
+     "match_score": 64.2,
      "details": [
       {
        "kind": "chambres_min",
@@ -2846,6 +3060,15 @@
        "contribution": 1.5
       },
       {
+       "kind": "commerces",
+       "label": "Commerces/services à vélo",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "9 commerces/services à vélo (≤ 3 km)",
+       "subscore": 0.6,
+       "contribution": 1.2
+      },
+      {
        "kind": "has_terrain",
        "label": "Avec terrain",
        "weight": 1.0,
@@ -2889,6 +3112,15 @@
        "detail": "non précisé",
        "subscore": 0.6,
        "contribution": 0.9
+      },
+      {
+       "kind": "ski",
+       "label": "Proximité station de ski",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "remontée de ski à 17.6 km",
+       "subscore": 0.413,
+       "contribution": 0.827
       },
       {
        "kind": "temps_acces",
@@ -2964,7 +3196,7 @@
      ]
     },
     "2": {
-     "match_score": 64.2,
+     "match_score": 62.6,
      "details": [
       {
        "kind": "chambres_min",
@@ -3021,6 +3253,15 @@
        "contribution": 1.5
       },
       {
+       "kind": "commerces",
+       "label": "Commerces/services à vélo",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "9 commerces/services à vélo (≤ 3 km)",
+       "subscore": 0.6,
+       "contribution": 1.2
+      },
+      {
        "kind": "hiking",
        "label": "Randonnées",
        "weight": 1.0,
@@ -3046,6 +3287,15 @@
        "detail": "non précisé",
        "subscore": 0.6,
        "contribution": 0.9
+      },
+      {
+       "kind": "ski",
+       "label": "Proximité station de ski",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "remontée de ski à 17.6 km",
+       "subscore": 0.413,
+       "contribution": 0.827
       },
       {
        "kind": "temps_acces",
@@ -3124,7 +3374,18 @@
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 10,
-   "photos": []
+   "photos": [
+    "photos/bienici_century-21-202_3452_12009/0.jpg",
+    "photos/bienici_century-21-202_3452_12009/1.jpg",
+    "photos/bienici_century-21-202_3452_12009/2.jpg",
+    "photos/bienici_century-21-202_3452_12009/3.jpg",
+    "photos/bienici_century-21-202_3452_12009/4.jpg",
+    "photos/bienici_century-21-202_3452_12009/5.jpg",
+    "photos/bienici_century-21-202_3452_12009/6.jpg",
+    "photos/bienici_century-21-202_3452_12009/7.jpg",
+    "photos/bienici_century-21-202_3452_12009/8.jpg",
+    "photos/bienici_century-21-202_3452_12009/9.jpg"
+   ]
   },
   {
    "id": 7,
@@ -3367,7 +3628,7 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 67.9,
+     "match_score": 66.5,
      "details": [
       {
        "kind": "chambres_min",
@@ -3393,6 +3654,15 @@
        "weight": 2.0,
        "status": "ok",
        "detail": "172 m² habitables (souhait ≥ 90 m²)",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "commerces",
+       "label": "Commerces/services à vélo",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "31 commerces/services à vélo (≤ 3 km)",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -3505,6 +3775,15 @@
        "contribution": 0.34
       },
       {
+       "kind": "ski",
+       "label": "Proximité station de ski",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de remontée de ski à proximité",
+       "subscore": 0.15,
+       "contribution": 0.3
+      },
+      {
        "kind": "feature",
        "label": "Cheminée / poêle",
        "weight": 1.0,
@@ -3533,7 +3812,7 @@
      ]
     },
     "2": {
-     "match_score": 63.2,
+     "match_score": 62.5,
      "details": [
       {
        "kind": "chambres_min",
@@ -3559,6 +3838,15 @@
        "weight": 2.0,
        "status": "ok",
        "detail": "172 m² habitables (souhait ≥ 90 m²)",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "commerces",
+       "label": "Commerces/services à vélo",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "31 commerces/services à vélo (≤ 3 km)",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -3671,6 +3959,15 @@
        "contribution": 0.34
       },
       {
+       "kind": "ski",
+       "label": "Proximité station de ski",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de remontée de ski à proximité",
+       "subscore": 0.15,
+       "contribution": 0.3
+      },
+      {
        "kind": "relief_mountain",
        "label": "Relief / montagne",
        "weight": 1.0,
@@ -3693,7 +3990,18 @@
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 10,
-   "photos": []
+   "photos": [
+    "photos/bienici_hektor-DANTON26000-17253/0.jpg",
+    "photos/bienici_hektor-DANTON26000-17253/1.jpg",
+    "photos/bienici_hektor-DANTON26000-17253/2.jpg",
+    "photos/bienici_hektor-DANTON26000-17253/3.jpg",
+    "photos/bienici_hektor-DANTON26000-17253/4.jpg",
+    "photos/bienici_hektor-DANTON26000-17253/5.jpg",
+    "photos/bienici_hektor-DANTON26000-17253/6.jpg",
+    "photos/bienici_hektor-DANTON26000-17253/7.jpg",
+    "photos/bienici_hektor-DANTON26000-17253/8.jpg",
+    "photos/bienici_hektor-DANTON26000-17253/9.jpg"
+   ]
   },
   {
    "id": 8,
@@ -3935,7 +4243,7 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 49.7,
+     "match_score": 50.7,
      "details": [
       {
        "kind": "budget",
@@ -3952,6 +4260,15 @@
        "weight": 2.0,
        "status": "ok",
        "detail": "aucune autoroute/voie ferrée à proximité",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "commerces",
+       "label": "Commerces/services à vélo",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "33 commerces/services à vélo (≤ 3 km)",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -4046,6 +4363,15 @@
        "contribution": 0.433
       },
       {
+       "kind": "ski",
+       "label": "Proximité station de ski",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de remontée de ski à proximité",
+       "subscore": 0.15,
+       "contribution": 0.3
+      },
+      {
        "kind": "feature",
        "label": "Cheminée / poêle",
        "weight": 1.0,
@@ -4102,7 +4428,7 @@
      ]
     },
     "2": {
-     "match_score": 48.1,
+     "match_score": 49.2,
      "details": [
       {
        "kind": "budget",
@@ -4119,6 +4445,15 @@
        "weight": 2.0,
        "status": "ok",
        "detail": "aucune autoroute/voie ferrée à proximité",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "commerces",
+       "label": "Commerces/services à vélo",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "33 commerces/services à vélo (≤ 3 km)",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -4222,6 +4557,15 @@
        "contribution": 0.433
       },
       {
+       "kind": "ski",
+       "label": "Proximité station de ski",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de remontée de ski à proximité",
+       "subscore": 0.15,
+       "contribution": 0.3
+      },
+      {
        "kind": "relief_mountain",
        "label": "Relief / montagne",
        "weight": 1.0,
@@ -4263,7 +4607,18 @@
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 10,
-   "photos": []
+   "photos": [
+    "photos/bienici_hektor-105918-323/0.jpg",
+    "photos/bienici_hektor-105918-323/1.jpg",
+    "photos/bienici_hektor-105918-323/2.jpg",
+    "photos/bienici_hektor-105918-323/3.jpg",
+    "photos/bienici_hektor-105918-323/4.jpg",
+    "photos/bienici_hektor-105918-323/5.jpg",
+    "photos/bienici_hektor-105918-323/6.jpg",
+    "photos/bienici_hektor-105918-323/7.jpg",
+    "photos/bienici_hektor-105918-323/8.jpg",
+    "photos/bienici_hektor-105918-323/9.jpg"
+   ]
   },
   {
    "id": 22,
@@ -4507,7 +4862,7 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 54.0,
+     "match_score": 57.6,
      "details": [
       {
        "kind": "budget",
@@ -4537,6 +4892,15 @@
        "contribution": 2.0
       },
       {
+       "kind": "commerces",
+       "label": "Commerces/services à vélo",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "33 commerces/services à vélo (≤ 3 km)",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
        "kind": "authentic",
        "label": "Authentique / cachet",
        "weight": 1.5,
@@ -4553,6 +4917,15 @@
        "detail": "60 m² habitables (souhait ≥ 90 m²)",
        "subscore": 0.667,
        "contribution": 1.333
+      },
+      {
+       "kind": "ski",
+       "label": "Proximité station de ski",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "remontée de ski à 10.7 km",
+       "subscore": 0.643,
+       "contribution": 1.287
       },
       {
        "kind": "has_terrain",
@@ -4674,7 +5047,7 @@
      ]
     },
     "2": {
-     "match_score": 52.3,
+     "match_score": 55.8,
      "details": [
       {
        "kind": "budget",
@@ -4704,6 +5077,15 @@
        "contribution": 2.0
       },
       {
+       "kind": "commerces",
+       "label": "Commerces/services à vélo",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "33 commerces/services à vélo (≤ 3 km)",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
        "kind": "has_terrain",
        "label": "Grand terrain (>1500 m²)",
        "weight": 3.0,
@@ -4729,6 +5111,15 @@
        "detail": "60 m² habitables (souhait ≥ 90 m²)",
        "subscore": 0.667,
        "contribution": 1.333
+      },
+      {
+       "kind": "ski",
+       "label": "Proximité station de ski",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "remontée de ski à 10.7 km",
+       "subscore": 0.643,
+       "contribution": 1.287
       },
       {
        "kind": "hiking",
@@ -4835,7 +5226,18 @@
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 10,
-   "photos": []
+   "photos": [
+    "photos/bienici_ag340369-534119477/0.jpg",
+    "photos/bienici_ag340369-534119477/1.jpg",
+    "photos/bienici_ag340369-534119477/2.jpg",
+    "photos/bienici_ag340369-534119477/3.jpg",
+    "photos/bienici_ag340369-534119477/4.jpg",
+    "photos/bienici_ag340369-534119477/5.jpg",
+    "photos/bienici_ag340369-534119477/6.jpg",
+    "photos/bienici_ag340369-534119477/7.jpg",
+    "photos/bienici_ag340369-534119477/8.jpg",
+    "photos/bienici_ag340369-534119477/9.jpg"
+   ]
   },
   {
    "id": 15,
@@ -5078,7 +5480,7 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 54.7,
+     "match_score": 55.1,
      "details": [
       {
        "kind": "budget",
@@ -5104,6 +5506,15 @@
        "weight": 2.0,
        "status": "ok",
        "detail": "129 m² habitables (souhait ≥ 90 m²)",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "commerces",
+       "label": "Commerces/services à vélo",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "15 commerces/services à vélo (≤ 3 km)",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -5198,6 +5609,15 @@
        "contribution": 0.346
       },
       {
+       "kind": "ski",
+       "label": "Proximité station de ski",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de remontée de ski à proximité",
+       "subscore": 0.15,
+       "contribution": 0.3
+      },
+      {
        "kind": "feature",
        "label": "Cheminée / poêle",
        "weight": 1.0,
@@ -5244,7 +5664,7 @@
      ]
     },
     "2": {
-     "match_score": 56.6,
+     "match_score": 56.7,
      "details": [
       {
        "kind": "has_terrain",
@@ -5279,6 +5699,15 @@
        "weight": 2.0,
        "status": "ok",
        "detail": "129 m² habitables (souhait ≥ 90 m²)",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "commerces",
+       "label": "Commerces/services à vélo",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "15 commerces/services à vélo (≤ 3 km)",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -5373,6 +5802,15 @@
        "contribution": 0.346
       },
       {
+       "kind": "ski",
+       "label": "Proximité station de ski",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de remontée de ski à proximité",
+       "subscore": 0.15,
+       "contribution": 0.3
+      },
+      {
        "kind": "no_vis_a_vis",
        "label": "Sans vis-à-vis",
        "weight": 1.5,
@@ -5404,7 +5842,16 @@
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 8,
-   "photos": []
+   "photos": [
+    "photos/bienici_safti-1-1662947/0.jpg",
+    "photos/bienici_safti-1-1662947/1.jpg",
+    "photos/bienici_safti-1-1662947/2.jpg",
+    "photos/bienici_safti-1-1662947/3.jpg",
+    "photos/bienici_safti-1-1662947/4.jpg",
+    "photos/bienici_safti-1-1662947/5.jpg",
+    "photos/bienici_safti-1-1662947/6.jpg",
+    "photos/bienici_safti-1-1662947/7.jpg"
+   ]
   },
   {
    "id": 9,
@@ -5648,7 +6095,7 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 67.9,
+     "match_score": 63.1,
      "details": [
       {
        "kind": "budget",
@@ -5741,6 +6188,15 @@
        "contribution": 0.94
       },
       {
+       "kind": "commerces",
+       "label": "Commerces/services à vélo",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "7 commerces/services à vélo (≤ 3 km)",
+       "subscore": 0.467,
+       "contribution": 0.933
+      },
+      {
        "kind": "chambres_min",
        "label": "≥ 4 chambres (min strict)",
        "weight": 3.0,
@@ -5786,6 +6242,15 @@
        "contribution": 0.45
       },
       {
+       "kind": "ski",
+       "label": "Proximité station de ski",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de remontée de ski à proximité",
+       "subscore": 0.15,
+       "contribution": 0.3
+      },
+      {
        "kind": "near_gare",
        "label": "Proche d'une gare",
        "weight": 1.0,
@@ -5814,7 +6279,7 @@
      ]
     },
     "2": {
-     "match_score": 60.7,
+     "match_score": 57.1,
      "details": [
       {
        "kind": "budget",
@@ -5898,6 +6363,15 @@
        "contribution": 0.94
       },
       {
+       "kind": "commerces",
+       "label": "Commerces/services à vélo",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "7 commerces/services à vélo (≤ 3 km)",
+       "subscore": 0.467,
+       "contribution": 0.933
+      },
+      {
        "kind": "chambres_min",
        "label": "≥ 4 chambres (min strict)",
        "weight": 3.0,
@@ -5952,6 +6426,15 @@
        "contribution": 0.45
       },
       {
+       "kind": "ski",
+       "label": "Proximité station de ski",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de remontée de ski à proximité",
+       "subscore": 0.15,
+       "contribution": 0.3
+      },
+      {
        "kind": "near_gare",
        "label": "Proche d'une gare",
        "weight": 1.0,
@@ -5974,7 +6457,18 @@
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 10,
-   "photos": []
+   "photos": [
+    "photos/bienici_safti-1-1660649/0.jpg",
+    "photos/bienici_safti-1-1660649/1.jpg",
+    "photos/bienici_safti-1-1660649/2.jpg",
+    "photos/bienici_safti-1-1660649/3.jpg",
+    "photos/bienici_safti-1-1660649/4.jpg",
+    "photos/bienici_safti-1-1660649/5.jpg",
+    "photos/bienici_safti-1-1660649/6.jpg",
+    "photos/bienici_safti-1-1660649/7.jpg",
+    "photos/bienici_safti-1-1660649/8.jpg",
+    "photos/bienici_safti-1-1660649/9.jpg"
+   ]
   },
   {
    "id": 6,
@@ -6216,7 +6710,7 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 60.3,
+     "match_score": 60.0,
      "details": [
       {
        "kind": "budget",
@@ -6242,6 +6736,15 @@
        "weight": 2.0,
        "status": "ok",
        "detail": "136 m² habitables (souhait ≥ 90 m²)",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "commerces",
+       "label": "Commerces/services à vélo",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "39 commerces/services à vélo (≤ 3 km)",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -6354,6 +6857,15 @@
        "contribution": 0.45
       },
       {
+       "kind": "ski",
+       "label": "Proximité station de ski",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de remontée de ski à proximité",
+       "subscore": 0.15,
+       "contribution": 0.3
+      },
+      {
        "kind": "feature",
        "label": "Terrasse",
        "weight": 1.0,
@@ -6382,7 +6894,7 @@
      ]
     },
     "2": {
-     "match_score": 56.3,
+     "match_score": 56.4,
      "details": [
       {
        "kind": "has_terrain",
@@ -6417,6 +6929,15 @@
        "weight": 2.0,
        "status": "ok",
        "detail": "136 m² habitables (souhait ≥ 90 m²)",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "commerces",
+       "label": "Commerces/services à vélo",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "39 commerces/services à vélo (≤ 3 km)",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -6520,6 +7041,15 @@
        "contribution": 0.45
       },
       {
+       "kind": "ski",
+       "label": "Proximité station de ski",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de remontée de ski à proximité",
+       "subscore": 0.15,
+       "contribution": 0.3
+      },
+      {
        "kind": "near_gare",
        "label": "Proche d'une gare",
        "weight": 1.0,
@@ -6542,7 +7072,18 @@
    "is_favori": true,
    "favori_note": "Baronnies — - (match 23.8/score 63.9)",
    "n_photos_source": 10,
-   "photos": []
+   "photos": [
+    "photos/bienici_netty-company51600xbi-house-37485/0.jpg",
+    "photos/bienici_netty-company51600xbi-house-37485/1.jpg",
+    "photos/bienici_netty-company51600xbi-house-37485/2.jpg",
+    "photos/bienici_netty-company51600xbi-house-37485/3.jpg",
+    "photos/bienici_netty-company51600xbi-house-37485/4.jpg",
+    "photos/bienici_netty-company51600xbi-house-37485/5.jpg",
+    "photos/bienici_netty-company51600xbi-house-37485/6.jpg",
+    "photos/bienici_netty-company51600xbi-house-37485/7.jpg",
+    "photos/bienici_netty-company51600xbi-house-37485/8.jpg",
+    "photos/bienici_netty-company51600xbi-house-37485/9.jpg"
+   ]
   },
   {
    "id": 16,
@@ -6785,7 +7326,7 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 62.2,
+     "match_score": 61.6,
      "details": [
       {
        "kind": "budget",
@@ -6802,6 +7343,15 @@
        "weight": 2.0,
        "status": "ok",
        "detail": "98 m² habitables (souhait ≥ 90 m²)",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "commerces",
+       "label": "Commerces/services à vélo",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "45 commerces/services à vélo (≤ 3 km)",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -6932,6 +7482,15 @@
        "contribution": 0.45
       },
       {
+       "kind": "ski",
+       "label": "Proximité station de ski",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de remontée de ski à proximité",
+       "subscore": 0.15,
+       "contribution": 0.3
+      },
+      {
        "kind": "relief_mountain",
        "label": "Relief / montagne",
        "weight": 1.0,
@@ -6952,7 +7511,7 @@
      ]
     },
     "2": {
-     "match_score": 52.4,
+     "match_score": 53.0,
      "details": [
       {
        "kind": "budget",
@@ -6969,6 +7528,15 @@
        "weight": 2.0,
        "status": "ok",
        "detail": "98 m² habitables (souhait ≥ 90 m²)",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "commerces",
+       "label": "Commerces/services à vélo",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "45 commerces/services à vélo (≤ 3 km)",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -7099,6 +7667,15 @@
        "contribution": 0.45
       },
       {
+       "kind": "ski",
+       "label": "Proximité station de ski",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de remontée de ski à proximité",
+       "subscore": 0.15,
+       "contribution": 0.3
+      },
+      {
        "kind": "relief_mountain",
        "label": "Relief / montagne",
        "weight": 1.0,
@@ -7113,7 +7690,18 @@
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 10,
-   "photos": []
+   "photos": [
+    "photos/bienici_hektor-716_iparticuliersadmin-28865/0.jpg",
+    "photos/bienici_hektor-716_iparticuliersadmin-28865/1.jpg",
+    "photos/bienici_hektor-716_iparticuliersadmin-28865/2.jpg",
+    "photos/bienici_hektor-716_iparticuliersadmin-28865/3.jpg",
+    "photos/bienici_hektor-716_iparticuliersadmin-28865/4.jpg",
+    "photos/bienici_hektor-716_iparticuliersadmin-28865/5.jpg",
+    "photos/bienici_hektor-716_iparticuliersadmin-28865/6.jpg",
+    "photos/bienici_hektor-716_iparticuliersadmin-28865/7.jpg",
+    "photos/bienici_hektor-716_iparticuliersadmin-28865/8.jpg",
+    "photos/bienici_hektor-716_iparticuliersadmin-28865/9.jpg"
+   ]
   },
   {
    "id": 10,
@@ -7353,7 +7941,7 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 57.4,
+     "match_score": 51.3,
      "details": [
       {
        "kind": "budget",
@@ -7473,6 +8061,15 @@
        "contribution": 0.45
       },
       {
+       "kind": "ski",
+       "label": "Proximité station de ski",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de remontée de ski à proximité",
+       "subscore": 0.15,
+       "contribution": 0.3
+      },
+      {
        "kind": "feature",
        "label": "Cheminée / poêle",
        "weight": 1.0,
@@ -7489,6 +8086,15 @@
        "detail": "19% des locaux éligibles fibre",
        "subscore": 0.19,
        "contribution": 0.19
+      },
+      {
+       "kind": "commerces",
+       "label": "Commerces/services à vélo",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "1 commerces/services à vélo (≤ 3 km)",
+       "subscore": 0.067,
+       "contribution": 0.133
       },
       {
        "kind": "near_gare",
@@ -7519,7 +8125,7 @@
      ]
     },
     "2": {
-     "match_score": 56.3,
+     "match_score": 50.9,
      "details": [
       {
        "kind": "has_terrain",
@@ -7639,6 +8245,15 @@
        "contribution": 0.45
       },
       {
+       "kind": "ski",
+       "label": "Proximité station de ski",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de remontée de ski à proximité",
+       "subscore": 0.15,
+       "contribution": 0.3
+      },
+      {
        "kind": "fiber",
        "label": "Fibre (télétravail)",
        "weight": 1.0,
@@ -7646,6 +8261,15 @@
        "detail": "19% des locaux éligibles fibre",
        "subscore": 0.19,
        "contribution": 0.19
+      },
+      {
+       "kind": "commerces",
+       "label": "Commerces/services à vélo",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "1 commerces/services à vélo (≤ 3 km)",
+       "subscore": 0.067,
+       "contribution": 0.133
       },
       {
        "kind": "near_gare",
@@ -7679,7 +8303,18 @@
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 10,
-   "photos": []
+   "photos": [
+    "photos/bienici_adapt-immo-120051877/0.jpg",
+    "photos/bienici_adapt-immo-120051877/1.jpg",
+    "photos/bienici_adapt-immo-120051877/2.jpg",
+    "photos/bienici_adapt-immo-120051877/3.jpg",
+    "photos/bienici_adapt-immo-120051877/4.jpg",
+    "photos/bienici_adapt-immo-120051877/5.jpg",
+    "photos/bienici_adapt-immo-120051877/6.jpg",
+    "photos/bienici_adapt-immo-120051877/7.jpg",
+    "photos/bienici_adapt-immo-120051877/8.jpg",
+    "photos/bienici_adapt-immo-120051877/9.jpg"
+   ]
   },
   {
    "id": 23,
@@ -7918,7 +8553,7 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 38.5,
+     "match_score": 43.4,
      "details": [
       {
        "kind": "budget",
@@ -7930,6 +8565,15 @@
        "contribution": 2.0
       },
       {
+       "kind": "commerces",
+       "label": "Commerces/services à vélo",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "23 commerces/services à vélo (≤ 3 km)",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
        "kind": "surface_habitable",
        "label": "Surface habitable (≥ 90 m²)",
        "weight": 2.0,
@@ -7937,6 +8581,15 @@
        "detail": "61 m² habitables (souhait ≥ 90 m²)",
        "subscore": 0.678,
        "contribution": 1.356
+      },
+      {
+       "kind": "ski",
+       "label": "Proximité station de ski",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "remontée de ski à 14.7 km",
+       "subscore": 0.51,
+       "contribution": 1.02
       },
       {
        "kind": "has_terrain",
@@ -8084,7 +8737,7 @@
      ]
     },
     "2": {
-     "match_score": 42.1,
+     "match_score": 46.1,
      "details": [
       {
        "kind": "has_terrain",
@@ -8105,6 +8758,15 @@
        "contribution": 2.0
       },
       {
+       "kind": "commerces",
+       "label": "Commerces/services à vélo",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "23 commerces/services à vélo (≤ 3 km)",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
        "kind": "surface_habitable",
        "label": "Surface habitable (≥ 90 m²)",
        "weight": 2.0,
@@ -8112,6 +8774,15 @@
        "detail": "61 m² habitables (souhait ≥ 90 m²)",
        "subscore": 0.678,
        "contribution": 1.356
+      },
+      {
+       "kind": "ski",
+       "label": "Proximité station de ski",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "remontée de ski à 14.7 km",
+       "subscore": 0.51,
+       "contribution": 1.02
       },
       {
        "kind": "hiking",
@@ -8244,7 +8915,14 @@
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 6,
-   "photos": []
+   "photos": [
+    "photos/bienici_adapt-immo-730101020/0.jpg",
+    "photos/bienici_adapt-immo-730101020/1.jpg",
+    "photos/bienici_adapt-immo-730101020/2.jpg",
+    "photos/bienici_adapt-immo-730101020/3.jpg",
+    "photos/bienici_adapt-immo-730101020/4.jpg",
+    "photos/bienici_adapt-immo-730101020/5.jpg"
+   ]
   },
   {
    "id": 11,
@@ -8487,7 +9165,7 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 66.1,
+     "match_score": 60.3,
      "details": [
       {
        "kind": "budget",
@@ -8625,6 +9303,15 @@
        "contribution": 0.709
       },
       {
+       "kind": "commerces",
+       "label": "Commerces/services à vélo",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "4 commerces/services à vélo (≤ 3 km)",
+       "subscore": 0.267,
+       "contribution": 0.533
+      },
+      {
        "kind": "authentic",
        "label": "Authentique / cachet",
        "weight": 1.5,
@@ -8632,6 +9319,15 @@
        "detail": "cachet non mentionné",
        "subscore": 0.3,
        "contribution": 0.45
+      },
+      {
+       "kind": "ski",
+       "label": "Proximité station de ski",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de remontée de ski à proximité",
+       "subscore": 0.15,
+       "contribution": 0.3
       },
       {
        "kind": "chambres_min",
@@ -8654,7 +9350,7 @@
      ]
     },
     "2": {
-     "match_score": 65.2,
+     "match_score": 60.1,
      "details": [
       {
        "kind": "feature",
@@ -8783,6 +9479,15 @@
        "contribution": 0.709
       },
       {
+       "kind": "commerces",
+       "label": "Commerces/services à vélo",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "4 commerces/services à vélo (≤ 3 km)",
+       "subscore": 0.267,
+       "contribution": 0.533
+      },
+      {
        "kind": "authentic",
        "label": "Authentique / cachet",
        "weight": 1.5,
@@ -8790,6 +9495,15 @@
        "detail": "cachet non mentionné",
        "subscore": 0.3,
        "contribution": 0.45
+      },
+      {
+       "kind": "ski",
+       "label": "Proximité station de ski",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de remontée de ski à proximité",
+       "subscore": 0.15,
+       "contribution": 0.3
       },
       {
        "kind": "chambres_min",
@@ -8815,7 +9529,18 @@
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 10,
-   "photos": []
+   "photos": [
+    "photos/bienici_safti-1-1669381/0.jpg",
+    "photos/bienici_safti-1-1669381/1.jpg",
+    "photos/bienici_safti-1-1669381/2.jpg",
+    "photos/bienici_safti-1-1669381/3.jpg",
+    "photos/bienici_safti-1-1669381/4.jpg",
+    "photos/bienici_safti-1-1669381/5.jpg",
+    "photos/bienici_safti-1-1669381/6.jpg",
+    "photos/bienici_safti-1-1669381/7.jpg",
+    "photos/bienici_safti-1-1669381/8.jpg",
+    "photos/bienici_safti-1-1669381/9.jpg"
+   ]
   },
   {
    "id": 24,
@@ -9054,7 +9779,7 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 62.2,
+     "match_score": 61.9,
      "details": [
       {
        "kind": "chambres_min",
@@ -9093,6 +9818,15 @@
        "contribution": 2.0
       },
       {
+       "kind": "ski",
+       "label": "Proximité station de ski",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "remontée de ski à 3.8 km",
+       "subscore": 0.873,
+       "contribution": 1.747
+      },
+      {
        "kind": "no_vis_a_vis",
        "label": "Sans vis-à-vis",
        "weight": 1.5,
@@ -9127,6 +9861,15 @@
        "detail": "64 sentiers/itinéraires à proximité",
        "subscore": 1.0,
        "contribution": 1.0
+      },
+      {
+       "kind": "commerces",
+       "label": "Commerces/services à vélo",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "5 commerces/services à vélo (≤ 3 km)",
+       "subscore": 0.333,
+       "contribution": 0.667
       },
       {
        "kind": "temps_acces",
@@ -9257,6 +10000,15 @@
        "contribution": 2.0
       },
       {
+       "kind": "ski",
+       "label": "Proximité station de ski",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "remontée de ski à 3.8 km",
+       "subscore": 0.873,
+       "contribution": 1.747
+      },
+      {
        "kind": "no_vis_a_vis",
        "label": "Sans vis-à-vis",
        "weight": 1.5,
@@ -9291,6 +10043,15 @@
        "detail": "64 sentiers/itinéraires à proximité",
        "subscore": 1.0,
        "contribution": 1.0
+      },
+      {
+       "kind": "commerces",
+       "label": "Commerces/services à vélo",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "5 commerces/services à vélo (≤ 3 km)",
+       "subscore": 0.333,
+       "contribution": 0.667
       },
       {
        "kind": "feature",
@@ -9376,7 +10137,11 @@
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 3,
-   "photos": []
+   "photos": [
+    "photos/bienici_ubiflow-neuf-533871911/0.jpg",
+    "photos/bienici_ubiflow-neuf-533871911/1.jpg",
+    "photos/bienici_ubiflow-neuf-533871911/2.jpg"
+   ]
   },
   {
    "id": 25,
@@ -9617,7 +10382,7 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 37.4,
+     "match_score": 44.2,
      "details": [
       {
        "kind": "nature_exception",
@@ -9627,6 +10392,24 @@
        "detail": "site d'exception (nature remarquable)",
        "subscore": 1.0,
        "contribution": 2.0
+      },
+      {
+       "kind": "commerces",
+       "label": "Commerces/services à vélo",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "21 commerces/services à vélo (≤ 3 km)",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "ski",
+       "label": "Proximité station de ski",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "remontée de ski à 9.3 km",
+       "subscore": 0.69,
+       "contribution": 1.38
       },
       {
        "kind": "hiking",
@@ -9781,7 +10564,7 @@
      ]
     },
     "2": {
-     "match_score": 43.2,
+     "match_score": 49.0,
      "details": [
       {
        "kind": "feature",
@@ -9800,6 +10583,24 @@
        "detail": "site d'exception (nature remarquable)",
        "subscore": 1.0,
        "contribution": 2.0
+      },
+      {
+       "kind": "commerces",
+       "label": "Commerces/services à vélo",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "21 commerces/services à vélo (≤ 3 km)",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "ski",
+       "label": "Proximité station de ski",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "remontée de ski à 9.3 km",
+       "subscore": 0.69,
+       "contribution": 1.38
       },
       {
        "kind": "hiking",
@@ -9939,7 +10740,18 @@
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 10,
-   "photos": []
+   "photos": [
+    "photos/bienici_apimo-87083931/0.jpg",
+    "photos/bienici_apimo-87083931/1.jpg",
+    "photos/bienici_apimo-87083931/2.jpg",
+    "photos/bienici_apimo-87083931/3.jpg",
+    "photos/bienici_apimo-87083931/4.jpg",
+    "photos/bienici_apimo-87083931/5.jpg",
+    "photos/bienici_apimo-87083931/6.jpg",
+    "photos/bienici_apimo-87083931/7.jpg",
+    "photos/bienici_apimo-87083931/8.jpg",
+    "photos/bienici_apimo-87083931/9.jpg"
+   ]
   },
   {
    "id": 1,
@@ -10178,7 +10990,7 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 59.9,
+     "match_score": 54.3,
      "details": [
       {
        "kind": "budget",
@@ -10307,6 +11119,24 @@
        "contribution": 0.45
       },
       {
+       "kind": "commerces",
+       "label": "Commerces/services à vélo",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "3 commerces/services à vélo (≤ 3 km)",
+       "subscore": 0.2,
+       "contribution": 0.4
+      },
+      {
+       "kind": "ski",
+       "label": "Proximité station de ski",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de remontée de ski à proximité",
+       "subscore": 0.15,
+       "contribution": 0.3
+      },
+      {
        "kind": "feature",
        "label": "Cheminée / poêle",
        "weight": 1.0,
@@ -10344,7 +11174,7 @@
      ]
     },
     "2": {
-     "match_score": 61.3,
+     "match_score": 56.0,
      "details": [
       {
        "kind": "has_terrain",
@@ -10482,6 +11312,24 @@
        "contribution": 0.45
       },
       {
+       "kind": "commerces",
+       "label": "Commerces/services à vélo",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "3 commerces/services à vélo (≤ 3 km)",
+       "subscore": 0.2,
+       "contribution": 0.4
+      },
+      {
+       "kind": "ski",
+       "label": "Proximité station de ski",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de remontée de ski à proximité",
+       "subscore": 0.15,
+       "contribution": 0.3
+      },
+      {
        "kind": "near_gare",
        "label": "Proche d'une gare",
        "weight": 1.0,
@@ -10504,7 +11352,18 @@
    "is_favori": true,
    "favori_note": "Vivarais — isolé, eau, arboré, authentique (match 79.2/score 80.6)",
    "n_photos_source": 10,
-   "photos": []
+   "photos": [
+    "photos/bienici_safti-1-1666836/0.jpg",
+    "photos/bienici_safti-1-1666836/1.jpg",
+    "photos/bienici_safti-1-1666836/2.jpg",
+    "photos/bienici_safti-1-1666836/3.jpg",
+    "photos/bienici_safti-1-1666836/4.jpg",
+    "photos/bienici_safti-1-1666836/5.jpg",
+    "photos/bienici_safti-1-1666836/6.jpg",
+    "photos/bienici_safti-1-1666836/7.jpg",
+    "photos/bienici_safti-1-1666836/8.jpg",
+    "photos/bienici_safti-1-1666836/9.jpg"
+   ]
   },
   {
    "id": 26,
@@ -10743,7 +11602,7 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 55.7,
+     "match_score": 55.9,
      "details": [
       {
        "kind": "budget",
@@ -10760,6 +11619,15 @@
        "weight": 2.0,
        "status": "ok",
        "detail": "aucune autoroute/voie ferrée à proximité",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "commerces",
+       "label": "Commerces/services à vélo",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "26 commerces/services à vélo (≤ 3 km)",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -10863,6 +11731,15 @@
        "contribution": 0.356
       },
       {
+       "kind": "ski",
+       "label": "Proximité station de ski",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de remontée de ski à proximité",
+       "subscore": 0.15,
+       "contribution": 0.3
+      },
+      {
        "kind": "near_city",
        "label": "Accessible depuis Marseille",
        "weight": 2.0,
@@ -10909,7 +11786,7 @@
      ]
     },
     "2": {
-     "match_score": 47.5,
+     "match_score": 48.7,
      "details": [
       {
        "kind": "budget",
@@ -10926,6 +11803,15 @@
        "weight": 2.0,
        "status": "ok",
        "detail": "aucune autoroute/voie ferrée à proximité",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "commerces",
+       "label": "Commerces/services à vélo",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "26 commerces/services à vélo (≤ 3 km)",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -11029,6 +11915,15 @@
        "contribution": 0.356
       },
       {
+       "kind": "ski",
+       "label": "Proximité station de ski",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de remontée de ski à proximité",
+       "subscore": 0.15,
+       "contribution": 0.3
+      },
+      {
        "kind": "near_city",
        "label": "Accessible depuis Marseille",
        "weight": 2.0,
@@ -11069,7 +11964,15 @@
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 7,
-   "photos": []
+   "photos": [
+    "photos/bienici_entities-1037639-5207060/0.jpg",
+    "photos/bienici_entities-1037639-5207060/1.jpg",
+    "photos/bienici_entities-1037639-5207060/2.jpg",
+    "photos/bienici_entities-1037639-5207060/3.jpg",
+    "photos/bienici_entities-1037639-5207060/4.jpg",
+    "photos/bienici_entities-1037639-5207060/5.jpg",
+    "photos/bienici_entities-1037639-5207060/6.jpg"
+   ]
   },
   {
    "id": 12,
@@ -11312,7 +12215,7 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 65.9,
+     "match_score": 64.8,
      "details": [
       {
        "kind": "chambres_min",
@@ -11347,6 +12250,15 @@
        "weight": 2.0,
        "status": "ok",
        "detail": "163 m² habitables (souhait ≥ 90 m²)",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "commerces",
+       "label": "Commerces/services à vélo",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "84 commerces/services à vélo (≤ 3 km)",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -11441,6 +12353,15 @@
        "contribution": 0.45
       },
       {
+       "kind": "ski",
+       "label": "Proximité station de ski",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de remontée de ski à proximité",
+       "subscore": 0.15,
+       "contribution": 0.3
+      },
+      {
        "kind": "feature",
        "label": "Cheminée / poêle",
        "weight": 1.0,
@@ -11478,7 +12399,7 @@
      ]
     },
     "2": {
-     "match_score": 63.9,
+     "match_score": 63.2,
      "details": [
       {
        "kind": "chambres_min",
@@ -11522,6 +12443,15 @@
        "weight": 2.0,
        "status": "ok",
        "detail": "163 m² habitables (souhait ≥ 90 m²)",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "commerces",
+       "label": "Commerces/services à vélo",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "84 commerces/services à vélo (≤ 3 km)",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -11607,6 +12537,15 @@
        "contribution": 0.45
       },
       {
+       "kind": "ski",
+       "label": "Proximité station de ski",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de remontée de ski à proximité",
+       "subscore": 0.15,
+       "contribution": 0.3
+      },
+      {
        "kind": "near_corridor",
        "label": "Axe Paris-Marseille",
        "weight": 1.5,
@@ -11638,7 +12577,18 @@
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 10,
-   "photos": []
+   "photos": [
+    "photos/bienici_hektor-105918-334/0.jpg",
+    "photos/bienici_hektor-105918-334/1.jpg",
+    "photos/bienici_hektor-105918-334/2.jpg",
+    "photos/bienici_hektor-105918-334/3.jpg",
+    "photos/bienici_hektor-105918-334/4.jpg",
+    "photos/bienici_hektor-105918-334/5.jpg",
+    "photos/bienici_hektor-105918-334/6.jpg",
+    "photos/bienici_hektor-105918-334/7.jpg",
+    "photos/bienici_hektor-105918-334/8.jpg",
+    "photos/bienici_hektor-105918-334/9.jpg"
+   ]
   },
   {
    "id": 17,
@@ -11878,7 +12828,7 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 63.1,
+     "match_score": 61.1,
      "details": [
       {
        "kind": "budget",
@@ -11906,6 +12856,15 @@
        "detail": "90 m² habitables (souhait ≥ 90 m²)",
        "subscore": 1.0,
        "contribution": 2.0
+      },
+      {
+       "kind": "commerces",
+       "label": "Commerces/services à vélo",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "12 commerces/services à vélo (≤ 3 km)",
+       "subscore": 0.8,
+       "contribution": 1.6
       },
       {
        "kind": "temps_acces",
@@ -12025,6 +12984,15 @@
        "contribution": 0.45
       },
       {
+       "kind": "ski",
+       "label": "Proximité station de ski",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de remontée de ski à proximité",
+       "subscore": 0.15,
+       "contribution": 0.3
+      },
+      {
        "kind": "feature",
        "label": "Cheminée / poêle",
        "weight": 1.0,
@@ -12045,7 +13013,7 @@
      ]
     },
     "2": {
-     "match_score": 55.6,
+     "match_score": 54.6,
      "details": [
       {
        "kind": "budget",
@@ -12073,6 +13041,15 @@
        "detail": "90 m² habitables (souhait ≥ 90 m²)",
        "subscore": 1.0,
        "contribution": 2.0
+      },
+      {
+       "kind": "commerces",
+       "label": "Commerces/services à vélo",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "12 commerces/services à vélo (≤ 3 km)",
+       "subscore": 0.8,
+       "contribution": 1.6
       },
       {
        "kind": "has_terrain",
@@ -12192,6 +13169,15 @@
        "contribution": 0.45
       },
       {
+       "kind": "ski",
+       "label": "Proximité station de ski",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de remontée de ski à proximité",
+       "subscore": 0.15,
+       "contribution": 0.3
+      },
+      {
        "kind": "near_gare",
        "label": "Proche d'une gare",
        "weight": 1.0,
@@ -12206,7 +13192,18 @@
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 10,
-   "photos": []
+   "photos": [
+    "photos/bienici_hektor-716_iparticuliersadmin-29989/0.jpg",
+    "photos/bienici_hektor-716_iparticuliersadmin-29989/1.jpg",
+    "photos/bienici_hektor-716_iparticuliersadmin-29989/2.jpg",
+    "photos/bienici_hektor-716_iparticuliersadmin-29989/3.jpg",
+    "photos/bienici_hektor-716_iparticuliersadmin-29989/4.jpg",
+    "photos/bienici_hektor-716_iparticuliersadmin-29989/5.jpg",
+    "photos/bienici_hektor-716_iparticuliersadmin-29989/6.jpg",
+    "photos/bienici_hektor-716_iparticuliersadmin-29989/7.jpg",
+    "photos/bienici_hektor-716_iparticuliersadmin-29989/8.jpg",
+    "photos/bienici_hektor-716_iparticuliersadmin-29989/9.jpg"
+   ]
   },
   {
    "id": 5,
@@ -12446,7 +13443,7 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 60.0,
+     "match_score": 63.5,
      "details": [
       {
        "kind": "budget",
@@ -12474,6 +13471,24 @@
        "detail": "98 m² habitables (souhait ≥ 90 m²)",
        "subscore": 1.0,
        "contribution": 2.0
+      },
+      {
+       "kind": "commerces",
+       "label": "Commerces/services à vélo",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "18 commerces/services à vélo (≤ 3 km)",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "ski",
+       "label": "Proximité station de ski",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "remontée de ski à 8.0 km",
+       "subscore": 0.733,
+       "contribution": 1.467
       },
       {
        "kind": "temps_acces",
@@ -12612,7 +13627,7 @@
      ]
     },
     "2": {
-     "match_score": 58.5,
+     "match_score": 61.9,
      "details": [
       {
        "kind": "has_terrain",
@@ -12649,6 +13664,24 @@
        "detail": "98 m² habitables (souhait ≥ 90 m²)",
        "subscore": 1.0,
        "contribution": 2.0
+      },
+      {
+       "kind": "commerces",
+       "label": "Commerces/services à vélo",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "18 commerces/services à vélo (≤ 3 km)",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "ski",
+       "label": "Proximité station de ski",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "remontée de ski à 8.0 km",
+       "subscore": 0.733,
+       "contribution": 1.467
       },
       {
        "kind": "temps_acces",
@@ -12772,7 +13805,17 @@
    "is_favori": true,
    "favori_note": "Diois — arboré, eau, vue (match 36.3/score 75.7)",
    "n_photos_source": 9,
-   "photos": []
+   "photos": [
+    "photos/bienici_ag743447-517894691/0.jpg",
+    "photos/bienici_ag743447-517894691/1.jpg",
+    "photos/bienici_ag743447-517894691/2.jpg",
+    "photos/bienici_ag743447-517894691/3.jpg",
+    "photos/bienici_ag743447-517894691/4.jpg",
+    "photos/bienici_ag743447-517894691/5.jpg",
+    "photos/bienici_ag743447-517894691/6.jpg",
+    "photos/bienici_ag743447-517894691/7.jpg",
+    "photos/bienici_ag743447-517894691/8.jpg"
+   ]
   },
   {
    "id": 3,
@@ -13013,7 +14056,7 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 61.7,
+     "match_score": 58.1,
      "details": [
       {
        "kind": "budget",
@@ -13041,6 +14084,15 @@
        "detail": "151 m² habitables (souhait ≥ 90 m²)",
        "subscore": 1.0,
        "contribution": 2.0
+      },
+      {
+       "kind": "commerces",
+       "label": "Commerces/services à vélo",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "8 commerces/services à vélo (≤ 3 km)",
+       "subscore": 0.533,
+       "contribution": 1.067
       },
       {
        "kind": "has_terrain",
@@ -13151,6 +14203,15 @@
        "contribution": 0.45
       },
       {
+       "kind": "ski",
+       "label": "Proximité station de ski",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de remontée de ski à proximité",
+       "subscore": 0.15,
+       "contribution": 0.3
+      },
+      {
        "kind": "near_gare",
        "label": "Proche d'une gare",
        "weight": 1.0,
@@ -13179,7 +14240,7 @@
      ]
     },
     "2": {
-     "match_score": 56.1,
+     "match_score": 53.5,
      "details": [
       {
        "kind": "has_terrain",
@@ -13216,6 +14277,15 @@
        "detail": "151 m² habitables (souhait ≥ 90 m²)",
        "subscore": 1.0,
        "contribution": 2.0
+      },
+      {
+       "kind": "commerces",
+       "label": "Commerces/services à vélo",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "8 commerces/services à vélo (≤ 3 km)",
+       "subscore": 0.533,
+       "contribution": 1.067
       },
       {
        "kind": "relief_mountain",
@@ -13308,6 +14378,15 @@
        "contribution": 0.45
       },
       {
+       "kind": "ski",
+       "label": "Proximité station de ski",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de remontée de ski à proximité",
+       "subscore": 0.15,
+       "contribution": 0.3
+      },
+      {
        "kind": "near_gare",
        "label": "Proche d'une gare",
        "weight": 1.0,
@@ -13339,7 +14418,18 @@
    "is_favori": true,
    "favori_note": "Cévennes ard. — authentique, calme, eau, isolé, vue panoramique (match 66.7/score 79.1)",
    "n_photos_source": 10,
-   "photos": []
+   "photos": [
+    "photos/bienici_iad-france-917018/0.jpg",
+    "photos/bienici_iad-france-917018/1.jpg",
+    "photos/bienici_iad-france-917018/2.jpg",
+    "photos/bienici_iad-france-917018/3.jpg",
+    "photos/bienici_iad-france-917018/4.jpg",
+    "photos/bienici_iad-france-917018/5.jpg",
+    "photos/bienici_iad-france-917018/6.jpg",
+    "photos/bienici_iad-france-917018/7.jpg",
+    "photos/bienici_iad-france-917018/8.jpg",
+    "photos/bienici_iad-france-917018/9.jpg"
+   ]
   },
   {
    "id": 18,
@@ -13581,7 +14671,7 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 56.5,
+     "match_score": 56.7,
      "details": [
       {
        "kind": "budget",
@@ -13589,6 +14679,15 @@
        "weight": 2.0,
        "status": "ok",
        "detail": "245000€ ≤ budget 600000€",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "commerces",
+       "label": "Commerces/services à vélo",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "141 commerces/services à vélo (≤ 3 km)",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -13710,6 +14809,15 @@
        "contribution": 0.45
       },
       {
+       "kind": "ski",
+       "label": "Proximité station de ski",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de remontée de ski à proximité",
+       "subscore": 0.15,
+       "contribution": 0.3
+      },
+      {
        "kind": "feature",
        "label": "Cheminée / poêle",
        "weight": 1.0,
@@ -13748,7 +14856,7 @@
      ]
     },
     "2": {
-     "match_score": 50.5,
+     "match_score": 51.3,
      "details": [
       {
        "kind": "budget",
@@ -13756,6 +14864,15 @@
        "weight": 2.0,
        "status": "ok",
        "detail": "245000€ ≤ budget 600000€",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "commerces",
+       "label": "Commerces/services à vélo",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "141 commerces/services à vélo (≤ 3 km)",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -13886,6 +15003,15 @@
        "contribution": 0.45
       },
       {
+       "kind": "ski",
+       "label": "Proximité station de ski",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de remontée de ski à proximité",
+       "subscore": 0.15,
+       "contribution": 0.3
+      },
+      {
        "kind": "relief_mountain",
        "label": "Relief / montagne",
        "weight": 1.0,
@@ -13909,7 +15035,18 @@
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 10,
-   "photos": []
+   "photos": [
+    "photos/bienici_ag133861-534149270/0.jpg",
+    "photos/bienici_ag133861-534149270/1.jpg",
+    "photos/bienici_ag133861-534149270/2.jpg",
+    "photos/bienici_ag133861-534149270/3.jpg",
+    "photos/bienici_ag133861-534149270/4.jpg",
+    "photos/bienici_ag133861-534149270/5.jpg",
+    "photos/bienici_ag133861-534149270/6.jpg",
+    "photos/bienici_ag133861-534149270/7.jpg",
+    "photos/bienici_ag133861-534149270/8.jpg",
+    "photos/bienici_ag133861-534149270/9.jpg"
+   ]
   },
   {
    "id": 4,
@@ -14150,7 +15287,7 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 55.3,
+     "match_score": 55.6,
      "details": [
       {
        "kind": "budget",
@@ -14167,6 +15304,15 @@
        "weight": 2.0,
        "status": "ok",
        "detail": "aucune autoroute/voie ferrée à proximité",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "commerces",
+       "label": "Commerces/services à vélo",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "48 commerces/services à vélo (≤ 3 km)",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -14279,6 +15425,15 @@
        "contribution": 0.45
       },
       {
+       "kind": "ski",
+       "label": "Proximité station de ski",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de remontée de ski à proximité",
+       "subscore": 0.15,
+       "contribution": 0.3
+      },
+      {
        "kind": "feature",
        "label": "Cheminée / poêle",
        "weight": 1.0,
@@ -14316,7 +15471,7 @@
      ]
     },
     "2": {
-     "match_score": 46.0,
+     "match_score": 47.4,
      "details": [
       {
        "kind": "budget",
@@ -14333,6 +15488,15 @@
        "weight": 2.0,
        "status": "ok",
        "detail": "aucune autoroute/voie ferrée à proximité",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "commerces",
+       "label": "Commerces/services à vélo",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "48 commerces/services à vélo (≤ 3 km)",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -14445,6 +15609,15 @@
        "contribution": 0.45
       },
       {
+       "kind": "ski",
+       "label": "Proximité station de ski",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de remontée de ski à proximité",
+       "subscore": 0.15,
+       "contribution": 0.3
+      },
+      {
        "kind": "near_gare",
        "label": "Proche d'une gare",
        "weight": 1.0,
@@ -14476,7 +15649,18 @@
    "is_favori": true,
    "favori_note": "Cévennes ard. — arboré, authentique, calme, eau, isolé, vue panoramique (match 67.1/score 71.3)",
    "n_photos_source": 10,
-   "photos": []
+   "photos": [
+    "photos/bienici_adapt-immo-07011143/0.jpg",
+    "photos/bienici_adapt-immo-07011143/1.jpg",
+    "photos/bienici_adapt-immo-07011143/2.jpg",
+    "photos/bienici_adapt-immo-07011143/3.jpg",
+    "photos/bienici_adapt-immo-07011143/4.jpg",
+    "photos/bienici_adapt-immo-07011143/5.jpg",
+    "photos/bienici_adapt-immo-07011143/6.jpg",
+    "photos/bienici_adapt-immo-07011143/7.jpg",
+    "photos/bienici_adapt-immo-07011143/8.jpg",
+    "photos/bienici_adapt-immo-07011143/9.jpg"
+   ]
   },
   {
    "id": 27,
@@ -14716,7 +15900,7 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 56.8,
+     "match_score": 52.5,
      "details": [
       {
        "kind": "budget",
@@ -14827,6 +16011,15 @@
        "contribution": 0.696
       },
       {
+       "kind": "commerces",
+       "label": "Commerces/services à vélo",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "4 commerces/services à vélo (≤ 3 km)",
+       "subscore": 0.267,
+       "contribution": 0.533
+      },
+      {
        "kind": "authentic",
        "label": "Authentique / cachet",
        "weight": 1.5,
@@ -14834,6 +16027,15 @@
        "detail": "cachet non mentionné",
        "subscore": 0.3,
        "contribution": 0.45
+      },
+      {
+       "kind": "ski",
+       "label": "Proximité station de ski",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "remontée de ski à 23.5 km",
+       "subscore": 0.217,
+       "contribution": 0.433
       },
       {
        "kind": "near_city",
@@ -14882,7 +16084,7 @@
      ]
     },
     "2": {
-     "match_score": 49.2,
+     "match_score": 46.2,
      "details": [
       {
        "kind": "budget",
@@ -14993,6 +16195,15 @@
        "contribution": 0.6
       },
       {
+       "kind": "commerces",
+       "label": "Commerces/services à vélo",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "4 commerces/services à vélo (≤ 3 km)",
+       "subscore": 0.267,
+       "contribution": 0.533
+      },
+      {
        "kind": "authentic",
        "label": "Authentique / cachet",
        "weight": 1.5,
@@ -15000,6 +16211,15 @@
        "detail": "cachet non mentionné",
        "subscore": 0.3,
        "contribution": 0.45
+      },
+      {
+       "kind": "ski",
+       "label": "Proximité station de ski",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "remontée de ski à 23.5 km",
+       "subscore": 0.217,
+       "contribution": 0.433
       },
       {
        "kind": "near_city",
@@ -15042,7 +16262,14 @@
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 6,
-   "photos": []
+   "photos": [
+    "photos/bienici_entities-1037639-5207012/0.jpg",
+    "photos/bienici_entities-1037639-5207012/1.jpg",
+    "photos/bienici_entities-1037639-5207012/2.jpg",
+    "photos/bienici_entities-1037639-5207012/3.jpg",
+    "photos/bienici_entities-1037639-5207012/4.jpg",
+    "photos/bienici_entities-1037639-5207012/5.jpg"
+   ]
   },
   {
    "id": 28,
@@ -15282,7 +16509,7 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 56.7,
+     "match_score": 52.4,
      "details": [
       {
        "kind": "budget",
@@ -15393,6 +16620,15 @@
        "contribution": 0.696
       },
       {
+       "kind": "commerces",
+       "label": "Commerces/services à vélo",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "4 commerces/services à vélo (≤ 3 km)",
+       "subscore": 0.267,
+       "contribution": 0.533
+      },
+      {
        "kind": "authentic",
        "label": "Authentique / cachet",
        "weight": 1.5,
@@ -15400,6 +16636,15 @@
        "detail": "cachet non mentionné",
        "subscore": 0.3,
        "contribution": 0.45
+      },
+      {
+       "kind": "ski",
+       "label": "Proximité station de ski",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "remontée de ski à 23.5 km",
+       "subscore": 0.217,
+       "contribution": 0.433
       },
       {
        "kind": "near_city",
@@ -15448,7 +16693,7 @@
      ]
     },
     "2": {
-     "match_score": 49.1,
+     "match_score": 46.1,
      "details": [
       {
        "kind": "budget",
@@ -15559,6 +16804,15 @@
        "contribution": 0.6
       },
       {
+       "kind": "commerces",
+       "label": "Commerces/services à vélo",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "4 commerces/services à vélo (≤ 3 km)",
+       "subscore": 0.267,
+       "contribution": 0.533
+      },
+      {
        "kind": "authentic",
        "label": "Authentique / cachet",
        "weight": 1.5,
@@ -15566,6 +16820,15 @@
        "detail": "cachet non mentionné",
        "subscore": 0.3,
        "contribution": 0.45
+      },
+      {
+       "kind": "ski",
+       "label": "Proximité station de ski",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "remontée de ski à 23.5 km",
+       "subscore": 0.217,
+       "contribution": 0.433
       },
       {
        "kind": "near_city",
@@ -15608,7 +16871,15 @@
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 7,
-   "photos": []
+   "photos": [
+    "photos/bienici_entities-1037639-5207250/0.jpg",
+    "photos/bienici_entities-1037639-5207250/1.jpg",
+    "photos/bienici_entities-1037639-5207250/2.jpg",
+    "photos/bienici_entities-1037639-5207250/3.jpg",
+    "photos/bienici_entities-1037639-5207250/4.jpg",
+    "photos/bienici_entities-1037639-5207250/5.jpg",
+    "photos/bienici_entities-1037639-5207250/6.jpg"
+   ]
   },
   {
    "id": 2,
@@ -15848,7 +17119,7 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 59.7,
+     "match_score": 59.4,
      "details": [
       {
        "kind": "budget",
@@ -15874,6 +17145,15 @@
        "weight": 2.0,
        "status": "ok",
        "detail": "127 m² habitables (souhait ≥ 90 m²)",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "commerces",
+       "label": "Commerces/services à vélo",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "25 commerces/services à vélo (≤ 3 km)",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -15977,6 +17257,15 @@
        "contribution": 0.45
       },
       {
+       "kind": "ski",
+       "label": "Proximité station de ski",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de remontée de ski à proximité",
+       "subscore": 0.15,
+       "contribution": 0.3
+      },
+      {
        "kind": "feature",
        "label": "Terrasse",
        "weight": 1.0,
@@ -16013,7 +17302,7 @@
      ]
     },
     "2": {
-     "match_score": 55.2,
+     "match_score": 55.5,
      "details": [
       {
        "kind": "budget",
@@ -16039,6 +17328,15 @@
        "weight": 2.0,
        "status": "ok",
        "detail": "127 m² habitables (souhait ≥ 90 m²)",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "commerces",
+       "label": "Commerces/services à vélo",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "25 commerces/services à vélo (≤ 3 km)",
        "subscore": 1.0,
        "contribution": 2.0
       },
@@ -16142,6 +17440,15 @@
        "contribution": 0.45
       },
       {
+       "kind": "ski",
+       "label": "Proximité station de ski",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de remontée de ski à proximité",
+       "subscore": 0.15,
+       "contribution": 0.3
+      },
+      {
        "kind": "near_gare",
        "label": "Proche d'une gare",
        "weight": 1.0,
@@ -16172,7 +17479,18 @@
    "is_favori": true,
    "favori_note": "Vivarais — isolé, eau, arboré (match 78.8/score 72.4)",
    "n_photos_source": 10,
-   "photos": []
+   "photos": [
+    "photos/bienici_hektor-forotimmo-2317/0.jpg",
+    "photos/bienici_hektor-forotimmo-2317/1.jpg",
+    "photos/bienici_hektor-forotimmo-2317/2.jpg",
+    "photos/bienici_hektor-forotimmo-2317/3.jpg",
+    "photos/bienici_hektor-forotimmo-2317/4.jpg",
+    "photos/bienici_hektor-forotimmo-2317/5.jpg",
+    "photos/bienici_hektor-forotimmo-2317/6.jpg",
+    "photos/bienici_hektor-forotimmo-2317/7.jpg",
+    "photos/bienici_hektor-forotimmo-2317/8.jpg",
+    "photos/bienici_hektor-forotimmo-2317/9.jpg"
+   ]
   }
  ],
  "searches": [
