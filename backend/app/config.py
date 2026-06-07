@@ -32,6 +32,7 @@ class Settings(BaseSettings):
 
     # Enrichissement (Lot A)
     enrich_on_search: bool = False
+    max_enrich: int = 15  # nb max de biens enrichis par recherche (perf : appels réseau)
     gpu_api_url: str = "https://apicarto.ign.fr/api/gpu"
     georisques_api_url: str = "https://www.georisques.gouv.fr/api/v1"
     ign_alti_url: str = "https://data.geopf.fr/altimetrie/1.0/calcul/alti/rest/elevation.json"

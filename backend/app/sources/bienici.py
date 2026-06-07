@@ -12,6 +12,8 @@ from __future__ import annotations
 
 import json
 
+import httpx
+
 from ..schemas import SearchCriteria
 from ..services.enrich import annotate
 from ..services.filters import matches
@@ -55,14 +57,60 @@ class BienIciSource(ScraperSource):
     base_url = "https://www.bienici.com"
 
     # -- géo ----------------------------------------------------------------- #
-    def _resolve_zone(self, query: str) -> dict | None:
+    def _reverse_commune(self, lat: float, lon: float) -> str | None:
+        """Nom de la commune d'un point (reverse-geocoding BAN) pour cibler la zone."""
+        try:
+            resp = httpx.get(
+                "https://api-adresse.data.gouv.fr/reverse/",
+                params={"lat": lat, "lon": lon, "type": "municipality"},
+                timeout=self._settings.http_timeout_seconds,
+            )
+            resp.raise_for_status()
+            feats = resp.json().get("features") or []
+            return feats[0]["properties"].get("city") if feats else None
+        except Exception:
+            return None
+
+    def _suggest(self, query: str) -> list[dict]:
         try:
             resp = self._get(_SUGGEST_URL, params={"q": query})
             data = resp.json()
         except Exception:
-            return None
-        items = data if isinstance(data, list) else data.get("items", [])
+            return []
+        return data if isinstance(data, list) else data.get("items", [])
+
+    def _resolve_zone(self, query: str) -> dict | None:
+        items = self._suggest(query)
         return items[0] if items else None
+
+    @staticmethod
+    def _item_center(item: dict) -> tuple[float, float] | None:
+        bb = item.get("boundingBox") or {}
+        try:
+            return (bb["south"] + bb["north"]) / 2, (bb["west"] + bb["east"]) / 2
+        except (KeyError, TypeError):
+            return None
+
+    def _zone_ids_sector(self, query: str, lat: float | None, lon: float | None, radius_km: float | None) -> list[str]:
+        """Zones des communes d'un secteur : suggest par nom, filtré par distance au point.
+
+        Bien'ici ne gère pas les bounding-box : on agrège les zoneIds des communes
+        renvoyées par le suggest. Si un point + rayon sont fournis, on ne garde que les
+        communes dont le centre tombe dans le rayon (élimine les homonymes lointains :
+        'Bauges' -> Bourges/Bruges).
+        """
+        from ..services.geo import haversine_km
+
+        ids: list[str] = []
+        for item in self._suggest(query):
+            if item.get("type") not in (None, "city") or not item.get("zoneIds"):
+                continue
+            if lat is not None and lon is not None and radius_km:
+                center = self._item_center(item)
+                if center is None or haversine_km(lat, lon, center[0], center[1]) > radius_km:
+                    continue
+            ids.extend(z for z in item["zoneIds"] if z not in ids)
+        return ids[:30]
 
     def _build_filters(self, c: SearchCriteria) -> dict:
         property_types = c.property_types or ["terrain", "maison", "appartement"]
@@ -136,15 +184,26 @@ class BienIciSource(ScraperSource):
     def search(self, criteria: SearchCriteria) -> SearchResult:
         filters = self._build_filters(criteria)
 
-        # Géo : on tente de cibler une zone (réduit le volume). À défaut, filtrage client.
-        geo_query = (
-            criteria.code_postal or criteria.code_commune or criteria.departement or criteria.region
-        )
-        zone = self._resolve_zone(geo_query) if geo_query else None
-        # Bien'ici attend les identifiants NUMÉRIQUES de zone (champ `zoneIds`),
-        # pas l'`id` haché renvoyé par le suggest.
-        if zone and zone.get("zoneIds"):
-            filters["zoneIdsByTypes"] = {"zoneIds": list(zone["zoneIds"])}
+        # Recherche par secteur : nom de secteur (criteria.secteur) ou commune du point,
+        # agrégée sur les communes proches puis affinée par le rayon.
+        radius_km = (criteria.distance / 1000.0) if criteria.distance else None
+        sector_query = criteria.secteur
+        if not sector_query and criteria.latitude is not None and criteria.longitude is not None:
+            sector_query = self._reverse_commune(criteria.latitude, criteria.longitude)
+
+        if sector_query and (radius_km or criteria.secteur):
+            zone_ids = self._zone_ids_sector(sector_query, criteria.latitude, criteria.longitude, radius_km)
+            if zone_ids:
+                filters["zoneIdsByTypes"] = {"zoneIds": zone_ids}
+        else:
+            # Sinon, ciblage par commune/CP/département (zone unique).
+            geo_query = (
+                criteria.code_postal or criteria.code_commune or criteria.departement or criteria.region
+            )
+            zone = self._resolve_zone(geo_query) if geo_query else None
+            # Bien'ici attend les identifiants NUMÉRIQUES de zone (champ `zoneIds`).
+            if zone and zone.get("zoneIds"):
+                filters["zoneIdsByTypes"] = {"zoneIds": list(zone["zoneIds"])}
 
         resp = self._get("/realEstateAds.json", params={"filters": json.dumps(filters)})
         data = resp.json()

@@ -38,6 +38,9 @@ class SearchCriteria(BaseModel):
     departement: str | None = None
     region: str | None = None
     adresse: str | None = None
+    secteur: str | None = Field(
+        default=None, description="Nom de secteur/commune pivot (ex. 'École 73', 'Bauges')."
+    )
     latitude: float | None = None
     longitude: float | None = None
     distance: int | None = Field(default=None, description="Rayon en mètres autour du point.")

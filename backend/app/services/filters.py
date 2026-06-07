@@ -192,6 +192,15 @@ def matches(listing: NormalizedListing, c: SearchCriteria) -> bool:
     if c.adresse and c.adresse.lower() not in (listing.adresse or "").lower():
         return False
 
+    # Filtre géographique par point + rayon (lat/lon/distance en mètres).
+    if c.latitude is not None and c.longitude is not None and c.distance:
+        if listing.latitude is None or listing.longitude is None:
+            return False
+        from .geo import haversine_km
+
+        if haversine_km(c.latitude, c.longitude, listing.latitude, listing.longitude) > c.distance / 1000.0:
+            return False
+
     if not _in_range(listing.prix, c.prix_min, c.prix_max):
         return False
     if not _in_range(listing.surface_terrain, c.surface_terrain_min, c.surface_terrain_max):

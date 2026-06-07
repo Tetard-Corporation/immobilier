@@ -161,7 +161,13 @@ def run_search(
     if enrich or get_settings().enrich_on_search:
         from ..enrichment import enrich_listing
 
-        items = [enrich_listing(it) for it in items]
+        # Enrichissement plafonné : il déclenche plusieurs appels réseau par bien
+        # (dont des CSV DVF par commune). On enrichit au plus `max_enrich` biens
+        # (les moins chers d'abord — souvent les plus pertinents), le reste passe brut.
+        limit = max(get_settings().max_enrich, 0)
+        ordered = sorted(items, key=lambda it: it.prix if it.prix is not None else float("inf"))
+        to_enrich = set(id(it) for it in ordered[:limit]) if limit else set()
+        items = [enrich_listing(it) if id(it) in to_enrich else it for it in items]
     if sort_by_score:
         items = sorted(items, key=lambda it: (it.flags or {}).get("score") or 0, reverse=True)
     out_items: list[ListingOut] = []
