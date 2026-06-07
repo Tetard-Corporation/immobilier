@@ -72,3 +72,34 @@ def resolve_city(name: str | None) -> tuple[float, float] | None:
     if not name:
         return None
     return CITY_COORDS.get(name.strip().lower())
+
+
+# Hubs TGV (gare, temps TGV en minutes depuis Paris) pour estimer un porte-à-porte :
+# on prend le hub minimisant (TGV + voiture jusqu'au bien).
+RAIL_HUBS = {
+    "Lyon": ((45.7605, 4.8597), 115),
+    "Valence TGV": ((44.9920, 4.9786), 130),
+    "Avignon TGV": ((43.9214, 4.7860), 160),
+    "Marseille": ((43.3027, 5.3804), 190),
+    "Grenoble": ((45.1916, 5.7144), 180),
+    "Dijon": ((47.3220, 5.0415), 95),
+    "Aix-en-Provence TGV": ((43.4553, 5.3174), 180),
+    "Nîmes": ((43.8326, 4.3650), 175),
+    "Montpellier": ((43.6108, 3.8767), 195),
+}
+_CAR_KMH = 65  # vitesse routière moyenne (départementales de montagne)
+_CAR_OVERHEAD_MIN = 12  # accès gare/voiture, marges
+
+
+def porte_a_porte_min(lat: float, lon: float, hubs: dict | None = None) -> int | None:
+    """Temps de trajet estimé porte-à-porte depuis Paris (min) : meilleur hub TGV + voiture."""
+    if lat is None or lon is None:
+        return None
+    hubs = hubs or RAIL_HUBS
+    best = None
+    for (hlat, hlon), tgv_min in hubs.values():
+        car_min = haversine_km(hlat, hlon, lat, lon) / _CAR_KMH * 60 + _CAR_OVERHEAD_MIN
+        total = tgv_min + car_min
+        if best is None or total < best:
+            best = total
+    return round(best) if best is not None else None

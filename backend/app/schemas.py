@@ -183,6 +183,8 @@ class ListingOut(BaseModel):
     pollutions: list = []
     age_median: float | None = None
     part_gauche: float | None = None
+    population_commune: int | None = None
+    isolement_score: float | None = None
     canonical_id: str | None = None
     prix_m2_terrain: float | None = None
     is_new: bool | None = None

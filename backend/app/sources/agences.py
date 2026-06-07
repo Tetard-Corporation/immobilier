@@ -64,6 +64,8 @@ def normalized_from_listing(row: Listing) -> NormalizedListing:
             "part_gauche": row.part_gauche,
             "pop_jeune_score": round(max(0.0, min(1.0, 1 - (row.age_median - 30) / 25)), 3) if row.age_median is not None else None,
             "orientation_gauche_score": row.part_gauche,
+            "population_commune": row.population_commune,
+            "isolement_score": row.isolement_score,
         },
         raw=row.raw or {},
     )

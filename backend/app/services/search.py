@@ -66,6 +66,8 @@ def upsert_listing(db: Session, item: NormalizedListing) -> Listing:
         pollutions=flags.get("pollutions") or [],
         age_median=flags.get("age_median"),
         part_gauche=flags.get("part_gauche"),
+        population_commune=flags.get("population_commune"),
+        isolement_score=flags.get("isolement_score"),
         canonical_id=fingerprint(item),
         raw=item.raw,
     )
@@ -138,6 +140,8 @@ def to_listing_out(item: NormalizedListing, *, db_id: int | None = None, is_new:
         pollutions=(item.flags or {}).get("pollutions") or [],
         age_median=(item.flags or {}).get("age_median"),
         part_gauche=(item.flags or {}).get("part_gauche"),
+        population_commune=(item.flags or {}).get("population_commune"),
+        isolement_score=(item.flags or {}).get("isolement_score"),
         price_decreased=bool((item.flags or {}).get("price_decreased")),
         canonical_id=fingerprint(item),
         prix_m2_terrain=item.prix_m2_terrain,

@@ -24,6 +24,7 @@ PREFERENCE_KINDS = [
     "near_corridor",
     "near_gare",
     "near_city",
+    "temps_acces",
     "population_jeune",
     "orientation_gauche",
     # Dépendent d'un provider d'enrichissement (Lot A) :
@@ -115,7 +116,17 @@ def _eval_one(item, kind: str, params: dict):
 
     if kind == "feature":
         name = params.get("name")
-        return (1.0 if name in (flags.get("features") or []) else 0.2), "ok", str(name)
+        present = name in (flags.get("features") or [])
+        # Pour l'isolement, on renforce le signal texte avec la densité communale.
+        if name == "isole":
+            iso = flags.get("isolement_score")
+            pop = flags.get("population_commune")
+            if present and iso is not None:
+                return _clamp(0.7 + 0.3 * iso), "ok", f"isolé (commune {pop} hab.)"
+            if iso is not None:
+                detail = f"commune {pop} hab." if pop is not None else "densité connue"
+                return _clamp(iso), "ok", detail
+        return (1.0 if present else 0.2), "ok", str(name)
 
     if kind == "near_corridor":
         if item.latitude is None or item.longitude is None:
@@ -145,6 +156,19 @@ def _eval_one(item, kind: str, params: dict):
             return None, "n/a", "ville non résolue"
         dist = haversine_km(item.latitude, item.longitude, center[0], center[1])
         return _clamp(1 - dist / params.get("max_km", 50)), "ok", f"{round(dist)} km"
+
+    if kind == "temps_acces":
+        # Porte-à-porte depuis Paris (TGV vers le meilleur hub + voiture).
+        from .geo import porte_a_porte_min
+
+        if item.latitude is None or item.longitude is None:
+            return None, "n/a", "géoloc manquante"
+        minutes = porte_a_porte_min(item.latitude, item.longitude)
+        if minutes is None:
+            return None, "n/a", "trajet indéterminé"
+        max_min = params.get("max_minutes", 240)
+        h, m = divmod(minutes, 60)
+        return _clamp(1 - (minutes - 120) / (max_min - 120)) if max_min > 120 else (1.0 if minutes <= max_min else 0.0), "ok", f"~{h}h{m:02d} porte-à-porte"
 
     if kind == "population_jeune":
         v = flags.get("pop_jeune_score")

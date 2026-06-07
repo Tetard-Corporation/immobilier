@@ -103,6 +103,13 @@ def _heuristic_parse(text: str) -> list[dict]:
     if "train" in t and ("paris" in t):
         prefs.append({"kind": "rail_time_from", "weight": 1.5, "params": {"ville": "Paris", "max_minutes": 180}, "label": "Trajet train depuis Paris"})
 
+    # Temps porte-à-porte ("4h porte à porte", "weekend", "2h30 de Paris"...).
+    mt = re.search(r"(\d+)\s*h(?:\s*(\d+))?\b", t)
+    if mt and ("porte" in t or "paris" in t or "trajet" in t or "weekend" in t or "week-end" in t):
+        minutes = int(mt.group(1)) * 60 + (int(mt.group(2)) if mt.group(2) else 0)
+        prefs.append({"kind": "temps_acces", "weight": 2, "params": {"max_minutes": minutes},
+                      "label": f"≤ {mt.group(1)}h porte-à-porte depuis Paris"})
+
     # Corridor : deux villes connues mentionnées (ex. "axe Paris Marseille").
     cited = [c for c in CITY_COORDS if c in t]
     if len(cited) >= 2:

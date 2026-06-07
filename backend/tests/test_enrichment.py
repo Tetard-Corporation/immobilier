@@ -54,7 +54,7 @@ def test_rail_disponible_sans_cle_estimation():
     loin = prov._approx_minutes(paris, 43.6, 1.44)     # Toulouse
     assert proche < loin
     assert {p["name"] for p in provider_status()} == {
-        "gpu_zonage", "georisques", "relief", "pollution", "socio", "rail_time", "dvf_comparables"
+        "gpu_zonage", "georisques", "relief", "pollution", "socio", "densite", "rail_time", "dvf_comparables"
     }
 
 

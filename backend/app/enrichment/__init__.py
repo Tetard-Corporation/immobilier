@@ -7,6 +7,7 @@ import functools
 import httpx
 
 from .base import EnrichmentProvider
+from .densite import DensiteProvider
 from .dvf import DvfComparablesProvider
 from .georisques import GeorisquesProvider
 from .gpu import GpuZonageProvider
@@ -27,6 +28,7 @@ def get_providers() -> list[EnrichmentProvider]:
             ReliefProvider(),
             PollutionProvider(),
             SocioProvider(),
+            DensiteProvider(),
             RailTimeProvider(),
             DvfComparablesProvider(),
         ]

@@ -49,6 +49,34 @@ def test_pending_quand_provider_absent():
     assert score is None  # aucune préférence évaluable -> pas de score
 
 
+def test_temps_acces_porte_a_porte():
+    # Valence (sur l'axe, près du hub TGV) -> porte-à-porte court -> bon score.
+    valence = _listing(latitude=44.93, longitude=4.89, flags={})
+    p = [Preference(kind="temps_acces", params={"max_minutes": 240})]
+    score, details = evaluate(valence, p)
+    assert score is not None and details[0]["status"] == "ok"
+    assert "porte-à-porte" in details[0]["detail"]
+    # un point très loin de tout hub -> score plus faible
+    brest = _listing(latitude=48.39, longitude=-4.48, flags={})
+    assert evaluate(valence, p)[0] > evaluate(brest, p)[0]
+
+
+def test_isole_renforce_par_densite():
+    from app.enrichment.densite import isolement_score
+    assert isolement_score(150) == 1.0
+    assert isolement_score(20000) == 0.0
+    assert 0 < isolement_score(2000) < 1
+    # préférence feature=isole : commune peu peuplée -> bon score même sans mot-clé
+    item = _listing(flags={"features": [], "isolement_score": 0.9, "population_commune": 180})
+    score, det = evaluate(item, [Preference(kind="feature", params={"name": "isole"})])
+    assert score >= 80 and "180 hab" in det[0]["detail"]
+
+
+def test_brief_detecte_temps_acces():
+    kinds = {p["kind"] for p in _heuristic_parse("Maison à 4h porte à porte de Paris, au calme")}
+    assert "temps_acces" in kinds
+
+
 def test_socio_preferences():
     item_data = _listing(latitude=48.85, longitude=2.35, flags={"pop_jeune_score": 0.8, "orientation_gauche_score": 0.6})
     p = [Preference(kind="population_jeune"), Preference(kind="orientation_gauche")]
