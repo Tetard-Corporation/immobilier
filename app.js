@@ -141,7 +141,7 @@ function renderScroll(list) {
   const root = $("#scrollView");
   root.innerHTML = list.map((b, idx) => `
     <article class="card" data-idx="${idx}">
-      <div class="galwrap" style="position:relative">${gallery(b)}${badges(b)}${favBtn(b)}</div>
+      <div class="galwrap${(b.photos || []).length ? " has-photos" : ""}" style="position:relative">${gallery(b)}${badges(b)}${favBtn(b)}</div>
       <div class="body">
         <div class="body-main">
           <div class="price">${euros(b.prix)}</div>
@@ -465,7 +465,7 @@ function openModal(bien) {
     <div class="sub">${bien.type_bien || "bien"} · ${bien.nb_chambres ?? "?"} ch · ${bien.nb_pieces ?? "?"} p ·
       terrain ${bien.surface_terrain != null ? bien.surface_terrain + " m²" : "—"} ·
       ${bien.altitude != null ? Math.round(bien.altitude) + " m alt." : ""}</div>
-    <div class="modal-gallery galwrap" style="position:relative">${gallery(bien)}</div>
+    <div class="modal-gallery galwrap${(bien.photos || []).length ? " has-photos" : ""}" style="position:relative">${gallery(bien)}</div>
     ${bien.description ? `<p class="descr">${escHtml(htmlToText(bien.description))}</p>` : ""}
 
     ${infoGrid(bien)}

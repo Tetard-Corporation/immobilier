@@ -50,7 +50,7 @@ select {
 
 /* Photo gallery: horizontal scroll-snap (balayage tactile direct) */
 .gallery {
-  position: relative; aspect-ratio: 4/3; background: #000;
+  position: relative; z-index: 1; aspect-ratio: 4/3; background: transparent;
   display: flex; overflow-x: auto; scroll-snap-type: x mandatory;
   scrollbar-width: none;
 }
@@ -59,6 +59,15 @@ select {
   flex: 0 0 100%; width: 100%; height: 100%; object-fit: cover;
   scroll-snap-align: center; user-select: none;
 }
+/* Loader pendant le chargement des photos (au lieu d'un fond noir) */
+.galwrap { background: #14171d; }
+.galwrap.has-photos::before {
+  content: ""; position: absolute; top: 50%; left: 50%; width: 30px; height: 30px;
+  margin: -15px 0 0 -15px; border-radius: 50%; z-index: 0; pointer-events: none;
+  border: 3px solid rgba(255,255,255,.16); border-top-color: var(--accent);
+  animation: spin .8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
 .gallery .nophoto { flex: 0 0 100%; display: grid; place-items: center; color: var(--muted); }
 .dots {
   position: absolute; bottom: 8px; left: 0; right: 0;
