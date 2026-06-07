@@ -220,7 +220,7 @@ if __name__ == "__main__":  # python -m app.services.export_static [out_dir]
 
     from ..db import SessionLocal
 
-    out = sys.argv[1] if len(sys.argv) > 1 else "../docs/data"
+    out = sys.argv[1] if len(sys.argv) > 1 else "../data"
     no_photos = "--no-photos" in sys.argv
     stats = export_to_dir(SessionLocal(), out, download_photos=not no_photos)
     print(f"Export -> {out}/data.json : {stats}")

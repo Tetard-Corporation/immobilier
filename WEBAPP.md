@@ -3,6 +3,10 @@
 Front **100 % statique** (HTML/CSS/JS, aucun build) qui lit un instantané JSON
 produit par le backend. Hébergeable gratuitement sur GitHub Pages.
 
+> Les fichiers du front sont **à la racine du repo** (servis par Pages depuis
+> `main` /root → `https://<owner>.github.io/immobilier/`). `.nojekyll` désactive
+> Jekyll pour que tout soit servi tel quel.
+
 ## Ce que fait le front
 - **Mode Scroll** : feed des biens de l'historique (dédoublonnés), galerie photo
   balayable directement (scroll tactile / flèches).
@@ -16,8 +20,8 @@ produit par le backend. Hébergeable gratuitement sur GitHub Pages.
 
 ```bash
 cd backend
-python -m app.services.export_static ../docs/data           # avec photos
-python -m app.services.export_static ../docs/data --no-photos # sans télécharger
+python -m app.services.export_static ../data            # avec photos (racine /data)
+python -m app.services.export_static ../data --no-photos # sans télécharger
 ```
 
 > ⚠️ GitHub Pages est statique : il ne peut **ni exécuter le moteur Python ni
@@ -67,10 +71,10 @@ noter chaque critère** du set : le tableau « Critères » place côte à côte
 ## Activer GitHub Pages
 1. Repo → **Settings → Pages**.
 2. **Source : Deploy from a branch**.
-3. Branche : celle qui contient ce dossier, dossier **`/docs`**.
-4. Le site sera servi sur `https://<user>.github.io/<repo>/`.
+3. Branche : **`main`**, dossier **`/ (root)`** (le front est à la racine).
+4. Le site sera servi sur `https://<owner>.github.io/immobilier/`.
 
-`.nojekyll` empêche tout traitement Jekyll.
+`.nojekyll` (à la racine) empêche tout traitement Jekyll.
 
 ## Poids du repo
 Les photos sont stockées en local (choix retenu : robustesse si l'annonce
