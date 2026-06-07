@@ -9,6 +9,7 @@ let map = null, markerLayer = null;
 let openBien = null;   // bien actuellement ouvert dans la modale (pour rafraîchir les votes)
 let modalMapInstance = null;   // carte Leaflet interactive de la fiche
 let openCrit = null;           // critère ouvert dans le popup (vote/commentaire par critère)
+let feedDirty = false, modalDirty = false;   // re-rendus différés (perf : pas de rebuild lourd à chaque vote)
 
 const $ = (s) => document.querySelector(s);
 const euros = (n) => (n == null ? "—" : Number(n).toLocaleString("fr-FR") + " €");
@@ -48,7 +49,13 @@ async function boot() {
 
   // Votes (étoiles) : init backend + identité de session.
   await Votes.init(window.APP_CONFIG || {});
-  Votes.onChange(() => { render(); if (openBien) refreshModal(); if (openCrit) renderCritPopup(); });
+  // Sur un vote : ne re-rendre QUE l'overlay actif ; différer le feed/modale (sinon
+  // triple rebuild lourd à chaque clic -> clics perdus sur mobile).
+  Votes.onChange(() => {
+    if (openCrit) { renderCritPopup(); modalDirty = true; feedDirty = true; }
+    else if (openBien) { refreshModal(); feedDirty = true; }
+    else { render(); }
+  });
   $("#whoami").addEventListener("click", openIdentity);
   $("#identity .id-backdrop").addEventListener("click", closeIdentityIfAllowed);
   renderWhoami();
@@ -141,7 +148,6 @@ function renderScroll(list) {
           <h3>${b.commune || "?"} <span class="sub">(${b.departement || "—"})</span></h3>
           <div class="sub">${b.type_bien || "bien"} · ${b.nb_chambres ?? "?"} ch · terrain ${b.surface_terrain != null ? b.surface_terrain + " m²" : "—"}</div>
           <div class="chips">${(b.features || []).slice(0, 6).map((f) => `<span class="chip">${featLabel(f)}</span>`).join("")}</div>
-          ${b.favori_note ? `<div class="note">⭐ ${b.favori_note}</div>` : ""}
           ${starsRow(b)}
         </div>
         <div class="minimap-col">${miniMap(b)}</div>
@@ -161,8 +167,13 @@ function renderScroll(list) {
       const i = Math.round(gal.scrollLeft / gal.clientWidth);
       card.querySelectorAll(".dots i").forEach((d, k) => d.classList.toggle("on", k === i));
     });
-    card.querySelectorAll(".star").forEach((st) =>
-      st.addEventListener("click", (e) => { e.stopPropagation(); handleStar(st); }));
+    // Feed : la note rapide n'enregistre PAS directement -> ouvre le popup (note + commentaire).
+    const vr = card.querySelector(".voterow");
+    if (vr) vr.addEventListener("click", (e) => {
+      e.stopPropagation();
+      if (!Votes.voter) { openIdentity(); return; }
+      openCritPopup(b, "match", Votes.OVERALL);
+    });
     const mm = card.querySelector(".minimap[data-lat]");
     if (mm) bindMiniMap(mm);
     const fb = card.querySelector(".fav-btn");
@@ -172,7 +183,7 @@ function renderScroll(list) {
       Votes.toggleFavori(fb.dataset.bien);   // emit -> onChange -> render (le cœur se met à jour)
     });
     card.addEventListener("click", (e) => {
-      if (e.target.closest(".stars") || e.target.closest(".minimap") || e.target.closest(".fav-btn")) return;
+      if (e.target.closest(".voterow") || e.target.closest(".minimap") || e.target.closest(".fav-btn")) return;
       openModal(b);
     });
   });
@@ -428,7 +439,12 @@ function renderCritPopup() {
     });
   });
 }
-function closeCritPopup() { openCrit = null; const el = document.getElementById("critPopup"); if (el) el.remove(); }
+function closeCritPopup() {
+  openCrit = null;
+  const el = document.getElementById("critPopup"); if (el) el.remove();
+  if (openBien) { if (modalDirty) { refreshModal(); modalDirty = false; } }   // votes faits dans la fiche
+  else if (feedDirty) { render(); feedDirty = false; }                         // votes faits depuis le feed
+}
 
 function openModal(bien) {
   if (!bien) return;
@@ -442,8 +458,6 @@ function openModal(bien) {
     <div class="sub">${bien.type_bien || "bien"} · ${bien.nb_chambres ?? "?"} ch · ${bien.nb_pieces ?? "?"} p ·
       terrain ${bien.surface_terrain != null ? bien.surface_terrain + " m²" : "—"} ·
       ${bien.altitude != null ? Math.round(bien.altitude) + " m alt." : ""}</div>
-    ${bien.is_favori ? `<div class="note">⭐ ${bien.favori_note || "favori"}</div>` : ""}
-
     <div class="modal-gallery galwrap" style="position:relative">${gallery(bien)}</div>
     ${bien.description ? `<p class="descr">${escHtml(htmlToText(bien.description))}</p>` : ""}
 
@@ -533,6 +547,7 @@ function renderModalDynamic(bien) {
 function closeModal() {
   $("#modal").classList.add("hidden"); openBien = null;
   if (modalMapInstance) { modalMapInstance.remove(); modalMapInstance = null; }
+  if (feedDirty) { render(); feedDirty = false; }   // applique les votes faits dans la fiche
 }
 function refreshModal() { if (openBien && !$("#modal").classList.contains("hidden")) renderModalDynamic(openBien); }
 
@@ -564,7 +579,9 @@ function handleStar(st) {
   if (!Votes.voter) { openIdentity(); return; }
   const wrap = st.closest(".stars");
   const v = Number(st.dataset.v);
-  Votes.setMine(wrap.dataset.bien, v, wrap.dataset.crit);  // optimiste ; onChange -> render + refreshModal
+  // Feedback visuel IMMÉDIAT (avant tout re-rendu) -> le clic ne semble jamais "raté".
+  wrap.querySelectorAll(".star").forEach((s, i) => s.classList.toggle("on", i < v));
+  Votes.setMine(wrap.dataset.bien, v, wrap.dataset.crit);
 }
 
 // ---------- Identité de session ----------

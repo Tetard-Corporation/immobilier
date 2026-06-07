@@ -13,6 +13,8 @@ from __future__ import annotations
 import io
 import json
 import os
+import time
+import urllib.parse
 import urllib.request
 from datetime import datetime, timezone
 
@@ -23,6 +25,7 @@ except ImportError:  # pragma: no cover
 
 from ..models import FilterSet, Listing, SavedListing, SearchHistory
 from .filtersets import resolve_criteria
+from .geo import haversine_km
 from .preferences import evaluate
 
 # Colonnes DB dont le nom correspond 1:1 aux clés `flags` consommées par evaluate().
@@ -37,6 +40,66 @@ _FLAG_COLS = (
 
 _UA = "Mozilla/5.0 (compatible; immobilier-export/1.0)"
 _MAX_PHOTOS = 10
+# Distances aux infrastructures bruyantes (autoroute/voie ferrée) via Overpass (OSM),
+# mises en cache sur disque pour ne pas re-interroger à chaque export.
+_INFRA_CACHE = os.path.join(os.path.dirname(__file__), "..", "..", "data", "infra_cache.json")
+_OVERPASS = "https://overpass-api.de/api/interpreter"
+
+
+def _load_infra_cache() -> dict:
+    try:
+        with open(_INFRA_CACHE, encoding="utf-8") as fh:
+            return json.load(fh)
+    except Exception:
+        return {}
+
+
+def _query_overpass(lat: float, lon: float) -> dict | None:
+    q = (f'[out:json][timeout:25];('
+         f'way(around:2500,{lat},{lon})[highway~"motorway|trunk"];'
+         f'way(around:2500,{lat},{lon})[railway=rail];);out geom 80;')
+    try:
+        data = urllib.parse.urlencode({"data": q}).encode()
+        req = urllib.request.Request(_OVERPASS, data=data, headers={"User-Agent": _UA})
+        with urllib.request.urlopen(req, timeout=40) as r:
+            payload = json.loads(r.read())
+    except Exception:
+        return None
+    best = {"dist_autoroute_m": None, "dist_rail_m": None, "infra_checked": True}
+    for el in payload.get("elements", []):
+        tags = el.get("tags", {})
+        key = "dist_autoroute_m" if "highway" in tags else ("dist_rail_m" if tags.get("railway") == "rail" else None)
+        if not key:
+            continue
+        for p in el.get("geometry", []):
+            dm = round(haversine_km(lat, lon, p["lat"], p["lon"]) * 1000)
+            if best[key] is None or dm < best[key]:
+                best[key] = dm
+    return best
+
+
+def _infra_distances(lat: float, lon: float, cache: dict) -> dict:
+    """Distances autoroute/voie ferrée (m), via cache puis Overpass. {} si indéterminé."""
+    if lat is None or lon is None:
+        return {}
+    key = f"{round(lat, 4)},{round(lon, 4)}"
+    if key in cache:
+        return cache[key]
+    res = None
+    for attempt in range(3):  # Overpass throttle parfois : on réessaie poliment
+        res = _query_overpass(lat, lon)
+        if res is not None:
+            break
+        time.sleep(4 * (attempt + 1))
+    if res is not None:
+        cache[key] = res
+        try:
+            with open(_INFRA_CACHE, "w", encoding="utf-8") as fh:
+                json.dump(cache, fh)
+        except Exception:
+            pass
+        return res
+    return {}
 # Optimisation : galerie web -> 1280 px max suffit ; JPEG progressif qualité 78.
 _MAX_DIM = 1280
 _JPEG_QUALITY = 78
@@ -61,13 +124,15 @@ def _optimize_jpeg(data: bytes) -> bytes:
 class _RowItem:
     """Adapte une ligne DB Listing à l'objet `item` attendu par evaluate() (.flags)."""
 
-    def __init__(self, row: Listing):
+    def __init__(self, row: Listing, extra_flags: dict | None = None):
         self.prix = row.prix
         self.nb_chambres = row.nb_chambres
         self.surface_terrain = row.surface_terrain
         self.latitude = row.latitude
         self.longitude = row.longitude
         self.flags = {c: getattr(row, c) for c in _FLAG_COLS}
+        if extra_flags:
+            self.flags.update(extra_flags)
 
 
 def _pref_dump(pref) -> dict:
@@ -151,6 +216,7 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
         os.makedirs(photos_dir, exist_ok=True)
 
     biens_out = []
+    infra_cache = _load_infra_cache()
     rows = (
         db.query(Listing)
         .filter(Listing.source != "mock")
@@ -158,7 +224,8 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
         .all()
     )
     for row in rows:
-        item = _RowItem(row)
+        infra = _infra_distances(row.latitude, row.longitude, infra_cache)
+        item = _RowItem(row, extra_flags=infra)
         scores_by_set = {}
         for fs_id, prefs in set_prefs.items():
             if not prefs:
