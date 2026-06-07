@@ -39,9 +39,12 @@ async function boot() {
   $("#modeScroll").addEventListener("click", () => setMode("scroll"));
   $("#modeMap").addEventListener("click", () => setMode("map"));
   $("#modal .modal-backdrop").addEventListener("click", closeModal);
-  document.addEventListener("keydown", (e) => { if (e.key === "Escape") { if (openCrit) closeCritPopup(); else { closeModal(); closeIdentityIfAllowed(); } } });
-  // Relâche du clic/doigt n'importe où -> ferme la grande carte (appui maintenu).
-  ["pointerup", "pointercancel"].forEach((ev) => window.addEventListener(ev, hideBigMap));
+  document.addEventListener("keydown", (e) => {
+    if (e.key !== "Escape") return;
+    if (document.getElementById("mapPopup")) closeMapPopup();
+    else if (openCrit) closeCritPopup();
+    else { closeModal(); closeIdentityIfAllowed(); }
+  });
 
   // Votes (étoiles) : init backend + identité de session.
   await Votes.init(window.APP_CONFIG || {});
@@ -203,35 +206,29 @@ function miniMap(b) {
   </div>`;
 }
 function bindMiniMap(mm) {
-  // Appui MAINTENU (~350 ms) pour agrandir : un tap court ou un scroll ne déclenche rien.
-  let timer = null, sx = 0, sy = 0, opened = false;
-  const cancel = () => { if (timer) { clearTimeout(timer); timer = null; } };
-  mm.addEventListener("pointerdown", (e) => {
-    e.stopPropagation();
-    sx = e.clientX; sy = e.clientY; opened = false;
-    timer = setTimeout(() => { timer = null; opened = true; showBigMap(+mm.dataset.lat, +mm.dataset.lon); }, 350);
-  });
-  mm.addEventListener("pointermove", (e) => {
-    if (timer && (Math.abs(e.clientX - sx) > 8 || Math.abs(e.clientY - sy) > 8)) cancel(); // c'est un scroll
-  });
-  mm.addEventListener("pointerup", cancel);
-  mm.addEventListener("pointercancel", cancel);
-  mm.addEventListener("pointerleave", cancel);
-  // n'ouvre pas la fiche (clic = relâche d'un appui maintenu ou tap court)
-  mm.addEventListener("click", (e) => { if (opened) { e.stopPropagation(); e.preventDefault(); } });
-  mm.addEventListener("contextmenu", (e) => e.preventDefault());
+  // Simple clic -> popup carte navigable (n'ouvre pas la fiche).
+  mm.addEventListener("click", (e) => { e.stopPropagation(); openMapPopup(+mm.dataset.lat, +mm.dataset.lon); });
 }
-function showBigMap(lat, lon) {
-  hideBigMap();
-  const w = Math.min(window.innerWidth * 0.92, 560);
-  const h = Math.min(window.innerHeight * 0.6, 460);
+
+let popupMapInstance = null;
+function openMapPopup(lat, lon) {
+  closeMapPopup();
   const el = document.createElement("div");
   el.id = "mapPopup";
-  el.innerHTML = `<div class="bigmap-card">${tileMapHTML(lat, lon, Math.round(w), Math.round(h), 14)}
-    <div class="bigmap-cap">Relâche pour fermer</div></div>`;
+  el.innerHTML = `<div class="map-backdrop"></div>
+    <div class="map-card"><button class="modal-close" id="mapClose">×</button><div id="popupMap" class="popup-map"></div></div>`;
   document.body.appendChild(el);
+  el.querySelector(".map-backdrop").addEventListener("click", closeMapPopup);
+  el.querySelector("#mapClose").addEventListener("click", closeMapPopup);
+  popupMapInstance = L.map("popupMap").setView([lat, lon], 13);
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19, attribution: "© OpenStreetMap" }).addTo(popupMapInstance);
+  L.circleMarker([lat, lon], { radius: 9, color: "#04210f", weight: 2, fillColor: "#f87171", fillOpacity: .95 }).addTo(popupMapInstance);
+  setTimeout(() => { if (popupMapInstance) popupMapInstance.invalidateSize(); }, 60);
 }
-function hideBigMap() { const el = $("#mapPopup"); if (el) el.remove(); }
+function closeMapPopup() {
+  if (popupMapInstance) { popupMapInstance.remove(); popupMapInstance = null; }
+  const el = document.getElementById("mapPopup"); if (el) el.remove();
+}
 
 function renderMap(list) {
   if (!map) {

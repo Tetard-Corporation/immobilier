@@ -111,6 +111,7 @@ select {
   overflow: hidden; border: 1px solid var(--line); cursor: zoom-in;
   touch-action: pan-y; user-select: none; -webkit-touch-callout: none; background: #0b0d11;
 }
+.minimap { cursor: pointer; }
 .minimap .mm-hint {
   position: absolute; right: 4px; bottom: 3px; font-size: 11px; color: #fff;
   background: rgba(0,0,0,.55); border-radius: 5px; padding: 0 4px; pointer-events: none;
@@ -127,19 +128,16 @@ select {
   background: var(--bad); border: 2px solid #fff; box-shadow: 0 0 0 1px rgba(0,0,0,.4);
 }
 
-/* Popup "appui maintenu" */
-#mapPopup {
-  position: fixed; inset: 0; z-index: 4000; display: grid; place-items: center;
-  background: rgba(0,0,0,.7); touch-action: none;
+/* Popup carte navigable (clic sur la mini-carte) */
+#mapPopup { position: fixed; inset: 0; z-index: 4000; display: grid; place-items: center; }
+#mapPopup .map-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,.72); }
+.map-card {
+  position: relative; width: min(640px, 94vw); height: min(70vh, 520px);
+  border-radius: 14px; overflow: hidden; border: 1px solid var(--line);
+  box-shadow: 0 10px 40px rgba(0,0,0,.6);
 }
-.bigmap-card {
-  position: relative; border-radius: 14px; overflow: hidden;
-  border: 1px solid var(--line); box-shadow: 0 10px 40px rgba(0,0,0,.6);
-}
-.bigmap-cap {
-  position: absolute; left: 0; right: 0; bottom: 0; text-align: center;
-  font-size: 12px; color: #fff; background: rgba(0,0,0,.55); padding: 4px;
-}
+.popup-map { position: absolute; inset: 0; background: #0b0d11; }
+.map-card .modal-close { z-index: 5; }
 
 /* ---------- Map ---------- */
 .mapview { position: fixed; inset: 0; top: 0; padding-top: 0; }
