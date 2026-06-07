@@ -16,6 +16,7 @@ PREFERENCE_KINDS = [
     "budget",
     "chambres_min",
     "has_terrain",
+    "surface_habitable",
     "light_works",
     "no_vis_a_vis",
     "nature_exception",
@@ -107,6 +108,13 @@ def _eval_one(item, kind: str, params: dict):
         mn = params.get("min_surface", 1)
         seuil = f" (souhait ≥ {int(mn)} m²)" if mn and mn > 1 else ""
         return (1.0 if item.surface_terrain >= mn else _clamp(item.surface_terrain / mn)), "ok", f"{int(item.surface_terrain)} m²{seuil}"
+
+    if kind == "surface_habitable":
+        s = getattr(item, "surface_bati", None)
+        if s is None:
+            return None, "n/a", "surface habitable inconnue"
+        mn = params.get("min", 80)
+        return (1.0 if s >= mn else _clamp(s / mn)), "ok", f"{int(s)} m² habitables (souhait ≥ {int(mn)} m²)"
 
     if kind == "light_works":
         cond = flags.get("condition")

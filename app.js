@@ -292,6 +292,7 @@ const FEATURE_LABELS = {
   arbore: "Arboré", calme: "Calme", eau: "Eau (rivière/source/étang)",
   isole: "Isolé", vue: "Vue dégagée", vue_panoramique: "Vue panoramique",
   authentique: "Authentique / cachet", sans_vis_a_vis: "Sans vis-à-vis",
+  cheminee: "Cheminée / poêle", terrasse: "Terrasse", garage: "Garage", piscine: "Piscine",
 };
 const RISK_LABELS = {
   inondation: "Inondation", remonteeNappe: "Remontée de nappe", seisme: "Séisme",

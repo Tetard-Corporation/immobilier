@@ -13,6 +13,7 @@ from __future__ import annotations
 import io
 import json
 import os
+import re
 import time
 import urllib.parse
 import urllib.request
@@ -63,6 +64,21 @@ def _load_fibre_lut() -> dict:
             return json.load(fh)
     except Exception:
         return {}
+
+
+_EQUIP_PATTERNS = {
+    "cheminee": r"chemin[ée]e|po[êe]le|insert",
+    "terrasse": r"terrasse",
+    "garage": r"garage",
+    "piscine": r"piscine",
+}
+
+
+def _detect_equipements(description: str | None) -> list[str]:
+    if not description:
+        return []
+    t = description.lower()
+    return [k for k, pat in _EQUIP_PATTERNS.items() if re.search(pat, t)]
 
 
 def _fibre_flags(code_commune: str | None, lut: dict) -> dict:
@@ -159,6 +175,7 @@ class _RowItem:
         self.prix = row.prix
         self.nb_chambres = row.nb_chambres
         self.surface_terrain = row.surface_terrain
+        self.surface_bati = row.surface_bati
         self.latitude = row.latitude
         self.longitude = row.longitude
         self.flags = {c: getattr(row, c) for c in _FLAG_COLS}
@@ -257,7 +274,11 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
     )
     for row in rows:
         infra = _infra_distances(row.latitude, row.longitude, infra_cache)
-        extra = {**infra, **_fibre_flags(row.code_commune, fibre_lut)}
+        feats = list(row.features or [])
+        for e in _detect_equipements(row.description):
+            if e not in feats:
+                feats.append(e)
+        extra = {**infra, **_fibre_flags(row.code_commune, fibre_lut), "features": feats}
         item = _RowItem(row, extra_flags=extra)
         scores_by_set = {}
         for fs_id, prefs in set_prefs.items():
@@ -276,7 +297,7 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
             "code_postal": row.code_postal, "departement": row.departement,
             "latitude": row.latitude, "longitude": row.longitude,
             "url": row.url, "description": row.description, "dpe_classe": row.dpe_classe,
-            "condition": row.condition, "features": row.features, "nuisances": row.nuisances,
+            "condition": row.condition, "features": feats, "nuisances": row.nuisances,
             "altitude": row.altitude, "rail_time_min": row.rail_time_min,
             "isolement_score": row.isolement_score, "population_commune": row.population_commune,
             "risques": row.risques, "score": row.score, "score_details": row.score_details,
