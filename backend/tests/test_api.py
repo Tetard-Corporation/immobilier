@@ -46,6 +46,18 @@ def test_search_mock_score_et_tri(client):
     assert scores == sorted(scores, reverse=True)
 
 
+def test_search_history_systematique(client):
+    avant = len(client.get("/api/search-history").json())
+    client.post("/api/search?source=mock", json={"property_types": ["terrain"], "departement": "GIRONDE"})
+    hist = client.get("/api/search-history").json()
+    assert len(hist) == avant + 1
+    last = hist[0]
+    assert last["source"] == "mock"
+    assert last["criteria"]["departement"] == "GIRONDE"
+    assert last["nb_results"] >= 1
+    assert isinstance(last["top_results"], list)
+
+
 def test_search_mock_score_min(client):
     r = client.post("/api/search?source=mock", json={"score_min": 200})
     assert r.json()["results"] == []  # aucun bien ne dépasse 100

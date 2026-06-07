@@ -157,6 +157,8 @@ def run_search(
     dedupe_results: bool = False,
     sort_by_score: bool = False,
     enrich: bool = False,
+    record_history: bool = True,
+    filter_set_id: int | None = None,
 ) -> SearchResultOut:
     """Recherche ad hoc : exécute, persiste les listings et renvoie le résultat normalisé."""
     source = resolve_source(source_name)
@@ -188,6 +190,11 @@ def run_search(
     # Régime ranking : classement par match_score décroissant.
     if criteria.preferences:
         out_items.sort(key=lambda o: o.match_score if o.match_score is not None else -1, reverse=True)
+
+    # Historique systématique de la recherche (audit + reprise ultérieure).
+    if record_history:
+        _record_history(db, source.name, criteria, out_items, enriched=bool(enrich), filter_set_id=filter_set_id)
+
     return SearchResultOut(
         source=source.name,
         total=result.total,
@@ -197,3 +204,22 @@ def run_search(
         credits_estimes=result.credits_estimes,
         results=out_items,
     )
+
+
+def _record_history(db, source_name, criteria, out_items, *, enriched, filter_set_id):
+    from ..models import SearchHistory
+
+    top = [
+        {"id": o.id, "commune": o.commune, "prix": o.prix, "score": o.score,
+         "match_score": o.match_score, "url": o.url}
+        for o in out_items[:10]
+    ]
+    db.add(SearchHistory(
+        source=source_name,
+        criteria=criteria.model_dump(exclude_none=True),
+        filter_set_id=filter_set_id,
+        nb_results=len(out_items),
+        enriched=enriched,
+        top_results=top,
+    ))
+    db.commit()

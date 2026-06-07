@@ -153,6 +153,24 @@ class Listing(Base):
     )
 
 
+class SearchHistory(Base):
+    """Historique systématique de TOUTES les recherches lancées (audit + reprise)."""
+
+    __tablename__ = "search_history"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    source: Mapped[str] = mapped_column(String(50), nullable=False)
+    criteria: Mapped[dict] = mapped_column(JSON, nullable=False, default=dict)
+    filter_set_id: Mapped[int | None] = mapped_column(
+        ForeignKey("filter_sets.id", ondelete="SET NULL"), nullable=True
+    )
+    nb_results: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    enriched: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    # Aperçu léger des meilleurs résultats (id/commune/prix/url) pour relecture rapide.
+    top_results: Mapped[list] = mapped_column(JSON, nullable=False, default=list)
+    ran_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utcnow)
+
+
 class SavedListing(Base):
     """Bien sauvegardé (favori) : historique durable des biens intéressants trouvés.
 

@@ -239,6 +239,19 @@ class FilterSetResolvedOut(FilterSetOut):
     resolved_criteria: dict
 
 
+class SearchHistoryOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    source: str
+    criteria: dict
+    filter_set_id: int | None = None
+    nb_results: int
+    enriched: bool
+    top_results: list
+    ran_at: datetime
+
+
 class SavedListingIn(BaseModel):
     listing_id: int | None = None
     source: str | None = None
