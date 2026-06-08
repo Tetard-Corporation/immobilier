@@ -1,6 +1,9 @@
 # Agences locales (hors portails) scrapées via parsers dédiés (Voie B).
 # Ajouter une agence : un parser dans app/services/agences_parsers.py + ses URLs ici.
 agences:
-  - nom: "Agence Cévenole"
+  - nom: "Agence Cévenole"        # plateau Vivarais-Lignon / nord-Ardèche (07/43)
     sites:
       - https://www.agencecevenole.com/ventes-fermes-et-maisons-en-pierres-w1
+  - nom: "Bauges Immobilier"      # massif des Bauges (Savoie 73)
+    sites:
+      - https://bauges-immobilier.com/fr/ventes
