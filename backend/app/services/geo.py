@@ -78,14 +78,26 @@ _GEOCODE_CACHE: dict[str, dict | None] = {}
 
 
 def _ban_municipality(q: str) -> dict | None:
+    import time
+
     import httpx
 
-    r = httpx.get(
-        "https://api-adresse.data.gouv.fr/search/",
-        params={"q": q, "type": "municipality", "limit": 1},
-        timeout=12,
-    )
-    r.raise_for_status()
+    last = None
+    for attempt in range(3):  # la BAN renvoie parfois 503/429 transitoires
+        r = httpx.get(
+            "https://api-adresse.data.gouv.fr/search/",
+            params={"q": q, "type": "municipality", "limit": 1},
+            timeout=12,
+        )
+        if r.status_code in (429, 500, 502, 503, 504):
+            last = httpx.HTTPStatusError("transient", request=r.request, response=r)
+            time.sleep(1.5 * (attempt + 1))
+            continue
+        r.raise_for_status()
+        last = None
+        break
+    if last is not None:
+        raise last
     feats = (r.json() or {}).get("features") or []
     if not feats:
         return None
@@ -120,19 +132,22 @@ def geocode_locality(label: str | None) -> dict | None:
     clean = re.sub(r"\bste\b", "sainte", clean)
     toks = clean.split()
     best = None
+    errored = False
     for k in (5, 4, 3, 2, 1):
         if k > len(toks):
             continue
         try:
             res = _ban_municipality(" ".join(toks[-k:]))
         except Exception:
-            res = None
+            errored = True  # erreur réseau/503 : ne pas mémoriser l'échec
+            continue
         if res and res["nom"]:
             rank = res["score"] + 0.06 * k  # privilégie les fenêtres plus longues (plus spécifiques)
             if best is None or rank > best[0]:
                 best = (rank, res)
     out = best[1] if best and best[1]["score"] >= 0.4 else None
-    _GEOCODE_CACHE[key] = out
+    if out is not None or not errored:  # on ne cache pas un échec dû à une panne transitoire
+        _GEOCODE_CACHE[key] = out
     return out
 
 

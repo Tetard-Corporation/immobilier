@@ -1,9 +1,11 @@
 """Tests des parsers d'agences locales (Voie B) + résolution de commune."""
 
 from app.services import geo
+from app.services import agences_ingest as ing
 from app.services.agences_parsers import (
     parse_agence_cevenole,
     parse_bauges_immobilier,
+    parse_christine_miranda,
     parse_site,
 )
 
@@ -63,6 +65,39 @@ def test_parse_bauges_immobilier():
     assert b["type_bien"] == "maison"       # "Grange" -> maison
     assert b["url"].endswith("/fr/propriete/vente+maison+ecole+87060860")
     assert b["photos"] == ["https://cdn.example.net/media/abc.jpg"]
+
+
+def test_parse_christine_miranda_liens_detail():
+    html = ('<a href="details-ref+4550-+ferme+a+renover+suze+la+rousse-z117">x</a>'
+            '<a href="details-ref+4550-+ferme+a+renover+suze+la+rousse-z117">dup</a>'
+            '<a href="details-villa+avec+piscine+nyons-z200">y</a>')
+    items = parse_christine_miranda(html, "https://www.christinemiranda.com/")
+    assert len(items) == 2                       # dédoublonné
+    assert items[0]["prix"] is None and items[0]["commune"] is None  # complétés via détail
+    assert items[0]["type_bien"] == "maison"     # "ferme" -> maison
+    assert items[0]["url"].endswith("/details-ref+4550-+ferme+a+renover+suze+la+rousse-z117")
+
+
+def test_enrich_from_detail_garantit_photo_prix_commune(monkeypatch):
+    # Page détail factice : og:image + prix + og:title avec indice de commune.
+    detail = (
+        '<meta property="og:image" content="https://cdn/x.jpg">'
+        '<meta property="og:title" content="Ferme à rénover proche Suze-la-Rousse">'
+        '<div class="prix">Prix : 350 000 €</div>'
+    )
+
+    class _R:
+        text = detail
+
+    monkeypatch.setattr(ing.httpx, "get", lambda *a, **k: _R())
+    nl = ing._to_normalized(
+        {"type_bien": "maison", "prix": None, "commune": None, "url": "https://x/d", "photos": []},
+        "Christine Miranda",
+    )
+    out = ing._enrich_from_detail(nl)
+    assert out.raw["photos"] == ["https://cdn/x.jpg"]     # photo garantie
+    assert out.prix == 350000                              # prix depuis le détail
+    assert "Suze" in (out.commune or "")                   # commune depuis og:title
 
 
 def test_parse_site_dispatch_par_domaine():

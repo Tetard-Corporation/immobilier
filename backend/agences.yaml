@@ -1,5 +1,6 @@
 # Agences locales (hors portails) scrapées via parsers dédiés (Voie B).
 # Ajouter une agence : un parser dans app/services/agences_parsers.py + ses URLs ici.
+# Les photos sont garanties par _enrich_from_detail (og:image) même si la carte n'en a pas.
 agences:
   - nom: "Agence Cévenole"        # plateau Vivarais-Lignon / nord-Ardèche (07/43)
     sites:
@@ -7,3 +8,6 @@ agences:
   - nom: "Bauges Immobilier"      # massif des Bauges (Savoie 73)
     sites:
       - https://bauges-immobilier.com/fr/ventes
+  - nom: "Christine Miranda"      # Drôme provençale / Baronnies (26) - biens de caractère
+    sites:
+      - https://www.christinemiranda.com/
