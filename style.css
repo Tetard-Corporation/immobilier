@@ -43,6 +43,22 @@ select {
   display: flex; flex-direction: column; gap: 18px;
 }
 .scroll-sentinel { height: 1px; margin: 0; padding: 0; pointer-events: none; }
+
+/* Loader global (chargement initial + changement de set) */
+.loader {
+  position: fixed; inset: 0; z-index: 1000;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px;
+  background: var(--bg, #0b0e11); color: var(--muted, #9aa4b2);
+  transition: opacity .2s ease;
+}
+.loader.hidden { opacity: 0; pointer-events: none; visibility: hidden; }
+.loader .spinner {
+  width: 42px; height: 42px; border-radius: 50%;
+  border: 4px solid rgba(255,255,255,.15); border-top-color: var(--accent, #5bd6a0);
+  animation: spin .8s linear infinite;
+}
+.loader-txt { font-size: 14px; }
+@keyframes spin { to { transform: rotate(360deg); } }
 .card {
   background: var(--card); border: 1px solid var(--line); border-radius: 16px;
   overflow: hidden; cursor: pointer; transition: border-color .15s;

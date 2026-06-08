@@ -15,6 +15,10 @@ const $ = (s) => document.querySelector(s);
 const euros = (n) => (n == null ? "—" : Number(n).toLocaleString("fr-FR") + " €");
 const fix1 = (n) => (n == null ? "—" : Number(n).toFixed(1));
 const voteKey = (b) => `${b.source}__${b.external_id}`;
+const showLoader = () => { const l = $("#loader"); if (l) l.classList.remove("hidden"); };
+const hideLoader = () => { const l = $("#loader"); if (l) l.classList.add("hidden"); };
+// Affiche le loader, laisse-le peindre (double rAF), puis exécute le rendu et le masque.
+const withLoader = (fn) => { showLoader(); requestAnimationFrame(() => requestAnimationFrame(() => { fn(); hideLoader(); })); };
 
 async function boot() {
   DATA = await fetch("data/data.json").then((r) => r.json());
@@ -32,7 +36,7 @@ async function boot() {
   $("#meta").textContent =
     `${DATA.stats.n_biens} biens · ${DATA.stats.n_searches} recherches · snapshot ${new Date(DATA.generated_at).toLocaleString("fr-FR")}`;
 
-  setSel.addEventListener("change", (e) => { currentSetId = e.target.value; render(); });
+  setSel.addEventListener("change", (e) => { currentSetId = e.target.value; withLoader(render); });
   $("#sortSelect").addEventListener("change", render);
   $("#favOnly").addEventListener("change", render);
   $("#hideRated").addEventListener("change", render);
@@ -63,6 +67,7 @@ async function boot() {
   if (!Votes.voter) openIdentity();
 
   render();
+  hideLoader();
 }
 
 // --- score helpers ------------------------------------------------------
@@ -685,6 +690,7 @@ function closeIdentityIfAllowed() {
 
 boot().catch((err) => {
   console.error("[boot] échec :", err);
+  hideLoader();
   const meta = document.querySelector("#meta");
   if (meta) meta.innerHTML = `<span style="color:#f87171">Erreur de chargement : ${String(err && err.message || err)}. Réessaie (recharge la page).</span>`;
 });
