@@ -6,6 +6,8 @@ let SETS = [];        // [{id,name,parent_id,preferences:[...]}]
 let SET_BY_ID = {};
 let currentSetId = null;
 let map = null, markerLayer = null;
+let currentMode = "scroll";
+let zoneFilter = null;   // bbox {n,s,e,w} de la zone carte filtrée, ou null
 let openBien = null;   // bien actuellement ouvert dans la modale (pour rafraîchir les votes)
 let modalMapInstance = null;   // carte Leaflet interactive de la fiche
 let openCrit = null;           // critère ouvert dans le popup (vote/commentaire par critère)
@@ -43,6 +45,7 @@ async function boot() {
   $("#scoreMin").addEventListener("input", (e) => { $("#scoreOut").textContent = e.target.value; render(); });
   $("#modeScroll").addEventListener("click", () => setMode("scroll"));
   $("#modeMap").addEventListener("click", () => setMode("map"));
+  $("#zoneBtn").addEventListener("click", toggleZoneFilter);
   $("#modal .modal-backdrop").addEventListener("click", closeModal);
   document.addEventListener("keydown", (e) => {
     if (e.key !== "Escape") return;
@@ -96,6 +99,8 @@ function visibleBiens() {
     }
     // Masquer les biens que l'utilisateur courant a déjà notés.
     if (hideRated && Votes.hasRated(voteKey(b))) return false;
+    // Filtre "zone carte" : ne garder que les biens dans la bbox capturée.
+    if (!zoneInBounds(b)) return false;
     const ref = sortMode === "score" ? b.score : matchOf(b, currentSetId);
     if (min > 0 && (ref == null || ref < min)) return false;
     return true;
@@ -112,6 +117,7 @@ function render() {
   const list = visibleBiens();
   renderScroll(list);
   if (!$("#mapView").classList.contains("hidden")) renderMap(list);
+  updateZoneBtn();   // garde le libellé/compteur du bouton zone à jour
 }
 
 function gallery(bien, _full = false) {
@@ -328,9 +334,15 @@ function renderMap(list) {
     pts.push([b.latitude, b.longitude]);
     const m = matchOf(b, currentSetId);
     const mk = L.marker([b.latitude, b.longitude], { icon: scoreIcon(m) });
+    // Photo principale : le HTML du popup n'est inséré qu'à l'ouverture (Leaflet),
+    // donc l'image ne se charge qu'au clic sur le marqueur (pas de surcoût mémoire).
+    const photo = (b.photos && b.photos.length)
+      ? `<img class="popup-photo" src="data/${b.photos[0]}" alt="" loading="lazy" decoding="async" />`
+      : "";
     mk.bindPopup(
       `<b>${b.commune || "?"}</b> (${b.departement || "—"})<br>${euros(b.prix)}<br>` +
       `match ${fix1(m)} · invest ${fix1(b.score)}<br>` +
+      photo +
       `<a href="#" onclick="window.__open(${b.id});return false;">détails →</a>`);
     mk.addTo(markerLayer);
   });
@@ -357,11 +369,54 @@ window.__open = (id) => openModal((DATA.biens || []).find((b) => b.id === id));
 
 function setMode(mode) {
   const scroll = mode === "scroll";
+  currentMode = mode;
   $("#scrollView").classList.toggle("hidden", !scroll);
   $("#mapView").classList.toggle("hidden", scroll);
   $("#modeScroll").classList.toggle("active", scroll);
   $("#modeMap").classList.toggle("active", !scroll);
   if (!scroll) { renderMap(visibleBiens()); setTimeout(() => map.invalidateSize(), 50); }
+  updateZoneBtn();
+}
+
+// --- Filtre "zone carte" -------------------------------------------------
+// Capture la bbox affichée sur la carte ; le mode scroll n'affiche alors que ces biens.
+function zoneInBounds(b) {
+  if (!zoneFilter) return true;
+  if (b.latitude == null || b.longitude == null) return false;
+  return b.latitude <= zoneFilter.n && b.latitude >= zoneFilter.s
+      && b.longitude <= zoneFilter.e && b.longitude >= zoneFilter.w;
+}
+
+function updateZoneBtn() {
+  const btn = $("#zoneBtn");
+  if (!btn) return;
+  if (zoneFilter) {                       // filtre actif : proposer de le retirer (dans les 2 modes)
+    btn.classList.remove("hidden");
+    btn.classList.add("active");
+    btn.textContent = `✕ Zone filtrée (${visibleBiens().length})`;
+    btn.title = "Retirer le filtre de zone";
+  } else if (currentMode === "map") {     // sur la carte : proposer de filtrer la vue
+    btn.classList.remove("hidden");
+    btn.classList.remove("active");
+    btn.textContent = "▣ Filtrer cette zone";
+    btn.title = "N'afficher que les biens visibles sur la carte";
+  } else {
+    btn.classList.add("hidden");
+  }
+}
+
+function toggleZoneFilter() {
+  if (zoneFilter) {                       // retirer le filtre
+    zoneFilter = null;
+    updateZoneBtn();
+    withLoader(() => { render(); });
+    return;
+  }
+  if (!map) return;
+  const bb = map.getBounds();             // bbox actuellement visualisée
+  zoneFilter = { n: bb.getNorth(), s: bb.getSouth(), e: bb.getEast(), w: bb.getWest() };
+  setMode("scroll");                      // revient au scroll avec seulement la zone
+  withLoader(() => { render(); updateZoneBtn(); });
 }
 
 // --- libellés lisibles ---------------------------------------------------
