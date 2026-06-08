@@ -49,6 +49,23 @@ def test_pending_quand_provider_absent():
     assert score is None  # aucune préférence évaluable -> pas de score
 
 
+def test_feature_non_mentionnee_est_neutre():
+    # Une feature non citée dans l'annonce ne doit PAS pénaliser (n/a, exclue du score).
+    item = _listing(flags={"features": []})
+    score, det = evaluate(item, [Preference(kind="feature", weight=2, params={"name": "cheminee"})])
+    assert det[0]["status"] == "n/a"
+    assert score is None
+    item2 = _listing(flags={"features": ["cheminee"]})
+    assert evaluate(item2, [Preference(kind="feature", params={"name": "cheminee"})])[0] == 100.0
+
+
+def test_chambres_sous_minimum_degrade_lineaire():
+    p = [Preference(kind="chambres_min", weight=1, params={"min": 4})]
+    assert evaluate(_listing(nb_chambres=3, flags={}), p)[0] == 75.0   # 3/4
+    assert evaluate(_listing(nb_chambres=2, flags={}), p)[0] == 50.0   # 2/4
+    assert evaluate(_listing(nb_chambres=5, flags={}), p)[0] == 100.0  # >= min
+
+
 def test_temps_acces_porte_a_porte():
     # Valence (sur l'axe, près du hub TGV) -> porte-à-porte court -> bon score.
     valence = _listing(latitude=44.93, longitude=4.89, flags={})
