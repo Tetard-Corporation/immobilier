@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-06-08T06:22:56.145899+00:00",
+ "generated_at": "2026-06-08T06:35:59.410621+00:00",
  "sets": [
   {
    "id": 1,
@@ -644,7 +644,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "91% des locaux éligibles fibre",
+       "detail": "91% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.91,
        "contribution": 1.82
       },
@@ -834,7 +834,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "91% des locaux éligibles fibre",
+       "detail": "91% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.91,
        "contribution": 1.82
       },
@@ -1257,7 +1257,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "98% des locaux éligibles fibre",
+       "detail": "98% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.98,
        "contribution": 1.96
       },
@@ -1457,7 +1457,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "98% des locaux éligibles fibre",
+       "detail": "98% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.98,
        "contribution": 1.96
       },
@@ -1894,7 +1894,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "62% des locaux éligibles fibre",
+       "detail": "62% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.62,
        "contribution": 1.24
       },
@@ -2083,7 +2083,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "62% des locaux éligibles fibre",
+       "detail": "62% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.62,
        "contribution": 1.24
       },
@@ -2511,7 +2511,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "72% des locaux éligibles fibre",
+       "detail": "72% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.72,
        "contribution": 1.44
       },
@@ -2709,7 +2709,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "72% des locaux éligibles fibre",
+       "detail": "72% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.72,
        "contribution": 1.44
       },
@@ -3111,7 +3111,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "91% des locaux éligibles fibre",
+       "detail": "91% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.91,
        "contribution": 1.82
       },
@@ -3306,7 +3306,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "91% des locaux éligibles fibre",
+       "detail": "91% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.91,
        "contribution": 1.82
       },
@@ -3759,7 +3759,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "99% des locaux éligibles fibre",
+       "detail": "99% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.99,
        "contribution": 1.98
       },
@@ -3958,7 +3958,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "99% des locaux éligibles fibre",
+       "detail": "99% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.99,
        "contribution": 1.98
       },
@@ -4430,7 +4430,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "63% des locaux éligibles fibre",
+       "detail": "63% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.63,
        "contribution": 1.26
       },
@@ -4633,7 +4633,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "63% des locaux éligibles fibre",
+       "detail": "63% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.63,
        "contribution": 1.26
       },
@@ -5041,7 +5041,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "91% des locaux éligibles fibre",
+       "detail": "91% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.91,
        "contribution": 1.82
       },
@@ -5241,7 +5241,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "91% des locaux éligibles fibre",
+       "detail": "91% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.91,
        "contribution": 1.82
       },
@@ -5645,7 +5645,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "94% des locaux éligibles fibre",
+       "detail": "94% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.94,
        "contribution": 1.88
       },
@@ -5836,7 +5836,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "94% des locaux éligibles fibre",
+       "detail": "94% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.94,
        "contribution": 1.88
       },
@@ -6276,7 +6276,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "97% des locaux éligibles fibre",
+       "detail": "97% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.97,
        "contribution": 1.94
       },
@@ -6467,7 +6467,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "97% des locaux éligibles fibre",
+       "detail": "97% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.97,
        "contribution": 1.94
       },
@@ -6877,7 +6877,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "91% des locaux éligibles fibre",
+       "detail": "91% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.91,
        "contribution": 1.82
       },
@@ -7065,7 +7065,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "91% des locaux éligibles fibre",
+       "detail": "91% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.91,
        "contribution": 1.82
       },
@@ -7479,7 +7479,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "91% des locaux éligibles fibre",
+       "detail": "91% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.91,
        "contribution": 1.82
       },
@@ -7669,7 +7669,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "91% des locaux éligibles fibre",
+       "detail": "91% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.91,
        "contribution": 1.82
       },
@@ -8132,7 +8132,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "94% des locaux éligibles fibre",
+       "detail": "94% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.94,
        "contribution": 1.88
       },
@@ -8322,7 +8322,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "94% des locaux éligibles fibre",
+       "detail": "94% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.94,
        "contribution": 1.88
       },
@@ -8759,7 +8759,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "91% des locaux éligibles fibre",
+       "detail": "91% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.91,
        "contribution": 1.82
       },
@@ -8959,7 +8959,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "91% des locaux éligibles fibre",
+       "detail": "91% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.91,
        "contribution": 1.82
       },
@@ -9372,7 +9372,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "89% des locaux éligibles fibre",
+       "detail": "89% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.89,
        "contribution": 1.78
       },
@@ -9569,7 +9569,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "89% des locaux éligibles fibre",
+       "detail": "89% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.89,
        "contribution": 1.78
       },
@@ -10008,7 +10008,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "91% des locaux éligibles fibre",
+       "detail": "91% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.91,
        "contribution": 1.82
       },
@@ -10197,7 +10197,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "91% des locaux éligibles fibre",
+       "detail": "91% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.91,
        "contribution": 1.82
       },
@@ -10636,7 +10636,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "91% des locaux éligibles fibre",
+       "detail": "91% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.91,
        "contribution": 1.82
       },
@@ -10818,7 +10818,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "91% des locaux éligibles fibre",
+       "detail": "91% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.91,
        "contribution": 1.82
       },
@@ -11232,7 +11232,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "57% des locaux éligibles fibre",
+       "detail": "57% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.57,
        "contribution": 1.14
       },
@@ -11430,7 +11430,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "57% des locaux éligibles fibre",
+       "detail": "57% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.57,
        "contribution": 1.14
       },
@@ -11894,7 +11894,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "91% des locaux éligibles fibre",
+       "detail": "91% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.91,
        "contribution": 1.82
       },
@@ -12084,7 +12084,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "91% des locaux éligibles fibre",
+       "detail": "91% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.91,
        "contribution": 1.82
       },
@@ -12532,7 +12532,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "72% des locaux éligibles fibre",
+       "detail": "72% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.72,
        "contribution": 1.44
       },
@@ -12724,7 +12724,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "72% des locaux éligibles fibre",
+       "detail": "72% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.72,
        "contribution": 1.44
       },
@@ -13170,7 +13170,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "62% des locaux éligibles fibre",
+       "detail": "62% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.62,
        "contribution": 1.24
       },
@@ -13361,7 +13361,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "62% des locaux éligibles fibre",
+       "detail": "62% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.62,
        "contribution": 1.24
       },
@@ -13778,7 +13778,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "91% des locaux éligibles fibre",
+       "detail": "91% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.91,
        "contribution": 1.82
       },
@@ -13960,7 +13960,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "91% des locaux éligibles fibre",
+       "detail": "91% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.91,
        "contribution": 1.82
       },
@@ -14379,7 +14379,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "86% des locaux éligibles fibre",
+       "detail": "86% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.86,
        "contribution": 1.72
       },
@@ -14567,7 +14567,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "86% des locaux éligibles fibre",
+       "detail": "86% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.86,
        "contribution": 1.72
       },
@@ -15018,7 +15018,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "87% des locaux éligibles fibre",
+       "detail": "87% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.87,
        "contribution": 1.74
       },
@@ -15208,7 +15208,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "87% des locaux éligibles fibre",
+       "detail": "87% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.87,
        "contribution": 1.74
       },
@@ -15641,7 +15641,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "97% des locaux éligibles fibre",
+       "detail": "97% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.97,
        "contribution": 1.94
       },
@@ -15832,7 +15832,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "97% des locaux éligibles fibre",
+       "detail": "97% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.97,
        "contribution": 1.94
       },
@@ -16268,7 +16268,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "88% des locaux éligibles fibre",
+       "detail": "88% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.88,
        "contribution": 1.76
       },
@@ -16458,7 +16458,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "88% des locaux éligibles fibre",
+       "detail": "88% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.88,
        "contribution": 1.76
       },
@@ -16875,7 +16875,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "91% des locaux éligibles fibre",
+       "detail": "91% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.91,
        "contribution": 1.82
       },
@@ -17065,7 +17065,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "91% des locaux éligibles fibre",
+       "detail": "91% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.91,
        "contribution": 1.82
       },
@@ -17533,7 +17533,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "97% des locaux éligibles fibre",
+       "detail": "97% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.97,
        "contribution": 1.94
       },
@@ -17724,7 +17724,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "97% des locaux éligibles fibre",
+       "detail": "97% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.97,
        "contribution": 1.94
       },
@@ -18131,7 +18131,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "96% des locaux éligibles fibre",
+       "detail": "96% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.96,
        "contribution": 1.92
       },
@@ -18320,7 +18320,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "96% des locaux éligibles fibre",
+       "detail": "96% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.96,
        "contribution": 1.92
       },
@@ -18775,7 +18775,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "55% des locaux éligibles fibre",
+       "detail": "55% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.55,
        "contribution": 1.1
       },
@@ -18973,7 +18973,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "55% des locaux éligibles fibre",
+       "detail": "55% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.55,
        "contribution": 1.1
       },
@@ -19395,7 +19395,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "98% des locaux éligibles fibre",
+       "detail": "98% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.98,
        "contribution": 1.96
       },
@@ -19586,7 +19586,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "98% des locaux éligibles fibre",
+       "detail": "98% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.98,
        "contribution": 1.96
       },
@@ -20031,7 +20031,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "98% des locaux éligibles fibre",
+       "detail": "98% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.98,
        "contribution": 1.96
       },
@@ -20222,7 +20222,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "98% des locaux éligibles fibre",
+       "detail": "98% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.98,
        "contribution": 1.96
       },
@@ -20672,7 +20672,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "91% des locaux éligibles fibre",
+       "detail": "91% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.91,
        "contribution": 1.82
       },
@@ -20864,7 +20864,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "91% des locaux éligibles fibre",
+       "detail": "91% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.91,
        "contribution": 1.82
       },
@@ -21304,7 +21304,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "91% des locaux éligibles fibre",
+       "detail": "91% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.91,
        "contribution": 1.82
       },
@@ -21495,7 +21495,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "91% des locaux éligibles fibre",
+       "detail": "91% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.91,
        "contribution": 1.82
       },
@@ -21932,7 +21932,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "97% des locaux éligibles fibre",
+       "detail": "97% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.97,
        "contribution": 1.94
       },
@@ -22132,7 +22132,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "97% des locaux éligibles fibre",
+       "detail": "97% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.97,
        "contribution": 1.94
       },
@@ -22556,7 +22556,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "83% des locaux éligibles fibre",
+       "detail": "83% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.83,
        "contribution": 1.66
       },
@@ -22757,7 +22757,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "83% des locaux éligibles fibre",
+       "detail": "83% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.83,
        "contribution": 1.66
       },
@@ -23162,7 +23162,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "91% des locaux éligibles fibre",
+       "detail": "91% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.91,
        "contribution": 1.82
       },
@@ -23353,7 +23353,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "91% des locaux éligibles fibre",
+       "detail": "91% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.91,
        "contribution": 1.82
       },
@@ -23874,7 +23874,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "0% des locaux éligibles fibre",
+       "detail": "0% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.0,
        "contribution": 0.0
       },
@@ -24056,7 +24056,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "0% des locaux éligibles fibre",
+       "detail": "0% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.0,
        "contribution": 0.0
       },
@@ -24441,7 +24441,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "98% des locaux éligibles fibre",
+       "detail": "98% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.98,
        "contribution": 1.96
       },
@@ -24623,7 +24623,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "98% des locaux éligibles fibre",
+       "detail": "98% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.98,
        "contribution": 1.96
       },
@@ -25079,7 +25079,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "86% des locaux éligibles fibre",
+       "detail": "86% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.86,
        "contribution": 1.72
       },
@@ -25271,7 +25271,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "86% des locaux éligibles fibre",
+       "detail": "86% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.86,
        "contribution": 1.72
       },
@@ -25725,7 +25725,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "72% des locaux éligibles fibre",
+       "detail": "72% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.72,
        "contribution": 1.44
       },
@@ -25915,7 +25915,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "72% des locaux éligibles fibre",
+       "detail": "72% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.72,
        "contribution": 1.44
       },
@@ -26326,7 +26326,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "91% des locaux éligibles fibre",
+       "detail": "91% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.91,
        "contribution": 1.82
       },
@@ -26517,7 +26517,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "91% des locaux éligibles fibre",
+       "detail": "91% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.91,
        "contribution": 1.82
       },
@@ -26981,7 +26981,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "60% des locaux éligibles fibre",
+       "detail": "60% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.6,
        "contribution": 1.2
       },
@@ -27174,7 +27174,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "60% des locaux éligibles fibre",
+       "detail": "60% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.6,
        "contribution": 1.2
       },
@@ -27592,7 +27592,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "90% des locaux éligibles fibre",
+       "detail": "90% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.9,
        "contribution": 1.8
       },
@@ -27782,7 +27782,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "90% des locaux éligibles fibre",
+       "detail": "90% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.9,
        "contribution": 1.8
       },
@@ -28218,7 +28218,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "55% des locaux éligibles fibre",
+       "detail": "55% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.55,
        "contribution": 1.1
       },
@@ -28408,7 +28408,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "55% des locaux éligibles fibre",
+       "detail": "55% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.55,
        "contribution": 1.1
       },
@@ -28844,7 +28844,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "96% des locaux éligibles fibre",
+       "detail": "96% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.96,
        "contribution": 1.92
       },
@@ -29036,7 +29036,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "96% des locaux éligibles fibre",
+       "detail": "96% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.96,
        "contribution": 1.92
       },
@@ -29453,7 +29453,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "97% des locaux éligibles fibre",
+       "detail": "97% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.97,
        "contribution": 1.94
       },
@@ -29635,7 +29635,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "97% des locaux éligibles fibre",
+       "detail": "97% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.97,
        "contribution": 1.94
       },
@@ -30079,7 +30079,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "91% des locaux éligibles fibre",
+       "detail": "91% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.91,
        "contribution": 1.82
       },
@@ -30269,7 +30269,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "91% des locaux éligibles fibre",
+       "detail": "91% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.91,
        "contribution": 1.82
       },
@@ -30716,7 +30716,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "98% des locaux éligibles fibre",
+       "detail": "98% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.98,
        "contribution": 1.96
       },
@@ -30906,7 +30906,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "98% des locaux éligibles fibre",
+       "detail": "98% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.98,
        "contribution": 1.96
       },
@@ -31329,7 +31329,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "91% des locaux éligibles fibre",
+       "detail": "91% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.91,
        "contribution": 1.82
       },
@@ -31520,7 +31520,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "91% des locaux éligibles fibre",
+       "detail": "91% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.91,
        "contribution": 1.82
       },
@@ -31947,7 +31947,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "96% des locaux éligibles fibre",
+       "detail": "96% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.96,
        "contribution": 1.92
       },
@@ -32136,7 +32136,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "96% des locaux éligibles fibre",
+       "detail": "96% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.96,
        "contribution": 1.92
       },
@@ -32600,7 +32600,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "93% des locaux éligibles fibre",
+       "detail": "93% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.93,
        "contribution": 1.86
       },
@@ -32800,7 +32800,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "93% des locaux éligibles fibre",
+       "detail": "93% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.93,
        "contribution": 1.86
       },
@@ -33214,7 +33214,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "91% des locaux éligibles fibre",
+       "detail": "91% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.91,
        "contribution": 1.82
       },
@@ -33406,7 +33406,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "91% des locaux éligibles fibre",
+       "detail": "91% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.91,
        "contribution": 1.82
       },
@@ -33840,7 +33840,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "83% des locaux éligibles fibre",
+       "detail": "83% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.83,
        "contribution": 1.66
       },
@@ -34030,7 +34030,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "83% des locaux éligibles fibre",
+       "detail": "83% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.83,
        "contribution": 1.66
       },
@@ -34445,7 +34445,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "93% des locaux éligibles fibre",
+       "detail": "93% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.93,
        "contribution": 1.86
       },
@@ -34634,7 +34634,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "93% des locaux éligibles fibre",
+       "detail": "93% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.93,
        "contribution": 1.86
       },
@@ -35090,7 +35090,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "96% des locaux éligibles fibre",
+       "detail": "96% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.96,
        "contribution": 1.92
       },
@@ -35290,7 +35290,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "96% des locaux éligibles fibre",
+       "detail": "96% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.96,
        "contribution": 1.92
       },
@@ -35715,7 +35715,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "55% des locaux éligibles fibre",
+       "detail": "55% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.55,
        "contribution": 1.1
       },
@@ -35903,7 +35903,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "55% des locaux éligibles fibre",
+       "detail": "55% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.55,
        "contribution": 1.1
       },
@@ -36346,7 +36346,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "87% des locaux éligibles fibre",
+       "detail": "87% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.87,
        "contribution": 1.74
       },
@@ -36535,7 +36535,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "87% des locaux éligibles fibre",
+       "detail": "87% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.87,
        "contribution": 1.74
       },
@@ -36951,7 +36951,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "96% des locaux éligibles fibre",
+       "detail": "96% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.96,
        "contribution": 1.92
       },
@@ -37140,7 +37140,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "96% des locaux éligibles fibre",
+       "detail": "96% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.96,
        "contribution": 1.92
       },
@@ -37584,7 +37584,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "98% des locaux éligibles fibre",
+       "detail": "98% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.98,
        "contribution": 1.96
       },
@@ -37774,7 +37774,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "98% des locaux éligibles fibre",
+       "detail": "98% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.98,
        "contribution": 1.96
       },
@@ -38217,7 +38217,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "64% des locaux éligibles fibre",
+       "detail": "64% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.64,
        "contribution": 1.28
       },
@@ -38407,7 +38407,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "64% des locaux éligibles fibre",
+       "detail": "64% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.64,
        "contribution": 1.28
       },
@@ -38835,7 +38835,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "98% des locaux éligibles fibre",
+       "detail": "98% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.98,
        "contribution": 1.96
       },
@@ -39025,7 +39025,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "98% des locaux éligibles fibre",
+       "detail": "98% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.98,
        "contribution": 1.96
       },
@@ -39476,7 +39476,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "97% des locaux éligibles fibre",
+       "detail": "97% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.97,
        "contribution": 1.94
       },
@@ -39657,7 +39657,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "97% des locaux éligibles fibre",
+       "detail": "97% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.97,
        "contribution": 1.94
       },
@@ -40112,7 +40112,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "68% des locaux éligibles fibre",
+       "detail": "68% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.68,
        "contribution": 1.36
       },
@@ -40296,7 +40296,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "68% des locaux éligibles fibre",
+       "detail": "68% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.68,
        "contribution": 1.36
       },
@@ -40725,7 +40725,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "90% des locaux éligibles fibre",
+       "detail": "90% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.9,
        "contribution": 1.8
       },
@@ -40906,7 +40906,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "90% des locaux éligibles fibre",
+       "detail": "90% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.9,
        "contribution": 1.8
       },
@@ -41382,7 +41382,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "75% des locaux éligibles fibre",
+       "detail": "75% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.75,
        "contribution": 1.5
       },
@@ -41574,7 +41574,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "75% des locaux éligibles fibre",
+       "detail": "75% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.75,
        "contribution": 1.5
       },
@@ -41993,7 +41993,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "91% des locaux éligibles fibre",
+       "detail": "91% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.91,
        "contribution": 1.82
       },
@@ -42192,7 +42192,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "91% des locaux éligibles fibre",
+       "detail": "91% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.91,
        "contribution": 1.82
       },
@@ -42586,7 +42586,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "91% des locaux éligibles fibre",
+       "detail": "91% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.91,
        "contribution": 1.82
       },
@@ -42776,7 +42776,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "91% des locaux éligibles fibre",
+       "detail": "91% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.91,
        "contribution": 1.82
       },
@@ -43242,7 +43242,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "90% des locaux éligibles fibre",
+       "detail": "90% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.9,
        "contribution": 1.8
       },
@@ -43433,7 +43433,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "90% des locaux éligibles fibre",
+       "detail": "90% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.9,
        "contribution": 1.8
       },
@@ -43875,7 +43875,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "99% des locaux éligibles fibre",
+       "detail": "99% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.99,
        "contribution": 1.98
       },
@@ -44060,7 +44060,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "99% des locaux éligibles fibre",
+       "detail": "99% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.99,
        "contribution": 1.98
       },
@@ -44500,7 +44500,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "75% des locaux éligibles fibre",
+       "detail": "75% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.75,
        "contribution": 1.5
       },
@@ -44690,7 +44690,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "75% des locaux éligibles fibre",
+       "detail": "75% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.75,
        "contribution": 1.5
       },
@@ -45128,7 +45128,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "97% des locaux éligibles fibre",
+       "detail": "97% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.97,
        "contribution": 1.94
       },
@@ -45320,7 +45320,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "97% des locaux éligibles fibre",
+       "detail": "97% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.97,
        "contribution": 1.94
       },
@@ -45765,7 +45765,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "89% des locaux éligibles fibre",
+       "detail": "89% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.89,
        "contribution": 1.78
       },
@@ -45948,7 +45948,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "89% des locaux éligibles fibre",
+       "detail": "89% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.89,
        "contribution": 1.78
       },
@@ -46368,7 +46368,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "96% des locaux éligibles fibre",
+       "detail": "96% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.96,
        "contribution": 1.92
       },
@@ -46558,7 +46558,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "96% des locaux éligibles fibre",
+       "detail": "96% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.96,
        "contribution": 1.92
       },
@@ -47032,7 +47032,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "85% des locaux éligibles fibre",
+       "detail": "85% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.85,
        "contribution": 1.7
       },
@@ -47215,7 +47215,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "85% des locaux éligibles fibre",
+       "detail": "85% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.85,
        "contribution": 1.7
       },
@@ -47656,7 +47656,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "94% des locaux éligibles fibre",
+       "detail": "94% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.94,
        "contribution": 1.88
       },
@@ -47838,7 +47838,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "94% des locaux éligibles fibre",
+       "detail": "94% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.94,
        "contribution": 1.88
       },
@@ -48296,7 +48296,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "91% des locaux éligibles fibre",
+       "detail": "91% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.91,
        "contribution": 1.82
       },
@@ -48487,7 +48487,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "91% des locaux éligibles fibre",
+       "detail": "91% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.91,
        "contribution": 1.82
       },
@@ -48899,7 +48899,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "86% des locaux éligibles fibre",
+       "detail": "86% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.86,
        "contribution": 1.72
       },
@@ -49083,7 +49083,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "86% des locaux éligibles fibre",
+       "detail": "86% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.86,
        "contribution": 1.72
       },
@@ -49504,7 +49504,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "98% des locaux éligibles fibre",
+       "detail": "98% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.98,
        "contribution": 1.96
       },
@@ -49685,7 +49685,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "98% des locaux éligibles fibre",
+       "detail": "98% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.98,
        "contribution": 1.96
       },
@@ -50169,7 +50169,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "56% des locaux éligibles fibre",
+       "detail": "56% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.56,
        "contribution": 1.12
       },
@@ -50359,7 +50359,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "56% des locaux éligibles fibre",
+       "detail": "56% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.56,
        "contribution": 1.12
       },
@@ -51403,7 +51403,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "56% des locaux éligibles fibre",
+       "detail": "56% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.56,
        "contribution": 1.12
       },
@@ -51593,7 +51593,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "56% des locaux éligibles fibre",
+       "detail": "56% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.56,
        "contribution": 1.12
       },
@@ -52032,7 +52032,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "95% des locaux éligibles fibre",
+       "detail": "95% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.95,
        "contribution": 1.9
       },
@@ -52223,7 +52223,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "95% des locaux éligibles fibre",
+       "detail": "95% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.95,
        "contribution": 1.9
       },
@@ -52687,7 +52687,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "72% des locaux éligibles fibre",
+       "detail": "72% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.72,
        "contribution": 1.44
       },
@@ -52878,7 +52878,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "72% des locaux éligibles fibre",
+       "detail": "72% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.72,
        "contribution": 1.44
       },
@@ -53297,7 +53297,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "56% des locaux éligibles fibre",
+       "detail": "56% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.56,
        "contribution": 1.12
       },
@@ -53487,7 +53487,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "56% des locaux éligibles fibre",
+       "detail": "56% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.56,
        "contribution": 1.12
       },
@@ -53958,7 +53958,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "19% des locaux éligibles fibre",
+       "detail": "19% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.19,
        "contribution": 0.38
       },
@@ -54141,7 +54141,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "19% des locaux éligibles fibre",
+       "detail": "19% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.19,
        "contribution": 0.38
       },
@@ -55183,7 +55183,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "81% des locaux éligibles fibre",
+       "detail": "81% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.81,
        "contribution": 1.62
       },
@@ -55374,7 +55374,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "81% des locaux éligibles fibre",
+       "detail": "81% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.81,
        "contribution": 1.62
       },
@@ -55798,7 +55798,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "96% des locaux éligibles fibre",
+       "detail": "96% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.96,
        "contribution": 1.92
       },
@@ -55979,7 +55979,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "96% des locaux éligibles fibre",
+       "detail": "96% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.96,
        "contribution": 1.92
       },
@@ -56483,7 +56483,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "26% des locaux éligibles fibre",
+       "detail": "26% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.26,
        "contribution": 0.52
       },
@@ -56665,7 +56665,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "26% des locaux éligibles fibre",
+       "detail": "26% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.26,
        "contribution": 0.52
       },
@@ -57083,7 +57083,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "42% des locaux éligibles fibre",
+       "detail": "42% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.42,
        "contribution": 0.84
       },
@@ -57272,7 +57272,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "42% des locaux éligibles fibre",
+       "detail": "42% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.42,
        "contribution": 0.84
       },
@@ -57705,7 +57705,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "42% des locaux éligibles fibre",
+       "detail": "42% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.42,
        "contribution": 0.84
       },
@@ -57894,7 +57894,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "42% des locaux éligibles fibre",
+       "detail": "42% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.42,
        "contribution": 0.84
       },
@@ -58303,7 +58303,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "94% des locaux éligibles fibre",
+       "detail": "94% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.94,
        "contribution": 1.88
       },
@@ -58494,7 +58494,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "94% des locaux éligibles fibre",
+       "detail": "94% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.94,
        "contribution": 1.88
       },
@@ -58939,7 +58939,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "85% des locaux éligibles fibre",
+       "detail": "85% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.85,
        "contribution": 1.7
       },
@@ -59137,7 +59137,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "85% des locaux éligibles fibre",
+       "detail": "85% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.85,
        "contribution": 1.7
       },
@@ -59558,7 +59558,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "91% des locaux éligibles fibre",
+       "detail": "91% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.91,
        "contribution": 1.82
       },
@@ -59746,7 +59746,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "91% des locaux éligibles fibre",
+       "detail": "91% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.91,
        "contribution": 1.82
       },
@@ -60193,7 +60193,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "99% des locaux éligibles fibre",
+       "detail": "99% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.99,
        "contribution": 1.98
       },
@@ -60385,7 +60385,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "99% des locaux éligibles fibre",
+       "detail": "99% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.99,
        "contribution": 1.98
       },
@@ -60824,7 +60824,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "98% des locaux éligibles fibre",
+       "detail": "98% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.98,
        "contribution": 1.96
       },
@@ -61006,7 +61006,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "98% des locaux éligibles fibre",
+       "detail": "98% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.98,
        "contribution": 1.96
       },
@@ -61476,7 +61476,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "81% des locaux éligibles fibre",
+       "detail": "81% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.81,
        "contribution": 1.62
       },
@@ -61678,7 +61678,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "81% des locaux éligibles fibre",
+       "detail": "81% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.81,
        "contribution": 1.62
       },
@@ -62115,7 +62115,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "81% des locaux éligibles fibre",
+       "detail": "81% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.81,
        "contribution": 1.62
       },
@@ -62307,7 +62307,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "81% des locaux éligibles fibre",
+       "detail": "81% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.81,
        "contribution": 1.62
       },
@@ -63337,7 +63337,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "91% des locaux éligibles fibre",
+       "detail": "91% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.91,
        "contribution": 1.82
       },
@@ -63527,7 +63527,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "91% des locaux éligibles fibre",
+       "detail": "91% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.91,
        "contribution": 1.82
       },
@@ -63972,7 +63972,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "99% des locaux éligibles fibre",
+       "detail": "99% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.99,
        "contribution": 1.98
       },
@@ -64172,7 +64172,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "99% des locaux éligibles fibre",
+       "detail": "99% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.99,
        "contribution": 1.98
       },
@@ -64621,7 +64621,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "91% des locaux éligibles fibre",
+       "detail": "91% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.91,
        "contribution": 1.82
       },
@@ -64812,7 +64812,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "91% des locaux éligibles fibre",
+       "detail": "91% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.91,
        "contribution": 1.82
       },
@@ -65232,7 +65232,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "99% des locaux éligibles fibre",
+       "detail": "99% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.99,
        "contribution": 1.98
       },
@@ -65425,7 +65425,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "99% des locaux éligibles fibre",
+       "detail": "99% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.99,
        "contribution": 1.98
       },
@@ -65854,7 +65854,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "99% des locaux éligibles fibre",
+       "detail": "99% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.99,
        "contribution": 1.98
       },
@@ -66035,7 +66035,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "99% des locaux éligibles fibre",
+       "detail": "99% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.99,
        "contribution": 1.98
       },
@@ -66492,7 +66492,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "95% des locaux éligibles fibre",
+       "detail": "95% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.95,
        "contribution": 1.9
       },
@@ -66690,7 +66690,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "95% des locaux éligibles fibre",
+       "detail": "95% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.95,
        "contribution": 1.9
       },
@@ -67129,7 +67129,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "75% des locaux éligibles fibre",
+       "detail": "75% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.75,
        "contribution": 1.5
       },
@@ -67330,7 +67330,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "75% des locaux éligibles fibre",
+       "detail": "75% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.75,
        "contribution": 1.5
       },
@@ -67752,7 +67752,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "97% des locaux éligibles fibre",
+       "detail": "97% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.97,
        "contribution": 1.94
       },
@@ -67943,7 +67943,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "97% des locaux éligibles fibre",
+       "detail": "97% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.97,
        "contribution": 1.94
       },
@@ -68392,7 +68392,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "73% des locaux éligibles fibre",
+       "detail": "73% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.73,
        "contribution": 1.46
       },
@@ -68583,7 +68583,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "73% des locaux éligibles fibre",
+       "detail": "73% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.73,
        "contribution": 1.46
       },
@@ -69614,7 +69614,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "92% des locaux éligibles fibre",
+       "detail": "92% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.92,
        "contribution": 1.84
       },
@@ -69795,7 +69795,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "92% des locaux éligibles fibre",
+       "detail": "92% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.92,
        "contribution": 1.84
       },
@@ -70262,7 +70262,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "82% des locaux éligibles fibre",
+       "detail": "82% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.82,
        "contribution": 1.64
       },
@@ -70447,7 +70447,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "82% des locaux éligibles fibre",
+       "detail": "82% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.82,
        "contribution": 1.64
       },
@@ -71498,7 +71498,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "96% des locaux éligibles fibre",
+       "detail": "96% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.96,
        "contribution": 1.92
       },
@@ -71680,7 +71680,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "96% des locaux éligibles fibre",
+       "detail": "96% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.96,
        "contribution": 1.92
       },
@@ -72116,7 +72116,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "69% des locaux éligibles fibre",
+       "detail": "69% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.69,
        "contribution": 1.38
       },
@@ -72296,7 +72296,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "69% des locaux éligibles fibre",
+       "detail": "69% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.69,
        "contribution": 1.38
       },
@@ -72723,7 +72723,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "86% des locaux éligibles fibre",
+       "detail": "86% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.86,
        "contribution": 1.72
       },
@@ -72912,7 +72912,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "86% des locaux éligibles fibre",
+       "detail": "86% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.86,
        "contribution": 1.72
       },
@@ -73340,7 +73340,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "91% des locaux éligibles fibre",
+       "detail": "91% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.91,
        "contribution": 1.82
       },
@@ -73529,7 +73529,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "91% des locaux éligibles fibre",
+       "detail": "91% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.91,
        "contribution": 1.82
       },
@@ -73983,7 +73983,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "94% des locaux éligibles fibre",
+       "detail": "94% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.94,
        "contribution": 1.88
       },
@@ -74165,7 +74165,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "94% des locaux éligibles fibre",
+       "detail": "94% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.94,
        "contribution": 1.88
       },
@@ -74598,7 +74598,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "79% des locaux éligibles fibre",
+       "detail": "79% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.79,
        "contribution": 1.58
       },
@@ -74788,7 +74788,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "79% des locaux éligibles fibre",
+       "detail": "79% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.79,
        "contribution": 1.58
       },
@@ -75203,7 +75203,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "97% des locaux éligibles fibre",
+       "detail": "97% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.97,
        "contribution": 1.94
       },
@@ -75384,7 +75384,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "97% des locaux éligibles fibre",
+       "detail": "97% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.97,
        "contribution": 1.94
       },
@@ -75823,7 +75823,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "85% des locaux éligibles fibre",
+       "detail": "85% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.85,
        "contribution": 1.7
       },
@@ -76012,7 +76012,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "85% des locaux éligibles fibre",
+       "detail": "85% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.85,
        "contribution": 1.7
       },
@@ -76459,7 +76459,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "86% des locaux éligibles fibre",
+       "detail": "86% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.86,
        "contribution": 1.72
       },
@@ -76649,7 +76649,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "86% des locaux éligibles fibre",
+       "detail": "86% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.86,
        "contribution": 1.72
       },
@@ -77065,7 +77065,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "98% des locaux éligibles fibre",
+       "detail": "98% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.98,
        "contribution": 1.96
       },
@@ -77254,7 +77254,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "98% des locaux éligibles fibre",
+       "detail": "98% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.98,
        "contribution": 1.96
       },
@@ -77677,7 +77677,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "96% des locaux éligibles fibre",
+       "detail": "96% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.96,
        "contribution": 1.92
       },
@@ -77874,7 +77874,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "96% des locaux éligibles fibre",
+       "detail": "96% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.96,
        "contribution": 1.92
       },
@@ -78321,7 +78321,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "96% des locaux éligibles fibre",
+       "detail": "96% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.96,
        "contribution": 1.92
       },
@@ -78501,7 +78501,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "96% des locaux éligibles fibre",
+       "detail": "96% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.96,
        "contribution": 1.92
       },
@@ -78948,7 +78948,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "97% des locaux éligibles fibre",
+       "detail": "97% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.97,
        "contribution": 1.94
       },
@@ -79138,7 +79138,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "97% des locaux éligibles fibre",
+       "detail": "97% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.97,
        "contribution": 1.94
       },
@@ -79595,7 +79595,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "71% des locaux éligibles fibre",
+       "detail": "71% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.71,
        "contribution": 1.42
       },
@@ -79786,7 +79786,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "71% des locaux éligibles fibre",
+       "detail": "71% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.71,
        "contribution": 1.42
       },
@@ -80830,7 +80830,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "99% des locaux éligibles fibre",
+       "detail": "99% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.99,
        "contribution": 1.98
       },
@@ -81012,7 +81012,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "99% des locaux éligibles fibre",
+       "detail": "99% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.99,
        "contribution": 1.98
       },
@@ -81466,7 +81466,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "85% des locaux éligibles fibre",
+       "detail": "85% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.85,
        "contribution": 1.7
       },
@@ -81648,7 +81648,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "85% des locaux éligibles fibre",
+       "detail": "85% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.85,
        "contribution": 1.7
       },
@@ -82078,7 +82078,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "98% des locaux éligibles fibre",
+       "detail": "98% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.98,
        "contribution": 1.96
       },
@@ -82259,7 +82259,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "98% des locaux éligibles fibre",
+       "detail": "98% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.98,
        "contribution": 1.96
       },
@@ -82694,7 +82694,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "94% des locaux éligibles fibre",
+       "detail": "94% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.94,
        "contribution": 1.88
       },
@@ -82875,7 +82875,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "94% des locaux éligibles fibre",
+       "detail": "94% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.94,
        "contribution": 1.88
       },
@@ -83332,7 +83332,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "95% des locaux éligibles fibre",
+       "detail": "95% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.95,
        "contribution": 1.9
       },
@@ -83514,7 +83514,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "95% des locaux éligibles fibre",
+       "detail": "95% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.95,
        "contribution": 1.9
       },
@@ -83951,7 +83951,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "83% des locaux éligibles fibre",
+       "detail": "83% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.83,
        "contribution": 1.66
       },
@@ -84133,7 +84133,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "83% des locaux éligibles fibre",
+       "detail": "83% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.83,
        "contribution": 1.66
       },
@@ -84616,7 +84616,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "50% des locaux éligibles fibre",
+       "detail": "50% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.5,
        "contribution": 1.0
       },
@@ -84815,7 +84815,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "50% des locaux éligibles fibre",
+       "detail": "50% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.5,
        "contribution": 1.0
       },
@@ -85202,7 +85202,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "98% des locaux éligibles fibre",
+       "detail": "98% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.98,
        "contribution": 1.96
       },
@@ -85391,7 +85391,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "98% des locaux éligibles fibre",
+       "detail": "98% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.98,
        "contribution": 1.96
       },
@@ -85888,7 +85888,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "0% des locaux éligibles fibre",
+       "detail": "0% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.0,
        "contribution": 0.0
       },
@@ -86060,7 +86060,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "0% des locaux éligibles fibre",
+       "detail": "0% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.0,
        "contribution": 0.0
       },
@@ -86467,7 +86467,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "82% des locaux éligibles fibre",
+       "detail": "82% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.82,
        "contribution": 1.64
       },
@@ -86650,7 +86650,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "82% des locaux éligibles fibre",
+       "detail": "82% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.82,
        "contribution": 1.64
       },
@@ -87077,7 +87077,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "94% des locaux éligibles fibre",
+       "detail": "94% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.94,
        "contribution": 1.88
       },
@@ -87257,7 +87257,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "94% des locaux éligibles fibre",
+       "detail": "94% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.94,
        "contribution": 1.88
       },
@@ -87720,7 +87720,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "90% des locaux éligibles fibre",
+       "detail": "90% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.9,
        "contribution": 1.8
       },
@@ -87910,7 +87910,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "90% des locaux éligibles fibre",
+       "detail": "90% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.9,
        "contribution": 1.8
       },
@@ -88336,7 +88336,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "97% des locaux éligibles fibre",
+       "detail": "97% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.97,
        "contribution": 1.94
       },
@@ -88518,7 +88518,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "97% des locaux éligibles fibre",
+       "detail": "97% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.97,
        "contribution": 1.94
       },
@@ -88959,7 +88959,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "97% des locaux éligibles fibre",
+       "detail": "97% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.97,
        "contribution": 1.94
       },
@@ -89141,7 +89141,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "97% des locaux éligibles fibre",
+       "detail": "97% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.97,
        "contribution": 1.94
       },
@@ -89573,7 +89573,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "94% des locaux éligibles fibre",
+       "detail": "94% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.94,
        "contribution": 1.88
       },
@@ -89753,7 +89753,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "94% des locaux éligibles fibre",
+       "detail": "94% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.94,
        "contribution": 1.88
       },
@@ -90191,7 +90191,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "98% des locaux éligibles fibre",
+       "detail": "98% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.98,
        "contribution": 1.96
       },
@@ -90380,7 +90380,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "98% des locaux éligibles fibre",
+       "detail": "98% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.98,
        "contribution": 1.96
       },
@@ -90813,7 +90813,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "98% des locaux éligibles fibre",
+       "detail": "98% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.98,
        "contribution": 1.96
       },
@@ -90993,7 +90993,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "98% des locaux éligibles fibre",
+       "detail": "98% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.98,
        "contribution": 1.96
       },
@@ -91424,7 +91424,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "98% des locaux éligibles fibre",
+       "detail": "98% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.98,
        "contribution": 1.96
       },
@@ -91604,7 +91604,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "98% des locaux éligibles fibre",
+       "detail": "98% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.98,
        "contribution": 1.96
       },
@@ -92076,7 +92076,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "60% des locaux éligibles fibre",
+       "detail": "60% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.6,
        "contribution": 1.2
       },
@@ -92258,7 +92258,7 @@
        "label": "Fibre (télétravail)",
        "weight": 2.0,
        "status": "ok",
-       "detail": "60% des locaux éligibles fibre",
+       "detail": "60% des locaux de la commune éligibles (à vérifier pour ce bien)",
        "subscore": 0.6,
        "contribution": 1.2
       },

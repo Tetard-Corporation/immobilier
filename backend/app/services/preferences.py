@@ -282,7 +282,9 @@ def _eval_one(item, kind: str, params: dict):
         if kind == "fiber":
             pct = flags.get("fibre_pct")
             if pct is not None:
-                return _clamp(pct / 100), "ok", f"{pct}% des locaux éligibles fibre"
+                # Donnée Arcep au niveau COMMUNE (pas par logement) : à confirmer pour un
+                # bien isolé/hameau, qui peut être dans la minorité non raccordée.
+                return _clamp(pct / 100), "ok", f"{pct}% des locaux de la commune éligibles (à vérifier pour ce bien)"
             return (1.0 if val else 0.0), "ok", "fibre" if val else "pas de fibre"
         if kind == "relief_mountain":
             ref = params.get("ref_altitude", 600)
