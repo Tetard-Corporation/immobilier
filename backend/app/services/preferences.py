@@ -103,8 +103,10 @@ def _eval_one(item, kind: str, params: dict):
         if nb >= mn:
             sub = 1.0
         else:
-            # En dessous du minimum -> MAUVAIS score (pénalité forte) : mn-1 ~0.3, mn-2 et moins ~0.
-            sub = _clamp(0.3 - (mn - nb - 1) * 0.3)
+            # En dessous du minimum -> dégradé linéaire (et non un mur à 0) :
+            # 3/4 = 0.75, 2/4 = 0.5, 1/4 = 0.25. Garde la direction (plus de chambres = mieux)
+            # sans écraser le match des biens à rénover (souvent 2-3 ch).
+            sub = _clamp(nb / mn)
         return sub, "ok", f"{nb} ch. (min {mn})"
 
     if kind == "has_terrain":
@@ -132,7 +134,8 @@ def _eval_one(item, kind: str, params: dict):
             return 1.0, "ok", "sans vis-à-vis"
         if "vis_a_vis" in (flags.get("nuisances") or []):
             return 0.0, "ok", "vis-à-vis signalé"
-        return 0.6, "ok", "non précisé"
+        # Donnée absente : on n'invente pas une pénalité -> n/a (exclu du dénominateur).
+        return None, "n/a", "vis-à-vis non précisé (ignoré)"
 
     if kind == "nature_exception":
         ns = flags.get("nature_score") or 0
@@ -142,7 +145,10 @@ def _eval_one(item, kind: str, params: dict):
 
     if kind == "authentic":
         present = "authentique" in (flags.get("features") or [])
-        return (1.0 if present else 0.3), "ok", "cachet / authentique mentionné" if present else "cachet non mentionné"
+        # Cachet non mentionné ≠ sans cachet (annonces incomplètes) -> n/a plutôt que pénalité.
+        if present:
+            return 1.0, "ok", "cachet / authentique mentionné"
+        return None, "n/a", "cachet non mentionné (ignoré)"
 
     if kind == "pas_pavillon":
         # Critère négatif (retour du groupe : « pavillon, on ne veut pas du neuf »).
@@ -163,7 +169,10 @@ def _eval_one(item, kind: str, params: dict):
             if iso is not None:
                 detail = f"commune de {pop} hab." if pop is not None else "densité connue"
                 return _clamp(iso), "ok", detail
-        return (1.0 if present else 0.2), "ok", f"{name} : mentionné" if present else f"{name} : non mentionné"
+        # Feature non citée dans l'annonce ≠ absente -> n/a (exclu), pas une pénalité à 0.2.
+        if present:
+            return 1.0, "ok", f"{name} : mentionné"
+        return None, "n/a", f"{name} : non mentionné (ignoré)"
 
     if kind == "near_corridor":
         if item.latitude is None or item.longitude is None:
