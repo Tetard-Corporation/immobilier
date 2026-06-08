@@ -42,6 +42,22 @@ def test_normalisation_puis_annotation_nature():
     assert "sans_vis_a_vis" in item.flags["features"]
 
 
+def test_headers_inclut_api_key_et_cookie_datadome():
+    from app.config import Settings
+    src = LeboncoinSource(settings=Settings(leboncoin_datadome="ABC123"))
+    h = src._headers()
+    assert h["api_key"]                       # clé requise par l'API
+    assert h["Cookie"] == "datadome=ABC123"
+    assert src.available is True              # cookie présent -> source utilisable
+
+
+def test_indisponible_sans_proxy_ni_cookie():
+    from app.config import Settings
+    src = LeboncoinSource(settings=Settings(proxy_url="", leboncoin_datadome=""))
+    assert src.available is False             # Datadome bloque l'IP datacenter
+    assert "Cookie" not in src._headers()
+
+
 def test_build_payload():
     src = LeboncoinSource()
     crit = SearchCriteria(

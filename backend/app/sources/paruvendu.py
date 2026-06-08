@@ -56,6 +56,13 @@ class ParuvenduSource(ScraperSource):
         slug = next((_SLUG[t] for t in types if t in _SLUG), "immobilier")
         page = max(c.page, 1)
         suffix = f"?p={page}" if page > 1 else ""
+        # Filtre géo : Paruvendu expose /vente/{type}/{dept-slug}-{num}/ ; sans ça on
+        # récupère le national et tout est filtré côté client -> 0 résultat.
+        from ..services.departements import dept_slug
+
+        geo = dept_slug(c.departement)
+        if geo:
+            return f"/immobilier/vente/{slug}/{geo}/{suffix}"
         return f"/immobilier/vente/{slug}/{suffix}"
 
     def _type_hint(self, c: SearchCriteria) -> str | None:
@@ -82,16 +89,20 @@ class ParuvenduSource(ScraperSource):
         text = re.sub(r"\s+", " ", text)
         title = _html.unescape(_TITLE.search(card).group(1)) if _TITLE.search(card) else ""
 
-        price = _PRICE.search(text)
+        # Prix : lu sur le HTML BRUT. Sur le texte aplati, le nombre de photos ("12")
+        # se colle au prix ("450 000 €") -> "12 450 000". Les balises les séparent dans
+        # le HTML : on prend le 1er montant plausible (≥ 10 000 €).
+        prices = [p for p in (_num(x) for x in _PRICE.findall(card)) if p and p >= 10000]
+        prix = prices[0] if prices else None
+
         # Surface prioritairement depuis le titre (plus fiable que le corps).
         surface_m = _SURFACE.search(title) or _SURFACE.search(text)
         surface = _num(surface_m.group(1)) if surface_m else None
         loc = _LOC.search(text)
-
-        prix = _num(price.group(1)) if price else None
-        # Écarte un éventuel prix au m² (faible) capté avant le prix total.
-        if prix is not None and prix < 1000:
-            prix = None
+        commune = None
+        if loc:
+            commune = re.sub(r"^(maison|appartement|terrain|immeuble|villa|studio)\s+",
+                             "", loc.group(1).strip(), flags=re.I).strip()
 
         return NormalizedListing(
             source="paruvendu",
@@ -100,8 +111,8 @@ class ParuvenduSource(ScraperSource):
             prix=prix,
             surface_terrain=surface if type_hint == "terrain" else None,
             surface_bati=surface if type_hint not in ("terrain", None) else None,
-            adresse=loc.group(1).strip() if loc else (title or None),
-            commune=loc.group(1).strip() if loc else None,
+            adresse=commune or (title or None),
+            commune=commune,
             departement=loc.group(2) if loc else None,
             url=self.base_url + href,
             description=title or None,

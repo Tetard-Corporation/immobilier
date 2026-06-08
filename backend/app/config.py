@@ -29,6 +29,11 @@ class Settings(BaseSettings):
     # Scraping
     proxy_url: str = ""
     scraper_rate_limit_ms: int = 2000
+    # Leboncoin : header api_key requis (clé web publique par défaut) + cookie Datadome
+    # éventuel récolté depuis un navigateur. Sans proxy résidentiel NI cookie, l'API
+    # renvoie 403 (Datadome bloque les IP datacenter) -> source marquée indisponible.
+    leboncoin_api_key: str = "ba0c2dad52b3ec"
+    leboncoin_datadome: str = ""
 
     # Enrichissement (Lot A)
     enrich_on_search: bool = False
