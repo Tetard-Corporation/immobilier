@@ -109,15 +109,22 @@ function render() {
   if (!$("#mapView").classList.contains("hidden")) renderMap(list);
 }
 
-function gallery(bien) {
-  const photos = bien.photos || [];
-  if (!photos.length) {
+function gallery(bien, full = false) {
+  const all = bien.photos || [];
+  if (!all.length) {
     const n = bien.n_photos_source ? ` (${bien.n_photos_source} non téléchargées)` : "";
     return `<div class="gallery"><div class="nophoto">pas de photo${n}</div></div>`;
   }
-  const imgs = photos.map((p) => `<img loading="lazy" src="data/${p}" alt="" />`).join("");
-  const dots = photos.map((_, i) => `<i class="${i === 0 ? "on" : ""}"></i>`).join("");
-  const nav = photos.length > 1
+  // Feed : une SEULE photo par carte. Les images font 1280px (~5 Mo décodées) ; en
+  // afficher 9 par carte × 147 cartes faisait saturer la RAM mobile (crash/refresh).
+  // La galerie complète (flèches + points) n'est montée que dans la fiche.
+  if (!full) {
+    const more = all.length > 1 ? `<span class="photo-count">📷 ${all.length}</span>` : "";
+    return `<div class="gallery"><img loading="lazy" decoding="async" src="data/${all[0]}" alt="" /></div>${more}`;
+  }
+  const imgs = all.map((p) => `<img loading="lazy" decoding="async" src="data/${p}" alt="" />`).join("");
+  const dots = all.map((_, i) => `<i class="${i === 0 ? "on" : ""}"></i>`).join("");
+  const nav = all.length > 1
     ? `<button class="gnav prev" data-d="-1">‹</button><button class="gnav next" data-d="1">›</button>`
     : "";
   return `<div class="gallery">${imgs}${nav}<div class="dots">${dots}</div></div>`;
@@ -534,7 +541,7 @@ function openModal(bien) {
     <div class="sub">${bien.type_bien || "bien"} · ${bien.nb_chambres ?? "?"} ch · ${bien.nb_pieces ?? "?"} p ·
       terrain ${bien.surface_terrain != null ? bien.surface_terrain + " m²" : "—"} ·
       ${bien.altitude != null ? Math.round(bien.altitude) + " m alt." : ""}</div>
-    <div class="modal-gallery galwrap${(bien.photos || []).length ? " has-photos" : ""}" style="position:relative">${gallery(bien)}</div>
+    <div class="modal-gallery galwrap${(bien.photos || []).length ? " has-photos" : ""}" style="position:relative">${gallery(bien, true)}</div>
     ${bien.description ? `<p class="descr">${escHtml(htmlToText(bien.description))}</p>` : ""}
 
     ${infoGrid(bien)}
@@ -680,4 +687,8 @@ function closeIdentityIfAllowed() {
   if (Votes.voter) $("#identity").classList.add("hidden");  // fermable une fois identifié
 }
 
-boot();
+boot().catch((err) => {
+  console.error("[boot] échec :", err);
+  const meta = document.querySelector("#meta");
+  if (meta) meta.innerHTML = `<span style="color:#f87171">Erreur de chargement : ${String(err && err.message || err)}. Réessaie (recharge la page).</span>`;
+});
