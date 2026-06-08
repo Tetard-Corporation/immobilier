@@ -7,6 +7,7 @@ from .base import ListingSource, NormalizedListing, SearchResult
 from .bienici import BienIciSource
 from .leboncoin import LeboncoinSource
 from .mock import MockSource
+from .notaires import NotairesSource
 from .pap import PapSource
 from .pappers import PappersSource
 from .paruvendu import ParuvenduSource
@@ -19,6 +20,7 @@ def _build_registry() -> dict[str, ListingSource]:
     return {
         "pappers": PappersSource(),
         "bienici": BienIciSource(),
+        "notaires": NotairesSource(),
         "leboncoin": LeboncoinSource(),
         "pap": PapSource(),
         "seloger": SeLogerSource(),
