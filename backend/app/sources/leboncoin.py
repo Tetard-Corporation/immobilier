@@ -51,6 +51,25 @@ class LeboncoinSource(ScraperSource):
     label = "Leboncoin"
     base_url = "https://api.leboncoin.fr"
 
+    @property
+    def available(self) -> bool:
+        # Datadome bloque les IP datacenter : sans proxy résidentiel NI cookie Datadome,
+        # tout appel renvoie 403. On évite de gaspiller des appels en se déclarant
+        # indisponible tant qu'aucun des deux n'est configuré.
+        return bool(self._settings.proxy_url or self._settings.leboncoin_datadome)
+
+    def _headers(self) -> dict:
+        """En-têtes attendus par l'API Leboncoin (api_key obligatoire + cookie Datadome)."""
+        h = {
+            "api_key": self._settings.leboncoin_api_key,
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "User-Agent": "LBC;Android;13;Pixel;native;...;wifi;phone",
+        }
+        if self._settings.leboncoin_datadome:
+            h["Cookie"] = f"datadome={self._settings.leboncoin_datadome}"
+        return h
+
     def _build_payload(self, c: SearchCriteria) -> dict:
         property_types = c.property_types or ["terrain", "maison", "appartement"]
         ret = sorted({_APP_TO_RET[p] for p in property_types if p in _APP_TO_RET})
@@ -121,7 +140,7 @@ class LeboncoinSource(ScraperSource):
 
     def search(self, criteria: SearchCriteria) -> SearchResult:
         payload = self._build_payload(criteria)
-        resp = self._post("/finder/search", json_body=payload)
+        resp = self._post("/finder/search", json_body=payload, headers=self._headers())
         data = resp.json()
         ads = data.get("ads") or []
         items = [annotate(self._normalize(ad)) for ad in ads]
@@ -131,7 +150,7 @@ class LeboncoinSource(ScraperSource):
 
     def get(self, external_id: str, bases: list[str] | None = None) -> NormalizedListing | None:
         try:
-            resp = self._get(f"/api/adview/v1/items/{external_id}")
+            resp = self._get(f"/api/adview/v1/items/{external_id}", headers=self._headers())
         except Exception:
             return None
         data = resp.json()
