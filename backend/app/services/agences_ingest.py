@@ -18,6 +18,7 @@ from ..agences_config import load_agences_config
 from ..config import get_settings
 from ..sources.base import NormalizedListing
 from ..sources.htmlutil import json_ld_items, realestate_fields
+from .agences_parsers import parse_site
 from .email_ingest import fetch_unseen
 from .enrich import annotate
 from .extract import get_extractor
@@ -56,6 +57,23 @@ def _to_normalized(d: dict, agency: str) -> NormalizedListing:
     )
 
 
+def _fill_geo(nl: NormalizedListing) -> NormalizedListing:
+    """Résout la commune (souvent un titre libre) via la BAN -> commune canonique +
+    dept/coords, pour rendre les biens d'agences exploitables (filtre dept, carte,
+    scoring). Étape réseau, séparée de la normalisation (pure)."""
+    if nl.commune and nl.latitude is None:
+        from .geo import geocode_locality
+
+        g = geocode_locality(nl.commune)
+        if g:
+            nl.commune = g["nom"]
+            nl.latitude, nl.longitude = g["lat"], g["lon"]
+            nl.code_postal = nl.code_postal or g["code_postal"]
+            nl.code_commune = nl.code_commune or g["code_commune"]
+            nl.departement = nl.departement or g["departement"]
+    return nl
+
+
 def scrape_sites(site_urls: list[tuple[str, str]], settings=None) -> list[NormalizedListing]:
     """Scrape les pages d'annonces d'agences (JSON-LD prioritaire)."""
     settings = settings or get_settings()
@@ -68,25 +86,30 @@ def scrape_sites(site_urls: list[tuple[str, str]], settings=None) -> list[Normal
             except Exception as exc:  # un site KO ne bloque pas les autres
                 logger.warning("Site agence injoignable %s : %s", url, exc)
                 continue
+            found = False
             for obj in json_ld_items(resp.text):
                 f = realestate_fields(obj)
                 if not f or f.get("price") is None:
                     continue
-                items.append(
-                    _to_normalized(
-                        {
-                            "type_bien": None,
-                            "prix": f.get("price"),
-                            "surface_bati": f.get("surface"),
-                            "surface_terrain": None,
-                            "commune": f.get("city"),
-                            "code_postal": f.get("postal_code"),
-                            "url": urljoin(url, f.get("url") or url),
-                            "description": f.get("description") or f.get("name"),
-                        },
-                        agency,
-                    )
-                )
+                found = True
+                items.append(_fill_geo(_to_normalized(
+                    {
+                        "type_bien": None,
+                        "prix": f.get("price"),
+                        "surface_bati": f.get("surface"),
+                        "surface_terrain": None,
+                        "commune": f.get("city"),
+                        "code_postal": f.get("postal_code"),
+                        "url": urljoin(url, f.get("url") or url),
+                        "description": f.get("description") or f.get("name"),
+                    },
+                    agency,
+                )))
+            # Pas de JSON-LD exploitable -> repli sur un parser HTML dédié à l'agence.
+            if not found:
+                for d in parse_site(url, resp.text):
+                    if d.get("prix") is not None:
+                        items.append(_fill_geo(_to_normalized(d, agency)))
     return items
 
 
@@ -101,7 +124,7 @@ def ingest(db, settings=None) -> dict:
     # 1) Emails
     for mail in fetch_unseen(settings):
         for d in extractor.extract(mail.subject, mail.body, is_html=mail.is_html):
-            collected.append(_to_normalized(d, agency=mail.sender or "Email"))
+            collected.append(_fill_geo(_to_normalized(d, agency=mail.sender or "Email")))
 
     # 2) Sites d'agences
     collected.extend(scrape_sites(config.all_site_urls, settings))

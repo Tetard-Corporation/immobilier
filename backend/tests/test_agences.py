@@ -45,9 +45,15 @@ def test_agences_source_lit_la_base():
     assert any(it.external_id == "ag_test_terrain" for it in res.items)
 
 
-def test_agences_ingest_endpoint(client):
+def test_agences_ingest_endpoint(client, monkeypatch):
+    # Config vide + pas d'email -> ingestion à 0 (déterministe, sans réseau).
+    from app.agences_config import AgencesConfig
+    from app.services import agences_ingest
+
+    monkeypatch.setattr(agences_ingest, "load_agences_config", lambda _p: AgencesConfig())
+    monkeypatch.setattr(agences_ingest, "fetch_unseen", lambda _s: [])
     r = client.post("/api/agences/ingest")
     assert r.status_code == 200
     body = r.json()
-    assert body["ingested"] == 0  # ni IMAP ni sites configurés en test
+    assert body["ingested"] == 0
     assert body["extractor"] == "heuristic"

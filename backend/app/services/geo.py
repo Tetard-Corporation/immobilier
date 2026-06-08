@@ -74,6 +74,68 @@ def resolve_city(name: str | None) -> tuple[float, float] | None:
     return CITY_COORDS.get(name.strip().lower())
 
 
+_GEOCODE_CACHE: dict[str, dict | None] = {}
+
+
+def _ban_municipality(q: str) -> dict | None:
+    import httpx
+
+    r = httpx.get(
+        "https://api-adresse.data.gouv.fr/search/",
+        params={"q": q, "type": "municipality", "limit": 1},
+        timeout=12,
+    )
+    r.raise_for_status()
+    feats = (r.json() or {}).get("features") or []
+    if not feats:
+        return None
+    f = feats[0]
+    lon, lat = f["geometry"]["coordinates"]
+    p = f.get("properties") or {}
+    insee = p.get("citycode")
+    return {
+        "nom": p.get("name"), "score": p.get("score", 0.0),
+        "lat": lat, "lon": lon,
+        "code_postal": p.get("postcode"),
+        "code_commune": insee,
+        "departement": (insee or "")[:2] or None,
+    }
+
+
+def geocode_locality(label: str | None) -> dict | None:
+    """Résout une commune depuis une étiquette libre (titre d'annonce d'agence,
+    nom de commune…) via la BAN. La commune étant en fin d'étiquette, on essaie les
+    fenêtres de tokens finales (1..4 mots) et on garde le meilleur score (léger biais
+    aux fenêtres plus longues = plus spécifiques). Renvoie {nom, lat, lon,
+    code_postal, code_commune, departement} ou None. Mis en cache."""
+    if not label or not label.strip():
+        return None
+    key = label.strip().lower()
+    if key in _GEOCODE_CACHE:
+        return _GEOCODE_CACHE[key]
+    import re
+
+    clean = re.sub(r"[^a-zA-ZÀ-ÿ'\- ]", " ", label).lower()
+    clean = re.sub(r"\bst\b", "saint", clean)
+    clean = re.sub(r"\bste\b", "sainte", clean)
+    toks = clean.split()
+    best = None
+    for k in (5, 4, 3, 2, 1):
+        if k > len(toks):
+            continue
+        try:
+            res = _ban_municipality(" ".join(toks[-k:]))
+        except Exception:
+            res = None
+        if res and res["nom"]:
+            rank = res["score"] + 0.06 * k  # privilégie les fenêtres plus longues (plus spécifiques)
+            if best is None or rank > best[0]:
+                best = (rank, res)
+    out = best[1] if best and best[1]["score"] >= 0.4 else None
+    _GEOCODE_CACHE[key] = out
+    return out
+
+
 # Hubs TGV (gare, temps TGV en minutes depuis Paris) pour estimer un porte-à-porte :
 # on prend le hub minimisant (TGV + voiture jusqu'au bien).
 RAIL_HUBS = {
