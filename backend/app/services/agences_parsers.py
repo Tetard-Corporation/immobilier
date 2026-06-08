@@ -98,10 +98,36 @@ def parse_bauges_immobilier(html: str, base_url: str) -> list[dict]:
     return out
 
 
+def parse_christine_miranda(html: str, base_url: str) -> list[dict]:
+    """christinemiranda.com (CMS jalik, biens de caractère à rénover en Drôme/Vaucluse).
+    Prix et commune sont dans des conteneurs séparés sur la liste -> on n'extrait que le
+    lien détail (fiable) ; prix/commune/photo sont complétés depuis la page détail."""
+    out: list[dict] = []
+    seen: set[str] = set()
+    for link in re.findall(r'href="(details-[^"]+)"', html):
+        if link in seen:
+            continue
+        seen.add(link)
+        label = link.removeprefix("details-").rsplit("-", 1)[0].replace("+", " ")
+        out.append({
+            "type_bien": _type_from_title(label),
+            "prix": None,            # complété depuis la page détail (class="prix")
+            "surface_bati": None,
+            "surface_terrain": None,
+            "commune": None,         # complété depuis la page détail (og:title)
+            "code_postal": None,
+            "url": urljoin(base_url, link),
+            "description": label or None,
+            "photos": [],            # garantie par og:image
+        })
+    return out
+
+
 # Domaine (sans www.) -> parser.
 SITE_PARSERS = {
     "agencecevenole.com": parse_agence_cevenole,
     "bauges-immobilier.com": parse_bauges_immobilier,
+    "christinemiranda.com": parse_christine_miranda,
 }
 
 
