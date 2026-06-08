@@ -1,0 +1,6 @@
+# Agences locales (hors portails) scrapées via parsers dédiés (Voie B).
+# Ajouter une agence : un parser dans app/services/agences_parsers.py + ses URLs ici.
+agences:
+  - nom: "Agence Cévenole"
+    sites:
+      - https://www.agencecevenole.com/ventes-fermes-et-maisons-en-pierres-w1
