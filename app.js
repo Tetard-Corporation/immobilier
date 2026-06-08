@@ -54,6 +54,7 @@ async function boot() {
   Votes.onChange(() => {
     if (openCrit) { renderCritPopup(); modalDirty = true; feedDirty = true; }
     else if (openBien) { refreshModal(); feedDirty = true; }
+    else if (skipNextFeedRender) { skipNextFeedRender = false; }  // favori mis à jour en place
     else { render(); }
   });
   $("#whoami").addEventListener("click", openIdentity);
@@ -137,9 +138,16 @@ function favBtn(b) {
     + `${mine ? "♥" : "♡"}${n > 0 ? `<span class="fav-n">${n}</span>` : ""}</button>`;
 }
 
-function renderScroll(list) {
-  const root = $("#scrollView");
-  root.innerHTML = list.map((b, idx) => `
+// Rendu incrémental : on n'injecte qu'un lot de cartes, puis on étend au scroll.
+// Sans ça, ~1700 images + 147 mini-cartes seraient construites d'un coup -> l'app rame.
+const FEED_BATCH = 18;
+let feedList = [];
+let feedShown = 0;
+let feedObserver = null;
+let skipNextFeedRender = false;
+
+function cardHTML(b, idx) {
+  return `
     <article class="card" data-idx="${idx}">
       <div class="galwrap${(b.photos || []).length ? " has-photos" : ""}" style="position:relative">${gallery(b)}${badges(b)}${favBtn(b)}</div>
       <div class="body">
@@ -152,49 +160,97 @@ function renderScroll(list) {
         </div>
         <div class="minimap-col">${miniMap(b)}</div>
       </div>
-    </article>`).join("") || `<p class="meta">Aucun bien ne correspond aux filtres.</p>`;
+    </article>`;
+}
 
-  // listeners (galerie + ouverture détail)
-  root.querySelectorAll(".card").forEach((card) => {
-    const b = list[Number(card.dataset.idx)];
-    const gal = card.querySelector(".gallery");
-    card.querySelectorAll(".gnav").forEach((btn) =>
-      btn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        gal.scrollBy({ left: Number(btn.dataset.d) * gal.clientWidth, behavior: "smooth" });
-      }));
-    if (gal) gal.addEventListener("scroll", () => {
-      const i = Math.round(gal.scrollLeft / gal.clientWidth);
-      card.querySelectorAll(".dots i").forEach((d, k) => d.classList.toggle("on", k === i));
-    });
-    // Feed : cliquer une étoile pré-enregistre la note ET ouvre le popup (note + commentaire).
-    const vr = card.querySelector(".voterow");
-    if (vr) {
-      vr.querySelectorAll(".star").forEach((st) => st.addEventListener("click", (e) => {
-        e.stopPropagation();
-        if (!Votes.voter) { openIdentity(); return; }
-        openCritPopup(b, "match", Votes.OVERALL);
-        Votes.setMine(voteKey(b), Number(st.dataset.v), Votes.OVERALL);   // pré-enregistre
-      }));
-      vr.addEventListener("click", (e) => {
-        e.stopPropagation();
-        if (!Votes.voter) { openIdentity(); return; }
-        openCritPopup(b, "match", Votes.OVERALL);
-      });
-    }
-    const mm = card.querySelector(".minimap[data-lat]");
-    if (mm) bindMiniMap(mm);
-    const fb = card.querySelector(".fav-btn");
-    if (fb) fb.addEventListener("click", (e) => {
+function bindCard(card, b) {
+  const gal = card.querySelector(".gallery");
+  card.querySelectorAll(".gnav").forEach((btn) =>
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      gal.scrollBy({ left: Number(btn.dataset.d) * gal.clientWidth, behavior: "smooth" });
+    }));
+  if (gal) gal.addEventListener("scroll", () => {
+    const i = Math.round(gal.scrollLeft / gal.clientWidth);
+    card.querySelectorAll(".dots i").forEach((d, k) => d.classList.toggle("on", k === i));
+  });
+  // Feed : cliquer une étoile pré-enregistre la note ET ouvre le popup (note + commentaire).
+  const vr = card.querySelector(".voterow");
+  if (vr) {
+    vr.querySelectorAll(".star").forEach((st) => st.addEventListener("click", (e) => {
       e.stopPropagation();
       if (!Votes.voter) { openIdentity(); return; }
-      Votes.toggleFavori(fb.dataset.bien);   // emit -> onChange -> render (le cœur se met à jour)
+      openCritPopup(b, "match", Votes.OVERALL);
+      Votes.setMine(voteKey(b), Number(st.dataset.v), Votes.OVERALL);   // pré-enregistre
+    }));
+    vr.addEventListener("click", (e) => {
+      e.stopPropagation();
+      if (!Votes.voter) { openIdentity(); return; }
+      openCritPopup(b, "match", Votes.OVERALL);
     });
-    card.addEventListener("click", (e) => {
-      if (e.target.closest(".voterow") || e.target.closest(".minimap") || e.target.closest(".fav-btn")) return;
-      openModal(b);
-    });
+  }
+  const mm = card.querySelector(".minimap[data-lat]");
+  if (mm) bindMiniMap(mm);
+  const fb = card.querySelector(".fav-btn");
+  if (fb) fb.addEventListener("click", (e) => {
+    e.stopPropagation();
+    if (!Votes.voter) { openIdentity(); return; }
+    // Hors filtre "Favoris", on met à jour le cœur EN PLACE (pas de rebuild du feed,
+    // qui ferait sauter le scroll avec beaucoup de biens).
+    const inPlace = !$("#favOnly").checked;
+    if (inPlace) skipNextFeedRender = true;
+    Votes.toggleFavori(fb.dataset.bien);   // emit synchrone -> onChange
+    if (inPlace) {
+      const mine = Votes.isFavori(fb.dataset.bien);
+      const n = Votes.favCount ? Votes.favCount(fb.dataset.bien) : 0;
+      fb.classList.toggle("on", mine);
+      fb.innerHTML = `${mine ? "♥" : "♡"}${n > 0 ? `<span class="fav-n">${n}</span>` : ""}`;
+    }
   });
+  card.addEventListener("click", (e) => {
+    if (e.target.closest(".voterow") || e.target.closest(".minimap") || e.target.closest(".fav-btn")) return;
+    openModal(b);
+  });
+}
+
+function appendFeedBatch() {
+  const root = $("#scrollView");
+  const sentinel = root.querySelector(".scroll-sentinel");
+  const frag = document.createDocumentFragment();
+  const tpl = document.createElement("template");
+  const end = Math.min(feedShown + FEED_BATCH, feedList.length);
+  for (let idx = feedShown; idx < end; idx++) {
+    tpl.innerHTML = cardHTML(feedList[idx], idx).trim();
+    const card = tpl.content.firstElementChild;
+    bindCard(card, feedList[idx]);
+    frag.appendChild(card);
+  }
+  feedShown = end;
+  if (sentinel) root.insertBefore(frag, sentinel); else root.appendChild(frag);
+  if (feedShown >= feedList.length && sentinel) {
+    if (feedObserver) feedObserver.disconnect();
+    sentinel.remove();
+  }
+}
+
+function renderScroll(list) {
+  const root = $("#scrollView");
+  if (feedObserver) { feedObserver.disconnect(); feedObserver = null; }
+  feedList = list;
+  feedShown = 0;
+  if (!list.length) {
+    root.innerHTML = `<p class="meta">Aucun bien ne correspond aux filtres.</p>`;
+    return;
+  }
+  root.innerHTML = `<div class="scroll-sentinel" aria-hidden="true"></div>`;
+  appendFeedBatch();
+  const sentinel = root.querySelector(".scroll-sentinel");
+  if (sentinel) {
+    feedObserver = new IntersectionObserver((entries) => {
+      if (entries.some((en) => en.isIntersecting)) appendFeedBatch();
+    }, { root: null, rootMargin: "1000px 0px" });
+    feedObserver.observe(sentinel);
+  }
 }
 
 // ---------- Mini-carte (tuiles OSM statiques, centrée, sans Leaflet) ----------

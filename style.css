@@ -42,6 +42,7 @@ select {
   max-width: 720px; margin: 0 auto; padding: 8px 12px 80px;
   display: flex; flex-direction: column; gap: 18px;
 }
+.scroll-sentinel { height: 1px; margin: 0; padding: 0; pointer-events: none; }
 .card {
   background: var(--card); border: 1px solid var(--line); border-radius: 16px;
   overflow: hidden; cursor: pointer; transition: border-color .15s;
