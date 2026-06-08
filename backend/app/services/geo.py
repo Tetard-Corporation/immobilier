@@ -83,15 +83,15 @@ def _ban_municipality(q: str) -> dict | None:
     import httpx
 
     last = None
-    for attempt in range(3):  # la BAN renvoie parfois 503/429 transitoires
+    for attempt in range(2):  # la BAN renvoie parfois 503/429 transitoires
         r = httpx.get(
             "https://api-adresse.data.gouv.fr/search/",
             params={"q": q, "type": "municipality", "limit": 1},
-            timeout=12,
+            timeout=10,
         )
         if r.status_code in (429, 500, 502, 503, 504):
             last = httpx.HTTPStatusError("transient", request=r.request, response=r)
-            time.sleep(1.5 * (attempt + 1))
+            time.sleep(0.6)
             continue
         r.raise_for_status()
         last = None
