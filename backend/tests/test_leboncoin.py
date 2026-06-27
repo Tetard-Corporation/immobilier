@@ -51,9 +51,10 @@ def test_headers_inclut_api_key_et_cookie_datadome():
     assert src.available is True              # cookie présent -> source utilisable
 
 
-def test_indisponible_sans_proxy_ni_cookie():
+def test_indisponible_sans_proxy_ni_cookie(tmp_path):
     from app.config import Settings
-    src = LeboncoinSource(settings=Settings(proxy_url="", leboncoin_datadome=""))
+    # state_dir vide : ni proxy, ni cookie configuré, ni cookie récolté en cache.
+    src = LeboncoinSource(settings=Settings(proxy_url="", leboncoin_datadome="", headless_state_dir=str(tmp_path)))
     assert src.available is False             # Datadome bloque l'IP datacenter
     assert "Cookie" not in src._headers()
 

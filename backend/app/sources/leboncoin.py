@@ -13,7 +13,11 @@ from ..schemas import SearchCriteria
 from ..services.enrich import annotate
 from ..services.filters import matches
 from .base import NormalizedListing, SearchResult
+from .headless import get_cached_datadome
 from .scraper import ScraperSource
+
+# Domaine sous lequel le cookie Datadome est récolté/mis en cache (cf. headless.py).
+_DD_DOMAIN = "leboncoin.fr"
 
 # Catégorie 9 = Ventes immobilières.
 _CATEGORY_VENTES = "9"
@@ -51,23 +55,40 @@ class LeboncoinSource(ScraperSource):
     label = "Leboncoin"
     base_url = "https://api.leboncoin.fr"
 
+    def _datadome(self) -> tuple[str | None, str | None]:
+        """Résout le cookie Datadome à utiliser et l'User-Agent associé.
+
+        Priorité au cookie configuré explicitement (`LEBONCOIN_DATADOME`, UA mobile par
+        défaut) ; sinon repli sur le cookie récolté par la couche headless, réémis avec
+        l'UA desktop qui l'a obtenu (Datadome lie le cookie à l'User-Agent).
+        """
+        if self._settings.leboncoin_datadome:
+            return self._settings.leboncoin_datadome, None
+        entry = get_cached_datadome(_DD_DOMAIN, settings=self._settings)
+        if entry:
+            return entry["cookie"], entry.get("ua")
+        return None, None
+
     @property
     def available(self) -> bool:
         # Datadome bloque les IP datacenter : sans proxy résidentiel NI cookie Datadome,
         # tout appel renvoie 403. On évite de gaspiller des appels en se déclarant
-        # indisponible tant qu'aucun des deux n'est configuré.
-        return bool(self._settings.proxy_url or self._settings.leboncoin_datadome)
+        # indisponible tant qu'aucun n'est disponible (proxy, cookie configuré, ou cookie
+        # récolté en cache via `scripts/refresh_datadome.py`).
+        return bool(self._settings.proxy_url or self._datadome()[0])
 
     def _headers(self) -> dict:
         """En-têtes attendus par l'API Leboncoin (api_key obligatoire + cookie Datadome)."""
+        cookie, ua = self._datadome()
         h = {
             "api_key": self._settings.leboncoin_api_key,
             "Content-Type": "application/json",
             "Accept": "application/json",
-            "User-Agent": "LBC;Android;13;Pixel;native;...;wifi;phone",
+            # UA cohérent avec le cookie : celui du navigateur qui l'a récolté, sinon UA mobile.
+            "User-Agent": ua or "LBC;Android;13;Pixel;native;...;wifi;phone",
         }
-        if self._settings.leboncoin_datadome:
-            h["Cookie"] = f"datadome={self._settings.leboncoin_datadome}"
+        if cookie:
+            h["Cookie"] = f"datadome={cookie}"
         return h
 
     def _build_payload(self, c: SearchCriteria) -> dict:

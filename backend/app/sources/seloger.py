@@ -15,12 +15,15 @@ from ..schemas import SearchCriteria
 from ..services.enrich import annotate
 from ..services.filters import matches
 from .base import NormalizedListing, SearchResult
+from .headless import get_cached_datadome
 from .htmlutil import json_ld_items, realestate_fields
 from .scraper import ScraperBlocked, ScraperSource
 
 # property_type -> code "types" SeLoger.
 _TYPE_CODE = {"appartement": "1", "maison": "2", "terrain": "4", "immeuble": "9", "parking": "7"}
 _ID_RE = re.compile(r"(\d{6,})")
+# Domaine sous lequel le cookie Datadome est récolté/mis en cache (cf. headless.py).
+_DD_DOMAIN = "seloger.com"
 
 
 def _external_id(url: str | None, name: str | None) -> str:
@@ -62,9 +65,33 @@ class SeLogerSource(ScraperSource):
                 return t
         return None
 
+    def _datadome(self) -> tuple[str | None, str | None]:
+        """Cookie Datadome à utiliser + User-Agent associé (cf. LeboncoinSource._datadome).
+
+        Priorité au cookie configuré (`SELOGER_DATADOME`) ; sinon cookie récolté par la
+        couche headless, réémis avec l'UA desktop qui l'a obtenu (Datadome lie l'un à l'autre).
+        """
+        if self._settings.seloger_datadome:
+            return self._settings.seloger_datadome, None
+        entry = get_cached_datadome(_DD_DOMAIN, settings=self._settings)
+        if entry:
+            return entry["cookie"], entry.get("ua")
+        return None, None
+
+    def _headers(self) -> dict | None:
+        """En-têtes pour la voie HTTP légère : cookie Datadome récolté + UA cohérent."""
+        cookie, ua = self._datadome()
+        if not cookie:
+            return None
+        h = {"Cookie": f"datadome={cookie}"}
+        if ua:
+            h["User-Agent"] = ua
+        return h
+
     def _fetch_html(self, params: dict) -> str:
+        # Voie HTTP légère avec le cookie Datadome récolté ; repli navigateur sinon.
         try:
-            return self._get("/list.htm", params=params).text
+            return self._get("/list.htm", params=params, headers=self._headers()).text
         except (ScraperBlocked, httpx.HTTPError):
             query = "&".join(f"{k}={v}" for k, v in params.items())
             return self._fetch_headless(f"{self.base_url}/list.htm?{query}")

@@ -10,6 +10,9 @@ venv/
 *.db
 *.sqlite3
 
+# Couche headless : profils Chromium persistants + cache cookie Datadome (lié au poste)
+.headless/
+
 # OS / IDE
 .DS_Store
 .idea/

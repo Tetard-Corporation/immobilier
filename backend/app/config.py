@@ -34,6 +34,16 @@ class Settings(BaseSettings):
     # renvoie 403 (Datadome bloque les IP datacenter) -> source marquée indisponible.
     leboncoin_api_key: str = "ba0c2dad52b3ec"
     leboncoin_datadome: str = ""
+    # SeLoger : également protégé par Datadome. Cookie collé à la main (override) ou,
+    # à défaut, cookie récolté par la couche headless (cf. scripts/refresh_datadome.py).
+    seloger_datadome: str = ""
+
+    # Couche headless (récolte de cookies Datadome via navigateur persistant).
+    # À utiliser sur le poste de dev (IP résidentielle). Le cookie récolté est mis en
+    # cache et réutilisé par les connecteurs API tant qu'il est frais.
+    headless_state_dir: str = ".headless"   # profils Chromium + cache cookie
+    headless_headed: bool = False           # True : navigateur visible (captcha manuel)
+    datadome_max_age_minutes: int = 60      # fraîcheur du cookie récolté
 
     # Enrichissement (Lot A)
     enrich_on_search: bool = False
