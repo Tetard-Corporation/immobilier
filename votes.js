@@ -17,6 +17,7 @@ const Votes = (() => {
   let users = [];
   let voter = null;
   const listeners = [];
+  const errListeners = [];
 
   const hdr = () => ({
     apikey: cfg.SUPABASE_ANON_KEY,
@@ -44,8 +45,11 @@ const Votes = (() => {
         const rows = await r.json();
         cache = {};
         for (const row of rows) put(row.bien_id, row.criterion || OVERALL, row.voter, row.stars, row.comment);
+        try { localStorage.setItem(LS_LOCAL, JSON.stringify(cache)); } catch (e) { /* quota/private */ }  // miroir local
       } catch (e) {
-        console.warn("[votes] chargement Supabase échoué, repli local lecture seule :", e.message);
+        console.warn("[votes] chargement Supabase échoué, repli sur la copie locale :", e.message);
+        try { cache = JSON.parse(localStorage.getItem(LS_LOCAL) || "{}"); } catch { cache = {}; }
+        emitError("Serveur de votes injoignable — affichage de ta dernière copie locale.");
       }
     } else {
       try { cache = JSON.parse(localStorage.getItem(LS_LOCAL) || "{}"); }
@@ -71,14 +75,22 @@ const Votes = (() => {
     const com = comment !== undefined ? (comment || null) : (existing ? existing.comment : null);
     put(id, crit, voter, stars, com);
     emit();  // optimiste
+    // Filet de sécurité : on garde TOUJOURS une copie locale (survit au refresh / autre
+    // onglet), même en mode supabase où l'écriture distante peut échouer silencieusement.
+    try { localStorage.setItem(LS_LOCAL, JSON.stringify(cache)); } catch (e) { /* quota/private */ }
     if (backend === "supabase") {
+      const fail = (info) => {
+        console.warn("[votes] enregistrement Supabase échoué :", info);
+        emitError("Ta note n'a pas pu être enregistrée sur le serveur (gardée en local). Réessaie plus tard.");
+        return { ok: false };
+      };
       return fetch(`${cfg.SUPABASE_URL}/rest/v1/votes?on_conflict=bien_id,voter,criterion`, {
         method: "POST",
         headers: { ...hdr(), Prefer: "resolution=merge-duplicates,return=minimal" },
         body: JSON.stringify({ bien_id: id, voter, criterion: crit, stars, comment: com, updated_at: new Date().toISOString() }),
-      }).then((r) => { if (!r.ok) console.warn("[votes] enregistrement échoué :", r.status); return { ok: r.ok }; });
+      }).then((r) => (r.ok ? { ok: true } : fail("HTTP " + r.status)))
+        .catch((e) => fail(e.message));   // réseau/DNS down -> ne reste plus silencieux
     }
-    localStorage.setItem(LS_LOCAL, JSON.stringify(cache));
     return Promise.resolve({ ok: true });
   }
 
@@ -124,9 +136,11 @@ const Votes = (() => {
   function setVoter(v) { voter = v; localStorage.setItem(LS_VOTER, v); emit(); }
   function emit() { listeners.forEach((f) => f()); }
   function onChange(f) { listeners.push(f); }
+  function emitError(msg) { errListeners.forEach((f) => f(msg)); }
+  function onError(f) { errListeners.push(f); }
 
   return {
-    init, reload, forBien, setMine, setComment, setVoter, onChange, allComments,
+    init, reload, forBien, setMine, setComment, setVoter, onChange, onError, allComments,
     isFavori, favCount, toggleFavori, hasRated, OVERALL,
     get voter() { return voter; },
     get users() { return users; },

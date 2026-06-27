@@ -64,6 +64,7 @@ async function boot() {
     else if (skipNextFeedRender) { skipNextFeedRender = false; }  // favori mis à jour en place
     else { render(); }
   });
+  Votes.onError(showToast);   // échec d'enregistrement / serveur injoignable -> visible
   $("#whoami").addEventListener("click", openIdentity);
   $("#identity .id-backdrop").addEventListener("click", closeIdentityIfAllowed);
   renderWhoami();
@@ -741,6 +742,24 @@ function openIdentity() {
 }
 function closeIdentityIfAllowed() {
   if (Votes.voter) $("#identity").classList.add("hidden");  // fermable une fois identifié
+}
+
+// Notification éphémère (échec d'enregistrement, serveur injoignable...).
+let toastTimer = null;
+function showToast(msg) {
+  let t = document.getElementById("toast");
+  if (!t) {
+    t = document.createElement("div");
+    t.id = "toast";
+    t.style.cssText = "position:fixed;left:50%;bottom:24px;transform:translateX(-50%);max-width:90%;"
+      + "background:#7f1d1d;color:#fff;padding:10px 16px;border-radius:8px;font-size:14px;"
+      + "box-shadow:0 4px 16px rgba(0,0,0,.35);z-index:9999;opacity:0;transition:opacity .2s;pointer-events:none;";
+    document.body.appendChild(t);
+  }
+  t.textContent = msg;
+  t.style.opacity = "1";
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { t.style.opacity = "0"; }, 5000);
 }
 
 boot().catch((err) => {
