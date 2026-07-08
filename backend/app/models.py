@@ -146,6 +146,11 @@ class Listing(Base):
     # Empreinte de dédoublonnage inter-sources (biens identiques regroupés).
     canonical_id: Mapped[str | None] = mapped_column(String(64), nullable=True, index=True)
 
+    # Sets auxquels le bien appartient (= zones/recherches d'où il vient). L'export ne
+    # score un bien que contre ses sets membres (sinon les biens montagne seraient
+    # scorés contre Pauline et inversement). Vide -> tous les sets (rétro-compat).
+    set_ids: Mapped[list] = mapped_column(JSON, nullable=False, default=list)
+
     raw: Mapped[dict] = mapped_column(JSON, nullable=False, default=dict)
     first_seen_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utcnow)
     updated_at: Mapped[datetime] = mapped_column(

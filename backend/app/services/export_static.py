@@ -307,6 +307,14 @@ def _download_photos(row: Listing, photos_dir: str, rel_base: str) -> list[str]:
                 rels.append(rel)
         except Exception:
             continue  # photo indisponible -> on saute, sans casser l'export
+    if not rels and os.path.isdir(dest_dir):
+        # Pas d'URL source (ex. DB reconstruite par le seed) mais photos déjà présentes
+        # sur disque -> on réutilise les fichiers locaux (pas de perte, pas de re-DL).
+        files = sorted(
+            (f for f in os.listdir(dest_dir) if f.endswith(".jpg")),
+            key=lambda f: int(f[:-4]) if f[:-4].isdigit() else 9999,
+        )
+        rels = [f"{rel_base}/{key}/{f}" for f in files]
     return rels
 
 
@@ -356,10 +364,13 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
         extra = {**infra, **poi, **_fibre_flags(row.code_commune, fibre_lut),
                  "features": feats, "pavillon_neuf": _detect_pavillon_neuf(row.description)}
         item = _RowItem(row, extra_flags=extra)
+        member = set(row.set_ids or [])  # sets d'appartenance ; vide -> tous (rétro-compat)
         scores_by_set = {}
         for fs_id, prefs in set_prefs.items():
             if not prefs:
                 continue
+            if member and fs_id not in member:
+                continue  # bien hors de ce set (ex. montagne vs Pauline) -> pas de score
             match, details = evaluate(item, prefs)
             scores_by_set[str(fs_id)] = {"match_score": match, "details": details}
 
