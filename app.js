@@ -92,6 +92,10 @@ function visibleBiens() {
   const min = Number($("#scoreMin").value);
   const sortMode = $("#sortSelect").value;
   let list = (DATA.biens || []).filter((b) => {
+    // Appartenance au set : on ne montre (liste ET carte) que les biens rattachés au
+    // set courant (= qui ont un score pour ce set). Ainsi le set "Pauline" (Finistère)
+    // n'affiche pas les biens montagne de têtard/Léo, et inversement.
+    if (matchOf(b, currentSetId) == null) return false;
     // Favoris : perso (Supabase) si identifié, sinon repli sur les favoris curatés du dataset.
     if (favOnly) {
       const fav = Votes.voter ? Votes.isFavori(voteKey(b)) : b.is_favori;
