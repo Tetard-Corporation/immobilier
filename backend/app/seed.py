@@ -65,6 +65,24 @@ def seed_from_data_json(path: str = _DEFAULT) -> dict:
     return {"sets": db.query(FilterSet).count(), "biens": n}
 
 
+def seed_if_empty(path: str = _DEFAULT) -> dict | None:
+    """Seed la DB depuis data.json UNIQUEMENT si elle est vide (aucun bien) et que
+    data.json existe. Renvoie le récap si un seed a eu lieu, sinon None. Sûr au
+    démarrage (idempotent : ne fait rien si des biens sont déjà présents)."""
+    from .models import Listing
+
+    db = SessionLocal()
+    try:
+        has_biens = db.query(Listing).first() is not None
+    except Exception:
+        has_biens = False  # table absente/illisible -> traiter comme vide
+    finally:
+        db.close()
+    if has_biens or not os.path.exists(path):
+        return None
+    return seed_from_data_json(path)
+
+
 if __name__ == "__main__":
     arg = sys.argv[1] if len(sys.argv) > 1 else _DEFAULT
     print(seed_from_data_json(arg))
