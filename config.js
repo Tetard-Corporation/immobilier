@@ -9,5 +9,5 @@ window.APP_CONFIG = {
   SUPABASE_ANON_KEY: "sb_publishable_qa2Dmw3LM3HqWZ34OLC5qQ_nZteG52r",
 
   // 3) Les participants : c'est la liste du "Qui es-tu ?" en début de session.
-  USERS: ["Henri", "Max", "Mathurin", "Juliette", "Léo", "Timothé"],
+  USERS: ["Henri", "Max", "Mathurin", "Juliette", "Léo", "Timothé", "Pauline"],
 };
