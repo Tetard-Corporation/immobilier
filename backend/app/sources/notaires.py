@@ -41,6 +41,9 @@ class NotairesSource(ScraperSource):
         url = a.get("urlDetailAnnonceFr") or ""
         if url and url.startswith("/"):
             url = "https://www.immobilier.notaires.fr" + url
+        # Photo principale -> raw["photos"] (lu par l'export pour le téléchargement).
+        photo = a.get("urlPhotoPrincipale")
+        raw = {**a, "photos": [photo]} if photo else a
         return NormalizedListing(
             source="notaires",
             external_id=str(a.get("annonceId") or a.get("id") or ""),
@@ -57,7 +60,7 @@ class NotairesSource(ScraperSource):
             url=url or None,
             description=a.get("descriptionFr"),
             flags={},
-            raw=a,
+            raw=raw,
         )
 
     def search(self, criteria: SearchCriteria) -> SearchResult:
