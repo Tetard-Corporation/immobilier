@@ -16,6 +16,9 @@ class Settings(BaseSettings):
 
     # Base de données
     database_url: str = "sqlite:///./immobilier.db"
+    # Auto-reconstruction de la DB depuis data.json au démarrage si elle est vide
+    # (conteneur éphémère : la DB SQLite se réinitialise, data.json est la source git).
+    auto_seed: bool = True
 
     # Scheduler
     scheduler_enabled: bool = True

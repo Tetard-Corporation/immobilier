@@ -26,6 +26,13 @@ logging.basicConfig(level=logging.INFO)
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     init_db()
+    # DB éphémère : si elle est vide, on la reconstruit depuis data.json (source git).
+    if get_settings().auto_seed:
+        from .seed import seed_if_empty
+
+        res = seed_if_empty()
+        if res:
+            logging.getLogger("immobilier").info("Auto-seed depuis data.json : %s", res)
     start_scheduler()
     try:
         yield

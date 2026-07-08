@@ -10,6 +10,7 @@ import pytest
 # Doit être défini AVANT tout import de l'app (engine créé à l'import de app.db).
 _DB_FD, _DB_PATH = tempfile.mkstemp(suffix=".db")
 os.environ["SCHEDULER_ENABLED"] = "false"
+os.environ["AUTO_SEED"] = "false"  # pas de reconstruction data.json -> DB dans les tests
 os.environ["PAPPERS_API_KEY"] = ""
 os.environ["DATABASE_URL"] = f"sqlite:///{_DB_PATH}"
 
