@@ -184,6 +184,20 @@ def _detect_viager(*texts: str | None) -> bool:
     return any(t and _VIAGER_RE.search(t) for t in texts)
 
 
+# Résidence de tourisme / services sous bail commercial (leaseback, LMNP géré,
+# Censi-Bouvard) : jouissance restreinte, gestion imposée, revente difficile -> pénalisé
+# comme le viager. NB : "résidence secondaire/principale" ne matche pas (voulu).
+_RESID_TOURISME_RE = re.compile(
+    r"r[ée]sidence\s+(?:de\s+)?tourisme|r[ée]sidence\s+de\s+vacances|r[ée]sidence\s+services?|"
+    r"r[ée]sidence\s+g[ée]r[ée]e|r[ée]sidence\s+(?:senior|[ée]tudiante)|bail\s+commercial|"
+    r"censi[- ]bouvard", re.I)
+_RESID_MATCH_FACTOR = 0.2  # un match de 80 tombe à 16
+
+
+def _detect_residence_tourisme(*texts: str | None) -> bool:
+    return any(t and _RESID_TOURISME_RE.search(t) for t in texts)
+
+
 _TENSION_LUT = os.path.join(os.path.dirname(__file__), "..", "..", "data", "tension_communes.json")
 
 
@@ -401,6 +415,7 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
 
     biens_out = []
     n_viager = 0
+    n_resid = 0
     infra_cache = _load_infra_cache()
     poi_cache = _load_poi_cache()
     fibre_lut = _load_fibre_lut()
@@ -412,11 +427,23 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
         .all()
     )
     for row in rows:
-        # Viager / nue-propriété : conservé mais noté très bas (prix affiché = bouquet,
-        # bien occupé) -> pénalité forte sur le match pour le renvoyer en fond de classement.
+        # Types conservés mais fortement déclassés (renvoyés en fond de classement) :
+        # viager/nue-propriété (prix = bouquet, occupé) et résidence de tourisme sous
+        # bail commercial (jouissance restreinte, gestion imposée, revente difficile).
         is_viager = _detect_viager(row.description, row.adresse)
+        is_resid = _detect_residence_tourisme(row.description, row.adresse)
         if is_viager:
             n_viager += 1
+        if is_resid:
+            n_resid += 1
+        if is_viager:
+            penalty = (_VIAGER_MATCH_FACTOR, "Viager / nue-propriété",
+                       "viager (prix = bouquet, bien occupé) — fortement déclassé")
+        elif is_resid:
+            penalty = (_RESID_MATCH_FACTOR, "Résidence de tourisme / bail commercial",
+                       "résidence de tourisme (bail commercial, gestion imposée) — fortement déclassé")
+        else:
+            penalty = None
         infra = _infra_distances(row.latitude, row.longitude, infra_cache)
         poi = _poi_distances(row.latitude, row.longitude, poi_cache)
         feats = list(row.features or [])
@@ -447,12 +474,12 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
             if member and fs_id not in member:
                 continue  # bien hors de ce set (ex. montagne vs Pauline) -> pas de score
             match, details = evaluate(item, prefs)
-            if is_viager and match is not None:
-                # Pénalité forte : un viager plafonne très bas quelles que soient ses qualités.
-                match = round(match * _VIAGER_MATCH_FACTOR, 1)
-                details.insert(0, {"kind": "viager", "label": "Viager / nue-propriété",
-                                   "weight": 0, "status": "ko", "subscore": 0,
-                                   "detail": "viager (prix = bouquet, bien occupé) — fortement déclassé"})
+            if penalty and match is not None:
+                # Pénalité forte : ce type plafonne très bas quelles que soient ses qualités.
+                factor, plabel, pdetail = penalty
+                match = round(match * factor, 1)
+                details.insert(0, {"kind": "disqualifiant", "label": plabel,
+                                   "weight": 0, "status": "ko", "subscore": 0, "detail": pdetail})
             scores_by_set[str(fs_id)] = {"match_score": match, "details": details}
 
         sv = saved.get((row.source, row.external_id))
@@ -471,6 +498,7 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
             "risques": row.risques, "score": row_score, "score_details": row_score_details,
             "scores_by_set": scores_by_set,
             "viager": is_viager,
+            "residence_tourisme": is_resid,
             "is_favori": sv is not None,
             "favori_note": sv.note if sv else None,
             "n_photos_source": len(_photo_urls(row)),
@@ -493,7 +521,7 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
         "biens": biens_out,
         "searches": searches_out,
         "stats": {"n_biens": len(biens_out), "n_sets": len(sets_out),
-                  "n_searches": len(searches_out), "n_viager": n_viager},
+                  "n_searches": len(searches_out), "n_viager": n_viager, "n_residence_tourisme": n_resid},
     }
 
 

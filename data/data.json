@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-07-15T19:04:15.891944+00:00",
+ "generated_at": "2026-07-15T19:10:55.060033+00:00",
  "sets": [
   {
    "id": 1,
@@ -1000,6 +1000,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -1621,6 +1622,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -2241,6 +2243,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -2867,6 +2870,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -3482,6 +3486,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -4107,6 +4112,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -4741,6 +4747,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -5003,7 +5010,7 @@
      "match_score": 10.8,
      "details": [
       {
-       "kind": "viager",
+       "kind": "disqualifiant",
        "label": "Viager / nue-propriété",
        "weight": 0,
        "status": "ko",
@@ -5201,7 +5208,7 @@
      "match_score": 11.0,
      "details": [
       {
-       "kind": "viager",
+       "kind": "disqualifiant",
        "label": "Viager / nue-propriété",
        "weight": 0,
        "status": "ko",
@@ -5389,6 +5396,7 @@
     }
    },
    "viager": true,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -6010,6 +6018,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -6628,6 +6637,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -7238,6 +7248,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -7856,6 +7867,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -8476,6 +8488,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -9099,6 +9112,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -9351,7 +9365,7 @@
      "match_score": 11.2,
      "details": [
       {
-       "kind": "viager",
+       "kind": "disqualifiant",
        "label": "Viager / nue-propriété",
        "weight": 0,
        "status": "ko",
@@ -9546,7 +9560,7 @@
      "match_score": 11.5,
      "details": [
       {
-       "kind": "viager",
+       "kind": "disqualifiant",
        "label": "Viager / nue-propriété",
        "weight": 0,
        "status": "ko",
@@ -9732,6 +9746,7 @@
     }
    },
    "viager": true,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -9993,7 +10008,7 @@
      "match_score": 10.3,
      "details": [
       {
-       "kind": "viager",
+       "kind": "disqualifiant",
        "label": "Viager / nue-propriété",
        "weight": 0,
        "status": "ko",
@@ -10189,7 +10204,7 @@
      "match_score": 10.3,
      "details": [
       {
-       "kind": "viager",
+       "kind": "disqualifiant",
        "label": "Viager / nue-propriété",
        "weight": 0,
        "status": "ko",
@@ -10375,6 +10390,7 @@
     }
    },
    "viager": true,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -10636,7 +10652,7 @@
      "match_score": 10.6,
      "details": [
       {
-       "kind": "viager",
+       "kind": "disqualifiant",
        "label": "Viager / nue-propriété",
        "weight": 0,
        "status": "ko",
@@ -10834,7 +10850,7 @@
      "match_score": 9.6,
      "details": [
       {
-       "kind": "viager",
+       "kind": "disqualifiant",
        "label": "Viager / nue-propriété",
        "weight": 0,
        "status": "ko",
@@ -11021,6 +11037,7 @@
     }
    },
    "viager": true,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -11280,8 +11297,16 @@
    ],
    "scores_by_set": {
     "1": {
-     "match_score": 51.5,
+     "match_score": 10.3,
      "details": [
+      {
+       "kind": "disqualifiant",
+       "label": "Résidence de tourisme / bail commercial",
+       "weight": 0,
+       "status": "ko",
+       "subscore": 0,
+       "detail": "résidence de tourisme (bail commercial, gestion imposée) — fortement déclassé"
+      },
       {
        "kind": "budget",
        "label": "Budget (apport 150000€)",
@@ -11468,8 +11493,16 @@
      ]
     },
     "2": {
-     "match_score": 54.0,
+     "match_score": 10.8,
      "details": [
+      {
+       "kind": "disqualifiant",
+       "label": "Résidence de tourisme / bail commercial",
+       "weight": 0,
+       "status": "ko",
+       "subscore": 0,
+       "detail": "résidence de tourisme (bail commercial, gestion imposée) — fortement déclassé"
+      },
       {
        "kind": "budget",
        "label": "Budget (apport 150000€)",
@@ -11649,6 +11682,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": true,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -11908,7 +11942,7 @@
      "match_score": 10.8,
      "details": [
       {
-       "kind": "viager",
+       "kind": "disqualifiant",
        "label": "Viager / nue-propriété",
        "weight": 0,
        "status": "ko",
@@ -12105,7 +12139,7 @@
      "match_score": 10.8,
      "details": [
       {
-       "kind": "viager",
+       "kind": "disqualifiant",
        "label": "Viager / nue-propriété",
        "weight": 0,
        "status": "ko",
@@ -12292,6 +12326,7 @@
     }
    },
    "viager": true,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -12922,6 +12957,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -13549,6 +13585,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -14171,6 +14208,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -14791,6 +14829,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 12,
@@ -15411,6 +15450,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -16035,6 +16075,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -16658,6 +16699,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -17277,6 +17319,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -17897,6 +17940,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -18524,6 +18568,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -19142,6 +19187,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -19768,6 +19814,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -20392,6 +20439,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -21018,6 +21066,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -21645,6 +21694,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -22266,6 +22316,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -22892,6 +22943,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -23149,7 +23201,7 @@
      "match_score": 10.5,
      "details": [
       {
-       "kind": "viager",
+       "kind": "disqualifiant",
        "label": "Viager / nue-propriété",
        "weight": 0,
        "status": "ko",
@@ -23348,7 +23400,7 @@
      "match_score": 10.3,
      "details": [
       {
-       "kind": "viager",
+       "kind": "disqualifiant",
        "label": "Viager / nue-propriété",
        "weight": 0,
        "status": "ko",
@@ -23536,6 +23588,7 @@
     }
    },
    "viager": true,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -24155,6 +24208,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 12,
@@ -24785,6 +24839,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -25408,6 +25463,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -26034,6 +26090,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 12,
@@ -26649,6 +26706,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 12,
@@ -27271,6 +27329,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 12,
@@ -27897,6 +27956,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -28518,6 +28578,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -29141,6 +29202,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -29762,6 +29824,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -30384,6 +30447,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -31007,6 +31071,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 12,
@@ -31637,6 +31702,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -32256,6 +32322,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 12,
@@ -32879,6 +32946,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -33504,6 +33572,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -34133,6 +34202,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -34755,6 +34825,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -35376,6 +35447,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -35708,6 +35780,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -35956,7 +36029,7 @@
      "match_score": 10.3,
      "details": [
       {
-       "kind": "viager",
+       "kind": "disqualifiant",
        "label": "Viager / nue-propriété",
        "weight": 0,
        "status": "ko",
@@ -36153,7 +36226,7 @@
      "match_score": 10.1,
      "details": [
       {
-       "kind": "viager",
+       "kind": "disqualifiant",
        "label": "Viager / nue-propriété",
        "weight": 0,
        "status": "ko",
@@ -36340,6 +36413,7 @@
     }
    },
    "viager": true,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -36965,6 +37039,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -37585,6 +37660,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -37828,7 +37904,7 @@
      "match_score": 10.7,
      "details": [
       {
-       "kind": "viager",
+       "kind": "disqualifiant",
        "label": "Viager / nue-propriété",
        "weight": 0,
        "status": "ko",
@@ -38024,7 +38100,7 @@
      "match_score": 10.7,
      "details": [
       {
-       "kind": "viager",
+       "kind": "disqualifiant",
        "label": "Viager / nue-propriété",
        "weight": 0,
        "status": "ko",
@@ -38210,6 +38286,7 @@
     }
    },
    "viager": true,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -38840,6 +38917,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -39464,6 +39542,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -40087,6 +40166,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -40702,6 +40782,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -41328,6 +41409,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -41941,6 +42023,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -42554,6 +42637,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -42877,6 +42961,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -43202,6 +43287,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -43532,6 +43618,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -43864,6 +43951,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -44477,6 +44565,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -45095,6 +45184,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -45710,6 +45800,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -46318,6 +46409,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -46933,6 +47025,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -47527,6 +47620,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -48141,6 +48235,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 12,
@@ -48755,6 +48850,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 12,
@@ -49376,6 +49472,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -50000,6 +50097,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 12,
@@ -50625,6 +50723,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 12,
@@ -50890,7 +50989,7 @@
      "match_score": 11.4,
      "details": [
       {
-       "kind": "viager",
+       "kind": "disqualifiant",
        "label": "Viager / nue-propriété",
        "weight": 0,
        "status": "ko",
@@ -50978,6 +51077,7 @@
     }
    },
    "viager": true,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -51600,6 +51700,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -52221,6 +52322,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -52559,6 +52661,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 12,
@@ -53172,6 +53275,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -53414,8 +53518,16 @@
    ],
    "scores_by_set": {
     "3": {
-     "match_score": 71.3,
+     "match_score": 14.3,
      "details": [
+      {
+       "kind": "disqualifiant",
+       "label": "Résidence de tourisme / bail commercial",
+       "weight": 0,
+       "status": "ko",
+       "subscore": 0,
+       "detail": "résidence de tourisme (bail commercial, gestion imposée) — fortement déclassé"
+      },
       {
        "kind": "budget",
        "label": "Budget ≤ 150 000 €",
@@ -53496,6 +53608,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": true,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -53840,6 +53953,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 12,
@@ -54169,6 +54283,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -54779,6 +54894,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 11,
@@ -55411,6 +55527,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -56027,6 +56144,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 12,
@@ -56286,8 +56404,16 @@
    ],
    "scores_by_set": {
     "3": {
-     "match_score": 70.6,
+     "match_score": 14.1,
      "details": [
+      {
+       "kind": "disqualifiant",
+       "label": "Résidence de tourisme / bail commercial",
+       "weight": 0,
+       "status": "ko",
+       "subscore": 0,
+       "detail": "résidence de tourisme (bail commercial, gestion imposée) — fortement déclassé"
+      },
       {
        "kind": "budget",
        "label": "Budget ≤ 150 000 €",
@@ -56368,6 +56494,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": true,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 4,
@@ -56983,6 +57110,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -57244,7 +57372,7 @@
      "match_score": 11.3,
      "details": [
       {
-       "kind": "viager",
+       "kind": "disqualifiant",
        "label": "Viager / nue-propriété",
        "weight": 0,
        "status": "ko",
@@ -57443,7 +57571,7 @@
      "match_score": 10.8,
      "details": [
       {
-       "kind": "viager",
+       "kind": "disqualifiant",
        "label": "Viager / nue-propriété",
        "weight": 0,
        "status": "ko",
@@ -57631,6 +57759,7 @@
     }
    },
    "viager": true,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -58254,6 +58383,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -58588,6 +58718,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -59201,6 +59332,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 6,
@@ -59794,6 +59926,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -60121,6 +60254,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -60734,6 +60868,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -61350,6 +61485,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -61962,6 +62098,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 11,
@@ -62580,6 +62717,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 12,
@@ -62921,6 +63059,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 7,
@@ -63525,6 +63664,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -64110,6 +64250,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -64715,6 +64856,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 11,
@@ -65047,6 +65189,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -65674,6 +65817,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -66010,6 +66154,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -66610,6 +66755,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -67224,6 +67370,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 9,
@@ -67857,6 +68004,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -68480,6 +68628,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -69106,6 +69255,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -69726,6 +69876,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 12,
@@ -70355,6 +70506,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -70973,6 +71125,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 12,
@@ -71589,6 +71742,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 1,
@@ -72206,6 +72360,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -72833,6 +72988,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -73085,7 +73241,7 @@
      "match_score": 13.3,
      "details": [
       {
-       "kind": "viager",
+       "kind": "disqualifiant",
        "label": "Viager / nue-propriété",
        "weight": 0,
        "status": "ko",
@@ -73173,6 +73329,7 @@
     }
    },
    "viager": true,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -73503,6 +73660,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 7,
@@ -74123,6 +74281,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -74749,6 +74908,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -75085,6 +75245,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -75419,6 +75580,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -76040,6 +76202,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -76375,6 +76538,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -76992,6 +77156,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 12,
@@ -77326,6 +77491,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -77944,6 +78110,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 2,
@@ -78553,6 +78720,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -79146,6 +79314,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -79730,6 +79899,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -80314,6 +80484,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -80923,6 +81094,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 12,
@@ -81543,6 +81715,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 10,
@@ -81800,8 +81973,16 @@
    ],
    "scores_by_set": {
     "3": {
-     "match_score": 70.6,
+     "match_score": 14.1,
      "details": [
+      {
+       "kind": "disqualifiant",
+       "label": "Résidence de tourisme / bail commercial",
+       "weight": 0,
+       "status": "ko",
+       "subscore": 0,
+       "detail": "résidence de tourisme (bail commercial, gestion imposée) — fortement déclassé"
+      },
       {
        "kind": "budget",
        "label": "Budget ≤ 150 000 €",
@@ -81882,6 +82063,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": true,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 7,
@@ -82507,6 +82689,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 12,
@@ -83131,6 +83314,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -83466,6 +83650,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -84088,6 +84273,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -84698,6 +84884,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -85027,6 +85214,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -85646,6 +85834,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -86262,6 +86451,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 2,
@@ -86866,6 +87056,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 10,
@@ -87484,6 +87675,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 3,
@@ -88108,6 +88300,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -88446,6 +88639,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -89064,6 +89258,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -89682,6 +89877,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 3,
@@ -90004,6 +90200,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 5,
@@ -90334,6 +90531,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -90660,6 +90858,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -91272,6 +91471,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 12,
@@ -91895,6 +92095,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 12,
@@ -92525,6 +92726,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 12,
@@ -93146,6 +93348,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -93759,6 +93962,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 5,
@@ -94378,6 +94582,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -95002,6 +95207,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -95613,6 +95819,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 3,
@@ -96232,6 +96439,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -96848,6 +97056,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 11,
@@ -97474,6 +97683,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -98092,6 +98302,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 2,
@@ -98711,6 +98922,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -99322,6 +99534,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -99920,6 +100133,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -100534,6 +100748,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -101153,6 +101368,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 12,
@@ -101773,6 +101989,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 4,
@@ -102388,6 +102605,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -102725,6 +102943,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -103346,6 +103565,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -103685,6 +103905,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 7,
@@ -104290,6 +104511,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 12,
@@ -104908,6 +105130,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 12,
@@ -105530,6 +105753,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -106143,6 +106367,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -106749,6 +106974,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -107360,6 +107586,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -107693,6 +107920,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 8,
@@ -108030,6 +108258,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 7,
@@ -108643,6 +108872,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -109255,6 +109485,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 12,
@@ -109882,6 +110113,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -110217,6 +110449,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 12,
@@ -110840,6 +111073,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -111452,6 +111686,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 11,
@@ -112068,6 +112303,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 10,
@@ -112675,6 +112911,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -113273,6 +113510,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -113871,6 +114109,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -114453,6 +114692,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -115055,6 +115295,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -115637,6 +115878,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -116237,6 +116479,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -116841,6 +117084,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -117443,6 +117687,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -117765,6 +118010,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 12,
@@ -118382,6 +118628,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 12,
@@ -118994,6 +119241,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 12,
@@ -119337,6 +119585,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 8,
@@ -119948,6 +120197,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 8,
@@ -120560,6 +120810,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 12,
@@ -120902,6 +121153,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 12,
@@ -121519,6 +121771,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 8,
@@ -122136,6 +122389,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 12,
@@ -122744,6 +122998,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 11,
@@ -123354,6 +123609,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -123961,6 +124217,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 12,
@@ -124582,6 +124839,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 12,
@@ -124922,6 +125180,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 7,
@@ -125258,6 +125517,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 6,
@@ -125582,6 +125842,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -125911,6 +126172,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -126540,6 +126802,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -126880,6 +127143,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 12,
@@ -127499,6 +127763,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 12,
@@ -128133,6 +128398,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -128741,6 +129007,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 9,
@@ -129355,6 +129622,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 12,
@@ -129979,6 +130247,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -130308,6 +130577,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 4,
@@ -130914,6 +131184,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 12,
@@ -131537,6 +131808,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -132153,6 +132425,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 12,
@@ -132781,6 +133054,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -133407,6 +133681,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -134037,6 +134312,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -134374,6 +134650,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 12,
@@ -134630,7 +134907,7 @@
      "match_score": 10.8,
      "details": [
       {
-       "kind": "viager",
+       "kind": "disqualifiant",
        "label": "Viager / nue-propriété",
        "weight": 0,
        "status": "ko",
@@ -134822,7 +135099,7 @@
      "match_score": 10.1,
      "details": [
       {
-       "kind": "viager",
+       "kind": "disqualifiant",
        "label": "Viager / nue-propriété",
        "weight": 0,
        "status": "ko",
@@ -135003,6 +135280,7 @@
     }
    },
    "viager": true,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 8,
@@ -135626,6 +135904,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -135957,6 +136236,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 5,
@@ -136289,6 +136569,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 12,
@@ -136912,6 +137193,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -137539,6 +137821,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -137880,6 +138163,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -138491,6 +138775,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 12,
@@ -139113,6 +139398,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 12,
@@ -139744,6 +140030,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -140081,6 +140368,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 8,
@@ -140418,6 +140706,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 4,
@@ -140743,6 +141032,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 12,
@@ -141362,6 +141652,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 12,
@@ -141986,6 +142277,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 12,
@@ -142326,6 +142618,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -142940,6 +143233,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 12,
@@ -143567,6 +143861,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -144185,6 +144480,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -144439,7 +144735,7 @@
      "match_score": 10.2,
      "details": [
       {
-       "kind": "viager",
+       "kind": "disqualifiant",
        "label": "Viager / nue-propriété",
        "weight": 0,
        "status": "ko",
@@ -144632,7 +144928,7 @@
      "match_score": 9.7,
      "details": [
       {
-       "kind": "viager",
+       "kind": "disqualifiant",
        "label": "Viager / nue-propriété",
        "weight": 0,
        "status": "ko",
@@ -144813,6 +145109,7 @@
     }
    },
    "viager": true,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 7,
@@ -145145,6 +145442,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 8,
@@ -145479,6 +145777,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 3,
@@ -145802,6 +146101,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -146413,6 +146713,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 12,
@@ -147036,6 +147337,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 12,
@@ -147660,6 +147962,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -147999,6 +148302,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 7,
@@ -148629,6 +148933,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -149247,6 +149552,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -149579,6 +149885,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 11,
@@ -149910,6 +150217,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 12,
@@ -150243,6 +150551,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 9,
@@ -150861,6 +151170,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 12,
@@ -151485,6 +151795,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -151818,6 +152129,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -152434,6 +152746,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -153054,6 +153367,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -153381,6 +153695,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -153719,6 +154034,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 12,
@@ -154339,6 +154655,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -154942,6 +155259,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -155544,6 +155862,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -156158,6 +156477,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -156496,6 +156816,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 1,
@@ -156736,8 +157057,16 @@
    ],
    "scores_by_set": {
     "3": {
-     "match_score": 70.6,
+     "match_score": 14.1,
      "details": [
+      {
+       "kind": "disqualifiant",
+       "label": "Résidence de tourisme / bail commercial",
+       "weight": 0,
+       "status": "ko",
+       "subscore": 0,
+       "detail": "résidence de tourisme (bail commercial, gestion imposée) — fortement déclassé"
+      },
       {
        "kind": "budget",
        "label": "Budget ≤ 150 000 €",
@@ -156818,6 +157147,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": true,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 10,
@@ -157441,6 +157771,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -157775,6 +158106,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 12,
@@ -158114,6 +158446,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 4,
@@ -158449,6 +158782,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 10,
@@ -159066,6 +159400,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -159401,6 +159736,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -160015,6 +160351,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 12,
@@ -160641,6 +160978,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 12,
@@ -161267,6 +161605,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 12,
@@ -161608,6 +161947,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 12,
@@ -162230,6 +162570,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -162557,6 +162898,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 9,
@@ -162895,6 +163237,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 8,
@@ -163223,6 +163566,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 12,
@@ -163845,6 +164189,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -164176,6 +164521,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -164791,6 +165137,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 12,
@@ -165410,6 +165757,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -166026,6 +166374,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -166642,6 +166991,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 12,
@@ -166975,6 +167325,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 7,
@@ -167593,6 +167944,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -167934,6 +168286,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 9,
@@ -168548,6 +168901,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 7,
@@ -168879,6 +169233,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -169488,6 +169843,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 11,
@@ -170112,6 +170468,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -170443,6 +170800,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 11,
@@ -171068,6 +171426,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -171682,6 +172041,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 12,
@@ -172024,6 +172384,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 12,
@@ -172365,6 +172726,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 11,
@@ -172622,7 +172984,7 @@
      "match_score": 10.8,
      "details": [
       {
-       "kind": "viager",
+       "kind": "disqualifiant",
        "label": "Viager / nue-propriété",
        "weight": 0,
        "status": "ko",
@@ -172709,6 +173071,7 @@
     }
    },
    "viager": true,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 12,
@@ -173331,6 +173694,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -173662,6 +174026,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -174001,6 +174366,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 3,
@@ -174613,6 +174979,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 12,
@@ -174954,6 +175321,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 12,
@@ -175570,6 +175938,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 12,
@@ -175903,6 +176272,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -176513,6 +176883,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 12,
@@ -177132,6 +177503,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 12,
@@ -177462,6 +177834,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 4,
@@ -178080,6 +178453,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -178340,7 +178714,7 @@
      "match_score": 13.6,
      "details": [
       {
-       "kind": "viager",
+       "kind": "disqualifiant",
        "label": "Viager / nue-propriété",
        "weight": 0,
        "status": "ko",
@@ -178428,6 +178802,7 @@
     }
    },
    "viager": true,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 12,
@@ -178767,6 +179142,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 8,
@@ -179101,6 +179477,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -179434,6 +179811,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -179769,6 +180147,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 12,
@@ -180101,6 +180480,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 12,
@@ -180717,6 +181097,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 12,
@@ -181342,6 +181723,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -181673,6 +182055,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 11,
@@ -182288,6 +182671,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 3,
@@ -182902,6 +183286,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -183514,6 +183899,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -184130,6 +184516,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 2,
@@ -184746,6 +185133,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -185084,6 +185472,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -185699,6 +186088,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 12,
@@ -186315,6 +186705,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 12,
@@ -186938,6 +187329,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -187269,6 +187661,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -187893,6 +188286,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -188509,6 +188903,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 9,
@@ -189122,6 +189517,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -189740,6 +190136,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -190075,6 +190472,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 12,
@@ -190408,6 +190806,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -191033,6 +191432,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -191652,6 +192052,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -192267,6 +192668,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 9,
@@ -192889,6 +193291,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -193510,6 +193913,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -194127,6 +194531,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -194740,6 +195145,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 2,
@@ -195351,6 +195757,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -195684,6 +196091,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 7,
@@ -195936,8 +196344,16 @@
    ],
    "scores_by_set": {
     "3": {
-     "match_score": 69.0,
+     "match_score": 13.8,
      "details": [
+      {
+       "kind": "disqualifiant",
+       "label": "Résidence de tourisme / bail commercial",
+       "weight": 0,
+       "status": "ko",
+       "subscore": 0,
+       "detail": "résidence de tourisme (bail commercial, gestion imposée) — fortement déclassé"
+      },
       {
        "kind": "budget",
        "label": "Budget ≤ 150 000 €",
@@ -196018,6 +196434,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": true,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 4,
@@ -196624,6 +197041,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 4,
@@ -196948,6 +197366,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 9,
@@ -197562,6 +197981,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -197901,6 +198321,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 12,
@@ -198517,6 +198938,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 12,
@@ -199140,6 +199562,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -199759,6 +200182,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -200382,6 +200806,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -200721,6 +201146,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 7,
@@ -201048,6 +201474,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -201384,6 +201811,7 @@
     }
    },
    "viager": false,
+   "residence_tourisme": false,
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
@@ -201403,6 +201831,7 @@
   "n_biens": 372,
   "n_sets": 3,
   "n_searches": 0,
-  "n_viager": 15
+  "n_viager": 15,
+  "n_residence_tourisme": 6
  }
 }
