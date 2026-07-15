@@ -75,11 +75,34 @@ def _authenticite(flags, ctx):
     return (1.0 if has else 0.4), "ok", "cachet/authentique" if has else "non précisé"
 
 
+# Poids d'impact par type de risque pour un logement. Les aléas quasi ubiquitaires en
+# France et à faible enjeu direct (séisme zone faible, radon) pèsent peu ; les aléas
+# potentiellement destructeurs / climatiques (inondation, submersion, recul du trait de
+# côte, mouvement de terrain, feu de forêt…) pèsent fort. Corrige l'ancien score qui se
+# contentait de COMPTER les risques (tout bien français écopait de ~0.1).
+_RISK_WEIGHT = {
+    "inondation": 1.0, "risqueCotier": 1.0, "submersionMarine": 1.0, "reculTraitCote": 1.0,
+    "mouvementTerrain": 0.9, "ruptureBarrage": 0.9, "avalanche": 0.9, "feuForet": 0.85,
+    "nucleaire": 0.8, "canalisationsMatieresDangereuses": 0.6, "retraitGonflementArgile": 0.6,
+    "remonteeNappe": 0.5, "pollutionSols": 0.5, "icpe": 0.5, "risqueMinier": 0.5,
+    "seisme": 0.2, "radon": 0.15,
+}
+_RISK_DEFAULT_W = 0.5
+
+
 def _risques_naturels(flags, ctx):
     r = flags.get("risques")
     if r is None:
         return None, "pending", "Géorisques (enrich)"
-    return _clamp(1 - 0.15 * len(r)), "ok", f"{len(r)} risque(s)" if r else "aucun risque"
+    if not r:
+        return 1.0, "ok", "aucun risque recensé"
+    niveaux = flags.get("risques_niveaux") or {}  # {nom: sévérité [0,1]} si dispo (enrich récent)
+    # Pénalité = somme (poids type × sévérité). Sévérité par défaut 0.6 si non renseignée.
+    penalty = sum(_RISK_WEIGHT.get(nom, _RISK_DEFAULT_W) * float(niveaux.get(nom, 0.6)) for nom in r)
+    sub = _clamp(1 - 0.28 * penalty)
+    # Détail lisible : les risques les plus pénalisants d'abord.
+    tops = sorted(r, key=lambda n: _RISK_WEIGHT.get(n, _RISK_DEFAULT_W) * float(niveaux.get(n, 0.6)), reverse=True)
+    return sub, "ok", ", ".join(tops[:4]) + (f" (+{len(r)-4})" if len(r) > 4 else "")
 
 
 def _nuisances_proximite(flags, ctx):

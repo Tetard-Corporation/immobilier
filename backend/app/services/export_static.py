@@ -29,6 +29,7 @@ from ..models import FilterSet, Listing, SavedListing, SearchHistory
 from .filtersets import resolve_criteria
 from .geo import haversine_km
 from .preferences import evaluate
+from .scoring import compute_score
 
 # Colonnes DB dont le nom correspond 1:1 aux clés `flags` consommées par evaluate().
 # (mapping inverse de search.upsert_listing, qui écrit flags.get(<col>) -> colonne)
@@ -175,6 +176,8 @@ def _fibre_flags(code_commune: str | None, lut: dict) -> dict:
 _VIAGER_RE = re.compile(
     r"\bviager\b|nue?[- ]?propri[ée]t[ée]|rente\s+viag|occup[ée]\s+au\s+profit|"
     r"droit\s+d.usage\s+et\s+d.habitation|vente\s+à\s+terme\s+occup", re.I)
+# Facteur appliqué au match d'un viager (0.15 -> un match de 80 tombe à 12).
+_VIAGER_MATCH_FACTOR = 0.15
 
 
 def _detect_viager(*texts: str | None) -> bool:
@@ -409,11 +412,11 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
         .all()
     )
     for row in rows:
-        # Viager / nue-propriété : exclu (prix affiché = bouquet, bien occupé) -> le
-        # groupe n'en veut pas et il fausse le scoring budget.
-        if _detect_viager(row.description, row.adresse):
+        # Viager / nue-propriété : conservé mais noté très bas (prix affiché = bouquet,
+        # bien occupé) -> pénalité forte sur le match pour le renvoyer en fond de classement.
+        is_viager = _detect_viager(row.description, row.adresse)
+        if is_viager:
             n_viager += 1
-            continue
         infra = _infra_distances(row.latitude, row.longitude, infra_cache)
         poi = _poi_distances(row.latitude, row.longitude, poi_cache)
         feats = list(row.features or [])
@@ -424,6 +427,18 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
                  **_tension_flags(row.commune, tension_lut),
                  "features": feats, "pavillon_neuf": _detect_pavillon_neuf(row.description)}
         item = _RowItem(row, extra_flags=extra)
+        # Recalcule le score d'investissement à l'export à partir des flags courants
+        # (le score stocké date de l'enrichissement -> ne refléterait pas les évolutions
+        # du scoring, ex. pondération des risques). Repli sur le stocké si échec.
+        try:
+            _sc = compute_score(item.flags, {
+                "has_text": bool(row.description or row.adresse),
+                "surface_terrain": row.surface_terrain, "type_bien": row.type_bien,
+                "latitude": row.latitude, "longitude": row.longitude,
+            })
+            row_score, row_score_details = _sc.score, _sc.pillars
+        except Exception:
+            row_score, row_score_details = row.score, row.score_details
         member = set(row.set_ids or [])  # sets d'appartenance ; vide -> tous (rétro-compat)
         scores_by_set = {}
         for fs_id, prefs in set_prefs.items():
@@ -432,6 +447,12 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
             if member and fs_id not in member:
                 continue  # bien hors de ce set (ex. montagne vs Pauline) -> pas de score
             match, details = evaluate(item, prefs)
+            if is_viager and match is not None:
+                # Pénalité forte : un viager plafonne très bas quelles que soient ses qualités.
+                match = round(match * _VIAGER_MATCH_FACTOR, 1)
+                details.insert(0, {"kind": "viager", "label": "Viager / nue-propriété",
+                                   "weight": 0, "status": "ko", "subscore": 0,
+                                   "detail": "viager (prix = bouquet, bien occupé) — fortement déclassé"})
             scores_by_set[str(fs_id)] = {"match_score": match, "details": details}
 
         sv = saved.get((row.source, row.external_id))
@@ -447,8 +468,9 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
             "condition": row.condition, "features": feats, "nuisances": row.nuisances,
             "altitude": row.altitude, "rail_time_min": row.rail_time_min,
             "isolement_score": row.isolement_score, "population_commune": row.population_commune,
-            "risques": row.risques, "score": row.score, "score_details": row.score_details,
+            "risques": row.risques, "score": row_score, "score_details": row_score_details,
             "scores_by_set": scores_by_set,
+            "viager": is_viager,
             "is_favori": sv is not None,
             "favori_note": sv.note if sv else None,
             "n_photos_source": len(_photo_urls(row)),
@@ -471,7 +493,7 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
         "biens": biens_out,
         "searches": searches_out,
         "stats": {"n_biens": len(biens_out), "n_sets": len(sets_out),
-                  "n_searches": len(searches_out), "n_viager_exclus": n_viager},
+                  "n_searches": len(searches_out), "n_viager": n_viager},
     }
 
 

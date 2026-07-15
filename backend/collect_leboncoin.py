@@ -93,8 +93,7 @@ def main():
                 continue
             if it.prix is None or it.prix > z["prix_max"]:
                 continue
-            if _detect_viager(it.description, it.adresse):
-                continue  # viager / nue-propriété : le groupe n'en veut pas
+            # viagers conservés (notés très bas à l'export, cf. export_static)
             collected[it.external_id] = (it, z["set_ids"])
             kept += 1
             if kept >= z["target"]:
