@@ -18,6 +18,7 @@ from app.enrichment import enrich_listing
 from app.models import Listing
 from app.seed import seed_from_data_json
 from app.services.enrich import annotate
+from app.services.export_static import _detect_viager
 from app.services.search import upsert_listing
 from app.sources.leboncoin import LeboncoinSource, _APP_TO_RET
 
@@ -92,6 +93,8 @@ def main():
                 continue
             if it.prix is None or it.prix > z["prix_max"]:
                 continue
+            if _detect_viager(it.description, it.adresse):
+                continue  # viager / nue-propriété : le groupe n'en veut pas
             collected[it.external_id] = (it, z["set_ids"])
             kept += 1
             if kept >= z["target"]:

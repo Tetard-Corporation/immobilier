@@ -15,6 +15,7 @@ import json
 import os
 import re
 import time
+import unicodedata
 import urllib.parse
 import urllib.request
 from datetime import datetime, timezone
@@ -159,6 +160,42 @@ def _fibre_flags(code_commune: str | None, lut: dict) -> dict:
         return {}
     pct = lut[code_commune]
     return {"fibre": pct >= 50, "fibre_pct": pct}
+
+
+# --- Viager : exclu du dataset (bien noté à tort car le prix affiché = bouquet, pas
+# le coût réel ; le bien reste occupé). Détection sur le texte de l'annonce. ---------
+_VIAGER_RE = re.compile(
+    r"\bviager\b|nue?[- ]?propri[ée]t[ée]|rente\s+viag|occup[ée]\s+au\s+profit|"
+    r"droit\s+d.usage\s+et\s+d.habitation|vente\s+à\s+terme\s+occup", re.I)
+
+
+def _detect_viager(*texts: str | None) -> bool:
+    return any(t and _VIAGER_RE.search(t) for t in texts)
+
+
+_TENSION_LUT = os.path.join(os.path.dirname(__file__), "..", "..", "data", "tension_communes.json")
+
+
+def _load_tension_lut() -> dict:
+    try:
+        with open(_TENSION_LUT, encoding="utf-8") as fh:
+            return {k: v for k, v in json.load(fh).items() if not k.startswith("_")}
+    except Exception:
+        return {}
+
+
+def _norm_commune(name: str | None) -> str:
+    """Normalise un nom de commune pour le lookup tension (sans accents ni tirets)."""
+    if not name:
+        return ""
+    s = unicodedata.normalize("NFKD", name).encode("ascii", "ignore").decode()
+    s = re.sub(r"[^a-z0-9]+", " ", s.lower()).strip()
+    return re.sub(r"\s+", " ", s)
+
+
+def _tension_flags(commune: str | None, lut: dict) -> dict:
+    v = lut.get(_norm_commune(commune))
+    return {"tension_score": v} if v is not None else {}
 
 
 def _query_overpass(lat: float, lon: float) -> dict | None:
@@ -350,9 +387,11 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
         os.makedirs(photos_dir, exist_ok=True)
 
     biens_out = []
+    n_viager = 0
     infra_cache = _load_infra_cache()
     poi_cache = _load_poi_cache()
     fibre_lut = _load_fibre_lut()
+    tension_lut = _load_tension_lut()
     rows = (
         db.query(Listing)
         .filter(Listing.source != "mock")
@@ -360,6 +399,11 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
         .all()
     )
     for row in rows:
+        # Viager / nue-propriété : exclu (prix affiché = bouquet, bien occupé) -> le
+        # groupe n'en veut pas et il fausse le scoring budget.
+        if _detect_viager(row.description, row.adresse):
+            n_viager += 1
+            continue
         infra = _infra_distances(row.latitude, row.longitude, infra_cache)
         poi = _poi_distances(row.latitude, row.longitude, poi_cache)
         feats = list(row.features or [])
@@ -367,6 +411,7 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
             if e not in feats:
                 feats.append(e)
         extra = {**infra, **poi, **_fibre_flags(row.code_commune, fibre_lut),
+                 **_tension_flags(row.commune, tension_lut),
                  "features": feats, "pavillon_neuf": _detect_pavillon_neuf(row.description)}
         item = _RowItem(row, extra_flags=extra)
         member = set(row.set_ids or [])  # sets d'appartenance ; vide -> tous (rétro-compat)
@@ -415,7 +460,8 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
         "sets": sets_out,
         "biens": biens_out,
         "searches": searches_out,
-        "stats": {"n_biens": len(biens_out), "n_sets": len(sets_out), "n_searches": len(searches_out)},
+        "stats": {"n_biens": len(biens_out), "n_sets": len(sets_out),
+                  "n_searches": len(searches_out), "n_viager_exclus": n_viager},
     }
 
 
