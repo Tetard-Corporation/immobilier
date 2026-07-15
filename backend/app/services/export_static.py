@@ -86,12 +86,20 @@ def _query_poi(lat: float, lon: float) -> dict | None:
     return {"n_commerces": n_commerces, "dist_ski_m": ski, "ski_checked": True}
 
 
+# Mode cache-only : n'interroge PAS Overpass en live (l'API publique throttle les
+# rafales). Les coords non déjà en cache renvoient {} (critères commerces/ski/calme
+# en "pending" pour ces biens, sans bloquer l'export). Réchauffage : warm.py.
+_NO_LIVE_OVERPASS = bool(os.environ.get("EXPORT_NO_LIVE_OVERPASS"))
+
+
 def _poi_distances(lat: float, lon: float, cache: dict) -> dict:
     if lat is None or lon is None:
         return {}
     key = f"{round(lat, 4)},{round(lon, 4)}"
     if key in cache:
         return cache[key]
+    if _NO_LIVE_OVERPASS:
+        return {}
     res = None
     for attempt in range(3):
         res = _query_poi(lat, lon)
@@ -242,6 +250,8 @@ def _infra_distances(lat: float, lon: float, cache: dict) -> dict:
     key = f"{round(lat, 4)},{round(lon, 4)}"
     if key in cache:
         return cache[key]
+    if _NO_LIVE_OVERPASS:
+        return {}
     res = None
     for attempt in range(3):  # Overpass throttle parfois : on réessaie poliment
         res = _query_overpass(lat, lon)
