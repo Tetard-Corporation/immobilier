@@ -40,7 +40,7 @@ _FLAG_COLS = (
 )
 
 _UA = "Mozilla/5.0 (compatible; immobilier-export/1.0)"
-_MAX_PHOTOS = 10
+_MAX_PHOTOS = 12
 # Distances aux infrastructures bruyantes (autoroute/voie ferrée) via Overpass (OSM),
 # mises en cache sur disque pour ne pas re-interroger à chaque export.
 _INFRA_CACHE = os.path.join(os.path.dirname(__file__), "..", "..", "data", "infra_cache.json")
@@ -268,7 +268,12 @@ def _photo_urls(row: Listing) -> list[str]:
     """Extrait les URLs de photos du payload source (best-effort, multi-source)."""
     raw = row.raw if isinstance(row.raw, dict) else {}
     urls: list[str] = []
-    for ph in raw.get("photos") or raw.get("images") or []:
+    images = raw.get("photos") or raw.get("images") or []
+    # Leboncoin : `images` est un dict {nb_images, urls, urls_large, urls_thumb}
+    # (et non une liste). On privilégie les grandes images.
+    if isinstance(images, dict):
+        images = images.get("urls_large") or images.get("urls") or images.get("urls_thumb") or []
+    for ph in images:
         if isinstance(ph, str):
             urls.append(ph)
         elif isinstance(ph, dict):
