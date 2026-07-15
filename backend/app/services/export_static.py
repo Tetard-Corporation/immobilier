@@ -41,12 +41,17 @@ _FLAG_COLS = (
     "age_median", "part_gauche", "population_commune", "isolement_score", "price_decreased",
 )
 
+# Colonnes de flags à PERSISTER dans data.json pour un round-trip seed->export sans
+# perte (sinon les biens re-seedés perdent DVF/pollution/GPU/socio -> scoring dégradé).
+# On exclut score/score_details (recalculés) et features (fusionnées avec la détection).
+_PERSIST_FLAG_COLS = tuple(c for c in _FLAG_COLS if c not in ("score", "score_details", "features"))
+
 _UA = "Mozilla/5.0 (compatible; immobilier-export/1.0)"
 _MAX_PHOTOS = 12
 # Distances aux infrastructures bruyantes (autoroute/voie ferrée) via Overpass (OSM),
 # mises en cache sur disque pour ne pas re-interroger à chaque export.
 _INFRA_CACHE = os.path.join(os.path.dirname(__file__), "..", "..", "data", "infra_cache.json")
-_OVERPASS = "https://overpass-api.de/api/interpreter"
+_OVERPASS = os.environ.get("OVERPASS_URL", "https://overpass-api.de/api/interpreter")
 
 
 def _load_infra_cache() -> dict:
@@ -485,11 +490,13 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
         sv = saved.get((row.source, row.external_id))
         photos = _download_photos(row, photos_dir, "photos") if (download_photos and photos_dir) else []
         biens_out.append({
+            **{c: getattr(row, c) for c in _PERSIST_FLAG_COLS},  # flags persistés (round-trip)
             "id": row.id, "source": row.source, "external_id": row.external_id,
             "type_bien": row.type_bien, "prix": row.prix, "nb_chambres": row.nb_chambres,
             "nb_pieces": row.nb_pieces, "surface_terrain": row.surface_terrain,
             "surface_bati": row.surface_bati, "commune": row.commune,
-            "code_postal": row.code_postal, "departement": row.departement,
+            "code_postal": row.code_postal, "code_commune": row.code_commune,
+            "departement": row.departement,
             "latitude": row.latitude, "longitude": row.longitude,
             "url": row.url, "description": row.description, "dpe_classe": row.dpe_classe,
             "condition": row.condition, "features": feats, "nuisances": row.nuisances,

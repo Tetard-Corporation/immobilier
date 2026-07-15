@@ -38,8 +38,12 @@ def _affaire(flags, ctx):
 
 
 def _baisse_prix(flags, ctx):
-    dec = bool(flags.get("price_decreased"))
-    return (1.0 if dec else 0.5), "ok", "en baisse" if dec else "prix stable"
+    # Signal informatif seulement quand une baisse est constatée -> on récompense.
+    # Sinon on n'a pas d'historique fiable : n/a (exclu) plutôt qu'un 0.5 qui dilue
+    # le score de tous les biens vers la moyenne.
+    if flags.get("price_decreased"):
+        return 1.0, "ok", "prix en baisse constatée"
+    return None, "n/a", "pas de baisse constatée"
 
 
 def _zonage(flags, ctx):
