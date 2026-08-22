@@ -29,6 +29,7 @@ PREFERENCE_KINDS = [
     "temps_acces",
     "nuisance_sonore",
     "commerces",
+    "tension_locative",
     "ski",
     "population_jeune",
     "orientation_gauche",
@@ -246,6 +247,14 @@ def _eval_one(item, kind: str, params: dict):
             return None, "pending", "commerces non vérifiés"
         ref = params.get("ref", 15)
         return _clamp(n / ref), "ok", f"{n} commerces/services à vélo (≤ 3 km)"
+
+    if kind == "tension_locative":
+        # Tension du marché locatif (demande > offre) : plus c'est tendu, mieux c'est
+        # pour un investissement locatif (vacance faible, loyer soutenu).
+        v = flags.get("tension_score")
+        if v is None:
+            return None, "n/a", "tension locative inconnue (commune hors référentiel)"
+        return _clamp(v), "ok", f"tension locative {round(v * 100)}/100"
 
     if kind == "ski":
         if not flags.get("ski_checked"):

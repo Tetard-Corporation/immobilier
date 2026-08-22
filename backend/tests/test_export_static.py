@@ -43,3 +43,20 @@ def test_export_build_dataset(client, tmp_path):
     stats = export_to_dir(db, str(tmp_path / "data"), download_photos=False)
     written = json.loads((tmp_path / "data" / "data.json").read_text(encoding="utf-8"))
     assert written["stats"] == stats
+
+
+def test_pepites_gate():
+    """Mode « pépites » : filtre le set primaire au seuil, préserve les autres sets."""
+    from app.services.export_static import _passes_pepites_gate
+
+    # Bien têtard (membre {1,2}) au-dessus du seuil -> gardé.
+    sbs = {"1": {"match_score": 80.0}, "2": {"match_score": 60.0}}
+    assert _passes_pepites_gate(sbs, {1, 2}, 1, 78) is True
+    # Même bien sous le seuil sur le set primaire -> écarté.
+    assert _passes_pepites_gate({"1": {"match_score": 70.0}}, {1, 2}, 1, 78) is False
+    # Bien Pauline (membre {3}, pas du set primaire 1) -> toujours conservé.
+    assert _passes_pepites_gate({"3": {"match_score": 40.0}}, {3}, 1, 78) is True
+    # Membre du set primaire mais non scoré dessus -> écarté (pas une pépite prouvée).
+    assert _passes_pepites_gate({"2": {"match_score": 90.0}}, {1, 2}, 1, 78) is False
+    # member vide (rétro-compat "tous sets") + score suffisant -> gardé.
+    assert _passes_pepites_gate({"1": {"match_score": 79.0}}, set(), 1, 78) is True

@@ -37,6 +37,9 @@ class Settings(BaseSettings):
     # renvoie 403 (Datadome bloque les IP datacenter) -> source marquée indisponible.
     leboncoin_api_key: str = "ba0c2dad52b3ec"
     leboncoin_datadome: str = ""
+    # SeLoger (groupe Aviv) : également protégé par Datadome. Sans proxy résidentiel
+    # NI cookie Datadome, le scraping renvoie 403 -> source marquée indisponible.
+    seloger_datadome: str = ""
 
     # Enrichissement (Lot A)
     enrich_on_search: bool = False

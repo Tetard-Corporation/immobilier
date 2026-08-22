@@ -60,3 +60,18 @@ def test_seloger_parse_et_params():
     assert set(params["types"].split(",")) == {"4", "2"}
     assert params["price"] == "NaN/200000"
     assert params["projects"] == "2"
+
+
+def test_seloger_available_gate():
+    from app.config import Settings
+
+    # Ni proxy ni cookie Datadome -> indisponible (comme Leboncoin, évite les 403).
+    assert SeLogerSource(settings=Settings(proxy_url="", seloger_datadome=""))._headers() is None
+    assert SeLogerSource(settings=Settings(proxy_url="", seloger_datadome="")).available is False
+    # Cookie Datadome fourni -> disponible + cookie transmis.
+    src = SeLogerSource(settings=Settings(proxy_url="", seloger_datadome="ABC123"))
+    assert src.available is True
+    assert src._headers() == {"Cookie": "datadome=ABC123"}
+    # Proxy résidentiel seul suffit aussi.
+    assert SeLogerSource(settings=Settings(proxy_url="http://proxy:8000"))._headers() is None
+    assert SeLogerSource(settings=Settings(proxy_url="http://proxy:8000")).available is True

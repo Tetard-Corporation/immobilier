@@ -70,25 +70,25 @@ class LeboncoinSource(ScraperSource):
             h["Cookie"] = f"datadome={self._settings.leboncoin_datadome}"
         return h
 
+    @staticmethod
+    def _range(lo, hi) -> dict:
+        # L'API Leboncoin exige des ENTIERS dans les `ranges` : une borne float
+        # (ex. prix_max=300000.0 côté SearchCriteria) renvoie 400 Bad Request.
+        return {k: int(v) for k, v in (("min", lo), ("max", hi)) if v is not None}
+
     def _build_payload(self, c: SearchCriteria) -> dict:
         property_types = c.property_types or ["terrain", "maison", "appartement"]
         ret = sorted({_APP_TO_RET[p] for p in property_types if p in _APP_TO_RET})
 
         ranges: dict[str, dict] = {}
         if c.prix_min is not None or c.prix_max is not None:
-            ranges["price"] = {k: v for k, v in (("min", c.prix_min), ("max", c.prix_max)) if v is not None}
+            ranges["price"] = self._range(c.prix_min, c.prix_max)
         if c.surface_terrain_min is not None or c.surface_terrain_max is not None:
-            ranges["land_plot_surface"] = {
-                k: v for k, v in (("min", c.surface_terrain_min), ("max", c.surface_terrain_max)) if v is not None
-            }
+            ranges["land_plot_surface"] = self._range(c.surface_terrain_min, c.surface_terrain_max)
         if c.surface_bati_min is not None or c.surface_bati_max is not None:
-            ranges["square"] = {
-                k: v for k, v in (("min", c.surface_bati_min), ("max", c.surface_bati_max)) if v is not None
-            }
+            ranges["square"] = self._range(c.surface_bati_min, c.surface_bati_max)
         if c.nb_pieces_min is not None or c.nb_pieces_max is not None:
-            ranges["rooms"] = {
-                k: v for k, v in (("min", c.nb_pieces_min), ("max", c.nb_pieces_max)) if v is not None
-            }
+            ranges["rooms"] = self._range(c.nb_pieces_min, c.nb_pieces_max)
 
         filters: dict = {
             "category": {"id": _CATEGORY_VENTES},

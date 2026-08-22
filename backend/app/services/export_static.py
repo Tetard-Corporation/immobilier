@@ -15,6 +15,7 @@ import json
 import os
 import re
 import time
+import unicodedata
 import urllib.parse
 import urllib.request
 from datetime import datetime, timezone
@@ -28,6 +29,7 @@ from ..models import FilterSet, Listing, SavedListing, SearchHistory
 from .filtersets import resolve_criteria
 from .geo import haversine_km
 from .preferences import evaluate
+from .scoring import compute_score
 
 # Colonnes DB dont le nom correspond 1:1 aux clés `flags` consommées par evaluate().
 # (mapping inverse de search.upsert_listing, qui écrit flags.get(<col>) -> colonne)
@@ -39,12 +41,17 @@ _FLAG_COLS = (
     "age_median", "part_gauche", "population_commune", "isolement_score", "price_decreased",
 )
 
+# Colonnes de flags à PERSISTER dans data.json pour un round-trip seed->export sans
+# perte (sinon les biens re-seedés perdent DVF/pollution/GPU/socio -> scoring dégradé).
+# On exclut score/score_details (recalculés) et features (fusionnées avec la détection).
+_PERSIST_FLAG_COLS = tuple(c for c in _FLAG_COLS if c not in ("score", "score_details", "features"))
+
 _UA = "Mozilla/5.0 (compatible; immobilier-export/1.0)"
-_MAX_PHOTOS = 10
+_MAX_PHOTOS = 12
 # Distances aux infrastructures bruyantes (autoroute/voie ferrée) via Overpass (OSM),
 # mises en cache sur disque pour ne pas re-interroger à chaque export.
 _INFRA_CACHE = os.path.join(os.path.dirname(__file__), "..", "..", "data", "infra_cache.json")
-_OVERPASS = "https://overpass-api.de/api/interpreter"
+_OVERPASS = os.environ.get("OVERPASS_URL", "https://overpass-api.de/api/interpreter")
 
 
 def _load_infra_cache() -> dict:
@@ -85,12 +92,20 @@ def _query_poi(lat: float, lon: float) -> dict | None:
     return {"n_commerces": n_commerces, "dist_ski_m": ski, "ski_checked": True}
 
 
+# Mode cache-only : n'interroge PAS Overpass en live (l'API publique throttle les
+# rafales). Les coords non déjà en cache renvoient {} (critères commerces/ski/calme
+# en "pending" pour ces biens, sans bloquer l'export). Réchauffage : warm.py.
+_NO_LIVE_OVERPASS = bool(os.environ.get("EXPORT_NO_LIVE_OVERPASS"))
+
+
 def _poi_distances(lat: float, lon: float, cache: dict) -> dict:
     if lat is None or lon is None:
         return {}
     key = f"{round(lat, 4)},{round(lon, 4)}"
     if key in cache:
         return cache[key]
+    if _NO_LIVE_OVERPASS:
+        return {}
     res = None
     for attempt in range(3):
         res = _query_poi(lat, lon)
@@ -161,6 +176,58 @@ def _fibre_flags(code_commune: str | None, lut: dict) -> dict:
     return {"fibre": pct >= 50, "fibre_pct": pct}
 
 
+# --- Viager : exclu du dataset (bien noté à tort car le prix affiché = bouquet, pas
+# le coût réel ; le bien reste occupé). Détection sur le texte de l'annonce. ---------
+_VIAGER_RE = re.compile(
+    r"\bviager\b|nue?[- ]?propri[ée]t[ée]|rente\s+viag|occup[ée]\s+au\s+profit|"
+    r"droit\s+d.usage\s+et\s+d.habitation|vente\s+à\s+terme\s+occup", re.I)
+# Facteur appliqué au match d'un viager (0.15 -> un match de 80 tombe à 12).
+_VIAGER_MATCH_FACTOR = 0.15
+
+
+def _detect_viager(*texts: str | None) -> bool:
+    return any(t and _VIAGER_RE.search(t) for t in texts)
+
+
+# Résidence de tourisme / services sous bail commercial (leaseback, LMNP géré,
+# Censi-Bouvard) : jouissance restreinte, gestion imposée, revente difficile -> pénalisé
+# comme le viager. NB : "résidence secondaire/principale" ne matche pas (voulu).
+_RESID_TOURISME_RE = re.compile(
+    r"r[ée]sidence\s+(?:de\s+)?tourisme|r[ée]sidence\s+de\s+vacances|r[ée]sidence\s+services?|"
+    r"r[ée]sidence\s+g[ée]r[ée]e|r[ée]sidence\s+(?:senior|[ée]tudiante)|bail\s+commercial|"
+    r"censi[- ]bouvard", re.I)
+_RESID_MATCH_FACTOR = 0.2  # un match de 80 tombe à 16
+
+
+def _detect_residence_tourisme(*texts: str | None) -> bool:
+    return any(t and _RESID_TOURISME_RE.search(t) for t in texts)
+
+
+_TENSION_LUT = os.path.join(os.path.dirname(__file__), "..", "..", "data", "tension_communes.json")
+
+
+def _load_tension_lut() -> dict:
+    try:
+        with open(_TENSION_LUT, encoding="utf-8") as fh:
+            return {k: v for k, v in json.load(fh).items() if not k.startswith("_")}
+    except Exception:
+        return {}
+
+
+def _norm_commune(name: str | None) -> str:
+    """Normalise un nom de commune pour le lookup tension (sans accents ni tirets)."""
+    if not name:
+        return ""
+    s = unicodedata.normalize("NFKD", name).encode("ascii", "ignore").decode()
+    s = re.sub(r"[^a-z0-9]+", " ", s.lower()).strip()
+    return re.sub(r"\s+", " ", s)
+
+
+def _tension_flags(commune: str | None, lut: dict) -> dict:
+    v = lut.get(_norm_commune(commune))
+    return {"tension_score": v} if v is not None else {}
+
+
 def _query_overpass(lat: float, lon: float) -> dict | None:
     # Une seule requête : autoroute/voie ferrée (bruit) + sentiers/itinéraires (rando).
     q = (f'[out:json][timeout:25];('
@@ -205,6 +272,8 @@ def _infra_distances(lat: float, lon: float, cache: dict) -> dict:
     key = f"{round(lat, 4)},{round(lon, 4)}"
     if key in cache:
         return cache[key]
+    if _NO_LIVE_OVERPASS:
+        return {}
     res = None
     for attempt in range(3):  # Overpass throttle parfois : on réessaie poliment
         res = _query_overpass(lat, lon)
@@ -268,7 +337,12 @@ def _photo_urls(row: Listing) -> list[str]:
     """Extrait les URLs de photos du payload source (best-effort, multi-source)."""
     raw = row.raw if isinstance(row.raw, dict) else {}
     urls: list[str] = []
-    for ph in raw.get("photos") or raw.get("images") or []:
+    images = raw.get("photos") or raw.get("images") or []
+    # Leboncoin : `images` est un dict {nb_images, urls, urls_large, urls_thumb}
+    # (et non une liste). On privilégie les grandes images.
+    if isinstance(images, dict):
+        images = images.get("urls_large") or images.get("urls") or images.get("urls_thumb") or []
+    for ph in images:
         if isinstance(ph, str):
             urls.append(ph)
         elif isinstance(ph, dict):
@@ -318,8 +392,26 @@ def _download_photos(row: Listing, photos_dir: str, rel_base: str) -> list[str]:
     return rels
 
 
-def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = False) -> dict:
-    """Construit le dataset statique. Si download_photos, écrit les images sous out_dir."""
+def _passes_pepites_gate(scores_by_set: dict, member: set, primary_set_id: int, min_score: float) -> bool:
+    """Filtre « pépites » : ne garde un bien du set primaire que si son match_score y est
+    ≥ seuil. Un bien qui n'appartient PAS au set primaire (ex. Pauline vs têtard) est
+    toujours conservé — le gate ne concerne que la recherche resserrée d'un set donné.
+    """
+    if member and primary_set_id not in member:
+        return True  # hors du set primaire -> non concerné par le resserrage
+    sc = (scores_by_set.get(str(primary_set_id)) or {}).get("match_score")
+    return isinstance(sc, (int, float)) and sc >= min_score
+
+
+def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = False,
+                  min_match_score: float | None = None, primary_set_id: int | None = None) -> dict:
+    """Construit le dataset statique. Si download_photos, écrit les images sous out_dir.
+
+    Mode « pépites » (optionnel) : si `min_match_score` est fourni, ne conserve dans
+    l'export que les biens du `primary_set_id` dont le match_score y est ≥ seuil (les
+    biens des autres sets sont préservés). Sert à resserrer une recherche sur le haut
+    du panier sans toucher aux autres sets partageant le dataset.
+    """
     sets = (
         db.query(FilterSet)
         .order_by(FilterSet.parent_id.isnot(None), FilterSet.id)
@@ -345,9 +437,12 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
         os.makedirs(photos_dir, exist_ok=True)
 
     biens_out = []
+    n_viager = 0
+    n_resid = 0
     infra_cache = _load_infra_cache()
     poi_cache = _load_poi_cache()
     fibre_lut = _load_fibre_lut()
+    tension_lut = _load_tension_lut()
     rows = (
         db.query(Listing)
         .filter(Listing.source != "mock")
@@ -355,6 +450,23 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
         .all()
     )
     for row in rows:
+        # Types conservés mais fortement déclassés (renvoyés en fond de classement) :
+        # viager/nue-propriété (prix = bouquet, occupé) et résidence de tourisme sous
+        # bail commercial (jouissance restreinte, gestion imposée, revente difficile).
+        is_viager = _detect_viager(row.description, row.adresse)
+        is_resid = _detect_residence_tourisme(row.description, row.adresse)
+        if is_viager:
+            n_viager += 1
+        if is_resid:
+            n_resid += 1
+        if is_viager:
+            penalty = (_VIAGER_MATCH_FACTOR, "Viager / nue-propriété",
+                       "viager (prix = bouquet, bien occupé) — fortement déclassé")
+        elif is_resid:
+            penalty = (_RESID_MATCH_FACTOR, "Résidence de tourisme / bail commercial",
+                       "résidence de tourisme (bail commercial, gestion imposée) — fortement déclassé")
+        else:
+            penalty = None
         infra = _infra_distances(row.latitude, row.longitude, infra_cache)
         poi = _poi_distances(row.latitude, row.longitude, poi_cache)
         feats = list(row.features or [])
@@ -362,8 +474,21 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
             if e not in feats:
                 feats.append(e)
         extra = {**infra, **poi, **_fibre_flags(row.code_commune, fibre_lut),
+                 **_tension_flags(row.commune, tension_lut),
                  "features": feats, "pavillon_neuf": _detect_pavillon_neuf(row.description)}
         item = _RowItem(row, extra_flags=extra)
+        # Recalcule le score d'investissement à l'export à partir des flags courants
+        # (le score stocké date de l'enrichissement -> ne refléterait pas les évolutions
+        # du scoring, ex. pondération des risques). Repli sur le stocké si échec.
+        try:
+            _sc = compute_score(item.flags, {
+                "has_text": bool(row.description or row.adresse),
+                "surface_terrain": row.surface_terrain, "type_bien": row.type_bien,
+                "latitude": row.latitude, "longitude": row.longitude,
+            })
+            row_score, row_score_details = _sc.score, _sc.pillars
+        except Exception:
+            row_score, row_score_details = row.score, row.score_details
         member = set(row.set_ids or [])  # sets d'appartenance ; vide -> tous (rétro-compat)
         scores_by_set = {}
         for fs_id, prefs in set_prefs.items():
@@ -372,23 +497,38 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
             if member and fs_id not in member:
                 continue  # bien hors de ce set (ex. montagne vs Pauline) -> pas de score
             match, details = evaluate(item, prefs)
+            if penalty and match is not None:
+                # Pénalité forte : ce type plafonne très bas quelles que soient ses qualités.
+                factor, plabel, pdetail = penalty
+                match = round(match * factor, 1)
+                details.insert(0, {"kind": "disqualifiant", "label": plabel,
+                                   "weight": 0, "status": "ko", "subscore": 0, "detail": pdetail})
             scores_by_set[str(fs_id)] = {"match_score": match, "details": details}
+
+        # Mode pépites : on saute les biens du set primaire sous le seuil (autres sets gardés).
+        if min_match_score is not None and primary_set_id is not None:
+            if not _passes_pepites_gate(scores_by_set, member, primary_set_id, min_match_score):
+                continue
 
         sv = saved.get((row.source, row.external_id))
         photos = _download_photos(row, photos_dir, "photos") if (download_photos and photos_dir) else []
         biens_out.append({
+            **{c: getattr(row, c) for c in _PERSIST_FLAG_COLS},  # flags persistés (round-trip)
             "id": row.id, "source": row.source, "external_id": row.external_id,
             "type_bien": row.type_bien, "prix": row.prix, "nb_chambres": row.nb_chambres,
             "nb_pieces": row.nb_pieces, "surface_terrain": row.surface_terrain,
             "surface_bati": row.surface_bati, "commune": row.commune,
-            "code_postal": row.code_postal, "departement": row.departement,
+            "code_postal": row.code_postal, "code_commune": row.code_commune,
+            "departement": row.departement,
             "latitude": row.latitude, "longitude": row.longitude,
             "url": row.url, "description": row.description, "dpe_classe": row.dpe_classe,
             "condition": row.condition, "features": feats, "nuisances": row.nuisances,
             "altitude": row.altitude, "rail_time_min": row.rail_time_min,
             "isolement_score": row.isolement_score, "population_commune": row.population_commune,
-            "risques": row.risques, "score": row.score, "score_details": row.score_details,
+            "risques": row.risques, "score": row_score, "score_details": row_score_details,
             "scores_by_set": scores_by_set,
+            "viager": is_viager,
+            "residence_tourisme": is_resid,
             "is_favori": sv is not None,
             "favori_note": sv.note if sv else None,
             "n_photos_source": len(_photo_urls(row)),
@@ -410,14 +550,20 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
         "sets": sets_out,
         "biens": biens_out,
         "searches": searches_out,
-        "stats": {"n_biens": len(biens_out), "n_sets": len(sets_out), "n_searches": len(searches_out)},
+        "stats": {"n_biens": len(biens_out), "n_sets": len(sets_out),
+                  "n_searches": len(searches_out), "n_viager": n_viager, "n_residence_tourisme": n_resid},
     }
 
 
-def export_to_dir(db, out_dir: str, *, download_photos: bool = True) -> dict:
-    """Écrit out_dir/data.json (+ photos/) et renvoie les stats."""
+def export_to_dir(db, out_dir: str, *, download_photos: bool = True,
+                  min_match_score: float | None = None, primary_set_id: int | None = None) -> dict:
+    """Écrit out_dir/data.json (+ photos/) et renvoie les stats.
+
+    `min_match_score`/`primary_set_id` : voir build_dataset (mode « pépites »).
+    """
     os.makedirs(out_dir, exist_ok=True)
-    data = build_dataset(db, out_dir=out_dir, download_photos=download_photos)
+    data = build_dataset(db, out_dir=out_dir, download_photos=download_photos,
+                         min_match_score=min_match_score, primary_set_id=primary_set_id)
     with open(os.path.join(out_dir, "data.json"), "w", encoding="utf-8") as fh:
         json.dump(data, fh, ensure_ascii=False, indent=1)
     return data["stats"]
@@ -430,5 +576,11 @@ if __name__ == "__main__":  # python -m app.services.export_static [out_dir]
 
     out = sys.argv[1] if len(sys.argv) > 1 else "../data"
     no_photos = "--no-photos" in sys.argv
-    stats = export_to_dir(SessionLocal(), out, download_photos=not no_photos)
+    # Mode pépites optionnel : EXPORT_MIN_MATCH_SCORE=78 EXPORT_PRIMARY_SET_ID=1
+    _mms = os.environ.get("EXPORT_MIN_MATCH_SCORE")
+    _psid = os.environ.get("EXPORT_PRIMARY_SET_ID")
+    min_score = float(_mms) if _mms else None
+    primary = int(_psid) if _psid else None
+    stats = export_to_dir(SessionLocal(), out, download_photos=not no_photos,
+                          min_match_score=min_score, primary_set_id=primary)
     print(f"Export -> {out}/data.json : {stats}")
