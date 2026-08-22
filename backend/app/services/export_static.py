@@ -392,8 +392,26 @@ def _download_photos(row: Listing, photos_dir: str, rel_base: str) -> list[str]:
     return rels
 
 
-def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = False) -> dict:
-    """Construit le dataset statique. Si download_photos, écrit les images sous out_dir."""
+def _passes_pepites_gate(scores_by_set: dict, member: set, primary_set_id: int, min_score: float) -> bool:
+    """Filtre « pépites » : ne garde un bien du set primaire que si son match_score y est
+    ≥ seuil. Un bien qui n'appartient PAS au set primaire (ex. Pauline vs têtard) est
+    toujours conservé — le gate ne concerne que la recherche resserrée d'un set donné.
+    """
+    if member and primary_set_id not in member:
+        return True  # hors du set primaire -> non concerné par le resserrage
+    sc = (scores_by_set.get(str(primary_set_id)) or {}).get("match_score")
+    return isinstance(sc, (int, float)) and sc >= min_score
+
+
+def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = False,
+                  min_match_score: float | None = None, primary_set_id: int | None = None) -> dict:
+    """Construit le dataset statique. Si download_photos, écrit les images sous out_dir.
+
+    Mode « pépites » (optionnel) : si `min_match_score` est fourni, ne conserve dans
+    l'export que les biens du `primary_set_id` dont le match_score y est ≥ seuil (les
+    biens des autres sets sont préservés). Sert à resserrer une recherche sur le haut
+    du panier sans toucher aux autres sets partageant le dataset.
+    """
     sets = (
         db.query(FilterSet)
         .order_by(FilterSet.parent_id.isnot(None), FilterSet.id)
@@ -487,6 +505,11 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
                                    "weight": 0, "status": "ko", "subscore": 0, "detail": pdetail})
             scores_by_set[str(fs_id)] = {"match_score": match, "details": details}
 
+        # Mode pépites : on saute les biens du set primaire sous le seuil (autres sets gardés).
+        if min_match_score is not None and primary_set_id is not None:
+            if not _passes_pepites_gate(scores_by_set, member, primary_set_id, min_match_score):
+                continue
+
         sv = saved.get((row.source, row.external_id))
         photos = _download_photos(row, photos_dir, "photos") if (download_photos and photos_dir) else []
         biens_out.append({
@@ -532,10 +555,15 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
     }
 
 
-def export_to_dir(db, out_dir: str, *, download_photos: bool = True) -> dict:
-    """Écrit out_dir/data.json (+ photos/) et renvoie les stats."""
+def export_to_dir(db, out_dir: str, *, download_photos: bool = True,
+                  min_match_score: float | None = None, primary_set_id: int | None = None) -> dict:
+    """Écrit out_dir/data.json (+ photos/) et renvoie les stats.
+
+    `min_match_score`/`primary_set_id` : voir build_dataset (mode « pépites »).
+    """
     os.makedirs(out_dir, exist_ok=True)
-    data = build_dataset(db, out_dir=out_dir, download_photos=download_photos)
+    data = build_dataset(db, out_dir=out_dir, download_photos=download_photos,
+                         min_match_score=min_match_score, primary_set_id=primary_set_id)
     with open(os.path.join(out_dir, "data.json"), "w", encoding="utf-8") as fh:
         json.dump(data, fh, ensure_ascii=False, indent=1)
     return data["stats"]
@@ -548,5 +576,11 @@ if __name__ == "__main__":  # python -m app.services.export_static [out_dir]
 
     out = sys.argv[1] if len(sys.argv) > 1 else "../data"
     no_photos = "--no-photos" in sys.argv
-    stats = export_to_dir(SessionLocal(), out, download_photos=not no_photos)
+    # Mode pépites optionnel : EXPORT_MIN_MATCH_SCORE=78 EXPORT_PRIMARY_SET_ID=1
+    _mms = os.environ.get("EXPORT_MIN_MATCH_SCORE")
+    _psid = os.environ.get("EXPORT_PRIMARY_SET_ID")
+    min_score = float(_mms) if _mms else None
+    primary = int(_psid) if _psid else None
+    stats = export_to_dir(SessionLocal(), out, download_photos=not no_photos,
+                          min_match_score=min_score, primary_set_id=primary)
     print(f"Export -> {out}/data.json : {stats}")
