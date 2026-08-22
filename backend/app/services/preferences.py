@@ -17,6 +17,7 @@ PREFERENCE_KINDS = [
     "chambres_min",
     "has_terrain",
     "constructible",
+    "prix_m2_terrain",
     "surface_habitable",
     "light_works",
     "no_vis_a_vis",
@@ -128,6 +129,23 @@ def _eval_one(item, kind: str, params: dict):
         if flags.get("constructible") is False:
             return 0.1, "ok", f"non constructible (zonage {zone or 'A/N'})"
         return None, "n/a", "constructibilité inconnue (zonage non résolu)"
+
+    if kind == "prix_m2_terrain":
+        # Rapport qualité/prix pour un TERRAIN : €/m² de terrain (fiable, contrairement à
+        # l'écart DVF qui compare au bâti). Barème pour du rural/côtier breton.
+        st = item.surface_terrain
+        if item.prix is None or not st:
+            return None, "n/a", "prix ou surface terrain inconnu"
+        ppm = item.prix / st
+        bon = params.get("bon", 60)    # €/m² : excellent (terrain nature/agricole viabilisable)
+        cher = params.get("cher", 300)  # €/m² : cher (lotissement viabilisé prisé)
+        if ppm <= bon:
+            sub = 1.0
+        elif ppm >= cher:
+            sub = 0.1
+        else:
+            sub = _clamp(1 - (ppm - bon) / (cher - bon) * 0.9)
+        return sub, "ok", f"{round(ppm)} €/m² de terrain"
 
     if kind == "surface_habitable":
         s = getattr(item, "surface_bati", None)

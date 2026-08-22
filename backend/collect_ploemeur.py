@@ -28,19 +28,23 @@ from app.sources.bienici import BienIciSource
 
 SET_ID = 4
 SET_NAME = "Ploemeur"
-SET_DESC = "Terrain d'exception, Bretagne sud (Ploemeur / littoral 56-29) — charme, vue, nature sauvage, tiny-house-friendly. Budget libre (exploration)."
+SET_DESC = "Terrain d'exception, Bretagne sud (Ploemeur / littoral 56-29) — pépite : potentiel + rapport qualité/prix, charme/vue, nature sauvage, tiny-house-friendly. Budget ≤ 400 k€."
 
-# Pondérations 1-5. Pas de budget (illimité), pas de surface mini (petit logement OK).
+PRIX_MAX = 400_000  # vrai plafond budgétaire
+
+# Pondérations 1-5. Cap budget + rapport qualité/prix (€/m² terrain) pour viser la pépite.
 PREFERENCES = [
+    {"kind": "budget", "weight": 5, "label": "Budget ≤ 400 000 €", "params": {"budget_max": PRIX_MAX}},
     {"kind": "constructible", "weight": 5, "label": "Terrain constructible (tiny house)", "params": {}},
-    {"kind": "nature_exception", "weight": 5, "label": "Nature d'exception", "params": {}},
-    {"kind": "feature", "weight": 4, "label": "Isolé / sauvage", "params": {"name": "isole"}},
+    {"kind": "prix_m2_terrain", "weight": 4, "label": "Rapport qualité/prix (€/m² terrain)", "params": {"bon": 60, "cher": 300}},
+    {"kind": "nature_exception", "weight": 4, "label": "Nature d'exception", "params": {}},
     {"kind": "feature", "weight": 4, "label": "Vue (mer / dégagée)", "params": {"name": "vue"}},
-    {"kind": "no_vis_a_vis", "weight": 4, "label": "Sans vis-à-vis", "params": {}},
-    {"kind": "has_terrain", "weight": 4, "label": "Avec terrain", "params": {}},
+    {"kind": "feature", "weight": 3, "label": "Isolé / sauvage", "params": {"name": "isole"}},
+    {"kind": "no_vis_a_vis", "weight": 3, "label": "Sans vis-à-vis", "params": {}},
+    {"kind": "has_terrain", "weight": 3, "label": "Avec terrain", "params": {}},
     {"kind": "authentic", "weight": 3, "label": "Charme / cachet", "params": {}},
-    {"kind": "hiking", "weight": 3, "label": "Nature / randonnées", "params": {}},
-    {"kind": "nuisance_sonore", "weight": 3, "label": "Calme (loin autoroute/rail)", "params": {"min_m": 150, "ref_m": 800}},
+    {"kind": "hiking", "weight": 2, "label": "Nature / randonnées", "params": {}},
+    {"kind": "nuisance_sonore", "weight": 2, "label": "Calme (loin autoroute/rail)", "params": {"min_m": 150, "ref_m": 800}},
     {"kind": "fiber", "weight": 2, "label": "Fibre (télétravail)", "params": {}},
     {"kind": "commerces", "weight": 2, "label": "Commerces/services à proximité", "params": {"ref": 15}},
 ]
@@ -75,19 +79,21 @@ def main() -> int:
     ensure_set(db)
 
     src = BienIciSource()
-    # terrain prioritaire, puis maison (petit logement OK). Pas de plafond de prix.
+    # terrain prioritaire, puis maison (petit logement OK). Plafond réel : 400 k€.
     collected: dict[str, object] = {}
     existing = {e for (e,) in db.query(Listing.external_id).filter(Listing.source == "bienici").all()}
     for ptypes in (["terrain"], ["maison"]):
-        crit = SearchCriteria(property_types=ptypes)
+        crit = SearchCriteria(property_types=ptypes, prix_max=PRIX_MAX)
         items = src.collect_around(crit, *PLOEMEUR, DEPTS, radii=(8, 16, 20), cap=args.cap)
         kept = 0
         for it in items:
             if not it.external_id or it.external_id in existing or it.external_id in collected:
                 continue
+            if it.prix is not None and it.prix > PRIX_MAX:
+                continue
             collected[it.external_id] = it
             kept += 1
-        print(f"[{ptypes[0]}] {kept} biens neufs (sur {len(items)} annonces)", flush=True)
+        print(f"[{ptypes[0]}] {kept} biens neufs ≤{PRIX_MAX//1000}k (sur {len(items)} annonces)", flush=True)
 
     todo = list(collected.values())[: args.cap]
     print(f"\nEnrichissement de {len(todo)} biens ({args.workers} workers)...", flush=True)
