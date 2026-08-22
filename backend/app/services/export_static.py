@@ -147,6 +147,7 @@ _EQUIP_PATTERNS = {
     "terrasse": r"terrasse",
     "garage": r"garage",
     "piscine": r"piscine",
+    "vue": r"vue\s+(mer|d[ée]gag|panoram|impren|sur\s+(la\s+)?(mer|vall|campagne|montagne|oc[ée]an))|panorama|sans\s+vis-?\s?[àa]-?\s?vis\s+avec\s+vue",
 }
 
 
@@ -422,11 +423,16 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
     for fs in sets:
         # Préférences RÉSOLUES : un sous-set hérite des préférences de son parent
         # (fusionnées par resolve_criteria), pour une comparaison set/sous-set fidèle.
-        prefs = (resolve_criteria(fs) or {}).get("preferences") or []
+        resolved = resolve_criteria(fs) or {}
+        prefs = resolved.get("preferences") or []
         set_prefs[fs.id] = prefs
+        # property_types persisté pour le round-trip seed->export (sinon un set terrain
+        # redeviendrait maison par défaut au ré-export).
+        ptypes = resolved.get("property_types") or (fs.criteria or {}).get("property_types")
         sets_out.append({
             "id": fs.id, "name": fs.name, "parent_id": fs.parent_id,
             "description": fs.description,
+            "property_types": ptypes or ["maison"],
             "preferences": [_pref_dump(p) for p in prefs],
         })
 

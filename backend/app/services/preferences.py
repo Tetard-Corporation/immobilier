@@ -16,6 +16,7 @@ PREFERENCE_KINDS = [
     "budget",
     "chambres_min",
     "has_terrain",
+    "constructible",
     "surface_habitable",
     "light_works",
     "no_vis_a_vis",
@@ -116,6 +117,17 @@ def _eval_one(item, kind: str, params: dict):
         mn = params.get("min_surface", 1)
         seuil = f" (souhait ≥ {int(mn)} m²)" if mn and mn > 1 else ""
         return (1.0 if item.surface_terrain >= mn else _clamp(item.surface_terrain / mn)), "ok", f"{int(item.surface_terrain)} m²{seuil}"
+
+    if kind == "constructible":
+        # Terrain à bâtir (ex. poser une tiny house) : s'appuie sur le zonage PLU (GPU).
+        zone = flags.get("zone_urba")
+        if flags.get("constructible"):
+            return 1.0, "ok", f"constructible (zonage {zone or 'U'})"
+        if flags.get("est_zone_au"):
+            return 0.6, "ok", f"zone AU — bientôt constructible ({zone or 'AU'})"
+        if flags.get("constructible") is False:
+            return 0.1, "ok", f"non constructible (zonage {zone or 'A/N'})"
+        return None, "n/a", "constructibilité inconnue (zonage non résolu)"
 
     if kind == "surface_habitable":
         s = getattr(item, "surface_bati", None)
