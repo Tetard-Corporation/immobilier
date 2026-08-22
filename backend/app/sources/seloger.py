@@ -37,6 +37,19 @@ class SeLogerSource(ScraperSource):
     label = "SeLoger"
     base_url = "https://www.seloger.com"
 
+    @property
+    def available(self) -> bool:
+        # Comme Leboncoin : Datadome bloque les IP datacenter. Sans proxy résidentiel
+        # NI cookie Datadome, tout appel renvoie 403. On se déclare indisponible tant
+        # qu'aucun des deux n'est configuré, pour ne pas gaspiller d'appels.
+        return bool(self._settings.proxy_url or self._settings.seloger_datadome)
+
+    def _headers(self) -> dict | None:
+        """Cookie Datadome éventuel, récolté depuis un navigateur (comme Leboncoin)."""
+        if self._settings.seloger_datadome:
+            return {"Cookie": f"datadome={self._settings.seloger_datadome}"}
+        return None
+
     def _params(self, c: SearchCriteria) -> dict:
         property_types = c.property_types or ["terrain", "maison", "appartement"]
         codes = sorted({_TYPE_CODE[t] for t in property_types if t in _TYPE_CODE})
@@ -64,7 +77,7 @@ class SeLogerSource(ScraperSource):
 
     def _fetch_html(self, params: dict) -> str:
         try:
-            return self._get("/list.htm", params=params).text
+            return self._get("/list.htm", params=params, headers=self._headers()).text
         except (ScraperBlocked, httpx.HTTPError):
             query = "&".join(f"{k}={v}" for k, v in params.items())
             return self._fetch_headless(f"{self.base_url}/list.htm?{query}")
