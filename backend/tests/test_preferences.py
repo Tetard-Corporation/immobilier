@@ -159,3 +159,16 @@ def test_parse_brief_sans_cle_est_heuristique():
     res = parse_brief("Terrain avec fibre proche gare")
     assert res["parser"] == "heuristic"
     assert any(p["kind"] == "fiber" for p in res["preferences"])
+
+
+def test_constructible():
+    pref = [Preference(kind="constructible", weight=5)]
+
+    def sub(flags):
+        _, details = evaluate(_listing(prix=100000, surface_terrain=800, flags=flags), pref)
+        return details[0]["subscore"], details[0]["status"]
+
+    assert sub({"constructible": True, "zone_urba": "U"}) == (1.0, "ok")
+    assert sub({"constructible": False, "est_zone_au": True}) == (0.6, "ok")   # zone AU
+    assert sub({"constructible": False, "zone_urba": "N"}) == (0.1, "ok")      # non constructible
+    assert sub({})[1] == "n/a"                                                  # zonage inconnu
