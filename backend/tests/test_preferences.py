@@ -172,3 +172,17 @@ def test_constructible():
     assert sub({"constructible": False, "est_zone_au": True}) == (0.6, "ok")   # zone AU
     assert sub({"constructible": False, "zone_urba": "N"}) == (0.1, "ok")      # non constructible
     assert sub({})[1] == "n/a"                                                  # zonage inconnu
+
+
+def test_prix_m2_terrain():
+    pref = [Preference(kind="prix_m2_terrain", weight=4, params={"bon": 60, "cher": 300})]
+
+    def sub(prix, st):
+        _, details = evaluate(_listing(prix=prix, surface_terrain=st, flags={}), pref)
+        ss = details[0]["subscore"]
+        return (round(ss, 2) if ss is not None else None), details[0]["status"]
+
+    assert sub(40000, 1000) == (1.0, "ok")     # 40 €/m² -> excellent
+    assert sub(200000, 500) == (0.1, "ok")     # 400 €/m² -> cher
+    assert sub(120000, 800)[0] < 1.0           # 150 €/m² -> intermédiaire
+    assert sub(100000, None) == (None, "n/a")  # surface terrain inconnue
