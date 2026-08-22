@@ -24,12 +24,28 @@ def test_gpu_parse_zone_au():
 
 
 def test_georisques_parse_risques():
+    # L'API resultats_rapport_risque renvoie un statut par niveau (adresse/commune) :
+    # seuls les risques AVÉRÉS à l'adresse (repli commune) sont retenus. Un risque
+    # « non connu » ou absent est ignoré pour ne pas fausser le scoring.
     payload = {
-        "risquesNaturels": {"inondation": {"present": True}, "seisme": {"present": False}},
-        "risquesTechnologiques": {"icpe": {"present": True}},
+        "risquesNaturels": {
+            "inondation": {"present": True, "libelleStatutAdresse": "Risque faible"},
+            "seisme": {"present": False},
+            # Présent mais statut inconnu à l'adresse ET à la commune -> ignoré.
+            "retraitGonflementArgile": {
+                "present": True,
+                "libelleStatutAdresse": "Non connu",
+                "libelleStatutCommune": "Non connu",
+            },
+        },
+        "risquesTechnologiques": {
+            # Adresse indéterminée -> repli sur le statut communal, qui tranche.
+            "icpe": {"present": True, "libelleStatutCommune": "Risque existant"},
+        },
     }
     out = GeorisquesProvider(client=_client(payload)).enrich(45.0, 4.0)
     assert set(out["risques"]) == {"inondation", "icpe"}
+    assert out["risques_niveaux"]["inondation"] == 0.25  # "faible"
 
 
 def test_relief_parse_altitude():
