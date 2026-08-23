@@ -9,7 +9,7 @@ relief, rando) renvoient un statut `pending` tant que la donnée n'est pas dispo
 from __future__ import annotations
 
 from .gares import nearest_gare
-from .geo import distance_to_corridor_km, haversine_km, resolve_city
+from .geo import dist_littoral_km, distance_to_corridor_km, haversine_km, resolve_city
 
 # Préférences évaluables dès maintenant (annonce + géo) ; le reste = pending.
 PREFERENCE_KINDS = [
@@ -28,6 +28,7 @@ PREFERENCE_KINDS = [
     "near_corridor",
     "near_gare",
     "near_city",
+    "near_sea",
     "temps_acces",
     "nuisance_sonore",
     "commerces",
@@ -43,6 +44,13 @@ PREFERENCE_KINDS = [
 ]
 
 _PENDING_KINDS = {"rail_time_from", "fiber", "relief_mountain", "hiking"}
+# Budget : part du budget en dessous de laquelle on est pleinement dans la « bonne
+# affaire » (1.0), et note obtenue en consommant exactement 100 % du budget.
+_BUDGET_CONFORT = 0.70
+_BUDGET_LIMITE = 0.80
+# Note obtenue au seuil « cher » du €/m² de terrain ; au-delà la note continue de
+# décroître en 1/prix (un terrain au prix parisien tombe vers 0).
+_CHER_FLOOR = 0.25
 _LIGHT_OK = {"habitable": 1.0, "rafraichir": 1.0, "renover": 0.85, "gros_travaux": 0.4, "ruine": 0.1}
 _COND_LABELS = {
     "habitable": "habitable de suite", "rafraichir": "à rafraîchir", "renover": "à rénover",
@@ -91,12 +99,18 @@ def _eval_one(item, kind: str, params: dict):
         budget = params.get("budget_max") or (params.get("apport", 0) * params.get("levier", 4))
         if not budget:
             return None, "n/a", "budget non défini"
-        if item.prix <= budget:
-            return 1.0, "ok", f"{int(item.prix)}€ ≤ budget {int(budget)}€"
+        ratio = item.prix / budget
+        if ratio <= _BUDGET_CONFORT:
+            # On cherche la bonne affaire, pas le bien qui « rentre tout juste » : le
+            # plein score est réservé à ce qui laisse de la marge (travaux, négociation).
+            return 1.0, "ok", f"{int(item.prix)}€ — {round(ratio * 100)}% du budget {int(budget)}€"
+        if ratio <= 1.0:
+            sub = 1.0 - (ratio - _BUDGET_CONFORT) / (1.0 - _BUDGET_CONFORT) * (1.0 - _BUDGET_LIMITE)
+            return sub, "ok", f"{int(item.prix)}€ — {round(ratio * 100)}% du budget {int(budget)}€ (haut de fourchette)"
         # Hors budget = quasi rédhibitoire (retour récurrent du groupe) -> pénalité forte :
-        # +10% ~70%, +20% ~40%, +33% et plus ~0% (au lieu d'une décote linéaire trop clémente).
-        over = (item.prix - budget) / budget
-        return _clamp(1 - over * 3), "ok", f"{int(item.prix)}€ > budget {int(budget)}€ (+{round(over * 100)}%, hors budget)"
+        # +10% ~70%, +20% ~40%, +33% et plus ~0% de la note « au budget ».
+        over = ratio - 1.0
+        return _BUDGET_LIMITE * _clamp(1 - over * 3), "ok", f"{int(item.prix)}€ > budget {int(budget)}€ (+{round(over * 100)}%, hors budget)"
 
     if kind == "chambres_min":
         mn = params.get("min", 1)
@@ -137,14 +151,17 @@ def _eval_one(item, kind: str, params: dict):
         if item.prix is None or not st:
             return None, "n/a", "prix ou surface terrain inconnu"
         ppm = item.prix / st
-        bon = params.get("bon", 60)    # €/m² : excellent (terrain nature/agricole viabilisable)
-        cher = params.get("cher", 300)  # €/m² : cher (lotissement viabilisé prisé)
+        bon = params.get("bon", 80)     # €/m² : excellent (terrain nature/agricole viabilisable)
+        cher = params.get("cher", 400)  # €/m² : cher (lotissement viabilisé prisé du littoral)
         if ppm <= bon:
             sub = 1.0
         elif ppm >= cher:
-            sub = 0.1
+            # Au-delà de « cher », on continue de décroître au lieu de plafonner à un
+            # plancher : sinon un terrain à 400 €/m² et un autre à 1000 €/m² (prix
+            # parisien) obtiennent la même note et le critère ne trie plus rien.
+            sub = _CHER_FLOOR * cher / ppm
         else:
-            sub = _clamp(1 - (ppm - bon) / (cher - bon) * 0.9)
+            sub = _clamp(1 - (ppm - bon) / (cher - bon) * (1 - _CHER_FLOOR))
         return sub, "ok", f"{round(ppm)} €/m² de terrain"
 
     if kind == "surface_habitable":
@@ -237,6 +254,16 @@ def _eval_one(item, kind: str, params: dict):
         ville = params.get("ville")
         suffixe = f" de {ville}" if ville else ""
         return _clamp(1 - dist / params.get("max_km", 50)), "ok", f"{round(dist)} km{suffixe}"
+
+    if kind == "near_sea":
+        # Proximité du littoral OUVERT : les rias (Blavet, Scorff, Laïta en amont de son
+        # embouchure) sont exclues du référentiel, sinon un bien à Pont-Scorff passerait
+        # pour du bord de mer. Voir scripts/build_littoral_dataset.py.
+        d = dist_littoral_km(item.latitude, item.longitude)
+        if d is None:
+            return None, "n/a", "hors emprise littorale connue"
+        max_km = params.get("max_km", 12)
+        return _clamp(1 - d / max_km), "ok", f"{d} km du littoral"
 
     if kind == "temps_acces":
         # Porte-à-porte depuis Paris (TGV vers le meilleur hub + voiture).

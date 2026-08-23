@@ -15,7 +15,7 @@ def test_structure_piliers_sous_piliers():
     assert keys == {"prix", "foncier", "cadre", "risques", "etat", "accessibilite"}
     # chaque pilier porte ses sous-piliers
     prix = _pillar(res, "prix")
-    assert {s["key"] for s in prix["subpillars"]} == {"affaire", "baisse_prix"}
+    assert {s["key"] for s in prix["subpillars"]} == {"niveau_prix", "affaire", "baisse_prix"}
 
 
 def test_pending_nexclut_pas_le_calcul():
@@ -64,4 +64,51 @@ def test_scoring_schema():
     schema = scoring_schema()
     assert {p["key"] for p in schema["pillars"]} == {p[0] for p in PILLARS}
     prix = next(p for p in schema["pillars"] if p["key"] == "prix")
-    assert {s["key"] for s in prix["subpillars"]} == {"affaire", "baisse_prix"}
+    assert {s["key"] for s in prix["subpillars"]} == {"niveau_prix", "affaire", "baisse_prix"}
+
+
+def test_niveau_prix_sanctionne_le_prix_absolu():
+    """Un terrain au tarif parisien doit tomber bas même si le marché local est cher :
+    « Affaire vs marché » seul déclarait bonne affaire tout ce qui était sous une
+    référence locale elle-même hors de prix."""
+    def sub(prix, surface_terrain):
+        res = compute_score({}, {"has_text": True, "type_bien": "terrain",
+                                 "prix": prix, "surface_terrain": surface_terrain})
+        return _sub(_pillar(res, "prix"), "niveau_prix")["subscore"]
+
+    assert sub(60_000, 1000) == 1.0        # 60 €/m² -> excellent
+    assert sub(400_000, 1000) == 0.25      # 400 €/m² -> seuil « cher »
+    assert sub(1_000_000, 1000) < 0.15     # 1000 €/m² -> prix parisien
+    # bâti : barème distinct (€/m² habitable)
+    res = compute_score({}, {"has_text": True, "type_bien": "maison", "prix": 200_000,
+                             "surface_bati": 200})
+    assert _sub(_pillar(res, "prix"), "niveau_prix")["subscore"] == 1.0  # 1000 €/m²
+
+
+def test_niveau_prix_na_sans_surface():
+    res = compute_score({}, {"has_text": True, "type_bien": "terrain", "prix": 300_000})
+    assert _sub(_pillar(res, "prix"), "niveau_prix")["status"] == "n/a"
+
+
+def test_affaire_ne_sature_plus_a_20_pct():
+    """Avec l'ancienne bande de ±20 %, 74 % des terrains d'un même set sortaient à 1.0
+    et le sous-pilier ne classait plus rien."""
+    def sub(ecart):
+        res = compute_score({"ecart_prix_pct": ecart}, {"has_text": True})
+        return _sub(_pillar(res, "prix"), "affaire")["subscore"]
+
+    assert sub(-40) > sub(-20) > sub(0) > sub(20) > sub(40)
+    assert sub(0) == 0.5
+    assert sub(-25) == 0.75
+
+
+def test_prix_parisien_perd_contre_la_bonne_affaire():
+    """Le cas concret qui a motivé le recalibrage : un terrain à 860 k€ / 865 €/m²
+    ressortait en tête parce que le DVF local le disait « -66 % vs marché »."""
+    commun = {"has_text": True, "type_bien": "terrain", "nature_score": 3,
+              "zone_urba": "U", "risques": [], "condition": "habitable"}
+    parisien = compute_score({"ecart_prix_pct": -66, **commun},
+                             {**commun, "prix": 860_000, "surface_terrain": 994})
+    affaire = compute_score({"ecart_prix_pct": -10, **commun},
+                            {**commun, "prix": 105_000, "surface_terrain": 985})
+    assert affaire.score > parisien.score

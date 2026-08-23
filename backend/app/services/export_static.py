@@ -47,6 +47,9 @@ _FLAG_COLS = (
 _PERSIST_FLAG_COLS = tuple(c for c in _FLAG_COLS if c not in ("score", "score_details", "features"))
 
 _UA = "Mozilla/5.0 (compatible; immobilier-export/1.0)"
+# Overpass refuse (406) les User-Agent de la forme "Mozilla/5.0 (compatible; ...)" :
+# les requêtes POI/infra échouaient donc en silence (exception avalée -> flags absents).
+_UA_OVERPASS = "immobilier-export/1.0"
 _MAX_PHOTOS = 12
 # Distances aux infrastructures bruyantes (autoroute/voie ferrée) via Overpass (OSM),
 # mises en cache sur disque pour ne pas re-interroger à chaque export.
@@ -73,7 +76,7 @@ def _query_poi(lat: float, lon: float) -> dict | None:
          f'way(around:25000,{lat},{lon})[aerialway~"gondola|chair_lift|cable_car|mixed_lift"];);out center 500;')
     try:
         data = urllib.parse.urlencode({"data": q}).encode()
-        req = urllib.request.Request(_OVERPASS, data=data, headers={"User-Agent": _UA})
+        req = urllib.request.Request(_OVERPASS, data=data, headers={"User-Agent": _UA_OVERPASS})
         with urllib.request.urlopen(req, timeout=45) as r:
             payload = json.loads(r.read())
     except Exception:
@@ -238,7 +241,7 @@ def _query_overpass(lat: float, lon: float) -> dict | None:
          f'relation(around:3000,{lat},{lon})[route=hiking];);out geom 300;')
     try:
         data = urllib.parse.urlencode({"data": q}).encode()
-        req = urllib.request.Request(_OVERPASS, data=data, headers={"User-Agent": _UA})
+        req = urllib.request.Request(_OVERPASS, data=data, headers={"User-Agent": _UA_OVERPASS})
         with urllib.request.urlopen(req, timeout=40) as r:
             payload = json.loads(r.read())
     except Exception:
@@ -489,7 +492,8 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
         try:
             _sc = compute_score(item.flags, {
                 "has_text": bool(row.description or row.adresse),
-                "surface_terrain": row.surface_terrain, "type_bien": row.type_bien,
+                "surface_terrain": row.surface_terrain, "surface_bati": row.surface_bati,
+                "type_bien": row.type_bien, "prix": row.prix,
                 "latitude": row.latitude, "longitude": row.longitude,
             })
             row_score, row_score_details = _sc.score, _sc.pillars

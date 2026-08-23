@@ -1,13 +1,20 @@
-"""Crée le set « Ploemeur » (terrain d'exception, Bretagne sud) et le peuple via
-Bien'ici (seule source joignable sans navigateur/proxy).
+"""Crée le set « Bretagne sud » (terrain d'exception) et le peuple via Bien'ici
+(seule source joignable sans navigateur/proxy).
 
 Profil : terrain constructible d'exception, charme/vue, nature sauvage, logement
-petit accepté (tiny house). Budget illimité (pas de plafond). Zone : Ploemeur +
-littoral morbihannais/finistérien (56/29).
+petit accepté (tiny house), et la bonne affaire plutôt que le bien qui consomme tout
+le budget. Budget ≤ 400 k€.
+
+Zone, en deux foyers de collecte :
+  - Ploemeur et le littoral morbihannais/finistérien ;
+  - la vallée de la Laïta (Quimperlé, Rédené, Clohars-Carnoët, Guidel, Gestel).
+Le critère « proximité du littoral » (near_sea) fait le reste du travail : le long de
+la Laïta, il note l'embouchure (Le Pouldu, Guidel-Plages, ~0 km) bien au-dessus de
+l'amont (Quimperlé, ~12 km), donc « plutôt côté mer » sans exclure l'arrière-pays.
 
 Usage :
-    python collect_ploemeur.py            # collecte complète
-    python collect_ploemeur.py --cap 40   # limite le nb de biens enrichis (test)
+    python collect_bretagne_sud.py            # collecte complète
+    python collect_bretagne_sud.py --cap 40   # limite le nb de biens enrichis (test)
 """
 
 from __future__ import annotations
@@ -27,16 +34,26 @@ from app.services.search import upsert_listing
 from app.sources.bienici import BienIciSource
 
 SET_ID = 4
-SET_NAME = "Ploemeur"
-SET_DESC = "Terrain d'exception, Bretagne sud (Ploemeur / littoral 56-29) — pépite : potentiel + rapport qualité/prix, charme/vue, nature sauvage, tiny-house-friendly. Budget ≤ 400 k€."
+SET_NAME = "Bretagne sud"
+SET_DESC = (
+    "Terrain d'exception en Bretagne sud (littoral 56-29 + vallée de la Laïta) — pépite : "
+    "bonne affaire au m², charme/vue, nature sauvage, tiny-house-friendly, plutôt côté mer. "
+    "Budget ≤ 400 k€."
+)
 
 PRIX_MAX = 400_000  # vrai plafond budgétaire
 
-# Pondérations 1-5. Cap budget + rapport qualité/prix (€/m² terrain) pour viser la pépite.
+# Pondérations 1-5, sauf le prix au m² : porté à 7 parce que « viser la bonne affaire »
+# EST l'objectif du set, et qu'à poids égal il se faisait annuler par la demi-douzaine de
+# critères qualitatifs qu'un terrain hors de prix satisfait tout aussi bien (constructible,
+# vue, littoral, nature). Mesuré sur les 175 terrains du set : la corrélation entre la note
+# et le €/m² passe de -0,33 à -0,47, et un terrain à 975 €/m² recule de la 21e à la 41e place.
+# Le budget, lui, récompense la marge laissée sous le plafond, pas le simple fait d'y entrer.
 PREFERENCES = [
     {"kind": "budget", "weight": 5, "label": "Budget ≤ 400 000 €", "params": {"budget_max": PRIX_MAX}},
+    {"kind": "prix_m2_terrain", "weight": 7, "label": "Prix du terrain (€/m²)", "params": {"bon": 80, "cher": 400}},
     {"kind": "constructible", "weight": 5, "label": "Terrain constructible (tiny house)", "params": {}},
-    {"kind": "prix_m2_terrain", "weight": 4, "label": "Rapport qualité/prix (€/m² terrain)", "params": {"bon": 60, "cher": 300}},
+    {"kind": "near_sea", "weight": 4, "label": "Proche du littoral", "params": {"max_km": 12}},
     {"kind": "nature_exception", "weight": 4, "label": "Nature d'exception", "params": {}},
     {"kind": "feature", "weight": 4, "label": "Vue (mer / dégagée)", "params": {"name": "vue"}},
     {"kind": "feature", "weight": 3, "label": "Isolé / sauvage", "params": {"name": "isole"}},
@@ -49,8 +66,13 @@ PREFERENCES = [
     {"kind": "commerces", "weight": 2, "label": "Commerces/services à proximité", "params": {"ref": 15}},
 ]
 
-# Ploemeur (centre) + littoral. Départements Morbihan (56) et Finistère sud (29).
-PLOEMEUR = (47.735, -3.428)
+# Foyers de collecte (libellé, centre, rayons km). Départements Morbihan (56) et
+# Finistère sud (29). Le second foyer est centré sur la Laïta à mi-cours : à 12 km il
+# couvre Quimperlé en amont et l'embouchure (Le Pouldu / Guidel-Plages) en aval.
+ZONES = [
+    ("Ploemeur / littoral", (47.735, -3.428), (8, 16, 20)),
+    ("Vallée de la Laïta", (47.812, -3.535), (7, 12, 16)),
+]
 DEPTS = ["56", "29"]
 
 
@@ -62,7 +84,7 @@ def ensure_set(db) -> None:
     else:
         fs.name, fs.description, fs.criteria = SET_NAME, SET_DESC, criteria
     db.commit()
-    print(f"Set « {SET_NAME} » (id {SET_ID}) prêt : {len(PREFERENCES)} préférences, terrain+maison, budget libre.", flush=True)
+    print(f"Set « {SET_NAME} » (id {SET_ID}) prêt : {len(PREFERENCES)} préférences, terrain+maison, budget ≤ {PRIX_MAX//1000} k€.", flush=True)
 
 
 def main() -> int:
@@ -82,18 +104,19 @@ def main() -> int:
     # terrain prioritaire, puis maison (petit logement OK). Plafond réel : 400 k€.
     collected: dict[str, object] = {}
     existing = {e for (e,) in db.query(Listing.external_id).filter(Listing.source == "bienici").all()}
-    for ptypes in (["terrain"], ["maison"]):
-        crit = SearchCriteria(property_types=ptypes, prix_max=PRIX_MAX)
-        items = src.collect_around(crit, *PLOEMEUR, DEPTS, radii=(8, 16, 20), cap=args.cap)
-        kept = 0
-        for it in items:
-            if not it.external_id or it.external_id in existing or it.external_id in collected:
-                continue
-            if it.prix is not None and it.prix > PRIX_MAX:
-                continue
-            collected[it.external_id] = it
-            kept += 1
-        print(f"[{ptypes[0]}] {kept} biens neufs ≤{PRIX_MAX//1000}k (sur {len(items)} annonces)", flush=True)
+    for zone, centre, radii in ZONES:
+        for ptypes in (["terrain"], ["maison"]):
+            crit = SearchCriteria(property_types=ptypes, prix_max=PRIX_MAX)
+            items = src.collect_around(crit, *centre, DEPTS, radii=radii, cap=args.cap)
+            kept = 0
+            for it in items:
+                if not it.external_id or it.external_id in existing or it.external_id in collected:
+                    continue
+                if it.prix is not None and it.prix > PRIX_MAX:
+                    continue
+                collected[it.external_id] = it
+                kept += 1
+            print(f"[{zone} / {ptypes[0]}] {kept} biens neufs ≤{PRIX_MAX//1000}k (sur {len(items)} annonces)", flush=True)
 
     todo = list(collected.values())[: args.cap]
     print(f"\nEnrichissement de {len(todo)} biens ({args.workers} workers)...", flush=True)
@@ -115,7 +138,7 @@ def main() -> int:
         row.set_ids = [SET_ID]
     db.commit()
     n = db.query(Listing).filter(Listing.source == "bienici").count()
-    print(f"\nEn base : {n} biens bienici (dont Ploemeur).", flush=True)
+    print(f"\nEn base : {n} biens bienici (dont Bretagne sud).", flush=True)
 
     from app.services.export_static import export_to_dir
     data_dir = os.path.join(os.path.dirname(__file__), "..", "data")

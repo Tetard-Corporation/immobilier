@@ -162,3 +162,51 @@ def test_enrich_sans_geoloc_ne_fait_rien():
     item = NormalizedListing(source="x", external_id="1", latitude=None, longitude=None, flags={})
     enrich_listing(item)
     assert "altitude" not in item.flags
+
+
+def test_dvf_regroupe_les_lignes_par_mutation(monkeypatch):
+    """Une mutation DVF s'étale sur plusieurs lignes en RÉPÉTANT `valeur_fonciere`.
+    Compter les lignes revenait à compter le prix total une fois par parcelle : c'est
+    ce qui produisait des « prix de secteur » à 2 500 €/m² sur une commune à ~270."""
+    import app.enrichment.dvf as dvf
+
+    # 1 vente : 300 000 € pour 3 parcelles de 500 m² (soit 200 €/m², pas 600).
+    csv_txt = "\n".join(
+        ["id_mutation,nature_mutation,valeur_fonciere,surface_reelle_bati,surface_terrain,"
+         "nature_culture,latitude,longitude"]
+        + [f"M1,Vente,300000,0,500,sols,47.7,-3.4" for _ in range(3)]
+    )
+
+    class _Resp:
+        status_code = 200
+        text = csv_txt
+
+    monkeypatch.setattr(dvf.httpx, "get", lambda *a, **k: _Resp())
+    dvf._commune_rows.cache_clear()
+    rows = dvf._commune_rows("http://x", "2024", "56", "56162", 5)
+    assert len(rows) == 1                      # 3 lignes -> 1 mutation
+    vf, sb, st, _, _, urbain = rows[0]
+    assert (vf, sb, st) == (300000.0, 0.0, 1500.0)
+    assert urbain is True                      # nature_culture 'sols' = foncier bâtissable
+    dvf._commune_rows.cache_clear()
+
+
+def test_dvf_separe_le_foncier_agricole():
+    """Un pré à 2 €/m² ne fixe pas le prix d'un terrain à bâtir : les deux marchés
+    doivent rester séparés, sinon la médiane ne décrit ni l'un ni l'autre."""
+    from app.enrichment.dvf import _est_urbain
+
+    assert _est_urbain({"sols"}) is True
+    assert _est_urbain({"terrains a batir", "jardins"}) is True
+    assert _est_urbain({"prés"}) is False
+    assert _est_urbain({"sols", "landes"}) is False   # lot mixte -> écarté du repère urbain
+    assert _est_urbain(set()) is False
+
+
+def test_dvf_median_ecrete_les_aberrations():
+    """Le DVF contient des cessions symboliques et des lots mal ventilés : sans
+    écrêtage des déciles, une seule aberration déporte la médiane d'un facteur 10."""
+    from app.enrichment.dvf import prix_m2_median
+
+    normales = [(200_000, 1000)] * 10          # 200 €/m²
+    assert prix_m2_median(normales + [(5_000_000, 1000), (1_000, 1000)]) == 200.0

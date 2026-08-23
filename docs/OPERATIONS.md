@@ -62,6 +62,21 @@ fournis — pour ne pas gaspiller d'appels qui renverraient 403.
 Drôme/Ardèche/Savoie/Ain — maisons, budget ≤ 600 k€. Codes postaux et centres géo dans
 `backend/collect_leboncoin.py` (`TETARD_ZIPS`) et déductibles des biens existants.
 
+### Zone « Bretagne sud » (set 4)
+Terrains d'exception, budget ≤ 400 k€, collectés via **bienici** (seule source joignable
+sans navigateur ni proxy) :
+```bash
+python backend/collect_bretagne_sud.py          # collecte + enrichissement + export
+python backend/collect_bretagne_sud.py --cap 40 # limite le nb de biens enrichis (test)
+```
+Deux foyers de collecte (`ZONES`) : Ploemeur/littoral, et la vallée de la Laïta
+(Quimperlé, Rédené, Clohars-Carnoët, Guidel, Gestel). Le « plutôt côté mer » n'est pas un
+filtre de zone mais le critère `near_sea`, qui note la distance au littoral **ouvert** :
+le long de la Laïta, l'embouchure (~0 km) prime sur l'amont (Quimperlé, ~12 km). Le
+référentiel de côte est `backend/data/littoral_bretagne_sud.json`, régénérable via
+`python scripts/build_littoral_dataset.py` (les rias en sont exclues, sinon Pont-Scorff
+passerait pour du bord de mer).
+
 ### Export « pépites » (peu de biens, haut du panier)
 L'export accepte un filtre optionnel qui ne conserve que les biens d'un set au-dessus
 d'un seuil de score, **en préservant les autres sets** (ex. Pauline) :

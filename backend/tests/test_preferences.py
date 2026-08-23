@@ -175,14 +175,64 @@ def test_constructible():
 
 
 def test_prix_m2_terrain():
-    pref = [Preference(kind="prix_m2_terrain", weight=4, params={"bon": 60, "cher": 300})]
+    pref = [Preference(kind="prix_m2_terrain", weight=4, params={"bon": 80, "cher": 400})]
 
     def sub(prix, st):
         _, details = evaluate(_listing(prix=prix, surface_terrain=st, flags={}), pref)
         ss = details[0]["subscore"]
-        return (round(ss, 2) if ss is not None else None), details[0]["status"]
+        return (round(ss, 3) if ss is not None else None), details[0]["status"]
 
-    assert sub(40000, 1000) == (1.0, "ok")     # 40 €/m² -> excellent
-    assert sub(200000, 500) == (0.1, "ok")     # 400 €/m² -> cher
-    assert sub(120000, 800)[0] < 1.0           # 150 €/m² -> intermédiaire
-    assert sub(100000, None) == (None, "n/a")  # surface terrain inconnue
+    assert sub(40000, 1000) == (1.0, "ok")       # 40 €/m² -> excellent
+    assert sub(200000, 500) == (0.25, "ok")      # 400 €/m² -> seuil « cher »
+    assert sub(120000, 800)[0] < 1.0             # 150 €/m² -> intermédiaire
+    assert sub(100000, None) == (None, "n/a")    # surface terrain inconnue
+
+
+def test_prix_m2_terrain_discrimine_au_dela_du_seuil_cher():
+    """Au-delà de « cher », l'ancien barème plafonnait : un terrain au tarif parisien
+    obtenait la même note qu'un terrain simplement cher, et le critère ne triait plus."""
+    pref = [Preference(kind="prix_m2_terrain", params={"bon": 80, "cher": 400})]
+
+    def sub(ppm):
+        _, details = evaluate(_listing(prix=ppm * 1000, surface_terrain=1000, flags={}), pref)
+        return details[0]["subscore"]
+
+    cher, tres_cher, parisien = sub(400), sub(600), sub(1000)
+    assert cher > tres_cher > parisien
+    assert parisien < 0.15  # prix parisien -> quasi éliminatoire
+
+
+def test_budget_recompense_la_marge_sous_le_plafond():
+    """« Je vise la bonne affaire » : rentrer tout juste dans le budget ne vaut pas
+    autant que laisser de la marge."""
+    pref = [Preference(kind="budget", params={"budget_max": 400_000})]
+
+    def sub(prix):
+        _, details = evaluate(_listing(prix=prix, flags={}), pref)
+        return details[0]["subscore"]
+
+    assert sub(200_000) == 1.0          # 50 % du budget -> pleine note
+    assert sub(280_000) == 1.0          # 70 % -> encore pleine note
+    assert sub(400_000) < sub(320_000)  # au plafond < avec de la marge
+    assert sub(400_000) > sub(440_000)  # mais reste au-dessus du hors budget
+    assert sub(560_000) == 0.0          # +40 % -> éliminé
+
+
+def test_near_sea_note_le_cote_mer():
+    """Le long de la Laïta, la note doit décroître de l'embouchure vers l'amont ; les
+    rias ne comptent pas comme littoral (sinon Pont-Scorff serait « bord de mer »)."""
+    pref = [Preference(kind="near_sea", params={"max_km": 12})]
+
+    def sub(lat, lon):
+        _, details = evaluate(_listing(latitude=lat, longitude=lon, flags={}), pref)
+        return details[0]["subscore"], details[0]["status"]
+
+    pouldu = sub(47.7667, -3.5486)      # embouchure de la Laïta
+    mi_laita = sub(47.8180, -3.5360)    # Saint-Maurice, à mi-cours
+    quimperle = sub(47.8736, -3.5476)   # amont, confluence Ellé/Isole
+    assert pouldu[0] > mi_laita[0] > quimperle[0]
+    assert pouldu[0] > 0.95
+    # Pont-Scorff est sur une ria, à ~11 km de l'océan : pas du bord de mer.
+    assert sub(47.8320, -3.4030)[0] < 0.2
+    # Hors emprise littorale connue -> non applicable, pas une distance inventée.
+    assert sub(45.25, 5.02) == (None, "n/a")

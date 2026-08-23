@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
+import json
 import math
+import os
 
 # Coordonnées (lat, lon) de villes courantes — sert au parseur de brief
 # (corridor "Paris-Marseille", trajet "depuis Paris", etc.).
@@ -72,6 +74,42 @@ def resolve_city(name: str | None) -> tuple[float, float] | None:
     if not name:
         return None
     return CITY_COORDS.get(name.strip().lower())
+
+
+# Littoral OUVERT (rias exclues) : voir scripts/build_littoral_dataset.py. Chargé à la
+# demande, une seule fois. Emprise limitée à la Bretagne sud : hors emprise -> None,
+# jamais une distance fausse.
+_LITTORAL_PATH = os.path.join(os.path.dirname(__file__), "..", "..", "data", "littoral_bretagne_sud.json")
+_littoral: list[tuple[float, float]] | None = None
+_LITTORAL_BBOX = (47.0, -4.5, 48.5, -2.5)  # sud, ouest, nord, est (marge autour du jeu de points)
+
+
+def _load_littoral() -> list[tuple[float, float]]:
+    global _littoral
+    if _littoral is None:
+        try:
+            with open(_LITTORAL_PATH, encoding="utf-8") as fh:
+                _littoral = [(p[0], p[1]) for p in (json.load(fh).get("points") or [])]
+        except Exception:
+            _littoral = []
+    return _littoral
+
+
+def dist_littoral_km(lat: float | None, lon: float | None) -> float | None:
+    """Distance au point de côte ouverte le plus proche (précision ~250 m).
+
+    Renvoie None hors de l'emprise couverte (Bretagne sud) : mieux vaut un critère
+    non applicable qu'une distance calculée sur un littoral qui n'est pas le bon.
+    """
+    if lat is None or lon is None:
+        return None
+    s, o, n, e = _LITTORAL_BBOX
+    if not (s <= lat <= n and o <= lon <= e):
+        return None
+    pts = _load_littoral()
+    if not pts:
+        return None
+    return round(min(haversine_km(lat, lon, p[0], p[1]) for p in pts), 1)
 
 
 _GEOCODE_CACHE: dict[str, dict | None] = {}

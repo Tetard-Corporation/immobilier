@@ -33,8 +33,38 @@ def _clamp(x: float) -> float:
 def _affaire(flags, ctx):
     ecart = flags.get("ecart_prix_pct")
     if ecart is None:
-        return None, "pending", "comparables DVF requis (clé Pappers)"
-    return _clamp(0.5 - ecart / 40.0), "ok", f"{ecart:+.0f}% vs marché"
+        return None, "pending", "comparables DVF indisponibles"
+    # Bande ±50 % : à ±20 % (ancien barème) presque tous les biens saturaient à 0 ou 1
+    # et le sous-pilier ne classait plus rien.
+    return _clamp(0.5 - ecart / 100.0), "ok", f"{ecart:+.0f}% vs marché local"
+
+
+# Niveau de prix ABSOLU, en €/m² : (excellent, cher) pour le terrain nu et pour le bâti.
+# Complète « Affaire vs marché », qui est relatif et décrète bonne affaire un bien hors
+# de prix dès lors que son secteur est hors de prix. Un terrain au tarif parisien
+# (≥ 1 000 €/m²) doit tomber bas quoi qu'en dise le marché local.
+_NIVEAU_PRIX_BAREME = {"terrain": (80.0, 400.0), "bati": (1200.0, 3500.0)}
+_NIVEAU_PRIX_PLANCHER = 0.25  # note au seuil « cher » ; au-delà, décroissance en 1/prix
+
+
+def _niveau_prix(flags, ctx):
+    prix = ctx.get("prix")
+    if not prix:
+        return None, "n/a", "prix inconnu"
+    if ctx.get("type_bien") == "terrain":
+        surface, (bon, cher), unite = ctx.get("surface_terrain"), _NIVEAU_PRIX_BAREME["terrain"], "de terrain"
+    else:
+        surface, (bon, cher), unite = ctx.get("surface_bati"), _NIVEAU_PRIX_BAREME["bati"], "habitable"
+    if not surface:
+        return None, "n/a", "surface inconnue"
+    ppm = prix / surface
+    if ppm <= bon:
+        sub = 1.0
+    elif ppm >= cher:
+        sub = _NIVEAU_PRIX_PLANCHER * cher / ppm
+    else:
+        sub = _clamp(1 - (ppm - bon) / (cher - bon) * (1 - _NIVEAU_PRIX_PLANCHER))
+    return sub, "ok", f"{round(ppm)} €/m² {unite} (repère : {round(bon)}–{round(cher)})"
 
 
 def _baisse_prix(flags, ctx):
@@ -179,9 +209,10 @@ def _fibre(flags, ctx):
 # (clé, libellé, poids, [(clé_sous, libellé_sous, poids_sous, évaluateur), ...])
 # --------------------------------------------------------------------------- #
 PILLARS = [
-    ("prix", "Prix & opportunité", 0.25, [
-        ("affaire", "Affaire vs marché", 0.6, _affaire),
-        ("baisse_prix", "Négociation (baisse)", 0.4, _baisse_prix),
+    ("prix", "Prix & opportunité", 0.30, [
+        ("niveau_prix", "Niveau de prix (€/m²)", 0.45, _niveau_prix),
+        ("affaire", "Affaire vs marché", 0.35, _affaire),
+        ("baisse_prix", "Négociation (baisse)", 0.20, _baisse_prix),
     ]),
     ("foncier", "Foncier & constructibilité", 0.20, [
         ("zonage", "Zonage / constructibilité", 0.6, _zonage),
@@ -198,10 +229,10 @@ PILLARS = [
         ("nuisances_proximite", "Nuisances de proximité", 0.25, _nuisances_proximite),
         ("aerien", "Nuisances aériennes (PEB)", 0.15, _aerien),
     ]),
-    ("etat", "État & travaux", 0.10, [
+    ("etat", "État & travaux", 0.07, [
         ("travaux", "Niveau de travaux", 1.0, _travaux),
     ]),
-    ("accessibilite", "Accessibilité & services", 0.10, [
+    ("accessibilite", "Accessibilité & services", 0.08, [
         ("train", "Trajet train", 0.5, _train),
         ("gare", "Proximité gare", 0.25, _gare),
         ("fibre", "Fibre", 0.25, _fibre),
