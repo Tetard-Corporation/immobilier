@@ -40,6 +40,8 @@ PREFERENCES = [
     {"kind": "budget", "weight": 5, "label": "Budget ≤ 400 000 €", "params": {"budget_max": PRIX_MAX}},
     {"kind": "feature", "weight": 5, "label": "Bord de mer / première ligne", "params": {"name": "bord_de_mer"}},
     {"kind": "constructible", "weight": 5, "label": "Terrain constructible (tiny house)", "params": {}},
+    {"kind": "feature", "weight": 4, "label": "Bord d'eau (rivière / étang / ria)", "params": {"name": "bord_eau"}},
+    {"kind": "feature", "weight": 4, "label": "En hauteur / vue dominante", "params": {"name": "en_hauteur"}},
     {"kind": "feature", "weight": 4, "label": "Vue (mer / dégagée)", "params": {"name": "vue"}},
     {"kind": "prix_m2_terrain", "weight": 4, "label": "Rapport qualité/prix (€/m² terrain)", "params": {"bon": 60, "cher": 300}},
     {"kind": "nature_exception", "weight": 4, "label": "Nature d'exception", "params": {}},
@@ -79,6 +81,8 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--cap", type=int, default=80, help="nb max de biens NEUFS enrichis")
     ap.add_argument("--workers", type=int, default=6)
+    ap.add_argument("--rescore-only", action="store_true",
+                    help="ne collecte rien : met à jour le set + re-score + ré-exporte")
     args = ap.parse_args()
 
     init_db()
@@ -87,6 +91,17 @@ def main() -> int:
 
     db = SessionLocal()
     ensure_set(db)
+
+    if args.rescore_only:
+        from app.services.export_static import export_to_dir
+        data_dir = os.path.join(os.path.dirname(__file__), "..", "data")
+        print("Re-score only : ré-export (détection features + scoring à jour)...", flush=True)
+        t1 = time.time()
+        stats = export_to_dir(db, data_dir, download_photos=True)
+        print(f"  export OK en {time.time()-t1:.0f}s : {stats}", flush=True)
+        db.close()
+        print("TERMINÉ.", flush=True)
+        return 0
 
     src = BienIciSource()
     existing = {e for (e,) in db.query(Listing.external_id).filter(Listing.source == "bienici").all()}
