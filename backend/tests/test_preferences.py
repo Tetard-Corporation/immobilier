@@ -201,3 +201,17 @@ def test_en_hauteur_geo():
     assert sub(0) == (0.3, "ok")      # plat
     assert sub(-5)[0] < 0.1 or sub(-5)[0] == 0.0  # en creux -> bas
     assert sub(None) == (None, "n/a")  # relief non calculé
+
+
+def test_distance_mer():
+    pref = [Preference(kind="distance_mer", weight=5, params={"proche": 300, "loin": 3000})]
+
+    def sub(dm):
+        _, details = evaluate(_listing(prix=100000, flags={"dist_mer_m": dm} if dm is not None else {}), pref)
+        ss = details[0]["subscore"]
+        return (round(ss, 2) if ss is not None else None), details[0]["status"]
+
+    assert sub(150) == (1.0, "ok")     # pieds dans l'eau
+    assert sub(3500) == (0.1, "ok")    # loin
+    assert sub(1000)[0] < 1.0 and sub(1000)[0] > 0.1
+    assert sub(None) == (None, "n/a")  # non calculé
