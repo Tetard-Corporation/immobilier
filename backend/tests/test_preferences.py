@@ -186,3 +186,18 @@ def test_prix_m2_terrain():
     assert sub(200000, 500) == (0.1, "ok")     # 400 €/m² -> cher
     assert sub(120000, 800)[0] < 1.0           # 150 €/m² -> intermédiaire
     assert sub(100000, None) == (None, "n/a")  # surface terrain inconnue
+
+
+def test_en_hauteur_geo():
+    pref = [Preference(kind="en_hauteur_geo", weight=4)]
+
+    def sub(prom):
+        _, details = evaluate(_listing(prix=100000, flags={"prominence_m": prom} if prom is not None else {}), pref)
+        ss = details[0]["subscore"]
+        return (round(ss, 2) if ss is not None else None), details[0]["status"]
+
+    assert sub(9)[0] == 1.0            # très dominant
+    assert sub(6)[0] > sub(0)[0]      # surélevé mieux que plat
+    assert sub(0) == (0.3, "ok")      # plat
+    assert sub(-5)[0] < 0.1 or sub(-5)[0] == 0.0  # en creux -> bas
+    assert sub(None) == (None, "n/a")  # relief non calculé

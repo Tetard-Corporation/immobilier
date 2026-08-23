@@ -296,6 +296,75 @@ def _infra_distances(lat: float, lon: float, cache: dict) -> dict:
             pass
         return res
     return {}
+
+
+# --- Relief : proéminence locale (à quel point le point DOMINE ses alentours) --------
+# L'altitude absolue ne dit pas si un terrain est « surélevé » (la côte est basse) ;
+# on échantillonne une couronne autour du point et on mesure l'écart d'altitude.
+_RELIEF_CACHE = os.path.join(os.path.dirname(__file__), "..", "..", "data", "relief_cache.json")
+_IGN_ALTI_URL = "https://data.geopf.fr/altimetrie/1.0/calcul/alti/rest/elevation.json"
+_NO_LIVE_RELIEF = bool(os.environ.get("EXPORT_NO_LIVE_RELIEF"))
+
+
+def _load_relief_cache() -> dict:
+    try:
+        with open(_RELIEF_CACHE, encoding="utf-8") as fh:
+            return json.load(fh)
+    except Exception:
+        return {}
+
+
+def _query_prominence(lat: float, lon: float, radius_m: int = 300) -> dict | None:
+    """Altitude du point − moyenne d'une couronne (8 points, rayon r). +.= dominant."""
+    import math
+
+    pts = [(lat, lon)]
+    for k in range(8):
+        a = 2 * math.pi * k / 8
+        pts.append((lat + radius_m * math.cos(a) / 111320,
+                    lon + radius_m * math.sin(a) / (111320 * math.cos(math.radians(lat)))))
+    lats = "|".join(str(round(a, 6)) for a, _ in pts)
+    lons = "|".join(str(round(b, 6)) for _, b in pts)
+    try:
+        r = urllib.request.Request(
+            f"{_IGN_ALTI_URL}?{urllib.parse.urlencode({'lat': lats, 'lon': lons, 'resource': 'ign_rge_alti_wld', 'delimiter': '|', 'zonly': 'true'})}",
+            headers={"User-Agent": _UA})
+        with urllib.request.urlopen(r, timeout=25) as resp:
+            elevs = json.loads(resp.read()).get("elevations", [])
+    except Exception:
+        return None
+    if not elevs or elevs[0] is None or elevs[0] < -1000:
+        return None
+    pt = elevs[0]
+    neigh = [e for e in elevs[1:] if e is not None and e > -1000]  # filtre no-data (mer/hors zone)
+    if not neigh:
+        return None
+    return {"prominence_m": round(pt - sum(neigh) / len(neigh), 1)}
+
+
+def _relief_prominence(lat: float, lon: float, cache: dict) -> dict:
+    if lat is None or lon is None:
+        return {}
+    key = f"{round(lat, 4)},{round(lon, 4)}"
+    if key in cache:
+        return cache[key]
+    if _NO_LIVE_RELIEF:
+        return {}
+    res = None
+    for attempt in range(3):
+        res = _query_prominence(lat, lon)
+        if res is not None:
+            break
+        time.sleep(2 * (attempt + 1))
+    if res is not None:
+        cache[key] = res
+        try:
+            with open(_RELIEF_CACHE, "w", encoding="utf-8") as fh:
+                json.dump(cache, fh)
+        except Exception:
+            pass
+        return res
+    return {}
 # Optimisation : galerie web -> 1280 px max suffit ; JPEG progressif qualité 78.
 _MAX_DIM = 1280
 _JPEG_QUALITY = 78
@@ -453,6 +522,7 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
     n_resid = 0
     infra_cache = _load_infra_cache()
     poi_cache = _load_poi_cache()
+    relief_cache = _load_relief_cache()
     fibre_lut = _load_fibre_lut()
     tension_lut = _load_tension_lut()
     rows = (
@@ -481,11 +551,12 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
             penalty = None
         infra = _infra_distances(row.latitude, row.longitude, infra_cache)
         poi = _poi_distances(row.latitude, row.longitude, poi_cache)
+        relief = _relief_prominence(row.latitude, row.longitude, relief_cache)
         feats = list(row.features or [])
         for e in _detect_equipements(row.description):
             if e not in feats:
                 feats.append(e)
-        extra = {**infra, **poi, **_fibre_flags(row.code_commune, fibre_lut),
+        extra = {**infra, **poi, **relief, **_fibre_flags(row.code_commune, fibre_lut),
                  **_tension_flags(row.commune, tension_lut),
                  "features": feats, "pavillon_neuf": _detect_pavillon_neuf(row.description)}
         item = _RowItem(row, extra_flags=extra)
