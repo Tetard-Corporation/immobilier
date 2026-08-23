@@ -18,6 +18,7 @@ PREFERENCE_KINDS = [
     "has_terrain",
     "constructible",
     "prix_m2_terrain",
+    "en_hauteur_geo",
     "surface_habitable",
     "light_works",
     "no_vis_a_vis",
@@ -146,6 +147,18 @@ def _eval_one(item, kind: str, params: dict):
         else:
             sub = _clamp(1 - (ppm - bon) / (cher - bon) * 0.9)
         return sub, "ok", f"{round(ppm)} €/m² de terrain"
+
+    if kind == "en_hauteur_geo":
+        # Proéminence locale (m) = altitude du point − alentours (couronne 300 m).
+        # Mesure RÉELLE du « surélevé/dominant » (ex. Ti Louzou ≈ +6 m), là où
+        # l'altitude absolue ne dit rien (la côte est basse).
+        p = flags.get("prominence_m")
+        if p is None:
+            return None, "n/a", "relief non calculé"
+        # +8 m et plus = très dominant ; 0 = plat ; négatif = en creux.
+        sub = _clamp(0.3 + p / 12.0)
+        pos = "dominant" if p >= 4 else ("plat" if p > -2 else "en creux")
+        return sub, "ok", f"{pos} ({p:+.0f} m sur 300 m)"
 
     if kind == "surface_habitable":
         s = getattr(item, "surface_bati", None)
