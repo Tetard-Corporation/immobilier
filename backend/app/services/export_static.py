@@ -150,6 +150,10 @@ _EQUIP_PATTERNS = {
     "vue": r"vue\s+(mer|d[ée]gag|panoram|impren|sur\s+(la\s+)?(mer|vall|campagne|montagne|oc[ée]an))|panorama|sans\s+vis-?\s?[àa]-?\s?vis\s+avec\s+vue",
     # Front de mer / première ligne : la signature « posé sur les rochers, pieds dans l'eau ».
     "bord_de_mer": r"bord\s+de\s+mer|front\s+de\s+mer|pieds?\s+dans\s+l[' ]eau|premi[èe]re\s+ligne|face\s+[àa]\s+la\s+mer|acc[èe]s\s+(direct\s+)?((?:[àa]\s+la\s+)?(mer|plage|gr[èe]ve))|surplombe\s+(la\s+mer|l[' ]oc[ée]an)|vue\s+impren\w*\s+sur\s+(la\s+)?(mer|oc[ée]an)|en\s+bord\s+d[' ]oc[ée]an",
+    # Bord d'eau non maritime : rivière, étang, lac, ria, aber, estuaire, plan d'eau.
+    "bord_eau": r"bord\s+de\s+(rivi[èe]re|l[' ]?[ée]tang|lac|ria|aber|fleuve|ruisseau|canal)|au\s+bord\s+de\s+l[' ]eau|bord\s+de\s+plan\s+d[' ]eau|vue\s+(sur\s+)?(rivi[èe]re|[ée]tang|lac|ria|aber|estuaire)|en\s+bord\s+de\s+(rivi[èe]re|ria|aber|estuaire)|surplombe\s+(la\s+)?(rivi[èe]re|vall[ée]e)",
+    # En hauteur avec vue dégagée : promontoire, coteau, surplomb, position dominante.
+    "en_hauteur": r"en\s+hauteur|sur\s+les\s+hauteurs|hauteurs\s+de\b|\bsurplomb(e|ant)?\b|\bdominant\w*\b|position\s+dominante|promontoire|belv[ée]d[èe]re|\bcoteau\b|perch[ée]e?\s+(sur|en)|point\s+(haut|culminant)",
 }
 
 
