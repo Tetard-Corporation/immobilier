@@ -19,6 +19,7 @@ PREFERENCE_KINDS = [
     "constructible",
     "prix_m2_terrain",
     "en_hauteur_geo",
+    "distance_mer",
     "surface_habitable",
     "light_works",
     "no_vis_a_vis",
@@ -159,6 +160,22 @@ def _eval_one(item, kind: str, params: dict):
         sub = _clamp(0.3 + p / 12.0)
         pos = "dominant" if p >= 4 else ("plat" if p > -2 else "en creux")
         return sub, "ok", f"{pos} ({p:+.0f} m sur 300 m)"
+
+    if kind == "distance_mer":
+        # Distance réelle à la côte (m), mesurée via l'IGN (cf. export). Barème :
+        # pieds dans l'eau -> loin. Paramétrable (proche/loin en m).
+        dm = flags.get("dist_mer_m")
+        if dm is None:
+            return None, "n/a", "distance mer non calculée"
+        proche = params.get("proche", 300)   # ≤ -> excellent
+        loin = params.get("loin", 3000)       # ≥ -> négligeable
+        if dm <= proche:
+            sub = 1.0
+        elif dm >= loin:
+            sub = 0.1
+        else:
+            sub = _clamp(1 - (dm - proche) / (loin - proche) * 0.9)
+        return sub, "ok", f"mer à ~{int(dm)} m" if dm <= loin else f"mer à > {loin} m"
 
     if kind == "surface_habitable":
         s = getattr(item, "surface_bati", None)
