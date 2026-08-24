@@ -5,6 +5,127 @@ avant une collecte, une convergence de scoring, ou toute intervention sur Supaba
 
 ---
 
+## 0. Runbook : mettre à jour les biens
+
+La procédure complète, **dans cet ordre**, et **en local** (cf. §1). Chaque étape indique
+ce qui casse si on la saute — toutes ont déjà coûté une collecte.
+
+### Prérequis (une seule fois)
+
+```bash
+cd backend
+python -m venv .venv && . .venv/bin/activate
+pip install -r requirements.txt -r requirements-scrapers.txt
+playwright install chromium
+```
+Il faut aussi **Google Chrome installé** (le harvester Datadome pilote le canal `chrome`,
+pas le Chromium de Playwright — ce dernier est reconnu et bloqué).
+
+### 1. Regarder qui d'autre travaille dans le dossier
+
+```bash
+git status --short          # des fichiers modifiés qui ne sont pas à toi = autre session
+```
+`backend/immobilier.db` **et** `data/data.json` sont des états **partagés**. Deux sessions
+Claude qui collectent en parallèle se marchent dessus : c'est arrivé, 200 biens SeLoger
+effacés (voir « Pièges » plus bas). Si l'arbre est sale et que ce n'est pas ton travail,
+commence par te synchroniser avec l'autre session.
+
+### 2. Générer les cookies Datadome
+
+```bash
+python scripts/datadome_cookies.py           # leboncoin + seloger
+```
+Écrit `backend/.env`. Sans cookie, leboncoin et seloger se déclarent **indisponibles** et
+la collecte les saute silencieusement — vérifier :
+```bash
+python -c "from app.sources.leboncoin import LeboncoinSource as L; \
+from app.sources.seloger import SeLogerSource as S; print('lbc', L().available, '| slg', S().available)"
+```
+
+### 3. Collecter, source par source
+
+```bash
+SCRAPER_RATE_LIMIT_MS=3000 EXPORT_NO_LIVE_OVERPASS=1 python collect_leboncoin.py
+SCRAPER_RATE_LIMIT_MS=3000 EXPORT_NO_LIVE_OVERPASS=1 python collect_seloger.py
+EXPORT_NO_LIVE_OVERPASS=1 python collect_bretagne_sud.py
+```
+
+Trois réglages qui ne sont pas décoratifs :
+
+- **`SCRAPER_RATE_LIMIT_MS=3000`** — à ce rythme, 200 requêtes SeLoger passent sans
+  incident. Plus vite, le cookie Datadome se brûle (§2).
+- **`EXPORT_NO_LIVE_OVERPASS=1`** — l'export de fin de collecte n'interroge alors pas
+  Overpass. Indispensable : le réchauffage (étape 4) écrit les mêmes fichiers de cache,
+  et deux processus qui les écrivent en même temps s'écrasent.
+- **laisser l'export se faire** (ne pas passer `--no-export` en comptant exporter plus
+  tard). `data/data.json` est la **source de vérité durable** ; la base SQLite est un
+  store de travail que la collecte suivante peut réinitialiser. Un bien collecté mais pas
+  exporté n'existe pas.
+
+### 4. Réchauffer les caches Overpass
+
+```bash
+python warm.py                       # 2 workers par défaut, ~7 s par point
+```
+Remplit `backend/data/poi_cache.json` (commerces, remontées) et `infra_cache.json`
+(autoroute, rail, randonnées) — ce sont eux qui font passer les critères
+*commerces / calme / rando* de « pending » à noté.
+
+**Ne pas augmenter `WARM_WORKERS`.** Overpass n'accorde que ~2 slots par IP ; au-delà il
+répond 406/429 et les résultats sont perdus. Compter ~1 h pour 1 100 points.
+
+**Contrôle obligatoire** — le nombre d'entrées doit avoir augmenté :
+```bash
+python -c "import json; print(len(json.load(open('data/poi_cache.json'))), \
+len(json.load(open('data/infra_cache.json'))))"
+```
+Si le run finit sur `⚠ N POI et M INFRA abandonnés`, relancer : `warm.py` est idempotent,
+il ne redemande pas les points déjà en cache.
+
+### 5. Export final, puis les pépites
+
+Une fois les caches chauds, ré-exporter **sans** `EXPORT_NO_LIVE_OVERPASS` pour que les
+critères Overpass soient pris en compte :
+```bash
+python -m app.services.export_static ../data
+```
+Puis, pour ne garder que le haut du panier d'un set (les autres sets sont préservés) :
+```bash
+EXPORT_MIN_MATCH_SCORE=<seuil> EXPORT_PRIMARY_SET_ID=<set> python -m app.services.export_static ../data
+```
+Calibrer le seuil en regardant la distribution avant de trancher, plutôt qu'en tâtonnant :
+```bash
+python -c "
+import json; from collections import Counter
+d=json.load(open('../data/data.json')); SET='4'
+s=sorted(b['scores_by_set'][SET]['match_score'] for b in d['biens']
+         if (b.get('scores_by_set') or {}).get(SET))
+print([(round(x), sum(1 for y in s if y>=x)) for x in range(60, 95, 5)])"
+```
+
+### 6. Vérifier, puis committer
+
+```bash
+pytest                       # doit rester au vert
+```
+Committer `data/data.json` **avec** `data/photos/` et les caches réchauffés, dans le même
+commit : c'est un instantané cohérent. Et **ne stager que ses propres fichiers** si une
+autre session travaille en parallèle (`git add <chemins>`, jamais `git add -A`).
+
+### Pièges qui coûtent une collecte entière
+
+| Symptôme | Cause | Parade |
+|---|---|---|
+| Des biens collectés disparaissent | une collecte a appelé `seed_from_data_json()`, qui **vide** la table avant de la reconstruire depuis `data.json` | exporter à chaque collecte ; `collect_seloger.py` ne seede que si la base est vide (`--reseed` pour forcer) |
+| `warm.py` tourne 1 h et le cache ne grossit pas | `WARM_WORKERS` > 2 → Overpass répond 406/429, les erreurs étaient avalées | rester à 2 workers ; le message `⚠ … abandonnés` signale le rendement nul |
+| Redirection vers `geo.captcha-delivery.com` | cookie Datadome brûlé par une rafale | `SCRAPER_RATE_LIMIT_MS=3000` ; regénérer le cookie |
+| leboncoin/seloger ne ramènent rien, sans erreur | garde-fou `available` : ni proxy ni cookie | étape 2, et vérifier `available` |
+| Critères commerces/calme/rando en « pending » | export fait avec `EXPORT_NO_LIVE_OVERPASS=1` et cache froid | étape 4 puis ré-export (étape 5) |
+| Scores incohérents avec le code | `data.json` exporté avant un recalibrage du scoring | ré-exporter après tout changement de `scoring.py`/`preferences.py` |
+
+---
+
 ## 1. Où faire tourner quoi : cloud vs local
 
 Il y a **deux environnements** possibles pour Claude Code, et ils n'ont PAS les mêmes
