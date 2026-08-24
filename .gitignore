@@ -21,3 +21,6 @@ dist/
 
 # Skill converge-filters : artefact généré (données votes)
 .claude/skills/converge-filters/proposal.json
+
+# Profil Chrome persistant du harvester Datadome (local, jamais versionné)
+backend/.pw-chrome-profile/

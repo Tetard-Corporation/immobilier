@@ -21,6 +21,20 @@ def _key(r):
     return f"{round(r.latitude, 4)},{round(r.longitude, 4)}"
 
 
+def _write_atomic(path: str, payload: dict) -> None:
+    """Écrit via un fichier temporaire + rename : un kill en pleine écriture ne
+    laisse pas un cache JSON tronqué (donc illisible au prochain export)."""
+    tmp = f"{path}.tmp"
+    with open(tmp, "w", encoding="utf-8") as fh:
+        json.dump(payload, fh)
+    os.replace(tmp, path)
+
+
+def _flush(poi: dict, infra: dict) -> None:
+    _write_atomic(E._POI_CACHE, poi)
+    _write_atomic(E._INFRA_CACHE, infra)
+
+
 def main():
     db = SessionLocal()
     rows = [r for r in db.query(Listing).filter(Listing.source != "mock").all()
@@ -42,7 +56,6 @@ def main():
         return ("infra", k, E._query_overpass(lat, lon))
 
     t0 = time.time()
-    jobs = [(*it,) for it in []]
     tasks = [(q_poi, it) for it in need_poi.items()] + [(q_infra, it) for it in need_infra.items()]
     done = 0
     with ThreadPoolExecutor(max_workers=WORKERS) as ex:
@@ -53,10 +66,12 @@ def main():
                 (poi if typ == "poi" else infra)[k] = res
             done += 1
             if done % 25 == 0:
-                print(f"  overpass {done}/{len(tasks)} ({time.time()-t0:.0f}s)", flush=True)
-    # écritures uniques
-    json.dump(poi, open(E._POI_CACHE, "w", encoding="utf-8"))
-    json.dump(infra, open(E._INFRA_CACHE, "w", encoding="utf-8"))
+                # Flush périodique : Overpass met ~20 min pour un gros lot, et un
+                # réchauffage interrompu ne doit pas repartir de zéro (vécu : 300
+                # requêtes perdues parce que l'écriture n'avait lieu qu'à la fin).
+                _flush(poi, infra)
+                print(f"  overpass {done}/{len(tasks)} ({time.time()-t0:.0f}s, caches écrits)", flush=True)
+    _flush(poi, infra)
     print(f"caches écrits (poi {len(poi)}, infra {len(infra)}) en {time.time()-t0:.0f}s", flush=True)
 
     # Photos en parallèle (skip viagers : ils seront exclus de l'export)

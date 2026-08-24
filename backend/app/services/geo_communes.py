@@ -63,3 +63,59 @@ def communes_within(lat: float, lon: float, radius_km: float, depts: list[str]) 
                 found.append({**c, "dist_km": round(d, 1)})
     found.sort(key=lambda c: c["dist_km"])
     return found
+
+
+# --- Résolution par code postal ---------------------------------------------- #
+# Un code postal peut couvrir plusieurs communes (et une commune avoir plusieurs
+# codes). Certaines sources ne donnent qu'un code postal (SeLoger, agences) : il faut
+# alors le nom de commune canonique pour construire une URL ou géolocaliser le bien.
+_API_CP = "https://geo.api.gouv.fr/communes?codePostal={cp}&fields=nom,code,centre,population&format=json"
+_CP_CACHE = os.path.join(_CACHE_DIR, "par_code_postal.json")
+
+
+def _load_cp_cache() -> dict:
+    try:
+        with open(_CP_CACHE, encoding="utf-8") as fh:
+            return json.load(fh)
+    except Exception:
+        return {}
+
+
+def communes_for_postcode(code_postal: str) -> list[dict]:
+    """Communes d'un code postal : [{nom, code, lat, lon}]. Cache disque + réseau."""
+    cp = str(code_postal).strip().zfill(5)
+    cache = _load_cp_cache()
+    if cp in cache:
+        return cache[cp]
+    try:
+        req = urllib.request.Request(_API_CP.format(cp=cp), headers={"User-Agent": "immobilier"})
+        with urllib.request.urlopen(req, timeout=30) as r:
+            raw = json.loads(r.read())
+    except Exception:
+        return []  # panne transitoire : ne pas mémoriser un échec
+    out = []
+    for c in raw:
+        coords = (c.get("centre") or {}).get("coordinates")
+        out.append({"nom": c.get("nom"), "code": c.get("code"),
+                    "lat": coords[1] if coords else None,
+                    "lon": coords[0] if coords else None,
+                    "population": c.get("population") or 0})
+    out.sort(key=lambda c: -c["population"])  # chef-lieu du code postal en tête
+    cache[cp] = out
+    try:
+        os.makedirs(_CACHE_DIR, exist_ok=True)
+        with open(_CP_CACHE, "w", encoding="utf-8") as fh:
+            json.dump(cache, fh, ensure_ascii=False, sort_keys=True)
+    except Exception:
+        pass
+    return out
+
+
+def main_commune_for_postcode(code_postal: str) -> dict | None:
+    """Commune la plus peuplée d'un code postal (son « chef-lieu » de fait).
+
+    Un code postal rural en couvre parfois vingt (26110 = Nyons + 22 villages). Les
+    portails qui n'indexent qu'à la commune (SeLoger) obligent à choisir : on prend la
+    plus peuplée, où se concentrent les annonces."""
+    communes = communes_for_postcode(code_postal)
+    return communes[0] if communes else None

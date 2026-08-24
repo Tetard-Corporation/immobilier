@@ -39,7 +39,7 @@ export `data/data.json` (+ photos)*.
 |---|---|---|
 | **bienici** | API JSON (`realEstateAds.json`) via httpx | Aucune — marche partout, **y compris cloud** |
 | **leboncoin** | API JSON (`finder/search`) | Datadome → **cookie + IP résidentielle** (local) |
-| **seloger** | HTML + JSON-LD (`list.htm`) | Datadome → **cookie + IP résidentielle** (local) |
+| **seloger** | HTML de la SERP `classified-search` | Datadome → **cookie + IP résidentielle** (local) |
 | agences | IMAP + sites | dépend de la config IMAP |
 
 Garde-fou `available` : leboncoin et seloger se déclarent **indisponibles** tant que ni
@@ -47,16 +47,64 @@ Garde-fou `available` : leboncoin et seloger se déclarent **indisponibles** tan
 fournis — pour ne pas gaspiller d'appels qui renverraient 403.
 
 ### Datadome : générer et utiliser le cookie (EN LOCAL uniquement)
-1. Ouvrir un **vrai navigateur** (headed) sur `https://www.leboncoin.fr` (idem seloger),
-   laisser la page se charger / passer un éventuel challenge humain.
-2. Récupérer le cookie `datadome` (DevTools → Application → Cookies).
-3. Le fournir au backend via variable d'env (même session/machine que la collecte) :
-   ```bash
-   LEBONCOIN_DATADOME="<cookie>" SELOGER_DATADOME="<cookie>" python backend/collect_leboncoin.py
-   ```
-   ⚠️ **Le cookie est lié à l'IP.** Il faut le générer ET collecter depuis la **même IP
-   résidentielle**. Un cookie créé chez toi puis rejoué depuis le conteneur cloud
-   (IP datacenter) sera rejeté.
+
+Automatisé — le script pilote le **Chrome installé** (canal `chrome`, et non le Chromium
+de Playwright, que Datadome reconnaît), avec un profil persistant pour ne pas repasser le
+challenge à chaque fois. S'il tombe sur un challenge humain, il attend qu'on le résolve
+dans la fenêtre :
+
+```bash
+cd backend
+python scripts/datadome_cookies.py                  # leboncoin + seloger
+python scripts/datadome_cookies.py --site seloger   # un seul site
+```
+
+Il écrit `backend/.env` (gitignoré) : `LEBONCOIN_DATADOME`, `SELOGER_DATADOME` et
+`SCRAPER_USER_AGENT`. Ce dernier compte : **Datadome recoupe le cookie avec l'UA** de la
+requête, un UA qui ne correspond pas au navigateur émetteur fait retomber sur un challenge.
+
+⚠️ **Le cookie est lié à l'IP.** Il faut le générer ET collecter depuis la **même IP
+résidentielle**. Un cookie créé chez toi puis rejoué depuis le conteneur cloud
+(IP datacenter) sera rejeté.
+
+⚠️ **Le cookie se brûle sur une rafale de requêtes.** Vécu : une dizaine d'appels
+rapprochés sur seloger et la réponse devient une redirection vers
+`geo.captcha-delivery.com` — il faut alors relancer le script. En collecte, garder
+`SCRAPER_RATE_LIMIT_MS=3000` (200 requêtes SeLoger passent sans incident à ce rythme).
+
+### SeLoger : le portail a changé (2026)
+
+`/list.htm` renvoie un **404 sec** et les annonces n'ont plus de JSON-LD par bien. Ce que
+`backend/app/sources/seloger.py` cible désormais :
+
+- **SERP** `GET /classified-search?distributionTypes=Buy&estateTypes=…&projectTypes=Resale&locations=…&page=N`,
+  rendue côté serveur, ~30 cartes par page. Le parsing s'appuie sur les `data-testid`
+  (`serp-core-classified-card-testid`, `cardmfe-price-testid`, `cardmfe-keyfacts-testid`,
+  `cardmfe-description-box-address`) — **jamais sur les classes CSS**, qui sont des hachés
+  Emotion regénérés à chaque build.
+- **Vocabulaires** : `estateTypes` = `House | Apartment | Plot | Building | Parking`
+  (`Land`/`Terrain` font répondre **500**) ; `projectTypes` = `Resale | New_Build |
+  Projected | Life_Annuity` (on ne garde que `Resale` : le neuf est du promoteur).
+- **Filtres réellement appliqués côté serveur** : `priceMin` / `priceMax` uniquement.
+  `maximumPrice`, `surfaceMin`, `landSurfaceMin` sont acceptés puis **ignorés** — les
+  surfaces se filtrent donc côté client.
+- **`locations` n'accepte que les identifiants internes AVIV** (`AD08FR<n>` pour une
+  commune) : ni code postal, ni code INSEE. On les résout via l'URL SEO de commune
+  (`/immobilier/achat/immo-<slug>-<dept>/`), qui expose le `placeId` dans son HTML, et on
+  met la correspondance en cache dans `backend/data/seloger_places.json`. Plusieurs
+  `placeId` passent en une requête (résultats fusionnés) — d'où des lots de 15.
+- **Limites connues** : les cartes n'exposent **pas de coordonnées** (on géolocalise au
+  centroïde de commune, comme la source « agences ») ; et un code postal rural couvrant
+  plusieurs communes, on ne retient que **la plus peuplée**
+  (`services.geo_communes.main_commune_for_postcode`). Les *communes nouvelles* issues de
+  fusions récentes n'ont pas d'URL SEO et sont sautées (vu sur Valserhône, Entrelacs,
+  Saint-Genix-les-Villages, Val-d'Arc, Valromey-sur-Séran, Vallées-d'Antraigues-Asperjoc).
+
+```bash
+cd backend
+SCRAPER_RATE_LIMIT_MS=3000 python collect_seloger.py --zone ploemeur --dry-run  # sans écrire
+SCRAPER_RATE_LIMIT_MS=3000 python collect_seloger.py                            # collecte + export
+```
 
 ### Zone « têtard » (référence)
 Drôme/Ardèche/Savoie/Ain — maisons, budget ≤ 600 k€. Codes postaux et centres géo dans
