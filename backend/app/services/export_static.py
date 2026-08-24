@@ -169,8 +169,25 @@ _PAVILLON_RE = re.compile(
     r"maison\s+r[ée]cente|villa\s+contemporaine", re.I)
 
 
+# Le produit « lotissement / parcelle viabilisée » est l'autre face du pavillonnaire :
+# même absence de cachet, même voisinage résidentiel. Détecté à part car il faut écarter
+# les négations — « hors lotissement », « non viabilisé » sont au contraire des arguments
+# de vente ici (62 annonces du secteur sur 167 mentions).
+_LOTISSEMENT_RE = re.compile(
+    r"\blotissement\b|\bviabilis[ée]\w*|zone\s+pavillonnaire|"
+    r"quartier\s+r[ée]sidentiel|zone\s+r[ée]sidentiel\w*", re.I)
+_LOTISSEMENT_NEG_RE = re.compile(
+    r"(?:hors|pas\s+de|pas\s+en|non|aucun|sans|ni)\s+(?:\w+\s+){0,2}?"
+    r"(?:lotissement|viabilis|zone\s+pavillonnaire)", re.I)
+
+
 def _detect_pavillon_neuf(description: str | None) -> bool:
-    return bool(description and _PAVILLON_RE.search(description))
+    if not description:
+        return False
+    if _PAVILLON_RE.search(description):
+        return True
+    return bool(_LOTISSEMENT_RE.search(description)
+                and not _LOTISSEMENT_NEG_RE.search(description))
 
 
 def _fibre_flags(code_commune: str | None, lut: dict) -> dict:
@@ -319,7 +336,9 @@ class _RowItem:
 
     def __init__(self, row: Listing, extra_flags: dict | None = None):
         self.prix = row.prix
+        self.type_bien = row.type_bien
         self.nb_chambres = row.nb_chambres
+        self.nb_pieces = row.nb_pieces
         self.surface_terrain = row.surface_terrain
         self.surface_bati = row.surface_bati
         self.latitude = row.latitude

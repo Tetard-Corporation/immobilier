@@ -1,16 +1,19 @@
 """Crée le set « Bretagne sud » (terrain d'exception) et le peuple via Bien'ici
 (seule source joignable sans navigateur/proxy).
 
-Profil : terrain constructible d'exception, charme/vue, nature sauvage, logement
-petit accepté (tiny house), et la bonne affaire plutôt que le bien qui consomme tout
-le budget. Budget ≤ 400 k€.
+Profil : la bonne affaire au m² plutôt que le bien qui consomme tout le budget, un
+grand terrain (≥ 1 000 m²), à l'écart du pavillonnaire et du vis-à-vis, avec un coin
+de nature (rivière en tête, vue dégagée, grands arbres), un logement compact allant de
+la tiny house à 3-4 chambres, et le second rang de mer accepté — la vue mer se paie
+trop cher. Budget ≤ 400 k€.
 
 Zone, en deux foyers de collecte :
   - Ploemeur et le littoral morbihannais/finistérien ;
   - la vallée de la Laïta (Quimperlé, Rédené, Clohars-Carnoët, Guidel, Gestel).
-Le critère « proximité du littoral » (near_sea) fait le reste du travail : le long de
-la Laïta, il note l'embouchure (Le Pouldu, Guidel-Plages, ~0 km) bien au-dessus de
-l'amont (Quimperlé, ~12 km), donc « plutôt côté mer » sans exclure l'arrière-pays.
+Le critère `near_sea` fait le reste du travail : le long de la Laïta, il note
+l'embouchure (Le Pouldu, Guidel-Plages) bien au-dessus de l'amont (Quimperlé, ~12 km),
+donc « plutôt côté mer » sans exclure l'arrière-pays. Son palier `ok_km` évite de
+pénaliser le second rang.
 
 Usage :
     python collect_bretagne_sud.py            # collecte complète
@@ -36,34 +39,43 @@ from app.sources.bienici import BienIciSource
 SET_ID = 4
 SET_NAME = "Bretagne sud"
 SET_DESC = (
-    "Terrain d'exception en Bretagne sud (littoral 56-29 + vallée de la Laïta) — pépite : "
-    "bonne affaire au m², charme/vue, nature sauvage, tiny-house-friendly, plutôt côté mer. "
-    "Budget ≤ 400 k€."
+    "Bretagne sud (littoral 56-29 + vallée de la Laïta) — pépite : bonne affaire au m², "
+    "grand terrain (≥ 1 000 m²), à l'écart du pavillonnaire et sans vis-à-vis, un coin de "
+    "nature (rivière, vue dégagée, grands arbres), logement compact de la tiny house à "
+    "3-4 chambres, second rang de mer accepté. Budget ≤ 400 k€."
 )
 
 PRIX_MAX = 400_000  # vrai plafond budgétaire
 
-# Pondérations 1-5, sauf le prix au m² : porté à 7 parce que « viser la bonne affaire »
-# EST l'objectif du set, et qu'à poids égal il se faisait annuler par la demi-douzaine de
-# critères qualitatifs qu'un terrain hors de prix satisfait tout aussi bien (constructible,
-# vue, littoral, nature). Mesuré sur les 175 terrains du set : la corrélation entre la note
-# et le €/m² passe de -0,33 à -0,47, et un terrain à 975 €/m² recule de la 21e à la 41e place.
-# Le budget, lui, récompense la marge laissée sous le plafond, pas le simple fait d'y entrer.
+# Pondérations 1-7. Deux principes derrière ces poids :
+#
+# - « viser la bonne affaire » EST l'objectif du set, d'où le prix au m² à 7 : à poids égal
+#   il se faisait annuler par la demi-douzaine de critères qualitatifs qu'un terrain hors
+#   de prix satisfait tout aussi bien. Le budget, lui, ne fait plus que 3 : tout est
+#   collecté sous 400 k€, donc il ne distingue presque rien (écart-type 0,12).
+# - un critère qui n'est cité que par 4 à 15 % des annonces (sans vis-à-vis, cachet, vue)
+#   ne peut servir que de bonus : personne ne peut mal noter dessus. Les intentions
+#   « tranquillité » et « coin de nature » passent donc par des critères composites
+#   TOUJOURS évaluables, qui montent ET descendent.
 PREFERENCES = [
-    {"kind": "budget", "weight": 5, "label": "Budget ≤ 400 000 €", "params": {"budget_max": PRIX_MAX}},
     {"kind": "prix_m2_terrain", "weight": 7, "label": "Prix du terrain (€/m²)", "params": {"bon": 80, "cher": 400}},
+    {"kind": "tranquillite", "weight": 6, "label": "Tranquillité (ni vis-à-vis ni lotissement)", "params": {}},
+    {"kind": "has_terrain", "weight": 6, "label": "Grand terrain (≥ 1 000 m²)", "params": {"min_surface": 1000}},
+    {"kind": "coin_nature", "weight": 5, "label": "Coin de nature (eau, vue dégagée, arbres)", "params": {}},
     {"kind": "constructible", "weight": 5, "label": "Terrain constructible (tiny house)", "params": {}},
-    {"kind": "near_sea", "weight": 4, "label": "Proche du littoral", "params": {"max_km": 12}},
-    {"kind": "nature_exception", "weight": 4, "label": "Nature d'exception", "params": {}},
-    {"kind": "feature", "weight": 4, "label": "Vue (mer / dégagée)", "params": {"name": "vue"}},
-    {"kind": "feature", "weight": 3, "label": "Isolé / sauvage", "params": {"name": "isole"}},
-    {"kind": "no_vis_a_vis", "weight": 3, "label": "Sans vis-à-vis", "params": {}},
-    {"kind": "has_terrain", "weight": 3, "label": "Avec terrain", "params": {}},
-    {"kind": "authentic", "weight": 3, "label": "Charme / cachet", "params": {}},
-    {"kind": "hiking", "weight": 2, "label": "Nature / randonnées", "params": {}},
-    {"kind": "nuisance_sonore", "weight": 2, "label": "Calme (loin autoroute/rail)", "params": {"min_m": 150, "ref_m": 800}},
+    # À 4, ce critère n'avait aucun effet net sur le classement (corrélation +0,05 avec la
+    # note du set) : le grand terrain et le coin de nature vont de pair avec de grandes
+    # maisons, et le contre-poids était trop léger. À 6 : +0,16, et 83 % des bâtis du haut
+    # de tableau tiennent dans les 4 chambres (contre 77 %).
+    {"kind": "logement_compact", "weight": 6, "label": "Logement compact (≤ 3-4 chambres)", "params": {"ideal": 3, "max": 4}},
+    {"kind": "near_sea", "weight": 3, "label": "À portée du littoral (second rang OK)", "params": {"ok_km": 2.5, "max_km": 12}},
+    {"kind": "nature_exception", "weight": 3, "label": "Nature d'exception", "params": {}},
+    {"kind": "budget", "weight": 3, "label": "Budget ≤ 400 000 €", "params": {"budget_max": PRIX_MAX}},
+    {"kind": "authentic", "weight": 2, "label": "Charme / cachet", "params": {}},
     {"kind": "fiber", "weight": 2, "label": "Fibre (télétravail)", "params": {}},
-    {"kind": "commerces", "weight": 2, "label": "Commerces/services à proximité", "params": {"ref": 15}},
+    {"kind": "nuisance_sonore", "weight": 2, "label": "Calme (loin autoroute/rail)", "params": {"min_m": 150, "ref_m": 800}},
+    {"kind": "hiking", "weight": 1, "label": "Nature / randonnées", "params": {}},
+    {"kind": "commerces", "weight": 1, "label": "Commerces/services à proximité", "params": {"ref": 15}},
 ]
 
 # Foyers de collecte (libellé, centre, rayons km). Départements Morbihan (56) et
