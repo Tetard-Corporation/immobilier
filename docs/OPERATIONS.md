@@ -66,14 +66,25 @@ Trois réglages qui ne sont pas décoratifs :
 ### 4. Réchauffer les caches Overpass
 
 ```bash
-python warm.py                       # 2 workers par défaut, ~7 s par point
+OVERPASS_URL=https://overpass.osm.ch/api/interpreter python warm.py
 ```
 Remplit `backend/data/poi_cache.json` (commerces, remontées) et `infra_cache.json`
 (autoroute, rail, randonnées) — ce sont eux qui font passer les critères
 *commerces / calme / rando* de « pending » à noté.
 
-**Ne pas augmenter `WARM_WORKERS`.** Overpass n'accorde que ~2 slots par IP ; au-delà il
-répond 406/429 et les résultats sont perdus. Compter ~1 h pour 1 100 points.
+**Choisir le miroir Overpass est le réglage qui compte.** Mesuré sur ce jeu de données :
+
+| Endpoint | Temps / requête | Taux de succès | 1 100 points |
+|---|---|---|---|
+| `overpass-api.de` (défaut) | ~13 s | **44 %** | ~4 h, incomplet |
+| `overpass.osm.ch` | **0,4 s** | **100 %** | **3 min 41 s** |
+
+L'instance principale est saturée et rejette (406/429) ; le miroir suisse encaisse le lot
+entier sans un seul échec. `overpass.kumi.systems` et `overpass.private.coffee` étaient
+tous deux en panne (500/502) au moment du test.
+
+**Ne pas augmenter `WARM_WORKERS`** (2 par défaut) : c'est le nombre de slots
+qu'Overpass accorde par IP, et au-delà les requêtes sont rejetées.
 
 **Contrôle obligatoire** — le nombre d'entrées doit avoir augmenté :
 ```bash
@@ -104,6 +115,19 @@ s=sorted(b['scores_by_set'][SET]['match_score'] for b in d['biens']
 print([(round(x), sum(1 for y in s if y>=x)) for x in range(60, 95, 5)])"
 ```
 
+Repères mesurés (jeu du 24 août 2026, 1 152 biens, caches Overpass chauds) :
+
+| Set | Seuil | Nb de pépites |
+|---|---|---|
+| 4 — Bretagne sud | 76 | 30 |
+| 4 — Bretagne sud | **78** | **18** ← cible ~15-20 |
+| 4 — Bretagne sud | 80 | 9 |
+| 1 — têtard | 78 | ~15 (repère d'août 2026) |
+
+⚠️ L'export pépites **retire de `data.json` les biens du set primaire sous le seuil**. Le
+catalogue complet reste dans la base SQLite : un `python -m app.services.export_static
+../data` sans seuil le restaure. À ne pas lancer si une autre session travaille sur ce set.
+
 ### 6. Vérifier, puis committer
 
 ```bash
@@ -119,6 +143,7 @@ autre session travaille en parallèle (`git add <chemins>`, jamais `git add -A`)
 |---|---|---|
 | Des biens collectés disparaissent | une collecte a appelé `seed_from_data_json()`, qui **vide** la table avant de la reconstruire depuis `data.json` | exporter à chaque collecte ; `collect_seloger.py` ne seede que si la base est vide (`--reseed` pour forcer) |
 | `warm.py` tourne 1 h et le cache ne grossit pas | `WARM_WORKERS` > 2 → Overpass répond 406/429, les erreurs étaient avalées | rester à 2 workers ; le message `⚠ … abandonnés` signale le rendement nul |
+| Réchauffage interminable (~13 s/requête) même à 2 workers | l'instance `overpass-api.de` est saturée (44 % d'échecs) | `OVERPASS_URL=https://overpass.osm.ch/api/interpreter` (0,4 s/requête, 100 %) |
 | Redirection vers `geo.captcha-delivery.com` | cookie Datadome brûlé par une rafale | `SCRAPER_RATE_LIMIT_MS=3000` ; regénérer le cookie |
 | leboncoin/seloger ne ramènent rien, sans erreur | garde-fou `available` : ni proxy ni cookie | étape 2, et vérifier `available` |
 | Critères commerces/calme/rando en « pending » | export fait avec `EXPORT_NO_LIVE_OVERPASS=1` et cache froid | étape 4 puis ré-export (étape 5) |
