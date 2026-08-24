@@ -102,23 +102,40 @@ def main() -> int:
 
     src = BienIciSource()
     # terrain prioritaire, puis maison (petit logement OK). Plafond réel : 400 k€.
-    collected: dict[str, object] = {}
+    seen: set[str] = set()
+    paniers: list[tuple[str, list]] = []  # un panier par (zone, type), dans l'ordre de priorité
     existing = {e for (e,) in db.query(Listing.external_id).filter(Listing.source == "bienici").all()}
     for zone, centre, radii in ZONES:
         for ptypes in (["terrain"], ["maison"]):
             crit = SearchCriteria(property_types=ptypes, prix_max=PRIX_MAX)
             items = src.collect_around(crit, *centre, DEPTS, radii=radii, cap=args.cap)
-            kept = 0
+            panier = []
             for it in items:
-                if not it.external_id or it.external_id in existing or it.external_id in collected:
+                if not it.external_id or it.external_id in existing or it.external_id in seen:
                     continue
                 if it.prix is not None and it.prix > PRIX_MAX:
                     continue
-                collected[it.external_id] = it
-                kept += 1
-            print(f"[{zone} / {ptypes[0]}] {kept} biens neufs ≤{PRIX_MAX//1000}k (sur {len(items)} annonces)", flush=True)
+                seen.add(it.external_id)
+                panier.append(it)
+            paniers.append((f"{zone} / {ptypes[0]}", panier))
+            print(f"[{zone} / {ptypes[0]}] {len(panier)} biens neufs ≤{PRIX_MAX//1000}k (sur {len(items)} annonces)", flush=True)
 
-    todo = list(collected.values())[: args.cap]
+    # Le plafond se répartit en tourniquet entre les paniers, et non dans l'ordre de
+    # collecte : à la suite, une zone abondante (les 161 maisons de Ploemeur) consommait
+    # tout le quota et la Laïta n'entrait jamais dans le set — l'inverse du but.
+    todo = []
+    for rang in range(max((len(p) for _, p in paniers), default=0)):
+        for _, panier in paniers:
+            if rang < len(panier) and len(todo) < args.cap:
+                todo.append(panier[rang])
+        if len(todo) >= args.cap:
+            break
+    repartition = {}
+    for nom, panier in paniers:
+        pris = sum(1 for it in panier if it in todo)
+        if pris:
+            repartition[nom] = pris
+    print(f"  plafond {args.cap} réparti : " + ", ".join(f"{k} {v}" for k, v in repartition.items()), flush=True)
     print(f"\nEnrichissement de {len(todo)} biens ({args.workers} workers)...", flush=True)
     t0 = time.time()
     enriched = []

@@ -574,8 +574,23 @@ def export_to_dir(db, out_dir: str, *, download_photos: bool = True,
     os.makedirs(out_dir, exist_ok=True)
     data = build_dataset(db, out_dir=out_dir, download_photos=download_photos,
                          min_match_score=min_match_score, primary_set_id=primary_set_id)
-    with open(os.path.join(out_dir, "data.json"), "w", encoding="utf-8") as fh:
-        json.dump(data, fh, ensure_ascii=False, indent=1)
+    # Écriture ATOMIQUE : fichier temporaire puis renommage. `open(..., "w")` tronque
+    # puis écrit en flux — deux exports concurrents (une collecte lancée d'un côté, un
+    # ré-export de l'autre) s'entrelacent alors dans le même fichier et produisent un
+    # data.json syntaxiquement invalide, donc un site qui ne charge plus. os.replace est
+    # atomique sur le même système de fichiers : soit l'ancien fichier, soit le nouveau.
+    final = os.path.join(out_dir, "data.json")
+    tmp = f"{final}.tmp-{os.getpid()}"
+    try:
+        with open(tmp, "w", encoding="utf-8") as fh:
+            json.dump(data, fh, ensure_ascii=False, indent=1)
+            fh.flush()
+            os.fsync(fh.fileno())
+        os.replace(tmp, final)
+    except BaseException:
+        if os.path.exists(tmp):
+            os.unlink(tmp)
+        raise
     return data["stats"]
 
 
