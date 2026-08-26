@@ -140,9 +140,33 @@ catalogue complet reste dans la base SQLite : un `python -m app.services.export_
 ```bash
 pytest                       # doit rester au vert
 ```
-Committer `data/data.json` **avec** `data/photos/` et les caches réchauffés, dans le même
-commit : c'est un instantané cohérent. Et **ne stager que ses propres fichiers** si une
-autre session travaille en parallèle (`git add <chemins>`, jamais `git add -A`).
+Committer `data/data.json` **avec** les photos qu'il référence et les caches réchauffés,
+dans le même commit : c'est un instantané cohérent. Et **ne stager que ses propres
+fichiers** si une autre session travaille en parallèle (`git add <chemins>`, jamais
+`git add -A`).
+
+**Ne pas committer `data/photos/` en entier.** Le dossier pèse 1 Go et l'essentiel ne sert
+à rien : le site ne peut afficher que les biens présents dans `data.json`, donc après une
+coupe pépites, les photos des biens écartés sont du poids mort. La règle est de suivre
+exactement les fichiers que `data.json` référence — après un export pépites, ça se compte
+en dizaines de fichiers et en méga-octets :
+
+```bash
+python -c "
+import json, os, subprocess
+d = json.load(open('data/data.json'))
+refs = sorted({'data/' + p for x in d['biens'] for p in (x.get('photos') or [])})
+tracked = set(subprocess.run(['git','ls-files','-z','--','data/photos'],
+                             capture_output=True, text=True).stdout.split('\0'))
+missing = [p for p in refs if p not in tracked]
+print(len(missing), 'fichiers,', round(sum(os.path.getsize(p) for p in missing)/1e6, 1), 'Mo')
+open('/tmp/photos_a_ajouter.txt','w').write('\n'.join(missing))"
+xargs git add -- < /tmp/photos_a_ajouter.txt   # `xargs -a` n'existe pas sur macOS
+```
+
+`data.json` ne stocke que des chemins locaux (`photos/<source>_<id>/0.jpg`), jamais l'URL
+de l'annonce : une photo non committée est une image manquante sur le site publié, pas un
+repli silencieux.
 
 ### Pièges qui coûtent une collecte entière
 
