@@ -48,7 +48,7 @@ from app.sources.seloger import SeLogerSource as S; print('lbc', L().available, 
 ```bash
 SCRAPER_RATE_LIMIT_MS=3000 EXPORT_NO_LIVE_OVERPASS=1 python collect_leboncoin.py
 SCRAPER_RATE_LIMIT_MS=3000 EXPORT_NO_LIVE_OVERPASS=1 python collect_seloger.py
-EXPORT_NO_LIVE_OVERPASS=1 python collect_bretagne_sud.py
+EXPORT_NO_LIVE_OVERPASS=1 python collect_littoral.py
 ```
 
 Trois réglages qui ne sont pas décoratifs :
@@ -85,6 +85,13 @@ tous deux en panne (500/502) au moment du test.
 
 **Ne pas augmenter `WARM_WORKERS`** (2 par défaut) : c'est le nombre de slots
 qu'Overpass accorde par IP, et au-delà les requêtes sont rejetées.
+
+Le set 4 (« Littoral breton ») a **deux caches de plus**, sans lesquels ses deux critères
+les plus lourds sortent en `n/a` :
+```bash
+python scripts/warm_sea_distance.py     # distance_mer  -> data/sea_cache.json
+```
+(`en_hauteur_geo` lit `data/relief_cache.json`, rempli à l'enrichissement.)
 
 **Contrôle obligatoire** — le nombre d'entrées doit avoir augmenté :
 ```bash
@@ -256,20 +263,40 @@ SCRAPER_RATE_LIMIT_MS=3000 python collect_seloger.py                            
 Drôme/Ardèche/Savoie/Ain — maisons, budget ≤ 600 k€. Codes postaux et centres géo dans
 `backend/collect_leboncoin.py` (`TETARD_ZIPS`) et déductibles des biens existants.
 
-### Zone « Bretagne sud » (set 4)
-Terrains d'exception, budget ≤ 400 k€, collectés via **bienici** (seule source joignable
-sans navigateur ni proxy) :
+### Zone « Littoral breton » (set 4)
+Terrains et petites maisons d'exception en bord de mer, budget ≤ 400 k€, collectés via
+**bienici** pour le bâti historique du set, et via leboncoin/seloger pour le reste
+(`collect_leboncoin.py`, `collect_seloger.py`, zone `ploemeur`) :
 ```bash
-python backend/collect_bretagne_sud.py          # collecte + enrichissement + export
-python backend/collect_bretagne_sud.py --cap 40 # limite le nb de biens enrichis (test)
+python backend/collect_littoral.py                 # collecte + enrichissement + export
+python backend/collect_littoral.py --cap 40        # limite le nb de biens enrichis (test)
+python backend/collect_littoral.py --rescore-only  # pas de collecte : re-note et ré-exporte
 ```
-Deux foyers de collecte (`ZONES`) : Ploemeur/littoral, et la vallée de la Laïta
-(Quimperlé, Rédené, Clohars-Carnoët, Guidel, Gestel). Le « plutôt côté mer » n'est pas un
-filtre de zone mais le critère `near_sea`, qui note la distance au littoral **ouvert** :
-le long de la Laïta, l'embouchure (~0 km) prime sur l'amont (Quimperlé, ~12 km). Le
-référentiel de côte est `backend/data/littoral_bretagne_sud.json`, régénérable via
-`python scripts/build_littoral_dataset.py` (les rias en sont exclues, sinon Pont-Scorff
-passerait pour du bord de mer).
+Quatre foyers de collecte (`PIVOTS`) : la Côte de Granit Rose (Perros-Guirec/Trégastel,
+Plougrescant/Tréguier, Trébeurden/Lannion, dept 22) et le Morbihan (Ploemeur, plus la
+vallée de la Laïta — à 12 km ce foyer couvre Quimperlé en amont et l'embouchure du Pouldu
+en aval).
+
+Le « plutôt côté mer, plutôt en hauteur » n'est pas un filtre de zone mais **deux critères
+mesurés**, et c'est ce qui les rend fiables :
+
+- **`distance_mer`** — distance réelle à la côte (`dist_mer_m`), pas une heuristique. Le
+  long de la Laïta, l'embouchure (~0 km) prime sur l'amont (Quimperlé, ~12 km) sans qu'on
+  ait à décider à la main ce qui compte comme littoral.
+- **`en_hauteur_geo`** — proéminence réelle du relief IGN sur une couronne de 300 m. Sur
+  une côte basse, l'altitude absolue ne dit rien ; la proéminence distingue le promontoire
+  du terrain plat.
+
+Les deux ont besoin de leurs caches, **à réchauffer avant l'export** sans quoi les critères
+sortent en `n/a` :
+```bash
+python backend/scripts/warm_sea_distance.py            # -> backend/data/sea_cache.json
+```
+Incrémental et résumable : les points déjà en cache sont sautés.
+
+Une version antérieure notait la côte via un référentiel de littoral fabriqué à la main
+(critère `near_sea`, `build_littoral_dataset.py`). Elle a été retirée au profit de la
+distance mesurée — voir l'historique git si le référentiel doit être ressorti.
 
 ### Export « pépites » (peu de biens, haut du panier)
 L'export accepte un filtre optionnel qui ne conserve que les biens d'un set au-dessus

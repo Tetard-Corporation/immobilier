@@ -9,7 +9,7 @@ relief, rando) renvoient un statut `pending` tant que la donnée n'est pas dispo
 from __future__ import annotations
 
 from .gares import nearest_gare
-from .geo import dist_littoral_km, distance_to_corridor_km, haversine_km, resolve_city
+from .geo import distance_to_corridor_km, haversine_km, resolve_city
 
 # Préférences évaluables dès maintenant (annonce + géo) ; le reste = pending.
 PREFERENCE_KINDS = [
@@ -18,6 +18,8 @@ PREFERENCE_KINDS = [
     "has_terrain",
     "constructible",
     "prix_m2_terrain",
+    "en_hauteur_geo",
+    "distance_mer",
     "surface_habitable",
     "light_works",
     "no_vis_a_vis",
@@ -31,7 +33,6 @@ PREFERENCE_KINDS = [
     "near_corridor",
     "near_gare",
     "near_city",
-    "near_sea",
     "temps_acces",
     "nuisance_sonore",
     "commerces",
@@ -205,6 +206,34 @@ def _eval_one(item, kind: str, params: dict):
             sub = _clamp(1 - (ppm - bon) / (cher - bon) * (1 - _CHER_FLOOR))
         return sub, "ok", f"{round(ppm)} €/m² de terrain"
 
+    if kind == "en_hauteur_geo":
+        # Proéminence locale (m) = altitude du point − alentours (couronne 300 m).
+        # Mesure RÉELLE du « surélevé/dominant » (ex. Ti Louzou ≈ +6 m), là où
+        # l'altitude absolue ne dit rien (la côte est basse).
+        p = flags.get("prominence_m")
+        if p is None:
+            return None, "n/a", "relief non calculé"
+        # +8 m et plus = très dominant ; 0 = plat ; négatif = en creux.
+        sub = _clamp(0.3 + p / 12.0)
+        pos = "dominant" if p >= 4 else ("plat" if p > -2 else "en creux")
+        return sub, "ok", f"{pos} ({p:+.0f} m sur 300 m)"
+
+    if kind == "distance_mer":
+        # Distance réelle à la côte (m), mesurée via l'IGN (cf. export). Barème :
+        # pieds dans l'eau -> loin. Paramétrable (proche/loin en m).
+        dm = flags.get("dist_mer_m")
+        if dm is None:
+            return None, "n/a", "distance mer non calculée"
+        proche = params.get("proche", 300)   # ≤ -> excellent
+        loin = params.get("loin", 3000)       # ≥ -> négligeable
+        if dm <= proche:
+            sub = 1.0
+        elif dm >= loin:
+            sub = 0.1
+        else:
+            sub = _clamp(1 - (dm - proche) / (loin - proche) * 0.9)
+        return sub, "ok", f"mer à ~{int(dm)} m" if dm <= loin else f"mer à > {loin} m"
+
     if kind == "surface_habitable":
         s = getattr(item, "surface_bati", None)
         if s is None:
@@ -369,22 +398,6 @@ def _eval_one(item, kind: str, params: dict):
         ville = params.get("ville")
         suffixe = f" de {ville}" if ville else ""
         return _clamp(1 - dist / params.get("max_km", 50)), "ok", f"{round(dist)} km{suffixe}"
-
-    if kind == "near_sea":
-        # Proximité du littoral OUVERT : les rias (Blavet, Scorff, Laïta en amont de son
-        # embouchure) sont exclues du référentiel, sinon un bien à Pont-Scorff passerait
-        # pour du bord de mer. Voir scripts/build_littoral_dataset.py.
-        d = dist_littoral_km(item.latitude, item.longitude)
-        if d is None:
-            return None, "n/a", "hors emprise littorale connue"
-        max_km = params.get("max_km", 12)
-        # `ok_km` : le « second rang » ne doit pas être pénalisé. La vue mer se paie très
-        # cher, donc tout ce qui est à portée du littoral sans être dessus vaut la note
-        # pleine ; la décote ne commence qu'au-delà.
-        ok_km = params.get("ok_km", 0)
-        if d <= ok_km:
-            return 1.0, "ok", f"{d} km du littoral (second rang, ≤ {ok_km} km)"
-        return _clamp(1 - (d - ok_km) / max(max_km - ok_km, 0.1)), "ok", f"{d} km du littoral"
 
     if kind == "temps_acces":
         # Porte-à-porte depuis Paris (TGV vers le meilleur hub + voiture).

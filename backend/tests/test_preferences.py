@@ -223,26 +223,6 @@ def test_budget_recompense_la_marge_sous_le_plafond():
     assert sub(560_000) == 0.0          # +40 % -> éliminé
 
 
-def test_near_sea_note_le_cote_mer():
-    """Le long de la Laïta, la note doit décroître de l'embouchure vers l'amont ; les
-    rias ne comptent pas comme littoral (sinon Pont-Scorff serait « bord de mer »)."""
-    pref = [Preference(kind="near_sea", params={"max_km": 12})]
-
-    def sub(lat, lon):
-        _, details = evaluate(_listing(latitude=lat, longitude=lon, flags={}), pref)
-        return details[0]["subscore"], details[0]["status"]
-
-    pouldu = sub(47.7667, -3.5486)      # embouchure de la Laïta
-    mi_laita = sub(47.8180, -3.5360)    # Saint-Maurice, à mi-cours
-    quimperle = sub(47.8736, -3.5476)   # amont, confluence Ellé/Isole
-    assert pouldu[0] > mi_laita[0] > quimperle[0]
-    assert pouldu[0] > 0.95
-    # Pont-Scorff est sur une ria, à ~11 km de l'océan : pas du bord de mer.
-    assert sub(47.8320, -3.4030)[0] < 0.2
-    # Hors emprise littorale connue -> non applicable, pas une distance inventée.
-    assert sub(45.25, 5.02) == (None, "n/a")
-
-
 def test_tranquillite_monte_et_descend():
     """Pris séparément, « sans vis-à-vis » / « isolé » ne sont cités que par 4 à 15 % des
     annonces : en `n/a` ils ne servaient que de bonus et aucun bien ne pouvait mal noter.
@@ -308,21 +288,6 @@ def test_logement_compact_penalise_le_trop_grand():
     assert sub(type_bien="terrain")[1] == "n/a"             # un terrain nu n'a pas de logement
 
 
-def test_near_sea_naccepte_pas_de_penaliser_le_second_rang():
-    """« La vue mer coûte très cher, je suis ok d'être en second rang » : tout ce qui est
-    à portée du littoral sans être dessus garde le plein score."""
-    pref = [Preference(kind="near_sea", params={"ok_km": 2.5, "max_km": 12})]
-
-    def sub(lat, lon):
-        _, d = evaluate(_listing(latitude=lat, longitude=lon, flags={}), pref)
-        return d[0]["subscore"]
-
-    assert sub(47.7667, -3.5486) == 1.0   # Le Pouldu, pieds dans l'eau
-    assert sub(47.7930, -3.5820) == 1.0   # Clohars bourg, 2,5 km -> second rang, non pénalisé
-    assert sub(47.8180, -3.5360) < 1.0    # mi-Laïta, 5,8 km -> décote
-    assert sub(47.8736, -3.5476) < sub(47.8180, -3.5360)  # Quimperlé, plus loin encore
-
-
 def test_score_utilise_toute_l_echelle():
     """La moyenne pondérée d'une douzaine de critères se concentre au centre : sans
     étirement, 90 % des biens tombaient entre 50 et 79 et les pépites ne se
@@ -340,3 +305,32 @@ def test_score_utilise_toute_l_echelle():
     petit = evaluate(_listing(surface_terrain=200, flags={}), pref)[0]
     grand = evaluate(_listing(surface_terrain=2000, flags={}), pref)[0]
     assert petit == 0.0 and grand == 100.0
+
+
+def test_en_hauteur_geo():
+    pref = [Preference(kind="en_hauteur_geo", weight=4)]
+
+    def sub(prom):
+        _, details = evaluate(_listing(prix=100000, flags={"prominence_m": prom} if prom is not None else {}), pref)
+        ss = details[0]["subscore"]
+        return (round(ss, 2) if ss is not None else None), details[0]["status"]
+
+    assert sub(9)[0] == 1.0            # très dominant
+    assert sub(6)[0] > sub(0)[0]      # surélevé mieux que plat
+    assert sub(0) == (0.3, "ok")      # plat
+    assert sub(-5)[0] < 0.1 or sub(-5)[0] == 0.0  # en creux -> bas
+    assert sub(None) == (None, "n/a")  # relief non calculé
+
+
+def test_distance_mer():
+    pref = [Preference(kind="distance_mer", weight=5, params={"proche": 300, "loin": 3000})]
+
+    def sub(dm):
+        _, details = evaluate(_listing(prix=100000, flags={"dist_mer_m": dm} if dm is not None else {}), pref)
+        ss = details[0]["subscore"]
+        return (round(ss, 2) if ss is not None else None), details[0]["status"]
+
+    assert sub(150) == (1.0, "ok")     # pieds dans l'eau
+    assert sub(3500) == (0.1, "ok")    # loin
+    assert sub(1000)[0] < 1.0 and sub(1000)[0] > 0.1
+    assert sub(None) == (None, "n/a")  # non calculé

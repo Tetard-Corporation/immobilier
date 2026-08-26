@@ -151,6 +151,12 @@ _EQUIP_PATTERNS = {
     "garage": r"garage",
     "piscine": r"piscine",
     "vue": r"vue\s+(mer|d[ée]gag|panoram|impren|sur\s+(la\s+)?(mer|vall|campagne|montagne|oc[ée]an))|panorama|sans\s+vis-?\s?[àa]-?\s?vis\s+avec\s+vue",
+    # Front de mer / première ligne : la signature « posé sur les rochers, pieds dans l'eau ».
+    "bord_de_mer": r"bord\s+de\s+mer|front\s+de\s+mer|pieds?\s+dans\s+l[' ]eau|premi[èe]re\s+ligne|face\s+[àa]\s+la\s+mer|acc[èe]s\s+(direct\s+)?((?:[àa]\s+la\s+)?(mer|plage|gr[èe]ve))|surplombe\s+(la\s+mer|l[' ]oc[ée]an)|vue\s+impren\w*\s+sur\s+(la\s+)?(mer|oc[ée]an)|en\s+bord\s+d[' ]oc[ée]an",
+    # Bord d'eau non maritime : rivière, étang, lac, ria, aber, estuaire, plan d'eau.
+    "bord_eau": r"bord\s+de\s+(rivi[èe]re|l[' ]?[ée]tang|lac|ria|aber|fleuve|ruisseau|canal)|au\s+bord\s+de\s+l[' ]eau|bord\s+de\s+plan\s+d[' ]eau|vue\s+(sur\s+)?(rivi[èe]re|[ée]tang|lac|ria|aber|estuaire)|en\s+bord\s+de\s+(rivi[èe]re|ria|aber|estuaire)|surplombe\s+(la\s+)?(rivi[èe]re|vall[ée]e)",
+    # En hauteur avec vue dégagée : promontoire, coteau, surplomb, position dominante.
+    "en_hauteur": r"en\s+hauteur|sur\s+les\s+hauteurs|hauteurs\s+de\b|\bsurplomb(e|ant)?\b|\bdominant\w*\b|position\s+dominante|promontoire|belv[ée]d[èe]re|\bcoteau\b|perch[ée]e?\s+(sur|en)|point\s+(haut|culminant)",
 }
 
 
@@ -305,6 +311,150 @@ def _infra_distances(lat: float, lon: float, cache: dict) -> dict:
         cache[key] = res
         try:
             with open(_INFRA_CACHE, "w", encoding="utf-8") as fh:
+                json.dump(cache, fh)
+        except Exception:
+            pass
+        return res
+    return {}
+
+
+# --- Relief : proéminence locale (à quel point le point DOMINE ses alentours) --------
+# L'altitude absolue ne dit pas si un terrain est « surélevé » (la côte est basse) ;
+# on échantillonne une couronne autour du point et on mesure l'écart d'altitude.
+_RELIEF_CACHE = os.path.join(os.path.dirname(__file__), "..", "..", "data", "relief_cache.json")
+_IGN_ALTI_URL = "https://data.geopf.fr/altimetrie/1.0/calcul/alti/rest/elevation.json"
+_NO_LIVE_RELIEF = bool(os.environ.get("EXPORT_NO_LIVE_RELIEF"))
+
+
+def _load_relief_cache() -> dict:
+    try:
+        with open(_RELIEF_CACHE, encoding="utf-8") as fh:
+            return json.load(fh)
+    except Exception:
+        return {}
+
+
+def _query_prominence(lat: float, lon: float, radius_m: int = 300) -> dict | None:
+    """Altitude du point − moyenne d'une couronne (8 points, rayon r). +.= dominant."""
+    import math
+
+    pts = [(lat, lon)]
+    for k in range(8):
+        a = 2 * math.pi * k / 8
+        pts.append((lat + radius_m * math.cos(a) / 111320,
+                    lon + radius_m * math.sin(a) / (111320 * math.cos(math.radians(lat)))))
+    lats = "|".join(str(round(a, 6)) for a, _ in pts)
+    lons = "|".join(str(round(b, 6)) for _, b in pts)
+    try:
+        r = urllib.request.Request(
+            f"{_IGN_ALTI_URL}?{urllib.parse.urlencode({'lat': lats, 'lon': lons, 'resource': 'ign_rge_alti_wld', 'delimiter': '|', 'zonly': 'true'})}",
+            headers={"User-Agent": _UA})
+        with urllib.request.urlopen(r, timeout=25) as resp:
+            elevs = json.loads(resp.read()).get("elevations", [])
+    except Exception:
+        return None
+    if not elevs or elevs[0] is None or elevs[0] < -1000:
+        return None
+    pt = elevs[0]
+    neigh = [e for e in elevs[1:] if e is not None and e > -1000]  # filtre no-data (mer/hors zone)
+    if not neigh:
+        return None
+    return {"prominence_m": round(pt - sum(neigh) / len(neigh), 1)}
+
+
+def _relief_prominence(lat: float, lon: float, cache: dict) -> dict:
+    if lat is None or lon is None:
+        return {}
+    key = f"{round(lat, 4)},{round(lon, 4)}"
+    if key in cache:
+        return cache[key]
+    if _NO_LIVE_RELIEF:
+        return {}
+    res = None
+    for attempt in range(3):
+        res = _query_prominence(lat, lon)
+        if res is not None:
+            break
+        time.sleep(2 * (attempt + 1))
+    if res is not None:
+        cache[key] = res
+        try:
+            with open(_RELIEF_CACHE, "w", encoding="utf-8") as fh:
+                json.dump(cache, fh)
+        except Exception:
+            pass
+        return res
+    return {}
+
+
+# --- Distance à la mer : le modèle d'altitude IGN est "terre seule" -> la mer renvoie
+# du no-data. On échantillonne des rayons ; le 1er point no-data = la côte. Overpass
+# (natural=coastline) serait plus direct mais est injoignable depuis le conteneur. ------
+_SEA_CACHE = os.path.join(os.path.dirname(__file__), "..", "..", "data", "sea_cache.json")
+
+
+def _load_sea_cache() -> dict:
+    try:
+        with open(_SEA_CACHE, encoding="utf-8") as fh:
+            return json.load(fh)
+    except Exception:
+        return {}
+
+
+def _query_sea_distance(lat: float, lon: float, maxm: int = 3000, step: int = 250, bearings: int = 8) -> dict | None:
+    """Distance à la mer (m) via échantillonnage IGN. None si erreur ; {dist_mer_m: >maxm}
+    si aucune mer trouvée dans le rayon (= intérieur des terres)."""
+    import math
+
+    pts, dist = [], []
+    for b in range(bearings):
+        a = 2 * math.pi * b / bearings
+        for d in range(step, maxm + 1, step):
+            pts.append((lat + d * math.cos(a) / 111320,
+                        lon + d * math.sin(a) / (111320 * math.cos(math.radians(lat)))))
+            dist.append(d)
+    best = None
+    ok = False
+    for i in range(0, len(pts), 24):
+        lats = "|".join(str(round(a, 6)) for a, _ in pts[i:i + 24])
+        lons = "|".join(str(round(b, 6)) for _, b in pts[i:i + 24])
+        elevs = None
+        for k in range(3):
+            try:
+                req = urllib.request.Request(
+                    f"{_IGN_ALTI_URL}?{urllib.parse.urlencode({'lat': lats, 'lon': lons, 'resource': 'ign_rge_alti_wld', 'delimiter': '|', 'zonly': 'true'})}",
+                    headers={"User-Agent": _UA})
+                with urllib.request.urlopen(req, timeout=25) as resp:
+                    elevs = json.loads(resp.read()).get("elevations", [])
+                break
+            except Exception:
+                time.sleep(1.5 * (k + 1))
+        if elevs is None:
+            return None  # échec réseau -> on ne cache pas (à réessayer)
+        ok = True
+        for j, val in enumerate(elevs):
+            if val is not None and val < -1000:  # no-data IGN = mer
+                d = dist[i + j]
+                best = d if best is None else min(best, d)
+    if not ok:
+        return None
+    return {"dist_mer_m": best if best is not None else maxm + 1}
+
+
+def _sea_distance(lat: float, lon: float, cache: dict, *, live: bool = False) -> dict:
+    """Cache-only par défaut (lecture rapide à l'export) ; live=True pour le réchauffage."""
+    if lat is None or lon is None:
+        return {}
+    key = f"{round(lat, 4)},{round(lon, 4)}"
+    if key in cache:
+        return cache[key]
+    if not live:
+        return {}
+    res = _query_sea_distance(lat, lon)
+    if res is not None:
+        cache[key] = res
+        try:
+            with open(_SEA_CACHE, "w", encoding="utf-8") as fh:
                 json.dump(cache, fh)
         except Exception:
             pass
@@ -469,6 +619,8 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
     n_resid = 0
     infra_cache = _load_infra_cache()
     poi_cache = _load_poi_cache()
+    relief_cache = _load_relief_cache()
+    sea_cache = _load_sea_cache()
     fibre_lut = _load_fibre_lut()
     tension_lut = _load_tension_lut()
     rows = (
@@ -497,11 +649,13 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
             penalty = None
         infra = _infra_distances(row.latitude, row.longitude, infra_cache)
         poi = _poi_distances(row.latitude, row.longitude, poi_cache)
+        relief = _relief_prominence(row.latitude, row.longitude, relief_cache)
+        sea = _sea_distance(row.latitude, row.longitude, sea_cache)  # cache-only (réchauffé à part)
         feats = list(row.features or [])
         for e in _detect_equipements(row.description):
             if e not in feats:
                 feats.append(e)
-        extra = {**infra, **poi, **_fibre_flags(row.code_commune, fibre_lut),
+        extra = {**infra, **poi, **relief, **sea, **_fibre_flags(row.code_commune, fibre_lut),
                  **_tension_flags(row.commune, tension_lut),
                  "features": feats, "pavillon_neuf": _detect_pavillon_neuf(row.description)}
         item = _RowItem(row, extra_flags=extra)
