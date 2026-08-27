@@ -23,6 +23,7 @@ Usage :
 from __future__ import annotations
 
 import argparse
+import json
 import os
 import sys
 import time
@@ -194,6 +195,15 @@ def main() -> int:
     ap.add_argument("--pivot", help="ne collecter qu'autour des pivots dont le nom contient "
                                     "ce texte (ex. « diois »)")
     ap.add_argument("--workers", type=int, default=6)
+    ap.add_argument("--dump", default="",
+                    help="écrit les annonces collectées dans ce fichier JSON avant "
+                         "l'entonnoir. La collecte dure ~20 min et ne vit qu'en mémoire : "
+                         "une interruption la perd entièrement (vécu deux fois).")
+    ap.add_argument("--collect-only", action="store_true", dest="collect_only",
+                    help="s'arrête après le dump (collecte seule, ~20 min).")
+    ap.add_argument("--from-dump", default="", dest="from_dump",
+                    help="repart d'un dump au lieu de recollecter (entonnoir + "
+                         "enrichissement seuls).")
     ap.add_argument("--pepites", default="",
                     help="resserrage à l'export : « 1:78.5,4:80 ». La base garde tout le "
                          "catalogue de chaque set ; sans ce filtre, l'export republie "
@@ -231,9 +241,25 @@ def main() -> int:
         print("TERMINÉ.", flush=True)
         return 0
 
-    src = BienIciSource()
+    from dataclasses import asdict
+
+    from app.sources.base import NormalizedListing
+
     existing = {e for (e,) in db.query(Listing.external_id).filter(Listing.source == "bienici").all()}
     collected: dict[str, object] = {}
+
+    if args.from_dump:
+        with open(args.from_dump, encoding="utf-8") as fh:
+            brut = json.load(fh)
+        for d in brut:
+            it = NormalizedListing(**d)
+            if it.external_id and it.external_id not in existing:
+                collected[it.external_id] = it
+        print(f"Dump relu : {len(collected)} annonces neuves sur {len(brut)} "
+              f"({os.path.abspath(args.from_dump)})", flush=True)
+        return _traiter(db, args, collected, pepites)
+
+    src = BienIciSource()
     pivots = PIVOTS
     if args.pivot:
         pivots = [p for p in PIVOTS if args.pivot.lower() in p[0].lower()]
@@ -260,9 +286,28 @@ def main() -> int:
             neufs += 1
         print(f"  [{nom}] {neufs} neufs (sur {len(items)} annonces)", flush=True)
 
+    if args.dump:
+        with open(args.dump, "w", encoding="utf-8") as fh:
+            json.dump([asdict(it) for it in collected.values()], fh, ensure_ascii=False)
+        print(f"\nDump écrit : {len(collected)} annonces -> {os.path.abspath(args.dump)}", flush=True)
+
+    if args.collect_only:
+        db.close()
+        print("Collecte seule (--collect-only) : rien d'enrichi, rien d'exporté.", flush=True)
+        return 0
+
+    return _traiter(db, args, collected, pepites)
+
+
+def _traiter(db, args, collected: dict, pepites: dict) -> int:
+    """Entonnoir, enrichissement, mise en base, export. Séparé de la collecte pour être
+    rejouable depuis un dump : la collecte dure ~20 min et ne survit pas à une coupure."""
+    from concurrent.futures import ThreadPoolExecutor, as_completed
+
+    from app.models import Listing
     from app.services.entonnoir import appliquer as entonnoir
 
-    print(f"\nEntonnoir sur {len(collected)} annonces collectées :", flush=True)
+    print(f"\nEntonnoir sur {len(collected)} annonces :", flush=True)
     todo = entonnoir(list(collected.values()), profil="montagne",
                      min_altitude=args.min_altitude or None,
                      garder=args.keep or None)[: args.cap]
