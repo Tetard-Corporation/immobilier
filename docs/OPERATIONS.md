@@ -90,6 +90,30 @@ Mesuré sur les 840 biens du set : 225 écartés, 2 repêchés au bord d'eau, **
 annonce ne mentionne aucune eau — elle montait sur le rapport qualité/prix et le terrain.
 C'est le compromis assumé de l'étage : sur un set littoral, l'arrière-pays sort.
 
+**Deux profils, parce que les deux sets ne se décident pas au même endroit.**
+
+| Profil | Étage 0 (annonce) | Étage 1 (commune) |
+|---|---|---|
+| `littoral` (set 4) | écarte le rebut évident, **ne sélectionne pas** | distance à la mer |
+| `montagne` (set 1, têtard) | **fait le gros du tri** | altitude |
+
+Le renversement n'est pas un détail de réglage. Sur le littoral, ce qui décide — distance
+à la mer, proéminence — est *mesuré* et n'apparaît jamais dans l'annonce, d'où la règle
+« ne pas compter sur le texte pour choisir les pépites ». Têtard est l'inverse : ses
+critères de tête sont le budget, la capacité d'accueil et le prix au m², c'est-à-dire des
+champs bruts de l'annonce, gratuits et disponibles avant le moindre appel réseau. L'étage
+0 y trie donc pour de vrai, et l'étage 1 ne sert plus qu'à écarter la plaine.
+
+```bash
+python collect_tetard.py --min-altitude 250   # écarte les communes plus basses (défaut)
+python collect_tetard.py --min-altitude 0     # étage commune sauté
+python collect_tetard.py --keep 250           # plafond, appliqué à la note d'annonce
+```
+
+Mêmes garde-fous que côté mer : une commune non mesurée est **retenue**, et une annonce
+qui parle d'eau, de bois ou de vue dégagée est **repêchée** même en commune basse —
+l'altitude ne mesure ni une rivière ni un point de vue sur la vallée.
+
 ### 2 ter. Ajouter une agence locale
 
 Le moteur ingère les sites d'agences par quatre voies, essayées dans cet ordre. Les trois
@@ -200,7 +224,18 @@ critères Overpass soient pris en compte :
 ```bash
 python -m app.services.export_static ../data
 ```
-Puis, pour ne garder que le haut du panier d'un set (les autres sets sont préservés) :
+Puis, pour ne garder que le haut du panier (les sets non cités sont préservés) :
+```bash
+EXPORT_PEPITES="1:78.5,4:80" python -m app.services.export_static ../data
+```
+
+⚠️ **Citer TOUS les sets déjà resserrés, pas seulement celui sur lequel on travaille.**
+La base garde le catalogue complet de chaque set quand `data.json` n'en publie que le haut
+du panier : le set 4 y pèse 901 biens pour 12 publiés. Un export qui ne resserre que le
+set 1 republie donc les 889 autres et annule le resserrage breton — sans erreur, sans
+avertissement, et c'est le site qui le dit à ta place.
+
+L'ancienne écriture pour un seul set reste acceptée :
 ```bash
 EXPORT_MIN_MATCH_SCORE=<seuil> EXPORT_PRIMARY_SET_ID=<set> python -m app.services.export_static ../data
 ```
@@ -375,9 +410,43 @@ SCRAPER_RATE_LIMIT_MS=3000 python collect_seloger.py --zone ploemeur --dry-run  
 SCRAPER_RATE_LIMIT_MS=3000 python collect_seloger.py                            # collecte + export
 ```
 
-### Zone « têtard » (référence)
-Drôme/Ardèche/Savoie/Ain — maisons, budget ≤ 600 k€. Codes postaux et centres géo dans
-`backend/collect_leboncoin.py` (`TETARD_ZIPS`) et déductibles des biens existants.
+### Zone « têtard » (set 1, sous-set « Léo » id 2)
+Maison de retrait entre copains — Drôme / Ardèche / Savoie / Ain, à moins de 4h
+porte-à-porte de Paris, **budget ≤ 450 k€** (600 k€ jusqu'en août 2026).
+
+```bash
+python backend/collect_tetard.py                 # collecte + enrichissement + export
+python backend/collect_tetard.py --pivot diois   # un seul foyer de collecte
+python backend/collect_tetard.py --rescore-only  # pas de collecte : re-note et ré-exporte
+```
+
+Huit foyers de collecte (`PIVOTS`), tous dans les départements déjà couverts mais sur
+leur partie **montagne** : Diois, Vercors drômois, Haut-Vivarais, Cévennes ardéchoises,
+Bauges, Bugey, Mézenc, Pilat. La zone n'a pas changé ; ce sont les points de départ qui
+ont quitté la vallée du Rhône, d'où venait l'essentiel de l'ancien haut de classement
+(Châteauneuf-sur-Isère, 154 m d'altitude, était premier).
+
+Les codes postaux leboncoin restent dans `backend/collect_leboncoin.py` (`TETARD_ZIPS`).
+
+**Ce que le set note, et pourquoi.** Deux critères mènent le classement — ce que le bien
+vaut pour son prix, et ce qu'on a devant la porte :
+
+- **`rapport_qualite_prix`** (poids 5) — prix au m² du bien contre celui des ventes du
+  secteur (DVF). C'est le ratio qui parle, pas le prix absolu : 2 000 €/m² est cher en
+  Ardèche et donné au bord du lac du Bourget.
+- **`coin_nature`** et **`relief_mountain`** (poids 4) — « l'accès à la nature/montagne
+  grand OUI ». Mesurés, pas devinés dans le texte.
+- **`tranquillite` avec `poids_isolement: 0`** — « mais pas isolé ». Le critère garde le
+  vis-à-vis et le lotissement, il cesse de récompenser le bout du monde. Le sous-set
+  « Léo », lui, garde les poids par défaut : il revendique l'isolement.
+- **`chambres_min` (min 3)** — « 3/4 chambres ». Le critère se replie sur les pièces puis
+  sur la surface : sans ce repli il était `n/a` sur la moitié des annonces, donc neutre,
+  et une maison d'**une seule pièce** est arrivée deuxième du classement.
+
+**Trois paliers** (`EXIGENCES`) ferment les portes par lesquelles un bien mal mesuré
+monte : au-dessus de 75 il faut trois chambres avérées, au-dessus de 78 un rapport
+qualité/prix mesuré (sans surface bâtie, il n'y a rien à comparer), au-dessus de 85 une
+nature ou un relief avérés.
 
 ### Zone « Littoral breton » (set 4)
 Terrains et petites maisons d'exception en bord de mer, budget ≤ 400 k€, collectés via
@@ -415,12 +484,8 @@ Une version antérieure notait la côte via un référentiel de littoral fabriqu
 distance mesurée — voir l'historique git si le référentiel doit être ressorti.
 
 ### Export « pépites » (peu de biens, haut du panier)
-L'export accepte un filtre optionnel qui ne conserve que les biens d'un set au-dessus
-d'un seuil de score, **en préservant les autres sets** (ex. Pauline) :
-```bash
-EXPORT_MIN_MATCH_SCORE=78 EXPORT_PRIMARY_SET_ID=1 python -m app.services.export_static ../data
-```
-Repère de calibrage (dataset d'août 2026) : seuil **78 → ~15 pépites** têtard (set 1).
+Voir §5 ci-dessus : `EXPORT_PEPITES="1:78.5,4:80"`, et **citer tous les sets déjà
+resserrés** sous peine de republier leur catalogue complet.
 
 ---
 

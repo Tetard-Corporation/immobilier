@@ -161,13 +161,25 @@ def ensure_sets(db) -> None:
           flush=True)
 
 
-def _exporter(db, quoi: str) -> None:
+def _seuils(texte: str | None) -> dict:
+    """« 1:78.5,4:80 » -> {1: 78.5, 4: 80.0}."""
+    out = {}
+    for morceau in (texte or "").split(","):
+        if ":" in morceau:
+            sid, seuil = morceau.split(":", 1)
+            out[int(sid.strip())] = float(seuil.strip())
+    return out
+
+
+def _exporter(db, quoi: str, pepites: dict | None = None) -> None:
     from app.services.export_static import export_to_dir
 
     data_dir = os.path.join(os.path.dirname(__file__), "..", "data")
     print(f"\n{quoi} vers {os.path.abspath(data_dir)}...", flush=True)
+    if pepites:
+        print(f"  resserrage : {', '.join(f'set {k} ≥ {v:g}' for k, v in pepites.items())}", flush=True)
     t = time.time()
-    stats = export_to_dir(db, data_dir, download_photos=True)
+    stats = export_to_dir(db, data_dir, download_photos=True, pepites=pepites or None)
     print(f"  export OK en {time.time() - t:.0f}s : {stats}", flush=True)
 
 
@@ -182,6 +194,14 @@ def main() -> int:
     ap.add_argument("--pivot", help="ne collecter qu'autour des pivots dont le nom contient "
                                     "ce texte (ex. « diois »)")
     ap.add_argument("--workers", type=int, default=6)
+    ap.add_argument("--pepites", default="",
+                    help="resserrage à l'export : « 1:78.5,4:80 ». La base garde tout le "
+                         "catalogue de chaque set ; sans ce filtre, l'export republie "
+                         "aussi celui des AUTRES sets et annule leur resserrage.")
+    ap.add_argument("--no-export", action="store_true",
+                    help="ne pas exporter (le seuil des pépites se calibre après coup). "
+                         "À n'utiliser que si un export suit dans la foulée : un bien "
+                         "collecté mais pas exporté n'existe pas (cf. docs/OPERATIONS.md).")
     ap.add_argument("--rescore-only", action="store_true",
                     help="ne collecte rien : met à jour les sets + re-score + ré-exporte")
     ap.add_argument("--reseed", action="store_true",
@@ -203,8 +223,10 @@ def main() -> int:
     db = SessionLocal()
     ensure_sets(db)
 
+    pepites = _seuils(args.pepites)
+
     if args.rescore_only:
-        _exporter(db, "Re-score seul : ré-export")
+        _exporter(db, "Re-score seul : ré-export", pepites)
         db.close()
         print("TERMINÉ.", flush=True)
         return 0
@@ -265,7 +287,10 @@ def main() -> int:
     db.commit()
     print(f"\nEn base : {db.query(Listing).count()} biens.", flush=True)
 
-    _exporter(db, "Export")
+    if args.no_export:
+        print("\nExport sauté (--no-export) : les biens ne sont QUE dans la base.", flush=True)
+    else:
+        _exporter(db, "Export", pepites)
     db.close()
     print("TERMINÉ.", flush=True)
     return 0
