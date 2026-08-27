@@ -78,3 +78,48 @@ def test_pepites_gate_plusieurs_sets():
     assert _seuils_pepites(78.0, 1, None) == {1: 78.0}
     assert _seuils_pepites(None, None, {1: 78.5, 4: 80.0}) == seuils
     assert _seuils_pepites(None, None, None) == {}
+
+
+def test_temoin_overpass_demasque_une_instance_regionale(monkeypatch):
+    """Une instance régionale répond 200 avec zéro élément sur un point français, et rien
+    ne distingue cette réponse de « il n'y a pas de commerce ici ». Vécu : 850 biens neufs
+    tous à zéro commerce, dont des bourgs à supermarché, sur un run déclaré réussi."""
+    from app.services import export_static as E
+
+    monkeypatch.setattr(E, "_query_poi", lambda lat, lon: {"n_commerces": 48})
+    ok, msg = E.verifier_overpass("https://exemple/api")
+    assert ok and "48" in msg
+
+    monkeypatch.setattr(E, "_query_poi", lambda lat, lon: {"n_commerces": 0})
+    ok, msg = E.verifier_overpass("https://suisse/api")
+    assert not ok and "France" in msg
+
+    monkeypatch.setattr(E, "_query_poi", lambda lat, lon: None)
+    assert E.verifier_overpass("https://mort/api")[0] is False
+
+
+def test_temoin_overpass_ne_change_pas_l_instance_courante(monkeypatch):
+    """Vérifier une instance ne doit pas la rendre courante pour la suite de l'export."""
+    from app.services import export_static as E
+
+    avant = E._OVERPASS
+    monkeypatch.setattr(E, "_query_poi", lambda lat, lon: {"n_commerces": 5})
+    E.verifier_overpass("https://autre/api")
+    assert E._OVERPASS == avant
+
+
+def test_conserver_republie_un_set_a_l_identique():
+    """Une correction de données déplace les scores. Recouper au passage le set d'un
+    autre — 12 pépites bretonnes qui deviendraient 32 — n'est pas une décision qui se
+    prend à l'export : on republie alors à l'identique."""
+    from app.services.export_static import _passes_pepites_gate
+
+    garder = {4: {("bienici", "A"), ("bienici", "B")}}
+    seuils = {1: 85.0}
+    sbs4 = {"4": {"match_score": 60.0}}   # score effondré : conservé quand même
+    assert _passes_pepites_gate(sbs4, {4}, seuils, garder, ("bienici", "A")) is True
+    sbs4b = {"4": {"match_score": 99.0}}  # score excellent : écarté s'il n'y était pas
+    assert _passes_pepites_gate(sbs4b, {4}, seuils, garder, ("bienici", "Z")) is False
+    # Le set gouverné par un seuil continue de l'être.
+    assert _passes_pepites_gate({"1": {"match_score": 86.0}}, {1, 2}, seuils, garder, ("x", "y")) is True
+    assert _passes_pepites_gate({"1": {"match_score": 84.0}}, {1, 2}, seuils, garder, ("x", "y")) is False

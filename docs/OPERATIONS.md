@@ -207,16 +207,25 @@ Remplit `backend/data/poi_cache.json` (commerces, remontées) et `infra_cache.js
 (autoroute, rail, randonnées) — ce sont eux qui font passer les critères
 *commerces / calme / rando* de « pending » à noté.
 
-**Choisir le miroir Overpass est le réglage qui compte.** Mesuré sur ce jeu de données :
+🛑 **`overpass.osm.ch` ne couvre PAS la France. Ne pas l'utiliser.** Cette page l'a
+recommandé, sur la foi d'un taux de succès de 100 % — mesuré sur le code HTTP, pas sur le
+contenu. L'instance est suisse : sur un point français elle répond **200 avec zéro
+élément**, réponse rigoureusement indiscernable de « il n'y a pas de commerce ici ». Un
+réchauffage de 2 224 points s'est déclaré réussi en 7 minutes et a rempli le cache de
+zéros ; 850 biens neufs se sont retrouvés à « zéro commerce », dont des bourgs à
+supermarché, et le critère *village vivant* est tombé à 0,01 de moyenne sur tout le lot.
+Le classement s'en est trouvé faussé de bout en bout, sans un seul message d'erreur.
 
-| Endpoint | Temps / requête | Taux de succès | 1 100 points |
-|---|---|---|---|
-| `overpass-api.de` (défaut) | ~13 s | **44 %** | ~4 h, incomplet |
-| `overpass.osm.ch` | **0,4 s** | **100 %** | **3 min 41 s** |
+| Endpoint | Temps / requête | Couverture France |
+|---|---|---|
+| **`overpass.openstreetmap.fr`** (défaut) | ~1 s | ✅ vérifiée contre le cache sain |
+| `overpass-api.de` | ~13 s, souvent refusé | ✅ mais saturé (44 % d'échecs) |
+| `overpass.osm.ch` | 0,4 s | ❌ **répond vide sur la France** |
+| `kumi.systems`, `private.coffee`, `maps.mail.ru` | — | en panne (500/502/504) au test |
 
-L'instance principale est saturée et rejette (406/429) ; le miroir suisse encaisse le lot
-entier sans un seul échec. `overpass.kumi.systems` et `overpass.private.coffee` étaient
-tous deux en panne (500/502) au moment du test.
+`warm.py` interroge maintenant un **point témoin** au démarrage — un bourg ardéchois dont
+on sait qu'il a des commerces — et refuse de tourner si l'instance y répond zéro. Une
+instance qui ment ne peut plus remplir le cache en silence.
 
 **Ne pas augmenter `WARM_WORKERS`** (2 par défaut) : c'est le nombre de slots
 qu'Overpass accorde par IP, et au-delà les requêtes sont rejetées.
@@ -254,6 +263,17 @@ du panier : le set 4 y pèse 901 biens pour 12 publiés. Un export qui ne resser
 set 1 republie donc les 889 autres et annule le resserrage breton — sans erreur, sans
 avertissement, et c'est le site qui le dit à ta place.
 
+**Republier un set à l'identique** plutôt que le recouper, quand une correction de
+données a déplacé ses scores :
+```bash
+EXPORT_CONSERVER="4:../data/data.json" python -m app.services.export_static ../data
+```
+Le set 4 est alors republié exactement tel qu'il l'était, quels que soient les nouveaux
+scores. C'est le bon outil quand une réparation profite à un set qu'on n'est pas en train
+de retravailler : après la correction Overpass, la règle « ≥ 80 » du set breton
+sélectionnait 32 biens au lieu de 12. Recouper le set de quelqu'un d'autre au passage
+n'est pas une décision qui se prend à l'export.
+
 L'ancienne écriture pour un seul set reste acceptée :
 ```bash
 EXPORT_MIN_MATCH_SCORE=<seuil> EXPORT_PRIMARY_SET_ID=<set> python -m app.services.export_static ../data
@@ -272,10 +292,15 @@ Repères mesurés (jeu du 24 août 2026, 1 152 biens, caches Overpass chauds) :
 
 | Set | Seuil | Nb de pépites |
 |---|---|---|
-| 4 — Bretagne sud | 76 | 30 |
-| 4 — Bretagne sud | **78** | **18** ← cible ~15-20 |
-| 4 — Bretagne sud | 80 | 9 |
-| 1 — têtard | 78 | ~15 (repère d'août 2026) |
+| 4 — Littoral breton | 78 | 18 (jeu du 24 août) |
+| 4 — Littoral breton | **80** | **12** ← publié |
+| 1 — têtard | 84 | 21 (jeu du 27 août, 1 300 biens) |
+| 1 — têtard | **84,8** | **13** ← publié, cible 12-15 |
+| 1 — têtard | 85 | 12 |
+
+⚠️ Les seuils ne sont pas transposables d'un jeu à l'autre : après la correction Overpass,
+le même seuil de 80 est passé de 12 à 32 pépites côté breton. **Recalibrer sur la
+distribution du moment**, à chaque fois.
 
 ⚠️ L'export pépites **retire de `data.json` les biens du set primaire sous le seuil**. Le
 catalogue complet reste dans la base SQLite : un `python -m app.services.export_static

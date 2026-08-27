@@ -41,6 +41,14 @@ def _flush(poi: dict, infra: dict) -> None:
 
 
 def main():
+    ok, message = E.verifier_overpass()
+    print(f"Instance Overpass — {message}", flush=True)
+    if not ok:
+        print("ABANDON : réchauffer sur cette instance remplirait le cache de zéros "
+              "indiscernables de vrais zéros. Choisir une instance qui couvre la France "
+              "(OVERPASS_URL=https://overpass.openstreetmap.fr/api/interpreter).", flush=True)
+        return 1
+
     db = SessionLocal()
     rows = [r for r in db.query(Listing).filter(Listing.source != "mock").all()
             if r.latitude is not None and r.longitude is not None]
