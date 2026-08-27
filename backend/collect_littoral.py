@@ -22,7 +22,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from app.db import SessionLocal, init_db
 from app.enrichment import enrich_listing
 from app.models import FilterSet, Listing
-from app.seed import seed_from_data_json
+from app.seed import seed_from_data_json, seed_if_empty
 from app.schemas import SearchCriteria
 from app.services.search import upsert_listing
 from app.sources.bienici import BienIciSource
@@ -64,8 +64,65 @@ PIVOTS = [
     ("Perros-Guirec / Trégastel", 48.805, -3.445, ["22"]),
     ("Plougrescant / Tréguier", 48.850, -3.230, ["22"]),
     ("Trébeurden / Lannion", 48.770, -3.560, ["22"]),
+    # Baie de Morlaix : Térénez (Plougasnou) au nord, Plouezoc'h au fond de la rade,
+    # Locquénolé sur l'estuaire de la Penzé. Rade abritée bordée de pointes rocheuses ;
+    # `distance_mer` y sépare les biens de la rive de ceux de l'arrière-pays.
+    ("Baie de Morlaix (Térénez / Plouezoc'h / Locquénolé)", 48.620, -3.840, ["29"]),
     ("Ploemeur / Morbihan", 47.735, -3.428, ["56", "29"]),
+    # Second foyer morbihannais : la Laïta à mi-cours. À 12 km il couvre Quimperlé en
+    # amont et l'embouchure (Le Pouldu / Guidel-Plages) en aval — `distance_mer` fait le
+    # tri entre les deux, l'estuaire étant à ~0 km de mer et Quimperlé à ~12.
+    ("Vallée de la Laïta", 47.812, -3.535, ["56", "29"]),
 ]
+
+
+# --- Entonnoir -------------------------------------------------------------- #
+# L'enrichissement coûte ~2,3 s par bien : sur 929 annonces remontées pour ~18 pépites,
+# l'essentiel du temps partait dans des biens que le score écartait ensuite. On pré-classe
+# donc sur ce que l'annonce donne GRATUITEMENT — texte et prix, aucun appel réseau — et on
+# n'enrichit que le haut du panier. À ne pas confondre avec --cap, qui tronque dans l'ordre
+# de collecte et garde donc le premier pivot en entier plutôt que les meilleurs biens.
+
+# Poids alignés sur ceux du set (cf. PREFERENCES) pour que le pré-classement et le score
+# final regardent dans la même direction.
+_SIGNAUX_ANNONCE = {"bord_de_mer": 5.0, "bord_eau": 4.0, "vue": 4.0, "en_hauteur": 2.0}
+
+
+def prescore(it) -> float:
+    """Note d'annonce (0-20 environ), sans enrichissement ni réseau."""
+    from app.services.export_static import _detect_equipements, _detect_pavillon_neuf
+
+    feats = set(_detect_equipements(it.description))
+    note = sum(w for k, w in _SIGNAUX_ANNONCE.items() if k in feats)
+
+    # Pavillon neuf / lotissement viabilisé : l'inverse du bien recherché.
+    if _detect_pavillon_neuf(it.description):
+        note -= 4.0
+
+    # Rapport qualité/prix du terrain, mêmes bornes que la préférence prix_m2_terrain.
+    if it.surface_terrain and it.prix:
+        ppm = it.prix / it.surface_terrain
+        note += 3.0 if ppm <= 60 else 1.5 if ppm <= 150 else 0.0
+
+    # Un terrain nu se prête au projet visé (tiny house) ; une grande surface aussi.
+    if (it.type_bien or "").lower() == "terrain":
+        note += 1.0
+    if (it.surface_terrain or 0) >= 1500:
+        note += 1.0
+
+    return note
+
+
+def entonnoir(items: list, keep: int) -> list:
+    """Garde les `keep` meilleures annonces au pré-classement. Dit ce qu'elle écarte."""
+    if keep <= 0 or len(items) <= keep:
+        return items
+    classees = sorted(items, key=prescore, reverse=True)
+    gardes, ecartes = classees[:keep], classees[keep:]
+    seuil = prescore(gardes[-1])
+    print(f"Entonnoir : {len(gardes)} annonces retenues sur {len(items)} "
+          f"(note ≥ {seuil:.1f}) ; {len(ecartes)} écartées sans enrichissement.", flush=True)
+    return gardes
 
 
 def ensure_set(db) -> None:
@@ -81,15 +138,30 @@ def ensure_set(db) -> None:
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--cap", type=int, default=80, help="nb max de biens NEUFS enrichis")
+    ap.add_argument("--cap", type=int, default=80, help="plafond dur du nb de biens enrichis")
+    ap.add_argument("--keep", type=int, default=60,
+                    help="entonnoir : nb d'annonces retenues au pré-classement avant "
+                         "enrichissement (0 = pas d'entonnoir)")
+    ap.add_argument("--pivot", help="ne collecter qu'autour des pivots dont le nom contient "
+                                    "ce texte (ex. « morlaix »)")
     ap.add_argument("--workers", type=int, default=6)
     ap.add_argument("--rescore-only", action="store_true",
                     help="ne collecte rien : met à jour le set + re-score + ré-exporte")
+    ap.add_argument("--reseed", action="store_true",
+                    help="RECONSTRUIT la base depuis data.json (DESTRUCTIF : efface les "
+                         "biens pas encore exportés, y compris ceux d'une autre session)")
     args = ap.parse_args()
 
     init_db()
-    print("Seed DB depuis data.json...", flush=True)
-    print(f"  -> {seed_from_data_json()}", flush=True)
+    # La base SQLite est partagée : un seed_from_data_json() inconditionnel efface les
+    # biens qu'une autre collecte n'a pas encore exportés (cf. docs/OPERATIONS.md §0).
+    if args.reseed:
+        print("Reconstruction de la base depuis data.json (--reseed)...", flush=True)
+        print(f"  -> {seed_from_data_json()}", flush=True)
+    else:
+        recap = seed_if_empty()
+        print(f"Base {'seedée depuis data.json : ' + str(recap) if recap else 'déjà peuplée : seed sauté'}",
+              flush=True)
 
     db = SessionLocal()
     ensure_set(db)
@@ -108,7 +180,15 @@ def main() -> int:
     src = BienIciSource()
     existing = {e for (e,) in db.query(Listing.external_id).filter(Listing.source == "bienici").all()}
     collected: dict[str, object] = {}
-    for name, lat, lon, depts in PIVOTS:
+    pivots = PIVOTS
+    if args.pivot:
+        pivots = [p for p in PIVOTS if args.pivot.lower() in p[0].lower()]
+        if not pivots:
+            print(f"Aucun pivot ne correspond à « {args.pivot} ». Disponibles : "
+                  + ", ".join(p[0] for p in PIVOTS), flush=True)
+            return 2
+        print(f"Pivots retenus : {', '.join(p[0] for p in pivots)}", flush=True)
+    for name, lat, lon, depts in pivots:
         for ptypes in (["terrain"], ["maison"]):
             crit = SearchCriteria(property_types=ptypes, prix_max=PRIX_MAX)
             try:
@@ -126,7 +206,7 @@ def main() -> int:
                 kept += 1
             print(f"  [{name}/{ptypes[0]}] {kept} neufs (sur {len(items)})", flush=True)
 
-    todo = list(collected.values())[: args.cap]
+    todo = entonnoir(list(collected.values()), args.keep)[: args.cap]
     print(f"\nEnrichissement de {len(todo)} biens neufs ({args.workers} workers)...", flush=True)
     t0 = time.time()
     enriched = []

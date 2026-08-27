@@ -32,6 +32,10 @@ class Settings(BaseSettings):
     # Scraping
     proxy_url: str = ""
     scraper_rate_limit_ms: int = 2000
+    # UA du navigateur qui a généré les cookies Datadome : Datadome recoupe cookie et
+    # empreinte de requête, un UA qui ne correspond pas fait retomber sur un challenge.
+    # Renseigné automatiquement par scripts/datadome_cookies.py.
+    scraper_user_agent: str = ""
     # Leboncoin : header api_key requis (clé web publique par défaut) + cookie Datadome
     # éventuel récolté depuis un navigateur. Sans proxy résidentiel NI cookie, l'API
     # renvoie 403 (Datadome bloque les IP datacenter) -> source marquée indisponible.

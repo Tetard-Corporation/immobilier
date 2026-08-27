@@ -43,6 +43,7 @@ async function boot() {
   $("#favOnly").addEventListener("change", render);
   $("#hideRated").addEventListener("change", render);
   $("#scoreMin").addEventListener("input", (e) => { $("#scoreOut").textContent = e.target.value; render(); });
+  $("#prixMin").addEventListener("input", (e) => { $("#prixOut").textContent = e.target.value; render(); });
   $("#modeScroll").addEventListener("click", () => setMode("scroll"));
   $("#modeMap").addEventListener("click", () => setMode("map"));
   $("#zoneBtn").addEventListener("click", toggleZoneFilter);
@@ -78,6 +79,13 @@ function matchOf(bien, setId) {
   const s = (bien.scores_by_set || {})[String(setId)];
   return s && s.match_score != null ? s.match_score : null;
 }
+// Score financier = pilier « Prix & opportunité » du score d'investissement (niveau de
+// prix au m², écart au marché local, baisse constatée). null tant qu'aucun de ses
+// sous-piliers n'est calculable (pas de prix, pas de surface, pas de comparables).
+function prixScoreOf(bien) {
+  const p = (bien.score_details || []).find((x) => x.key === "prix");
+  return p && p.score != null ? p.score : null;
+}
 function sortValue(bien, mode) {
   if (mode === "prix") return bien.prix == null ? Infinity : bien.prix;
   if (mode === "score") return bien.score == null ? -1 : bien.score;
@@ -90,6 +98,7 @@ function visibleBiens() {
   const favOnly = $("#favOnly").checked;
   const hideRated = $("#hideRated").checked;
   const min = Number($("#scoreMin").value);
+  const minPrix = Number($("#prixMin").value);
   const sortMode = $("#sortSelect").value;
   let list = (DATA.biens || []).filter((b) => {
     // Appartenance au set : on ne montre (liste ET carte) que les biens rattachés au
@@ -107,6 +116,12 @@ function visibleBiens() {
     if (!zoneInBounds(b)) return false;
     const ref = sortMode === "score" ? b.score : matchOf(b, currentSetId);
     if (min > 0 && (ref == null || ref < min)) return false;
+    // Filtre "score financier" : indépendant du tri courant, il porte toujours sur le
+    // pilier Prix (viser la bonne affaire, quel que soit le classement affiché).
+    if (minPrix > 0) {
+      const fin = prixScoreOf(b);
+      if (fin == null || fin < minPrix) return false;
+    }
     return true;
   });
   list.sort((a, b) => {

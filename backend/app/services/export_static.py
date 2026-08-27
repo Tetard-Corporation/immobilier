@@ -47,6 +47,9 @@ _FLAG_COLS = (
 _PERSIST_FLAG_COLS = tuple(c for c in _FLAG_COLS if c not in ("score", "score_details", "features"))
 
 _UA = "Mozilla/5.0 (compatible; immobilier-export/1.0)"
+# Overpass refuse (406) les User-Agent de la forme "Mozilla/5.0 (compatible; ...)" :
+# les requêtes POI/infra échouaient donc en silence (exception avalée -> flags absents).
+_UA_OVERPASS = "immobilier-export/1.0"
 _MAX_PHOTOS = 12
 # Distances aux infrastructures bruyantes (autoroute/voie ferrée) via Overpass (OSM),
 # mises en cache sur disque pour ne pas re-interroger à chaque export.
@@ -73,7 +76,7 @@ def _query_poi(lat: float, lon: float) -> dict | None:
          f'way(around:25000,{lat},{lon})[aerialway~"gondola|chair_lift|cable_car|mixed_lift"];);out center 500;')
     try:
         data = urllib.parse.urlencode({"data": q}).encode()
-        req = urllib.request.Request(_OVERPASS, data=data, headers={"User-Agent": _UA})
+        req = urllib.request.Request(_OVERPASS, data=data, headers={"User-Agent": _UA_OVERPASS})
         with urllib.request.urlopen(req, timeout=45) as r:
             payload = json.loads(r.read())
     except Exception:
@@ -172,8 +175,25 @@ _PAVILLON_RE = re.compile(
     r"maison\s+r[ée]cente|villa\s+contemporaine", re.I)
 
 
+# Le produit « lotissement / parcelle viabilisée » est l'autre face du pavillonnaire :
+# même absence de cachet, même voisinage résidentiel. Détecté à part car il faut écarter
+# les négations — « hors lotissement », « non viabilisé » sont au contraire des arguments
+# de vente ici (62 annonces du secteur sur 167 mentions).
+_LOTISSEMENT_RE = re.compile(
+    r"\blotissement\b|\bviabilis[ée]\w*|zone\s+pavillonnaire|"
+    r"quartier\s+r[ée]sidentiel|zone\s+r[ée]sidentiel\w*", re.I)
+_LOTISSEMENT_NEG_RE = re.compile(
+    r"(?:hors|pas\s+de|pas\s+en|non|aucun|sans|ni)\s+(?:\w+\s+){0,2}?"
+    r"(?:lotissement|viabilis|zone\s+pavillonnaire)", re.I)
+
+
 def _detect_pavillon_neuf(description: str | None) -> bool:
-    return bool(description and _PAVILLON_RE.search(description))
+    if not description:
+        return False
+    if _PAVILLON_RE.search(description):
+        return True
+    return bool(_LOTISSEMENT_RE.search(description)
+                and not _LOTISSEMENT_NEG_RE.search(description))
 
 
 def _fibre_flags(code_commune: str | None, lut: dict) -> dict:
@@ -244,7 +264,7 @@ def _query_overpass(lat: float, lon: float) -> dict | None:
          f'relation(around:3000,{lat},{lon})[route=hiking];);out geom 300;')
     try:
         data = urllib.parse.urlencode({"data": q}).encode()
-        req = urllib.request.Request(_OVERPASS, data=data, headers={"User-Agent": _UA})
+        req = urllib.request.Request(_OVERPASS, data=data, headers={"User-Agent": _UA_OVERPASS})
         with urllib.request.urlopen(req, timeout=40) as r:
             payload = json.loads(r.read())
     except Exception:
@@ -466,7 +486,9 @@ class _RowItem:
 
     def __init__(self, row: Listing, extra_flags: dict | None = None):
         self.prix = row.prix
+        self.type_bien = row.type_bien
         self.nb_chambres = row.nb_chambres
+        self.nb_pieces = row.nb_pieces
         self.surface_terrain = row.surface_terrain
         self.surface_bati = row.surface_bati
         self.latitude = row.latitude
@@ -643,7 +665,8 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
         try:
             _sc = compute_score(item.flags, {
                 "has_text": bool(row.description or row.adresse),
-                "surface_terrain": row.surface_terrain, "type_bien": row.type_bien,
+                "surface_terrain": row.surface_terrain, "surface_bati": row.surface_bati,
+                "type_bien": row.type_bien, "prix": row.prix,
                 "latitude": row.latitude, "longitude": row.longitude,
             })
             row_score, row_score_details = _sc.score, _sc.pillars
@@ -724,8 +747,23 @@ def export_to_dir(db, out_dir: str, *, download_photos: bool = True,
     os.makedirs(out_dir, exist_ok=True)
     data = build_dataset(db, out_dir=out_dir, download_photos=download_photos,
                          min_match_score=min_match_score, primary_set_id=primary_set_id)
-    with open(os.path.join(out_dir, "data.json"), "w", encoding="utf-8") as fh:
-        json.dump(data, fh, ensure_ascii=False, indent=1)
+    # Écriture ATOMIQUE : fichier temporaire puis renommage. `open(..., "w")` tronque
+    # puis écrit en flux — deux exports concurrents (une collecte lancée d'un côté, un
+    # ré-export de l'autre) s'entrelacent alors dans le même fichier et produisent un
+    # data.json syntaxiquement invalide, donc un site qui ne charge plus. os.replace est
+    # atomique sur le même système de fichiers : soit l'ancien fichier, soit le nouveau.
+    final = os.path.join(out_dir, "data.json")
+    tmp = f"{final}.tmp-{os.getpid()}"
+    try:
+        with open(tmp, "w", encoding="utf-8") as fh:
+            json.dump(data, fh, ensure_ascii=False, indent=1)
+            fh.flush()
+            os.fsync(fh.fileno())
+        os.replace(tmp, final)
+    except BaseException:
+        if os.path.exists(tmp):
+            os.unlink(tmp)
+        raise
     return data["stats"]
 
 

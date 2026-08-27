@@ -106,7 +106,9 @@ def enrich_listing(item):
     ctx = {
         "has_text": bool(item.description or item.adresse),
         "surface_terrain": item.surface_terrain,
+        "surface_bati": item.surface_bati,
         "type_bien": item.type_bien,
+        "prix": item.prix,
         "latitude": item.latitude,
         "longitude": item.longitude,
     }

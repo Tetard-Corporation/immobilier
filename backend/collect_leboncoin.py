@@ -33,11 +33,22 @@ TETARD_ZIPS = ["26110", "01200", "07270", "26150", "73340", "73630", "73100", "0
     "07190", "07170", "07800", "07150", "07210", "07230", "01260", "07430", "07530",
     "07440", "01550", "07360", "07160", "07330"]
 
+# Zone « Ploemeur » (set 4) : Ploemeur + littoral morbihannais / finistérien sud.
+# Codes postaux déduits des biens bienici déjà collectés sur ce set, complétés par
+# les communes côtières mitoyennes (Étel, Moëlan-sur-Mer, Riec-sur-Bélon).
+PLOEMEUR_ZIPS = ["56270", "56100", "56600", "56260", "56530", "56850", "56620", "56700",
+    "56520", "56590", "56680", "56670", "56570", "56290", "56320", "56410", "56440",
+    "29360", "29300", "29350", "29340"]
+
 ZONES = {
     "pauline": {"zips": PAULINE_ZIPS, "set_ids": [3], "types": ["maison", "appartement"],
                 "prix_max": 170000, "target": 60},
     "tetard": {"zips": TETARD_ZIPS, "set_ids": [1, 2], "types": ["maison"],
                "prix_max": 600000, "target": 90},
+    # Terrains ≤400k ET maisons ≤400k AVEC terrain (longères/pépites à rénover) :
+    # une maison sans terrain n'a pas d'intérêt pour ce set, d'où min_terrain_maison.
+    "ploemeur": {"zips": PLOEMEUR_ZIPS, "set_ids": [4], "types": ["terrain", "maison"],
+                 "prix_max": 400000, "target": 110, "pages": 5, "min_terrain_maison": 300},
 }
 
 
@@ -92,6 +103,10 @@ def main():
             if not it.external_id or it.external_id in existing or it.external_id in collected:
                 continue
             if it.prix is None or it.prix > z["prix_max"]:
+                continue
+            # Certains sets (Ploemeur) ne veulent des maisons QUE si elles ont du terrain.
+            min_terr = z.get("min_terrain_maison")
+            if min_terr and it.type_bien == "maison" and (it.surface_terrain or 0) < min_terr:
                 continue
             # viagers conservés (notés très bas à l'export, cf. export_static)
             collected[it.external_id] = (it, z["set_ids"])

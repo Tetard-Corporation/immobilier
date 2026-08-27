@@ -23,6 +23,9 @@ PREFERENCE_KINDS = [
     "surface_habitable",
     "light_works",
     "no_vis_a_vis",
+    "tranquillite",
+    "coin_nature",
+    "logement_compact",
     "nature_exception",
     "authentic",
     "pas_pavillon",
@@ -45,6 +48,31 @@ PREFERENCE_KINDS = [
 ]
 
 _PENDING_KINDS = {"rail_time_from", "fiber", "relief_mountain", "hiking"}
+# Budget : part du budget en dessous de laquelle on est pleinement dans la « bonne
+# affaire » (1.0), et note obtenue en consommant exactement 100 % du budget.
+_BUDGET_CONFORT = 0.70
+_BUDGET_LIMITE = 0.80
+# Note obtenue au seuil « cher » du €/m² de terrain ; au-delà la note continue de
+# décroître en 1/prix (un terrain au prix parisien tombe vers 0).
+_CHER_FLOOR = 0.25
+# Tranquillité : note de départ quand l'annonce ne dit rien (ni vis-à-vis, ni isolement,
+# ni lotissement). Neutre, pour que le critère puisse monter ET descendre.
+_TRANQ_SOCLE = 0.50
+# Logement compact : note à la limite haute acceptée (4 chambres) ; au-delà on halve
+# par chambre supplémentaire.
+_NOTE_LIMITE = 0.75
+# « Coin de nature » : somme des poids au-delà de laquelle on a la note pleine. Calée
+# pour que le cas idéal décrit — une rivière ET une vue dégagée — vaille 1,0 : on ne
+# demande pas à une annonce de tout cocher.
+_NATURE_SATURATION = 0.75
+# Poids des signaux, la rivière/l'eau en tête (« le must »).
+_NATURE_SIGNAUX = [
+    ("eau", 0.45, "eau (rivière, ruisseau, étang)"),
+    ("vue_panoramique", 0.30, "vue dégagée"),
+    ("arbore", 0.25, "terrain arboré"),
+    ("foret", 0.20, "bois / forêt"),
+    ("vue", 0.15, "vue"),
+]
 _LIGHT_OK = {"habitable": 1.0, "rafraichir": 1.0, "renover": 0.85, "gros_travaux": 0.4, "ruine": 0.1}
 _COND_LABELS = {
     "habitable": "habitable de suite", "rafraichir": "à rafraîchir", "renover": "à rénover",
@@ -54,6 +82,26 @@ _COND_LABELS = {
 
 def _clamp(x: float) -> float:
     return max(0.0, min(1.0, x))
+
+
+# Étirement du score agrégé sur toute l'échelle 0-100.
+#
+# La moyenne pondérée d'une douzaine de critères se concentre mécaniquement au centre :
+# il faudrait qu'un bien soit excellent PARTOUT pour dépasser 85, et mauvais partout pour
+# descendre sous 30. Résultat mesuré avant correction : 90 % des biens entre 50 et 79,
+# maximum 88 — les pépites ne se détachaient pas du lot.
+#
+# On applique donc une transformation AFFINE entre deux ancres fixes : la moyenne
+# pondérée réellement atteignable en bas (0,20 = un bien qui ne coche presque rien) et en
+# haut (0,90 = un bien qui coche presque tout). Fixes = le score reste absolu : il ne
+# dépend que du bien et du set, pas des autres annonces du lot. Transformation monotone :
+# le classement est rigoureusement identique, seul l'étalement change.
+_ANCRE_BASSE = 0.20
+_ANCRE_HAUTE = 0.90
+
+
+def _contraste(x: float) -> float:
+    return _clamp((x - _ANCRE_BASSE) / (_ANCRE_HAUTE - _ANCRE_BASSE))
 
 
 # Tracés ferroviaires réels (hubs intermédiaires) pour les axes courants : un axe
@@ -93,12 +141,18 @@ def _eval_one(item, kind: str, params: dict):
         budget = params.get("budget_max") or (params.get("apport", 0) * params.get("levier", 4))
         if not budget:
             return None, "n/a", "budget non défini"
-        if item.prix <= budget:
-            return 1.0, "ok", f"{int(item.prix)}€ ≤ budget {int(budget)}€"
+        ratio = item.prix / budget
+        if ratio <= _BUDGET_CONFORT:
+            # On cherche la bonne affaire, pas le bien qui « rentre tout juste » : le
+            # plein score est réservé à ce qui laisse de la marge (travaux, négociation).
+            return 1.0, "ok", f"{int(item.prix)}€ — {round(ratio * 100)}% du budget {int(budget)}€"
+        if ratio <= 1.0:
+            sub = 1.0 - (ratio - _BUDGET_CONFORT) / (1.0 - _BUDGET_CONFORT) * (1.0 - _BUDGET_LIMITE)
+            return sub, "ok", f"{int(item.prix)}€ — {round(ratio * 100)}% du budget {int(budget)}€ (haut de fourchette)"
         # Hors budget = quasi rédhibitoire (retour récurrent du groupe) -> pénalité forte :
-        # +10% ~70%, +20% ~40%, +33% et plus ~0% (au lieu d'une décote linéaire trop clémente).
-        over = (item.prix - budget) / budget
-        return _clamp(1 - over * 3), "ok", f"{int(item.prix)}€ > budget {int(budget)}€ (+{round(over * 100)}%, hors budget)"
+        # +10% ~70%, +20% ~40%, +33% et plus ~0% de la note « au budget ».
+        over = ratio - 1.0
+        return _BUDGET_LIMITE * _clamp(1 - over * 3), "ok", f"{int(item.prix)}€ > budget {int(budget)}€ (+{round(over * 100)}%, hors budget)"
 
     if kind == "chambres_min":
         mn = params.get("min", 1)
@@ -139,14 +193,17 @@ def _eval_one(item, kind: str, params: dict):
         if item.prix is None or not st:
             return None, "n/a", "prix ou surface terrain inconnu"
         ppm = item.prix / st
-        bon = params.get("bon", 60)    # €/m² : excellent (terrain nature/agricole viabilisable)
-        cher = params.get("cher", 300)  # €/m² : cher (lotissement viabilisé prisé)
+        bon = params.get("bon", 80)     # €/m² : excellent (terrain nature/agricole viabilisable)
+        cher = params.get("cher", 400)  # €/m² : cher (lotissement viabilisé prisé du littoral)
         if ppm <= bon:
             sub = 1.0
         elif ppm >= cher:
-            sub = 0.1
+            # Au-delà de « cher », on continue de décroître au lieu de plafonner à un
+            # plancher : sinon un terrain à 400 €/m² et un autre à 1000 €/m² (prix
+            # parisien) obtiennent la même note et le critère ne trie plus rien.
+            sub = _CHER_FLOOR * cher / ppm
         else:
-            sub = _clamp(1 - (ppm - bon) / (cher - bon) * 0.9)
+            sub = _clamp(1 - (ppm - bon) / (cher - bon) * (1 - _CHER_FLOOR))
         return sub, "ok", f"{round(ppm)} €/m² de terrain"
 
     if kind == "en_hauteur_geo":
@@ -217,6 +274,80 @@ def _eval_one(item, kind: str, params: dict):
         if pav is None:
             return 0.7, "ok", "style indéterminé"
         return (0.15 if pav else 1.0), "ok", "pavillon / neuf détecté" if pav else "pas de signe pavillon/neuf"
+
+    if kind == "tranquillite":
+        # « Un minimum de vis-à-vis, surtout pas du pavillonnaire/résidentiel, isolé c'est
+        # mieux » : les trois expriment une même chose, on les note ensemble.
+        # TOUJOURS évaluable, et à deux sens : pris séparément, ces signaux ne sont cités
+        # que par 4 à 15 % des annonces, donc en `n/a` ils ne servaient que de bonus et
+        # aucun bien ne pouvait mal noter. Ici le silence vaut le socle neutre, les
+        # mentions favorables montent et le lotissement fait descendre.
+        feats, nuis = flags.get("features") or [], flags.get("nuisances") or []
+        note, motifs = _TRANQ_SOCLE, []
+        if "sans_vis_a_vis" in feats:
+            note += 0.30; motifs.append("sans vis-à-vis")
+        if "isole" in feats:
+            note += 0.25; motifs.append("isolé / pleine nature")
+        if "calme" in feats:
+            note += 0.10; motifs.append("calme")
+        iso = flags.get("isolement_score")
+        if iso:
+            note += 0.20 * iso
+            motifs.append(f"commune peu dense ({flags.get('population_commune')} hab.)")
+        if "vis_a_vis" in nuis:
+            note -= 0.45; motifs.append("vis-à-vis signalé")
+        if flags.get("pavillon_neuf"):
+            note -= 0.45; motifs.append("pavillon / lotissement")
+        return _clamp(note), "ok", " · ".join(motifs) or "rien de signalé"
+
+    if kind == "coin_nature":
+        # « Un petit coin de nature quand même » : rivière en tête, puis vue dégagée,
+        # grands arbres, bois, hauteur. Somme pondérée rapportée à un seuil de
+        # saturation : deux bons signaux suffisent pour la note pleine — on ne demande
+        # pas à une annonce de tout cocher.
+        feats = flags.get("features") or []
+        acquis, motifs = 0.0, []
+        for nom, poids, libelle in _NATURE_SIGNAUX:
+            if nom in feats:
+                acquis += poids
+                motifs.append(libelle)
+        alt = flags.get("altitude")
+        if alt is not None and alt >= params.get("alt_min", 40):
+            # « Vue dégagée car en hauteur » : en Bretagne sud, 40 m domine déjà, 100 m
+            # est un point haut (médiane du secteur : 33 m).
+            part = _clamp((alt - params.get("alt_min", 40)) / (params.get("alt_ref", 100) - params.get("alt_min", 40)))
+            acquis += 0.25 * part
+            motifs.append(f"en hauteur ({round(alt)} m)")
+        return _clamp(acquis / params.get("saturation", _NATURE_SATURATION)), "ok", " · ".join(motifs) or "aucun élément naturel cité"
+
+    if kind == "logement_compact":
+        # « De la tiny house jusqu'à 3/4 chambres » : on pénalise le TROP grand, jamais
+        # le petit. Un terrain nu n'a pas de logement -> critère non applicable.
+        if getattr(item, "type_bien", None) == "terrain":
+            return None, "n/a", "terrain nu (pas de logement)"
+        ideal, limite = params.get("ideal", 3), params.get("max", 4)
+        ch, source = item.nb_chambres, "chambres"
+        pieces = getattr(item, "nb_pieces", None)
+        if ch is None and pieces:
+            # Seules 69 % des annonces donnent les chambres, 98 % donnent les pièces. Sur
+            # les 456 annonces qui donnent les deux, l'écart médian est de 1 (pièces - 1
+            # tombe juste dans 52 % des cas, contre 31 % pour pièces - 2).
+            ch, source = max(1, pieces - 1), "chambres estimées (pièces - 1)"
+        if ch is None:
+            s = getattr(item, "surface_bati", None)
+            if s is None:
+                return None, "n/a", "taille du logement inconnue"
+            petit, grand = params.get("m2_ok", 120), params.get("m2_max", 250)
+            sub = 1.0 if s <= petit else _clamp(1 - (s - petit) / (grand - petit))
+            return sub, "ok", f"{int(s)} m² habitables (compact ≤ {petit} m²)"
+        if ch <= ideal:
+            return 1.0, "ok", f"{ch} {source} (≤ {ideal}, format recherché)"
+        if ch <= limite:
+            # Entre l'idéal et la limite haute acceptée : décote légère.
+            return _NOTE_LIMITE, "ok", f"{ch} {source} (limite haute acceptée)"
+        # Au-delà : on halve à chaque chambre supplémentaire. Décroissance continue plutôt
+        # qu'un mur à 0, sinon une maison de 5 chambres et une de 8 se valent.
+        return _NOTE_LIMITE * 0.5 ** (ch - limite), "ok", f"{ch} {source} (trop grand, > {limite})"
 
     if kind == "feature":
         name = params.get("name")
@@ -398,6 +529,6 @@ def evaluate(item, preferences) -> tuple[float | None, list[dict]]:
 
     if total_w == 0:
         return None, details
-    score = round(acc / total_w * 100, 1)
+    score = round(_contraste(acc / total_w) * 100, 1)
     details.sort(key=lambda d: d.get("contribution", -1), reverse=True)
     return score, details

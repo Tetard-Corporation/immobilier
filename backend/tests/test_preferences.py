@@ -60,10 +60,15 @@ def test_feature_non_mentionnee_est_neutre():
 
 
 def test_chambres_sous_minimum_degrade_lineaire():
+    # Porte sur le SOUS-score : le match_score, lui, passe par l'étirement d'échelle.
     p = [Preference(kind="chambres_min", weight=1, params={"min": 4})]
-    assert evaluate(_listing(nb_chambres=3, flags={}), p)[0] == 75.0   # 3/4
-    assert evaluate(_listing(nb_chambres=2, flags={}), p)[0] == 50.0   # 2/4
-    assert evaluate(_listing(nb_chambres=5, flags={}), p)[0] == 100.0  # >= min
+
+    def sub(nb):
+        return evaluate(_listing(nb_chambres=nb, flags={}), p)[1][0]["subscore"]
+
+    assert sub(3) == 0.75   # 3/4
+    assert sub(2) == 0.5    # 2/4
+    assert sub(5) == 1.0    # >= min
 
 
 def test_temps_acces_porte_a_porte():
@@ -175,17 +180,131 @@ def test_constructible():
 
 
 def test_prix_m2_terrain():
-    pref = [Preference(kind="prix_m2_terrain", weight=4, params={"bon": 60, "cher": 300})]
+    pref = [Preference(kind="prix_m2_terrain", weight=4, params={"bon": 80, "cher": 400})]
 
     def sub(prix, st):
         _, details = evaluate(_listing(prix=prix, surface_terrain=st, flags={}), pref)
         ss = details[0]["subscore"]
-        return (round(ss, 2) if ss is not None else None), details[0]["status"]
+        return (round(ss, 3) if ss is not None else None), details[0]["status"]
 
-    assert sub(40000, 1000) == (1.0, "ok")     # 40 €/m² -> excellent
-    assert sub(200000, 500) == (0.1, "ok")     # 400 €/m² -> cher
-    assert sub(120000, 800)[0] < 1.0           # 150 €/m² -> intermédiaire
-    assert sub(100000, None) == (None, "n/a")  # surface terrain inconnue
+    assert sub(40000, 1000) == (1.0, "ok")       # 40 €/m² -> excellent
+    assert sub(200000, 500) == (0.25, "ok")      # 400 €/m² -> seuil « cher »
+    assert sub(120000, 800)[0] < 1.0             # 150 €/m² -> intermédiaire
+    assert sub(100000, None) == (None, "n/a")    # surface terrain inconnue
+
+
+def test_prix_m2_terrain_discrimine_au_dela_du_seuil_cher():
+    """Au-delà de « cher », l'ancien barème plafonnait : un terrain au tarif parisien
+    obtenait la même note qu'un terrain simplement cher, et le critère ne triait plus."""
+    pref = [Preference(kind="prix_m2_terrain", params={"bon": 80, "cher": 400})]
+
+    def sub(ppm):
+        _, details = evaluate(_listing(prix=ppm * 1000, surface_terrain=1000, flags={}), pref)
+        return details[0]["subscore"]
+
+    cher, tres_cher, parisien = sub(400), sub(600), sub(1000)
+    assert cher > tres_cher > parisien
+    assert parisien < 0.15  # prix parisien -> quasi éliminatoire
+
+
+def test_budget_recompense_la_marge_sous_le_plafond():
+    """« Je vise la bonne affaire » : rentrer tout juste dans le budget ne vaut pas
+    autant que laisser de la marge."""
+    pref = [Preference(kind="budget", params={"budget_max": 400_000})]
+
+    def sub(prix):
+        _, details = evaluate(_listing(prix=prix, flags={}), pref)
+        return details[0]["subscore"]
+
+    assert sub(200_000) == 1.0          # 50 % du budget -> pleine note
+    assert sub(280_000) == 1.0          # 70 % -> encore pleine note
+    assert sub(400_000) < sub(320_000)  # au plafond < avec de la marge
+    assert sub(400_000) > sub(440_000)  # mais reste au-dessus du hors budget
+    assert sub(560_000) == 0.0          # +40 % -> éliminé
+
+
+def test_tranquillite_monte_et_descend():
+    """Pris séparément, « sans vis-à-vis » / « isolé » ne sont cités que par 4 à 15 % des
+    annonces : en `n/a` ils ne servaient que de bonus et aucun bien ne pouvait mal noter.
+    Le critère composite doit être toujours évaluable et aller dans les deux sens."""
+    pref = [Preference(kind="tranquillite")]
+
+    def sub(flags):
+        _, d = evaluate(_listing(flags=flags), pref)
+        return d[0]["subscore"], d[0]["status"]
+
+    neutre = sub({})[0]
+    assert sub({})[1] == "ok"                                    # jamais n/a
+    assert sub({"features": ["sans_vis_a_vis", "isole"]})[0] > neutre
+    assert sub({"nuisances": ["vis_a_vis"]})[0] < neutre
+    assert sub({"pavillon_neuf": True})[0] < neutre
+    # Le pire cas (lotissement + vis-à-vis) doit vraiment tomber bas.
+    assert sub({"pavillon_neuf": True, "nuisances": ["vis_a_vis"]})[0] == 0.0
+    # Le meilleur cas doit atteindre le haut de l'échelle.
+    assert sub({"features": ["sans_vis_a_vis", "isole", "calme"], "isolement_score": 1.0})[0] == 1.0
+
+
+def test_coin_nature_priorise_l_eau():
+    """« Une petite rivière c'est le must » : l'eau doit peser plus que les autres
+    signaux, et deux bons signaux suffire pour la note pleine."""
+    pref = [Preference(kind="coin_nature")]
+
+    def sub(feats, alt=None):
+        flags = {"features": feats}
+        if alt is not None:
+            flags["altitude"] = alt
+        _, d = evaluate(_listing(flags=flags), pref)
+        return d[0]["subscore"]
+
+    assert sub([]) == 0.0                          # rien de cité -> 0, pas n/a
+    assert sub(["eau"]) > sub(["arbore"])          # la rivière prime
+    assert sub(["eau"]) > sub(["foret"])
+    assert sub(["eau", "vue_panoramique"]) == 1.0  # rivière + vue dégagée = le cas idéal
+    # « Vue dégagée car en hauteur » : l'altitude compte, plafonnée au point haut local.
+    assert sub(["arbore"], alt=100) > sub(["arbore"], alt=10)
+    assert sub([], alt=10) == 0.0                  # 10 m n'est pas une hauteur ici
+
+
+def test_logement_compact_penalise_le_trop_grand():
+    """« De la tiny house jusqu'à 3/4 chambres » : jamais pénaliser le petit, et
+    continuer de décroître au-delà de la limite (5 et 8 chambres ne se valent pas)."""
+    pref = [Preference(kind="logement_compact", params={"ideal": 3, "max": 4})]
+
+    def sub(ch=None, pi=None, sb=None, type_bien="maison"):
+        it = _listing(type_bien=type_bien, nb_chambres=ch, nb_pieces=pi, surface_bati=sb, flags={})
+        _, d = evaluate(it, pref)
+        return d[0]["subscore"], d[0]["status"], d[0]["detail"]
+
+    assert sub(ch=1)[0] == 1.0 and sub(ch=3)[0] == 1.0     # tiny house = plein score
+    assert sub(ch=4)[0] == 0.75                            # limite haute acceptée
+    assert sub(ch=8)[0] < sub(ch=6)[0] < sub(ch=5)[0] < 0.75
+    assert sub(ch=8)[0] > 0                                # décroissance, pas un mur à 0
+    # Repli sur les pièces : mesuré sur 456 annonces, chambres ≈ pièces - 1.
+    assert sub(pi=4)[0] == 1.0
+    assert "pièces - 1" in sub(pi=4)[2]
+    assert sub(pi=5)[0] == 0.75                            # T5 -> ~4 chambres
+    assert sub(sb=90)[0] == 1.0                            # repli surface : compact
+    assert sub(sb=300)[0] == 0.0
+    assert sub(type_bien="terrain")[1] == "n/a"             # un terrain nu n'a pas de logement
+
+
+def test_score_utilise_toute_l_echelle():
+    """La moyenne pondérée d'une douzaine de critères se concentre au centre : sans
+    étirement, 90 % des biens tombaient entre 50 et 79 et les pépites ne se
+    détachaient pas. L'étirement est monotone : il étale sans changer le classement."""
+    from app.services.preferences import _contraste
+
+    assert _contraste(0.20) == 0.0 and _contraste(0.90) == 1.0
+    assert _contraste(0.10) == 0.0 and _contraste(1.0) == 1.0   # borné
+    # strictement croissant sur la plage utile
+    vals = [_contraste(i / 100) for i in range(101)]
+    assert all(b >= a for a, b in zip(vals, vals[1:]))
+    assert round(_contraste(0.55), 6) == 0.5                     # milieu conservé au centre
+    # un bien médiocre et un bien excellent doivent vraiment s'écarter
+    pref = [Preference(kind="has_terrain", params={"min_surface": 1000})]
+    petit = evaluate(_listing(surface_terrain=200, flags={}), pref)[0]
+    grand = evaluate(_listing(surface_terrain=2000, flags={}), pref)[0]
+    assert petit == 0.0 and grand == 100.0
 
 
 def test_en_hauteur_geo():
