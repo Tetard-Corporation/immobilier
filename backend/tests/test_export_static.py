@@ -51,12 +51,30 @@ def test_pepites_gate():
 
     # Bien têtard (membre {1,2}) au-dessus du seuil -> gardé.
     sbs = {"1": {"match_score": 80.0}, "2": {"match_score": 60.0}}
-    assert _passes_pepites_gate(sbs, {1, 2}, 1, 78) is True
+    assert _passes_pepites_gate(sbs, {1, 2}, {1: 78}) is True
     # Même bien sous le seuil sur le set primaire -> écarté.
-    assert _passes_pepites_gate({"1": {"match_score": 70.0}}, {1, 2}, 1, 78) is False
+    assert _passes_pepites_gate({"1": {"match_score": 70.0}}, {1, 2}, {1: 78}) is False
     # Bien Pauline (membre {3}, pas du set primaire 1) -> toujours conservé.
-    assert _passes_pepites_gate({"3": {"match_score": 40.0}}, {3}, 1, 78) is True
+    assert _passes_pepites_gate({"3": {"match_score": 40.0}}, {3}, {1: 78}) is True
     # Membre du set primaire mais non scoré dessus -> écarté (pas une pépite prouvée).
-    assert _passes_pepites_gate({"2": {"match_score": 90.0}}, {1, 2}, 1, 78) is False
+    assert _passes_pepites_gate({"2": {"match_score": 90.0}}, {1, 2}, {1: 78}) is False
     # member vide (rétro-compat "tous sets") + score suffisant -> gardé.
-    assert _passes_pepites_gate({"1": {"match_score": 79.0}}, set(), 1, 78) is True
+    assert _passes_pepites_gate({"1": {"match_score": 79.0}}, set(), {1: 78}) is True
+
+
+def test_pepites_gate_plusieurs_sets():
+    """La base garde tout le catalogue de chaque set, data.json n'en publie que le haut du
+    panier : resserrer un seul set à l'export ferait revenir en bloc celui des autres."""
+    from app.services.export_static import _passes_pepites_gate, _seuils_pepites
+
+    seuils = {1: 78.5, 4: 80.0}
+    # Chacun jugé sur SON set, pas sur celui de l'autre.
+    assert _passes_pepites_gate({"1": {"match_score": 79.0}}, {1, 2}, seuils) is True
+    assert _passes_pepites_gate({"4": {"match_score": 79.0}}, {4}, seuils) is False
+    assert _passes_pepites_gate({"4": {"match_score": 81.0}}, {4}, seuils) is True
+    # Un set non resserré n'est pas concerné.
+    assert _passes_pepites_gate({"3": {"match_score": 10.0}}, {3}, seuils) is True
+    # L'ancienne écriture reste acceptée et se fond dans la nouvelle.
+    assert _seuils_pepites(78.0, 1, None) == {1: 78.0}
+    assert _seuils_pepites(None, None, {1: 78.5, 4: 80.0}) == seuils
+    assert _seuils_pepites(None, None, None) == {}
