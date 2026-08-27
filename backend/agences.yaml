@@ -11,3 +11,9 @@ agences:
   - nom: "Christine Miranda"      # Drôme provençale / Baronnies (26) - biens de caractère
     sites:
       - https://www.christinemiranda.com/
+  - nom: "Kreisker Immobilier"    # baie de Morlaix (29) : Locquirec, Plougasnou, Plouezoc'h
+    # Site sans JSON-LD sur la liste mais avec un JSON-LD propre par fiche : c'est la
+    # voie générique (harvest_detail_links) qui le traite, sans parser dédié.
+    set_id: 4
+    sites:
+      - https://www.kreisker-immo.fr/vente/1

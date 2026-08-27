@@ -11,6 +11,7 @@ from __future__ import annotations
 import hashlib
 import logging
 import re
+import time
 from urllib.parse import urljoin
 
 import httpx
@@ -19,7 +20,7 @@ from ..agences_config import load_agences_config
 from ..config import get_settings
 from ..sources.base import NormalizedListing
 from ..sources.htmlutil import json_ld_items, realestate_fields
-from .agences_parsers import parse_site
+from .agences_parsers import harvest_detail_links, parse_site
 from .email_ingest import fetch_unseen
 from .enrich import annotate
 from .extract import get_extractor
@@ -63,6 +64,47 @@ _LOC = r"([A-ZÉÈÀ][\wÀ-ÿ'\-]+(?:[ \-](?:la|le|les|sur|sous|en|d['’]|de|du
 _COMMUNE_RE = re.compile(rf"(?:village|commune|hameau|bourg|proche(?:\s+de)?|à)\s+(?:de\s+|d['’]\s*)?{_LOC}")
 
 
+# Titre d'annonce d'agence, format quasi universel : « Vente maison Henvic 6 pièces 120m² ».
+# La commune est ce qui suit le type de bien et précède le premier chiffre.
+_TITRE_COMMUNE_RE = re.compile(
+    r"\b(?:maison|appartement|terrain|immeuble|villa|propri[ée]t[ée]|ferme|longère|"
+    r"manoir|moulin|ch[âa]teau|local|studio|loft|corps\s+de\s+ferme)\s+"
+    r"(?:[àa]\s+|de\s+|d['’]\s*)?"
+    r"([A-ZÉÈÀÎÔÜ][\wÀ-ÿ'’\-]*(?:[ \-](?:la|le|les|sur|sous|en|lès|les|de|du|des|d['’])?[ \-]?"
+    r"[A-ZÉÈÀÎÔÜ]?[\wÀ-ÿ'’\-]+){0,3}?)"
+    r"(?=\s+\d|\s*[,|·–—]|\s*$)", re.I)
+
+
+# Mots qui disqualifient une capture : soit ils situent le bien PAR RAPPORT à une ville
+# sans le placer dedans (« proche Morlaix » n'est pas Morlaix), soit ils décrivent le bien
+# (« maison de plain-pied »). Dans les deux cas mieux vaut aucune commune qu'une fausse :
+# une commune erronée géocode, donc produit des coordonnées fausses qu'aucune étape ne
+# rattrape ensuite.
+_MOTS_DISQUALIFIANTS = {
+    "proche", "proches", "près", "pres", "secteur", "environs", "alentours", "axe",
+    "plain-pied", "plainpied", "centre", "bourg", "campagne", "vue", "bord",
+}
+
+
+def commune_depuis_titre(titre: str | None) -> str | None:
+    """Commune lue dans un titre d'annonce. None si le titre n'en porte pas de sûre.
+
+    Sans commune, `_fill_geo` ne peut pas géocoder, donc le bien n'a ni coordonnées ni
+    département : il est invisible pour les filtres de zone et le scoring. C'est le champ
+    qui décide si une annonce d'agence est exploitable — d'où le soin mis à ne pas en
+    inventer une.
+    """
+    m = _TITRE_COMMUNE_RE.search(titre or "")
+    if not m:
+        return None
+    nom = re.sub(r"\s+", " ", m.group(1)).strip(" -,")
+    if not nom or not nom[:1].isupper():
+        return None
+    if any(mot.lower().strip(",.") in _MOTS_DISQUALIFIANTS for mot in nom.split()):
+        return None
+    return nom
+
+
 def _og(html: str, prop: str) -> str | None:
     m = (re.search(rf'<meta[^>]+property="{prop}"[^>]+content="([^"]+)"', html)
          or re.search(rf'<meta[^>]+content="([^"]+)"[^>]+property="{prop}"', html))
@@ -90,9 +132,14 @@ def _enrich_from_detail(nl: NormalizedListing) -> NormalizedListing:
             digits = re.sub(r"[^\d]", "", pm.group(1))
             nl.prix = float(digits) if digits else None
     if need_commune:
-        m = _COMMUNE_RE.search(_og(html, "og:title") or "") or _COMMUNE_RE.search(_og(html, "og:description") or "")
-        if m:
-            nl.commune = m.group(1).strip()
+        titre = _og(html, "og:title") or ""
+        desc = _og(html, "og:description") or ""
+        m = _COMMUNE_RE.search(titre) or _COMMUNE_RE.search(desc)
+        # Repli sur le format de titre d'agence (« Vente maison Henvic 6 pièces »), que
+        # _COMMUNE_RE ne voit pas : il attend « à X » / « commune de X ».
+        nl.commune = (m.group(1).strip() if m
+                      else commune_depuis_titre(titre) or commune_depuis_titre(desc)
+                      or commune_depuis_titre(nl.description))
     return nl
 
 
@@ -154,7 +201,59 @@ def scrape_sites(site_urls: list[tuple[str, str]], settings=None) -> list[Normal
                     nl = _fill_geo(_enrich_from_detail(_to_normalized(d, agency)))
                     if nl.prix is not None:
                         items.append(nl)
+                    found = True
+            # Toujours rien -> voie générique : suivre les fiches et lire LEUR JSON-LD.
+            if not found:
+                items.extend(_scrape_via_fiches(client, agency, url, resp.text, settings))
     return items
+
+
+def _scrape_via_fiches(client, agency: str, url: str, html: str, settings,
+                       cap: int = 40) -> list[NormalizedListing]:
+    """Voie générique : la page de liste n'a pas de JSON-LD, les fiches en ont un.
+
+    C'est le cas courant chez les agences locales — mesuré sur les agences bretonnes :
+    zéro bien sur la liste, un bien avec prix sur chaque fiche. On récolte donc les liens
+    de fiches et on lit le JSON-LD de chacune, sans rien coder de spécifique au site.
+
+    La récolte est permissive et le tri se fait ici : une page de rubrique ramassée par
+    erreur n'a pas de JSON-LD immobilier avec prix, donc elle tombe d'elle-même.
+    """
+    liens = harvest_detail_links(html, url, max_links=cap)
+    if not liens:
+        return []
+    delai = max(0, getattr(settings, "scraper_rate_limit_ms", 2000)) / 1000
+    trouves: list[NormalizedListing] = []
+    for i, lien in enumerate(liens):
+        if i:
+            time.sleep(delai)  # site d'agence = petit serveur, on y va doucement
+        try:
+            page = client.get(lien)
+            page.raise_for_status()
+        except Exception as exc:  # noqa: BLE001
+            logger.debug("Fiche agence injoignable %s : %s", lien, exc)
+            continue
+        for obj in json_ld_items(page.text):
+            f = realestate_fields(obj)
+            if not f or f.get("price") is None:
+                continue
+            nl = _to_normalized({
+                "type_bien": None,
+                "prix": f.get("price"),
+                "surface_bati": f.get("surface"),
+                "surface_terrain": None,
+                "commune": f.get("city"),
+                "code_postal": f.get("postal_code"),
+                "url": lien,
+                "description": f.get("description") or f.get("name"),
+            }, agency)
+            if f.get("latitude") is not None:
+                nl.latitude, nl.longitude = f["latitude"], f["longitude"]
+            trouves.append(_fill_geo(_enrich_from_detail(nl)))
+            break  # une fiche = un bien
+    logger.info("Agence %s : %s bien(s) via fiches (%s liens suivis).",
+                agency, len(trouves), len(liens))
+    return trouves
 
 
 def ingest(db, settings=None) -> dict:
@@ -174,9 +273,16 @@ def ingest(db, settings=None) -> dict:
     collected.extend(scrape_sites(config.all_site_urls, settings))
 
     # 3) Normalisation + persistance
+    # Rattachement au set déclaré par l'agence : sans lui, `set_ids` reste vide et
+    # l'export note le bien pour TOUS les sets (rétro-compat) — une agence bretonne
+    # apparaîtrait dans le set Drôme/Ardèche.
+    sets = config.set_par_agence
     nb = 0
     for item in collected:
-        upsert_listing(db, annotate(item))
+        row = upsert_listing(db, annotate(item))
+        set_id = sets.get((item.raw or {}).get("agence"))
+        if set_id is not None and set_id not in (row.set_ids or []):
+            row.set_ids = sorted({*(row.set_ids or []), set_id})
         nb += 1
     db.commit()
     logger.info("Ingestion agences : %s annonce(s) traitée(s) (extracteur=%s).", nb, extractor.name)

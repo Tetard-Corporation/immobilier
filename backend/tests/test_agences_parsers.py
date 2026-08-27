@@ -119,3 +119,63 @@ def test_geocode_locality_tokens_de_fin_et_abreviations(monkeypatch):
     # "st voy" -> "saint voy" (expansion) ; fenêtre longue "mazet saint voy" l'emporte.
     g = geo.geocode_locality("tres belle ferme le mazet st voy")
     assert g["nom"] == "Mazet-Saint-Voy" and g["departement"] == "43"
+
+
+# --------------------------------------------------------------------------- #
+# Voie C — générique : récolte des liens de fiches sur une page de liste.
+# --------------------------------------------------------------------------- #
+from app.services.agences_ingest import commune_depuis_titre  # noqa: E402
+from app.services.agences_parsers import harvest_detail_links  # noqa: E402
+
+_LISTE = """
+<a href="/vente/41-henvic/maison/580-maison-henvic-120-m">Maison</a>
+<a href="/vente/1-morlaix/immeuble/4158-immeuble-morlaix">Immeuble</a>
+<a href="/a-vendre-propriete-bord-de-mer-19822.html">Propriété</a>
+<a href="/estimation-gratuite-123.html">Estimation</a>
+<a href="/nos-dernieres-ventes-10829.html">Vendus</a>
+<a href="/contact">Contact</a>
+<a href="/vente/1">Toutes nos ventes</a>
+<a href="https://autre-site.fr/vente/maison-4242">Ailleurs</a>
+"""
+
+
+def test_harvest_garde_les_fiches():
+    liens = harvest_detail_links(_LISTE, "https://agence.fr/vente/1")
+    assert "https://agence.fr/vente/41-henvic/maison/580-maison-henvic-120-m" in liens
+    assert "https://agence.fr/a-vendre-propriete-bord-de-mer-19822.html" in liens
+
+
+def test_harvest_ecarte_les_pages_de_service():
+    liens = harvest_detail_links(_LISTE, "https://agence.fr/vente/1")
+    assert not [l for l in liens if "estimation" in l or "contact" in l
+                or "dernieres-ventes" in l]
+
+
+def test_harvest_reste_sur_le_domaine():
+    """Suivre un lien hors site enverrait le robot sur un portail protégé."""
+    liens = harvest_detail_links(_LISTE, "https://agence.fr/vente/1")
+    assert not [l for l in liens if "autre-site.fr" in l]
+
+
+def test_harvest_ignore_la_page_courante():
+    liens = harvest_detail_links(_LISTE, "https://agence.fr/vente/1")
+    assert "https://agence.fr/vente/1" not in liens
+
+
+def test_harvest_respecte_le_plafond():
+    html = "".join(f'<a href="/vente/maison/{i}-bien-{i}">x</a>' for i in range(50))
+    assert len(harvest_detail_links(html, "https://agence.fr/liste", max_links=10)) == 10
+
+
+def test_commune_depuis_titre_format_agence():
+    assert commune_depuis_titre("Vente maison Henvic 6 pièces 120m²") == "Henvic"
+    assert commune_depuis_titre("Vente maison Plourin-lès-Morlaix 6 pièces") == "Plourin-lès-Morlaix"
+    assert commune_depuis_titre("Vente terrain Locquirec 969m²") == "Locquirec"
+
+
+def test_commune_depuis_titre_refuse_de_deviner():
+    """« proche Morlaix » n'est pas Morlaix : une commune fausse géocode quand même,
+    et produit des coordonnées que plus rien ne corrige ensuite."""
+    assert commune_depuis_titre("Vente maison de plain-pied proche Morlaix") is None
+    assert commune_depuis_titre("Vente maison vue mer 5 pièces") is None
+    assert commune_depuis_titre("") is None
