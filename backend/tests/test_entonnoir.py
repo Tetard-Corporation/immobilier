@@ -109,8 +109,8 @@ def test_commune_de_plaine_ecartee(monkeypatch):
     from app.services.entonnoir import filtrer_par_altitude
 
     _altitudes(monkeypatch, {"26150": 120.0})
-    retenus, ecartes, _ = filtrer_par_altitude([_maison(description="Maison de village")],
-                                               min_altitude=250)
+    retenus, ecartes, *_ = filtrer_par_altitude([_maison(description="Maison de village")],
+                                                min_altitude=250)
     assert not retenus and len(ecartes) == 1
 
 
@@ -121,7 +121,7 @@ def test_riviere_ou_bois_repeche_en_plaine(monkeypatch):
 
     _altitudes(monkeypatch, {"26150": 120.0})
     riviere = _maison(description="Ancienne ferme au bord d'une rivière, en lisière de forêt")
-    retenus, ecartes, repeches = filtrer_par_altitude([riviere], min_altitude=250)
+    retenus, ecartes, repeches, _ = filtrer_par_altitude([riviere], min_altitude=250)
     assert len(retenus) == 1 and not ecartes and repeches == 1
 
 
@@ -130,11 +130,41 @@ def test_commune_non_mesuree_retenue(monkeypatch):
     from app.services.entonnoir import filtrer_par_altitude
 
     _altitudes(monkeypatch, {})
-    retenus, ecartes, _ = filtrer_par_altitude([_maison(description="Maison")], min_altitude=250)
+    retenus, ecartes, *_ = filtrer_par_altitude([_maison(description="Maison")], min_altitude=250)
     assert len(retenus) == 1 and not ecartes
 
 
 def test_etage_altitude_desactivable(monkeypatch):
     _altitudes(monkeypatch, {"26150": 120.0})
+    monkeypatch.setattr("app.services.entonnoir.prix_m2_commune", lambda items, log=None: {})
     biens = [_maison(description="Maison de village")]
     assert len(appliquer(biens, profil="montagne", min_altitude=None, log=lambda *a: None)) == 1
+
+
+def test_prix_au_m2_juge_par_rapport_au_marche_local():
+    """Le prix au m² ne veut rien dire dans l'absolu. Mesuré : une coupe au prix absolu
+    écartait Saint-François-Longchamp à 2 694 €/m² — « cher » — alors que le secteur y est
+    à 3 700 et que le score en fait une pépite."""
+    from app.services.entonnoir import note_annonce_montagne
+
+    bien = _maison(prix=299_000, bati=111, pieces=5)
+    cher_ailleurs = note_annonce_montagne(bien, reference_m2=1500)
+    bonne_affaire = note_annonce_montagne(bien, reference_m2=3700)
+    assert bonne_affaire > cher_ailleurs
+    # Sans référence, on ne tranche pas : le terme prix est neutre, pas pénalisant.
+    sans = note_annonce_montagne(bien)
+    assert cher_ailleurs < sans < bonne_affaire
+
+
+def test_communes_non_mesurees_signalees(monkeypatch):
+    """Un étage qui échoue en silence ressemble trait pour trait à un étage qui ne trouve
+    rien. Vécu : 25 communes mesurées sur plusieurs centaines, 3 biens écartés, aucun
+    message — le run est passé pour propre."""
+    from app.services.entonnoir import filtrer_par_altitude
+
+    _altitudes(monkeypatch, {"26150": 800.0})   # une commune mesurée...
+    biens = [_maison(code_commune="26150"), _maison(code_commune="73999"),
+             _maison(code_commune="07001")]     # ...deux qui ne le sont pas
+    retenus, ecartes, _, non_mesurees = filtrer_par_altitude(biens, min_altitude=250)
+    assert len(retenus) == 3 and not ecartes
+    assert non_mesurees == 2
