@@ -99,6 +99,42 @@ class HeuristicExtractor(Extractor):
         except ValueError:
             return None
 
+    # Montants en euros qui ne sont PAS le prix de vente. Vu en vrai : une fiche affichait
+    # « Taxe foncière : 571 € » avant son prix, et le bien entrait en base à 571 € — donc
+    # imbattable au budget et au €/m², donc pépite. Un prix faux est pire qu'un prix absent.
+    _PAS_UN_PRIX = re.compile(
+        r"(?:taxe|fonci[èe]re|habitation|honoraires?|charges?|copropri[ée]t[ée]|loyer|"
+        r"mensualit[ée]|frais|commission|d[ée]p[ôo]t|garantie|caution|estimation\s+des\s+co[ûu]ts|"
+        r"consommation|[ée]nerg|par\s+an|/\s*an|/\s*mois|au\s+m|du\s+m|par\s+m)",
+        re.I)
+    _PRIX_MIN = 10_000        # sous ce seuil, ce n'est pas le prix d'un bien
+    _PRIX_MAX = 30_000_000
+
+    @classmethod
+    def _prix(cls, texte: str) -> float | None:
+        """Prix de vente : le plus grand montant plausible dont le contexte ne le
+        disqualifie pas.
+
+        Prendre le PREMIER montant de la page était le réflexe naturel et il est faux :
+        taxe foncière, honoraires et charges apparaissent souvent avant le prix. Le prix
+        de vente est en pratique le plus gros montant légitime d'une fiche.
+        """
+        candidats = []
+        for m in cls._PRICE.finditer(texte or ""):
+            # Le contexte s'arrête à la ligne (ou la phrase) courante : remonter au-delà
+            # attrapait l'étiquette du montant PRÉCÉDENT et disqualifiait le bon prix.
+            debut = max(0, m.start() - 60)
+            contexte = texte[debut:m.start()]
+            coupe = max(contexte.rfind(c) for c in "\n.|;•\t")
+            if coupe >= 0:
+                contexte = contexte[coupe + 1:]
+            if cls._PAS_UN_PRIX.search(contexte):
+                continue
+            v = cls._to_float(m.group(1))
+            if v is not None and cls._PRIX_MIN <= v <= cls._PRIX_MAX:
+                candidats.append(v)
+        return max(candidats) if candidats else None
+
     @classmethod
     def _type_bien(cls, titre: str, texte: str) -> str | None:
         """Type du bien, cherch\u00e9 dans le TITRE d'abord, puis \u00e0 la premi\u00e8re occurrence.
@@ -120,7 +156,7 @@ class HeuristicExtractor(Extractor):
         full = f"{subject or ''}\n{text}"
         if not full.strip():
             return []
-        price = self._PRICE.search(full)
+        price = self._prix(full)
         surface = self._SURFACE.search(full)
         cp = self._CP.search(full)
         url = self._URL.search(full)
@@ -130,7 +166,7 @@ class HeuristicExtractor(Extractor):
         return [
             {
                 "type_bien": type_bien,
-                "prix": self._to_float(price.group(1)) if price else None,
+                "prix": price,
                 "surface_terrain": self._to_float(surface.group(1))
                 if surface and type_bien == "terrain"
                 else None,

@@ -65,3 +65,18 @@ def test_extraction_d_une_fiche_de_prestige():
     assert out[0]["prix"] == 1189000.0
     assert out[0]["code_postal"] == "56100"
     assert out[0]["type_bien"] == "maison"
+
+
+def test_prix_ignore_la_taxe_fonciere():
+    """Vu en vrai : « Taxe foncière : 571 € » avant le prix, et le bien entrait à 571 € —
+    donc imbattable au budget et au €/m², donc pépite. Un prix faux est pire qu'absent."""
+    h = HeuristicExtractor
+    assert h._prix("Taxe foncière : 571 €\nPrix de vente 472 700 €") == 472700.0
+    assert h._prix("Prix au m² : 3 560 €\nPrix 472 700 €") == 472700.0
+    assert h._prix("Honoraires : 5 000 €\nCharges : 1 200 €") is None
+
+
+def test_prix_rejette_les_montants_implausibles():
+    h = HeuristicExtractor
+    assert h._prix("Un café à 3 €") is None          # sous le plancher
+    assert h._prix("Chiffre d'affaires 900 000 000 €") is None  # au-dessus du plafond

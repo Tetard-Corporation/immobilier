@@ -15,29 +15,36 @@ agences:
     # Site sans JSON-LD sur la liste mais avec un JSON-LD propre par fiche : c'est la
     # voie générique (harvest_detail_links) qui le traite, sans parser dédié.
     set_id: 4
+    departements: [22, 29, 56, 35]
     sites:
       - https://www.kreisker-immo.fr/vente/1
   - nom: "Orpi Trégorimmo"        # Plougasnou, Locquirec, Trébeurden — l'agence des communes visées
     set_id: 4
+    departements: [22, 29, 56, 35]
     sites:
       - https://www.orpi.com/orpi-tregorimmo/
   - nom: "Espaces Atypiques Finistère"   # biens de caractère, baie de Morlaix incluse
     set_id: 4
+    departements: [22, 29, 56, 35]
     sites:
       - https://www.espaces-atypiques.com/agences/finistere/
   - nom: "Demeures du Littoral"   # Côte de Granit Rose, Perros-Guirec
     set_id: 4
+    departements: [22, 29, 56, 35]
     sites:
       - https://www.demeuresdulittoral.com/acheter-immobilier/pierres-et-caracteres/
   - nom: "Belles Demeures de Bretagne"
     set_id: 4
+    departements: [22, 29, 56, 35]
     sites:
       - https://www.bellesdemeuresdebretagne.fr/theme/399/bord-de-mer-bretagne.html
   - nom: "Côte & Littoral"        # prestige bord de mer Bretagne
     set_id: 4
+    departements: [22, 29, 56, 35]
     sites:
       - https://www.cotelittoral.fr/immobilier-de-prestige-bretagne-275_4.html
   - nom: "Groupe Mercure Bretagne"
     set_id: 4
+    departements: [22, 29, 56, 35]
     sites:
       - https://www.groupe-mercure.fr/agences/agence-mercure-bretagne/

@@ -154,31 +154,42 @@ def _enrich_from_detail(nl: NormalizedListing, html: str | None = None) -> Norma
 
 
 def _fill_geo(nl: NormalizedListing) -> NormalizedListing:
-    """Résout la commune (souvent un titre libre) via la BAN -> commune canonique +
-    dept/coords, pour rendre les biens d'agences exploitables (filtre dept, carte,
-    scoring). Étape réseau, séparée de la normalisation (pure)."""
-    # Pas de commune mais un code postal : les fiches d'agence portent presque toujours
-    # le CP (« à LORIENT (56100) »), et lui seul suffit. Sur un CP rural qui couvre
-    # plusieurs communes on prend la plus peuplée, comme la source SeLoger.
-    if not nl.commune and nl.code_postal:
+    """Résout commune + département + coordonnées, sans lesquels un bien d'agence est
+    invisible pour les filtres de zone, la carte et le scoring.
+
+    Le code postal fait FOI sur la commune. Il vient d'un motif à cinq chiffres, donc
+    d'une donnée structurée ; la commune, elle, est lue en texte libre dans un titre. Vu
+    en vrai : une annonce de Plougasnou (29630) est ressortie « Pourrières », commune du
+    Var, parce que la BAN géocode volontiers n'importe quel mot. On ne garde donc la
+    commune lue que si elle tombe dans le même département que le code postal.
+    """
+    par_cp = None
+    if nl.code_postal:
         from .geo_communes import main_commune_for_postcode
 
-        c = main_commune_for_postcode(nl.code_postal)
-        if c:
-            nl.commune = c.get("nom")
-            nl.code_commune = nl.code_commune or c.get("code")
-            if nl.latitude is None:
-                nl.latitude, nl.longitude = c.get("lat"), c.get("lon")
-    if nl.commune and nl.latitude is None:
+        par_cp = main_commune_for_postcode(nl.code_postal)
+
+    if nl.commune:
         from .geo import geocode_locality
 
         g = geocode_locality(nl.commune)
-        if g:
+        coherent = g and (not par_cp or (g.get("departement") or "") == nl.code_postal[:2])
+        if coherent:
             nl.commune = g["nom"]
-            nl.latitude, nl.longitude = g["lat"], g["lon"]
+            if nl.latitude is None:
+                nl.latitude, nl.longitude = g["lat"], g["lon"]
             nl.code_postal = nl.code_postal or g["code_postal"]
             nl.code_commune = nl.code_commune or g["code_commune"]
             nl.departement = nl.departement or g["departement"]
+            return nl
+        nl.commune = None  # incohérente avec le code postal -> on la jette
+
+    if par_cp:
+        nl.commune = par_cp.get("nom")
+        nl.code_commune = nl.code_commune or par_cp.get("code")
+        nl.departement = nl.departement or (nl.code_postal or "")[:2]
+        if nl.latitude is None:
+            nl.latitude, nl.longitude = par_cp.get("lat"), par_cp.get("lon")
     return nl
 
 
@@ -319,13 +330,23 @@ def ingest(db, settings=None) -> dict:
     # l'export note le bien pour TOUS les sets (rétro-compat) — une agence bretonne
     # apparaîtrait dans le set Drôme/Ardèche.
     sets = config.set_par_agence
-    nb = 0
+    depts = config.departements_par_agence
+    nb = ignores = 0
     for item in collected:
+        agence = (item.raw or {}).get("agence")
+        attendus = depts.get(agence)
+        if attendus and (item.code_postal or "")[:2] not in attendus:
+            # Hors de la zone déclarée : soit le réseau est national, soit la commune a
+            # été mal lue puis géocodée quand même. Dans les deux cas le bien n'a rien
+            # à faire dans ce set.
+            ignores += 1
+            continue
         row = upsert_listing(db, annotate(item))
-        set_id = sets.get((item.raw or {}).get("agence"))
+        set_id = sets.get(agence)
         if set_id is not None and set_id not in (row.set_ids or []):
             row.set_ids = sorted({*(row.set_ids or []), set_id})
         nb += 1
     db.commit()
-    logger.info("Ingestion agences : %s annonce(s) traitée(s) (extracteur=%s).", nb, extractor.name)
-    return {"ingested": nb, "extractor": extractor.name}
+    logger.info("Ingestion agences : %s annonce(s) traitée(s), %s hors zone ignorée(s) "
+                "(extracteur=%s).", nb, ignores, extractor.name)
+    return {"ingested": nb, "hors_zone": ignores, "extractor": extractor.name}

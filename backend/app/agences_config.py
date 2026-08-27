@@ -16,6 +16,9 @@ Exemple `agences.yaml` :
         # Set auquel rattacher ses biens (optionnel). Sans lui, un bien d'agence est
         # noté pour TOUS les sets : une agence bretonne polluerait le set Drôme/Ardèche.
         set_id: 4
+        # Départements attendus (optionnel). Un réseau national partage un seul domaine :
+        # la récolte de liens sort de la zone et ramène des biens d'ailleurs.
+        departements: [22, 29, 56]
       - nom: "Terres & Demeures"
         sites: []
 """
@@ -31,6 +34,7 @@ class AgenceConfig:
     nom: str
     sites: list[str] = field(default_factory=list)
     set_id: int | None = None
+    departements: list[str] = field(default_factory=list)
 
 
 @dataclass
@@ -48,6 +52,11 @@ class AgencesConfig:
         """{nom_agence: set_id} pour les agences qui en déclarent un."""
         return {a.nom: a.set_id for a in self.agences if a.set_id is not None}
 
+    @property
+    def departements_par_agence(self) -> dict[str, list[str]]:
+        """{nom_agence: [départements]} pour les agences qui en déclarent."""
+        return {a.nom: a.departements for a in self.agences if a.departements}
+
 
 def load_agences_config(path: str) -> AgencesConfig:
     """Charge la config depuis un YAML. Renvoie une config vide si absent."""
@@ -59,7 +68,8 @@ def load_agences_config(path: str) -> AgencesConfig:
         data = yaml.safe_load(fh) or {}
     agences = [
         AgenceConfig(nom=str(a.get("nom") or "Agence"), sites=list(a.get("sites") or []),
-                     set_id=int(a["set_id"]) if a.get("set_id") is not None else None)
+                     set_id=int(a["set_id"]) if a.get("set_id") is not None else None,
+                     departements=[str(d).zfill(2) for d in (a.get("departements") or [])])
         for a in (data.get("agences") or [])
     ]
     return AgencesConfig(imap=dict(data.get("imap") or {}), agences=agences)
