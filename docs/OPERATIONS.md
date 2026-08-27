@@ -94,25 +94,44 @@ C'est le compromis assumé de l'étage : sur un set littoral, l'arrière-pays so
 
 | Profil | Étage 0 (annonce) | Étage 1 (commune) |
 |---|---|---|
-| `littoral` (set 4) | écarte le rebut évident, **ne sélectionne pas** | distance à la mer |
-| `montagne` (set 1, têtard) | **fait le gros du tri** | altitude |
+| `littoral` (set 4) | écarte le rebut évident | distance à la mer |
+| `montagne` (set 1, têtard) | écarte le rebut évident | **référence de prix DVF**, puis altitude |
 
-Le renversement n'est pas un détail de réglage. Sur le littoral, ce qui décide — distance
-à la mer, proéminence — est *mesuré* et n'apparaît jamais dans l'annonce, d'où la règle
-« ne pas compter sur le texte pour choisir les pépites ». Têtard est l'inverse : ses
-critères de tête sont le budget, la capacité d'accueil et le prix au m², c'est-à-dire des
-champs bruts de l'annonce, gratuits et disponibles avant le moindre appel réseau. L'étage
-0 y trie donc pour de vrai, et l'étage 1 ne sert plus qu'à écarter la plaine.
+Dans les deux cas, **l'étage 0 écarte, il ne sélectionne pas** — la tentation est de
+croire que têtard échappe à la règle parce que budget, capacité et prix au m² sont des
+champs bruts de l'annonce. C'est faux pour le prix : 2 700 €/m² est cher dans le Diois et
+bon marché en Savoie du lac. Un prix au m² ne devient un critère qu'une fois rapporté à
+son marché, et c'est ce que fait l'étage 1 (DVF par commune, 0,3 à 0,8 s, cache permanent).
 
 ```bash
 python collect_tetard.py --min-altitude 250   # écarte les communes plus basses (défaut)
-python collect_tetard.py --min-altitude 0     # étage commune sauté
-python collect_tetard.py --keep 250           # plafond, appliqué à la note d'annonce
+python collect_tetard.py --min-altitude 0     # étage altitude sauté
+python collect_tetard.py --keep 700           # plafond, appliqué à la note d'annonce
 ```
+
+**Calibrage du plafond : ne pas descendre sous 30 %.** Mesuré sur les 450 biens du set,
+dont 12 pépites connues :
+
+| On garde le top | pépites conservées |
+|---|---|
+| 5 % | 5/12 |
+| 11,5 % | 7/12 |
+| 20 % | 10/12 |
+| **30 %** | **11/12** |
+
+À 30 % la seule perdue est à 451 336 €, au-dessus du plafond budgétaire, donc écartée à
+juste titre. La première collecte a coupé à 11,5 % et n'aurait gardé que 7 pépites sur 12.
 
 Mêmes garde-fous que côté mer : une commune non mesurée est **retenue**, et une annonce
 qui parle d'eau, de bois ou de vue dégagée est **repêchée** même en commune basse —
 l'altitude ne mesure ni une rivière ni un point de vue sur la vallée.
+
+⚠️ **Un étage qui échoue en silence ressemble trait pour trait à un étage qui ne trouve
+rien.** L'API IGN plafonne les rafales : sur un lot de plusieurs centaines de communes,
+l'étage altitude en a mesuré 25 puis écarté 3 biens sur 2 180 — et le garde-fou « commune
+non mesurée = retenue » a fait passer ce no-op pour un run propre. L'entonnoir annonce
+maintenant le nombre de communes non mesurées ; si la ligne `⚠ N communes non mesurées`
+apparaît, l'étage n'a pas tranché et il faut relancer (les caches sont incrémentaux).
 
 ### 2 ter. Ajouter une agence locale
 
