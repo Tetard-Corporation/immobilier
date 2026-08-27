@@ -57,6 +57,24 @@ PREFERENCES = [
     {"kind": "commerces", "weight": 2, "label": "Commerces/services à proximité", "params": {"ref": 15}},
 ]
 
+# Paliers : au-delà d'un certain score, un critère cesse d'être optionnel.
+#
+# `evaluate` renormalise sur les seuls critères mesurés, si bien qu'un bien dont peu de
+# critères sont notés est jugé sur ceux-là — et peut monter très haut sans qu'on sache s'il
+# voit l'eau. Au-dessus de 90, on exige donc une preuve : soit le contact avec l'eau est
+# mesuré (mer à moins de ~1 km, subscore ≥ 0,6), soit l'annonce le dit explicitement
+# (bord de mer, bord d'eau, vue). Un bien qui ne remplit rien de tout cela est ramené à 90 :
+# il reste une pépite, il cesse d'être en tête.
+EXIGENCES = [
+    {
+        "above": 90,
+        "label": "Vue ou contact avec l'eau (requis au-dessus de 90)",
+        "requires": ["distance_mer", "bord_de_mer", "bord_eau", "vue"],
+        "mode": "any",
+        "min_subscore": 0.6,
+    },
+]
+
 # Pivots côtiers. Le sud (Ploemeur) est DÉJÀ largement en base -> on met le NORD
 # (Côte de Granit Rose, l'archétype front-de-mer) EN PREMIER pour qu'il ne soit pas
 # tronqué par le cap ; Ploemeur en dernier (complément).
@@ -76,58 +94,10 @@ PIVOTS = [
 ]
 
 
-# --- Entonnoir -------------------------------------------------------------- #
-# L'enrichissement coûte ~2,3 s par bien : sur 929 annonces remontées pour ~18 pépites,
-# l'essentiel du temps partait dans des biens que le score écartait ensuite. On pré-classe
-# donc sur ce que l'annonce donne GRATUITEMENT — texte et prix, aucun appel réseau — et on
-# n'enrichit que le haut du panier. À ne pas confondre avec --cap, qui tronque dans l'ordre
-# de collecte et garde donc le premier pivot en entier plutôt que les meilleurs biens.
-
-# Poids alignés sur ceux du set (cf. PREFERENCES) pour que le pré-classement et le score
-# final regardent dans la même direction.
-_SIGNAUX_ANNONCE = {"bord_de_mer": 5.0, "bord_eau": 4.0, "vue": 4.0, "en_hauteur": 2.0}
-
-
-def prescore(it) -> float:
-    """Note d'annonce (0-20 environ), sans enrichissement ni réseau."""
-    from app.services.export_static import _detect_equipements, _detect_pavillon_neuf
-
-    feats = set(_detect_equipements(it.description))
-    note = sum(w for k, w in _SIGNAUX_ANNONCE.items() if k in feats)
-
-    # Pavillon neuf / lotissement viabilisé : l'inverse du bien recherché.
-    if _detect_pavillon_neuf(it.description):
-        note -= 4.0
-
-    # Rapport qualité/prix du terrain, mêmes bornes que la préférence prix_m2_terrain.
-    if it.surface_terrain and it.prix:
-        ppm = it.prix / it.surface_terrain
-        note += 3.0 if ppm <= 60 else 1.5 if ppm <= 150 else 0.0
-
-    # Un terrain nu se prête au projet visé (tiny house) ; une grande surface aussi.
-    if (it.type_bien or "").lower() == "terrain":
-        note += 1.0
-    if (it.surface_terrain or 0) >= 1500:
-        note += 1.0
-
-    return note
-
-
-def entonnoir(items: list, keep: int) -> list:
-    """Garde les `keep` meilleures annonces au pré-classement. Dit ce qu'elle écarte."""
-    if keep <= 0 or len(items) <= keep:
-        return items
-    classees = sorted(items, key=prescore, reverse=True)
-    gardes, ecartes = classees[:keep], classees[keep:]
-    seuil = prescore(gardes[-1])
-    print(f"Entonnoir : {len(gardes)} annonces retenues sur {len(items)} "
-          f"(note ≥ {seuil:.1f}) ; {len(ecartes)} écartées sans enrichissement.", flush=True)
-    return gardes
-
-
 def ensure_set(db) -> None:
     fs = db.get(FilterSet, SET_ID)
-    criteria = {"property_types": ["terrain", "maison"], "preferences": PREFERENCES}
+    criteria = {"property_types": ["terrain", "maison"], "preferences": PREFERENCES,
+                "exigences": EXIGENCES}
     if fs is None:
         db.add(FilterSet(id=SET_ID, name=SET_NAME, description=SET_DESC, criteria=criteria, parent_id=None))
     else:
@@ -139,9 +109,12 @@ def ensure_set(db) -> None:
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--cap", type=int, default=80, help="plafond dur du nb de biens enrichis")
-    ap.add_argument("--keep", type=int, default=60,
-                    help="entonnoir : nb d'annonces retenues au pré-classement avant "
-                         "enrichissement (0 = pas d'entonnoir)")
+    ap.add_argument("--keep", type=int, default=0,
+                    help="entonnoir : plafond du nb d'annonces enrichies, appliqué au "
+                         "classement par note d'annonce (0 = pas de plafond)")
+    ap.add_argument("--max-km-mer", type=float, default=10.0, dest="max_km_mer",
+                    help="entonnoir : écarte les communes plus éloignées de la mer "
+                         "(0 = étage sauté)")
     ap.add_argument("--pivot", help="ne collecter qu'autour des pivots dont le nom contient "
                                     "ce texte (ex. « morlaix »)")
     ap.add_argument("--workers", type=int, default=6)
@@ -206,7 +179,11 @@ def main() -> int:
                 kept += 1
             print(f"  [{name}/{ptypes[0]}] {kept} neufs (sur {len(items)})", flush=True)
 
-    todo = entonnoir(list(collected.values()), args.keep)[: args.cap]
+    from app.services.entonnoir import appliquer as entonnoir
+
+    print(f"\nEntonnoir sur {len(collected)} annonces collectées :", flush=True)
+    todo = entonnoir(list(collected.values()), max_km=args.max_km_mer,
+                     garder=args.keep or None)[: args.cap]
     print(f"\nEnrichissement de {len(todo)} biens neufs ({args.workers} workers)...", flush=True)
     t0 = time.time()
     enriched = []

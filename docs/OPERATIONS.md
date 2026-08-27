@@ -43,6 +43,53 @@ python -c "from app.sources.leboncoin import LeboncoinSource as L; \
 from app.sources.seloger import SeLogerSource as S; print('lbc', L().available, '| slg', S().available)"
 ```
 
+### 2 bis. L'entonnoir : filtrer avant d'enrichir
+
+L'enrichissement coûte **~2,3 s par bien**, la mesure fine de la distance à la mer 4 appels
+IGN de plus. Sur la collecte du littoral, 929 annonces ont été enrichies pour une vingtaine
+de pépites : la quasi-totalité du temps est partie dans des biens que le score écartait
+ensuite. `app/services/entonnoir.py` renverse l'ordre — filtrer d'abord, enrichir ensuite —
+en quatre étages, du moins cher au plus précis :
+
+| Étage | Ce qu'il regarde | Coût |
+|---|---|---|
+| 0 — annonce | texte, prix, surfaces | aucun appel |
+| 1 — commune | distance à la mer du barycentre communal | 2 appels IGN **par commune** |
+| 2 — point | enrichissement complet (`enrich_listing`) | ~2,3 s par bien |
+| 3 — fin | distance mer et proéminence au point près | ~4 appels IGN par bien |
+
+**L'étage 1 est celui qui change l'économie du pipeline.** La distance à la mer coûte le
+même appel pour toutes les annonces d'une commune : quelques dizaines d'appels là où le
+calcul au point près en demande des milliers, et il trie sur le critère qui décide vraiment.
+Le cache `backend/data/commune_mer_cache.json` est permanent — une seconde collecte dans la
+même région ne repaie pas cet étage.
+
+```bash
+python collect_littoral.py --max-km-mer 10     # écarte les communes à plus de 10 km (défaut)
+python collect_littoral.py --max-km-mer 0      # étage commune sauté
+python collect_littoral.py --keep 200          # plafond dur, appliqué à la note d'annonce
+```
+
+**Ne pas compter sur le texte pour choisir les pépites.** Mesuré sur 690 biens dont les
+pépites étaient connues : garder les 60 meilleures annonces au texte n'en conservait que
+**7 sur 18**, le top-150 onze, le top-300 treize. Les critères qui décident — distance à la
+mer, proéminence du relief — sont *mesurés* et n'apparaissent jamais dans l'annonce.
+L'étage 0 sert donc à écarter le rebut évident (pavillon neuf, lotissement viabilisé), pas
+à sélectionner. Le tri par qualité, c'est l'étage 1.
+
+**Deux garde-fous, parce qu'un entonnoir qui perd une pépite coûte plus qu'il ne rapporte :**
+
+- un bien dont la commune n'a pas pu être mesurée est **retenu** — mieux vaut enrichir pour
+  rien qu'écarter sur une mesure manquante ;
+- un bien dont l'annonce parle de **bord d'eau** est retenu même en commune lointaine. Le
+  set note `bord_eau` (rivière, étang, lac, ria, aber, estuaire) au poids 4 : l'eau du set
+  ne se réduit pas à la mer, et la distance à la côte ne mesure pas les rivières.
+
+Mesuré sur les 840 biens du set : 225 écartés, 2 repêchés au bord d'eau, **11 pépites sur
+12 conservées**. La perdue (Caouënnec-Lanvézéac, 80,0) est à plus de 12 km de la mer et son
+annonce ne mentionne aucune eau — elle montait sur le rapport qualité/prix et le terrain.
+C'est le compromis assumé de l'étage : sur un set littoral, l'arrière-pays sort.
+
 ### 3. Collecter, source par source
 
 ```bash

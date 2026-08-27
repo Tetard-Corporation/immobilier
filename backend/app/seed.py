@@ -45,7 +45,8 @@ def seed_from_data_json(path: str = _DEFAULT) -> dict:
             id=s["id"], name=s["name"], parent_id=s.get("parent_id"),
             description=s.get("description"),
             criteria={"property_types": s.get("property_types", ["maison"]),
-                      "preferences": s.get("preferences", [])},
+                      "preferences": s.get("preferences", []),
+                      "exigences": s.get("exigences", [])},
         ))
     db.commit()
 
