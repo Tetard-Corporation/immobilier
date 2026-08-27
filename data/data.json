@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-08-26T20:58:52.419455+00:00",
+ "generated_at": "2026-08-27T10:06:08.535813+00:00",
  "sets": [
   {
    "id": 1,
@@ -18495,430 +18495,6 @@
     "photos/leboncoin_3228788695/10.jpg",
     "photos/leboncoin_3228788695/11.jpg"
    ]
-  },
-  {
-   "condition": "habitable",
-   "niveau_travaux": 0,
-   "nuisances": [],
-   "nature_score": 4,
-   "nature_exception": true,
-   "constructible": true,
-   "est_zone_au": false,
-   "zone_urba": "U",
-   "altitude": 64.6,
-   "rail_time_min": 200,
-   "risques": [
-    "seisme",
-    "retraitGonflementArgile",
-    "radon"
-   ],
-   "prix_m2_secteur": 2407.3,
-   "ecart_prix_pct": -10.5,
-   "pollution_eau_score": 0.75,
-   "eau_potable_conforme": false,
-   "pollutions": [],
-   "age_median": null,
-   "part_gauche": null,
-   "population_commune": 20315,
-   "isolement_score": 0.0,
-   "price_decreased": true,
-   "id": 1292,
-   "source": "bienici",
-   "external_id": "safti-1-1669872",
-   "type_bien": "maison",
-   "prix": 349000.0,
-   "nb_chambres": 5,
-   "nb_pieces": 6,
-   "surface_terrain": null,
-   "surface_bati": 162.0,
-   "commune": "Lannion",
-   "code_postal": "22300",
-   "code_commune": "22113",
-   "departement": "22",
-   "latitude": 48.72456162041153,
-   "longitude": -3.4362450953219548,
-   "url": "https://www.bienici.com/annonce/safti-1-1669872",
-   "description": "Située dans un  environnement calme et verdoyant, à deux pas des bois et à 10 minutes du centre-ville  de Lannion et des commerces, cette maison de 162 m² offre un cadre de vie spacieux et fonctionnel, idéal pour une famille  ou des amateurs d’espace.<br>Dès l’entrée, une vaste pièce de vie de 44 m² avec poêle à bois, baignée de lumière grâce à son exposition sud, forme le cœur de la maison. Le rez-de-chaussée propose également une belle chambre, une salle de bain, un WC séparé et une lingerie, permettant une vie de plain-pied confortable. La cuisine fermée, équipée d’électroménager récent en partie, s’intègre harmonieusement à cet espace.<br>À l’étage, le palier dessert quatre chambres, un bureau, une salle de d' eau et un WC indépendant, offrant un espace nuit modulable et spacieux.<br>À l’extérieur, vous profiterez d’un terrain arboré de 2 341 m², d’une terrasse idéale pour les repas en plein air, d’un parking extérieur et de plusieurs dépendances : grange, local technique,  et abri de jardin.<br>Côté prestations, la maison bénéficie d’un plancher chauffant (RDC et étage) alimenté par une chaudière fuel récente (5 ans), complété par un poêle à bois pour un confort thermique optimal. La fibre optique et l’assainissement tout-à-l’égout garantissent un confort moderne. DPE D.<br> <br>Les informations sur les risques auxquels ce bien est exposé sont disponibles sur le site Géorisques : www.georisques.gouv.fr<br>Prix de vente : 349 000 €<br>Honoraires charge vendeur<br> <br>Contactez votre conseiller SAFTI : Marie-Emmanuelle RENAULT, Tél. : <span class=\"importDescriptionDecorator\" data-type=\"phone\">0665107500</span>, E-mail : <span class=\"importDescriptionDecorator\" data-type=\"email\">marie-emmanuelle.renault@safti.fr</span> - EI - Agent commercial immatriculé au RSAC de SAINT-BRIEUC sous le numéro 753977412",
-   "dpe_classe": "D",
-   "features": [
-    "arbore",
-    "ensoleille",
-    "vue",
-    "vue_panoramique",
-    "cheminee",
-    "terrasse"
-   ],
-   "score": 82.1,
-   "score_details": [
-    {
-     "key": "prix",
-     "label": "Prix & opportunité",
-     "score": 72.2,
-     "status": "ok",
-     "subpillars": [
-      {
-       "key": "niveau_prix",
-       "label": "Niveau de prix (€/m²)",
-       "status": "ok",
-       "detail": "2154 €/m² habitable (repère : 1200–3500)",
-       "subscore": 0.689,
-       "weight": 0.45,
-       "contribution": 31.0
-      },
-      {
-       "key": "affaire",
-       "label": "Affaire vs marché",
-       "status": "ok",
-       "detail": "-10% vs marché local",
-       "subscore": 0.605,
-       "weight": 0.35,
-       "contribution": 21.2
-      },
-      {
-       "key": "baisse_prix",
-       "label": "Négociation (baisse)",
-       "status": "ok",
-       "detail": "prix en baisse constatée",
-       "subscore": 1.0,
-       "weight": 0.2,
-       "contribution": 20.0
-      }
-     ],
-     "weight": 0.3,
-     "contribution": 21.7
-    },
-    {
-     "key": "foncier",
-     "label": "Foncier & constructibilité",
-     "score": 100.0,
-     "status": "ok",
-     "subpillars": [
-      {
-       "key": "zonage",
-       "label": "Zonage / constructibilité",
-       "status": "ok",
-       "detail": "zone U",
-       "subscore": 1.0,
-       "weight": 1.0,
-       "contribution": 100.0
-      },
-      {
-       "key": "terrain",
-       "label": "Présence de terrain",
-       "status": "n/a",
-       "detail": "surface terrain inconnue",
-       "subscore": null,
-       "weight": 0.0,
-       "contribution": 0.0
-      }
-     ],
-     "weight": 0.2,
-     "contribution": 20.0
-    },
-    {
-     "key": "cadre",
-     "label": "Cadre & nature",
-     "score": 87.0,
-     "status": "ok",
-     "subpillars": [
-      {
-       "key": "nature",
-       "label": "Qualité nature",
-       "status": "ok",
-       "detail": "score nature 4",
-       "subscore": 0.98,
-       "weight": 0.5,
-       "contribution": 49.0
-      },
-      {
-       "key": "exception",
-       "label": "Caractère d'exception",
-       "status": "ok",
-       "detail": "exception",
-       "subscore": 1.0,
-       "weight": 0.3,
-       "contribution": 30.0
-      },
-      {
-       "key": "authenticite",
-       "label": "Authenticité / cachet",
-       "status": "ok",
-       "detail": "non précisé",
-       "subscore": 0.4,
-       "weight": 0.2,
-       "contribution": 8.0
-      }
-     ],
-     "weight": 0.2,
-     "contribution": 17.4
-    },
-    {
-     "key": "risques",
-     "label": "Risques & nuisances",
-     "score": 85.5,
-     "status": "ok",
-     "subpillars": [
-      {
-       "key": "risques_naturels",
-       "label": "Risques naturels/techno",
-       "status": "ok",
-       "detail": "retraitGonflementArgile, seisme, radon",
-       "subscore": 0.84,
-       "weight": 0.353,
-       "contribution": 29.7
-      },
-      {
-       "key": "pollution_eau",
-       "label": "Pollution / qualité de l'eau",
-       "status": "ok",
-       "detail": "eau NON conforme",
-       "subscore": 0.75,
-       "weight": 0.353,
-       "contribution": 26.5
-      },
-      {
-       "key": "nuisances_proximite",
-       "label": "Nuisances de proximité",
-       "status": "ok",
-       "detail": "aucune nuisance signalée",
-       "subscore": 1.0,
-       "weight": 0.294,
-       "contribution": 29.4
-      },
-      {
-       "key": "aerien",
-       "label": "Nuisances aériennes (PEB)",
-       "status": "pending",
-       "detail": "PEB / servitudes aéro",
-       "subscore": null,
-       "weight": 0.0,
-       "contribution": 0.0
-      }
-     ],
-     "weight": 0.15,
-     "contribution": 12.8
-    },
-    {
-     "key": "etat",
-     "label": "État & travaux",
-     "score": 100.0,
-     "status": "ok",
-     "subpillars": [
-      {
-       "key": "travaux",
-       "label": "Niveau de travaux",
-       "status": "ok",
-       "detail": "habitable",
-       "subscore": 1.0,
-       "weight": 1.0,
-       "contribution": 100.0
-      }
-     ],
-     "weight": 0.07,
-     "contribution": 7.0
-    },
-    {
-     "key": "accessibilite",
-     "label": "Accessibilité & services",
-     "score": 39.8,
-     "status": "ok",
-     "subpillars": [
-      {
-       "key": "train",
-       "label": "Trajet train",
-       "status": "ok",
-       "detail": "~11h46 porte-à-porte (Paris)",
-       "subscore": 0.0,
-       "weight": 0.5,
-       "contribution": 0.0
-      },
-      {
-       "key": "gare",
-       "label": "Proximité gare",
-       "status": "ok",
-       "detail": "gare de Plouaret-Tregor à 12.3 km",
-       "subscore": 0.59,
-       "weight": 0.25,
-       "contribution": 14.8
-      },
-      {
-       "key": "fibre",
-       "label": "Fibre",
-       "status": "ok",
-       "detail": "fibre",
-       "subscore": 1.0,
-       "weight": 0.25,
-       "contribution": 25.0
-      }
-     ],
-     "weight": 0.08,
-     "contribution": 3.2
-    }
-   ],
-   "scores_by_set": {
-    "4": {
-     "match_score": 85.1,
-     "details": [
-      {
-       "kind": "constructible",
-       "label": "Terrain constructible (tiny house)",
-       "weight": 5.0,
-       "status": "ok",
-       "detail": "constructible (zonage U)",
-       "subscore": 1.0,
-       "contribution": 5.0
-      },
-      {
-       "kind": "budget",
-       "label": "Budget ≤ 400 000 €",
-       "weight": 5.0,
-       "status": "ok",
-       "detail": "349000€ — 87% du budget 400000€ (haut de fourchette)",
-       "subscore": 0.885,
-       "contribution": 4.425
-      },
-      {
-       "kind": "feature",
-       "label": "Vue (mer / dégagée)",
-       "weight": 4.0,
-       "status": "ok",
-       "detail": "vue : mentionné",
-       "subscore": 1.0,
-       "contribution": 4.0
-      },
-      {
-       "kind": "nature_exception",
-       "label": "Nature d'exception",
-       "weight": 4.0,
-       "status": "ok",
-       "detail": "site d'exception (nature remarquable)",
-       "subscore": 1.0,
-       "contribution": 4.0
-      },
-      {
-       "kind": "en_hauteur_geo",
-       "label": "Surélevé / position dominante (relief réel)",
-       "weight": 4.0,
-       "status": "ok",
-       "detail": "plat (+3 m sur 300 m)",
-       "subscore": 0.525,
-       "contribution": 2.1
-      },
-      {
-       "kind": "fiber",
-       "label": "Fibre (télétravail)",
-       "weight": 2.0,
-       "status": "ok",
-       "detail": "98% des locaux de la commune éligibles (à vérifier pour ce bien)",
-       "subscore": 0.98,
-       "contribution": 1.96
-      },
-      {
-       "kind": "feature",
-       "label": "Isolé / sauvage",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "commune de 20315 hab.",
-       "subscore": 0.0,
-       "contribution": 0.0
-      },
-      {
-       "kind": "feature",
-       "label": "Bord de mer / première ligne",
-       "weight": 5.0,
-       "status": "n/a",
-       "detail": "bord_de_mer : non mentionné (ignoré)",
-       "subscore": null
-      },
-      {
-       "kind": "distance_mer",
-       "label": "Proximité mer (distance réelle)",
-       "weight": 5.0,
-       "status": "n/a",
-       "detail": "distance mer non calculée",
-       "subscore": null
-      },
-      {
-       "kind": "feature",
-       "label": "Bord d'eau (rivière / étang / ria)",
-       "weight": 4.0,
-       "status": "n/a",
-       "detail": "bord_eau : non mentionné (ignoré)",
-       "subscore": null
-      },
-      {
-       "kind": "feature",
-       "label": "En hauteur (mention annonce)",
-       "weight": 2.0,
-       "status": "n/a",
-       "detail": "en_hauteur : non mentionné (ignoré)",
-       "subscore": null
-      },
-      {
-       "kind": "prix_m2_terrain",
-       "label": "Rapport qualité/prix (€/m² terrain)",
-       "weight": 4.0,
-       "status": "n/a",
-       "detail": "prix ou surface terrain inconnu",
-       "subscore": null
-      },
-      {
-       "kind": "no_vis_a_vis",
-       "label": "Sans vis-à-vis",
-       "weight": 3.0,
-       "status": "n/a",
-       "detail": "vis-à-vis non précisé (ignoré)",
-       "subscore": null
-      },
-      {
-       "kind": "has_terrain",
-       "label": "Avec terrain",
-       "weight": 3.0,
-       "status": "n/a",
-       "detail": "surface terrain inconnue",
-       "subscore": null
-      },
-      {
-       "kind": "authentic",
-       "label": "Charme / cachet",
-       "weight": 3.0,
-       "status": "n/a",
-       "detail": "cachet non mentionné (ignoré)",
-       "subscore": null
-      },
-      {
-       "kind": "hiking",
-       "label": "Sentiers côtiers / randonnées",
-       "weight": 2.0,
-       "status": "pending",
-       "detail": "provider non branché",
-       "subscore": null
-      },
-      {
-       "kind": "nuisance_sonore",
-       "label": "Calme (loin autoroute/rail)",
-       "weight": 2.0,
-       "status": "pending",
-       "detail": "proximité infrastructures non vérifiée",
-       "subscore": null
-      },
-      {
-       "kind": "commerces",
-       "label": "Commerces/services à proximité",
-       "weight": 2.0,
-       "status": "pending",
-       "detail": "commerces non vérifiés",
-       "subscore": null
-      }
-     ]
-    }
-   },
-   "viager": false,
-   "residence_tourisme": false,
-   "is_favori": false,
-   "favori_note": null,
-   "n_photos_source": 12,
-   "photos": []
   },
   {
    "condition": "habitable",
@@ -42721,423 +42297,6 @@
    ]
   },
   {
-   "condition": null,
-   "niveau_travaux": null,
-   "nuisances": [],
-   "nature_score": 0,
-   "nature_exception": false,
-   "constructible": true,
-   "est_zone_au": false,
-   "zone_urba": "U",
-   "altitude": 56.1,
-   "rail_time_min": 193,
-   "risques": [
-    "seisme",
-    "radon"
-   ],
-   "prix_m2_secteur": 35.0,
-   "ecart_prix_pct": -82.8,
-   "pollution_eau_score": 1.0,
-   "eau_potable_conforme": true,
-   "pollutions": [],
-   "age_median": null,
-   "part_gauche": null,
-   "population_commune": 1242,
-   "isolement_score": 0.533,
-   "price_decreased": false,
-   "id": 1246,
-   "source": "bienici",
-   "external_id": "safti-1-1636220",
-   "type_bien": "terrain",
-   "prix": 11920.0,
-   "nb_chambres": null,
-   "nb_pieces": null,
-   "surface_terrain": 1982.0,
-   "surface_bati": null,
-   "commune": "Plougrescant",
-   "code_postal": "22820",
-   "code_commune": "22218",
-   "departement": "22",
-   "latitude": 48.84000349125975,
-   "longitude": -3.231247557051311,
-   "url": "https://www.bienici.com/annonce/safti-1-1636220",
-   "description": "Terrain en zone naturelle<br> <br>Les informations sur les risques auxquels ce bien est exposé sont disponibles sur le site Géorisques : www.georisques.gouv.fr<br>Prix de vente : 11 920 €<br>Honoraires charge vendeur<br> <br>Contactez votre conseiller SAFTI : Florence DROUMAGUET, Tél. : <span class=\"importDescriptionDecorator\" data-type=\"phone\">06 86 08 11 66</span>, E-mail : <span class=\"importDescriptionDecorator\" data-type=\"email\">florence.droumaguet@safti.fr</span> - EI - Agent commercial immatriculé au RSAC de SAINT-BRIEUC sous le numéro 877 908 681",
-   "dpe_classe": null,
-   "features": [],
-   "score": 79.2,
-   "score_details": [
-    {
-     "key": "prix",
-     "label": "Prix & opportunité",
-     "score": 100.0,
-     "status": "ok",
-     "subpillars": [
-      {
-       "key": "niveau_prix",
-       "label": "Niveau de prix (€/m²)",
-       "status": "ok",
-       "detail": "6 €/m² de terrain (repère : 80–400)",
-       "subscore": 1.0,
-       "weight": 0.562,
-       "contribution": 56.2
-      },
-      {
-       "key": "affaire",
-       "label": "Affaire vs marché",
-       "status": "ok",
-       "detail": "-83% vs marché local",
-       "subscore": 1.0,
-       "weight": 0.437,
-       "contribution": 43.7
-      },
-      {
-       "key": "baisse_prix",
-       "label": "Négociation (baisse)",
-       "status": "n/a",
-       "detail": "pas de baisse constatée",
-       "subscore": null,
-       "weight": 0.0,
-       "contribution": 0.0
-      }
-     ],
-     "weight": 0.323,
-     "contribution": 32.3
-    },
-    {
-     "key": "foncier",
-     "label": "Foncier & constructibilité",
-     "score": 99.8,
-     "status": "ok",
-     "subpillars": [
-      {
-       "key": "zonage",
-       "label": "Zonage / constructibilité",
-       "status": "ok",
-       "detail": "zone U",
-       "subscore": 1.0,
-       "weight": 0.6,
-       "contribution": 60.0
-      },
-      {
-       "key": "terrain",
-       "label": "Présence de terrain",
-       "status": "ok",
-       "detail": "1982 m²",
-       "subscore": 0.995,
-       "weight": 0.4,
-       "contribution": 39.8
-      }
-     ],
-     "weight": 0.215,
-     "contribution": 21.5
-    },
-    {
-     "key": "risques",
-     "label": "Risques & nuisances",
-     "score": 97.9,
-     "status": "ok",
-     "subpillars": [
-      {
-       "key": "risques_naturels",
-       "label": "Risques naturels/techno",
-       "status": "ok",
-       "detail": "seisme, radon",
-       "subscore": 0.941,
-       "weight": 0.353,
-       "contribution": 33.2
-      },
-      {
-       "key": "pollution_eau",
-       "label": "Pollution / qualité de l'eau",
-       "status": "ok",
-       "detail": "eau conforme",
-       "subscore": 1.0,
-       "weight": 0.353,
-       "contribution": 35.3
-      },
-      {
-       "key": "nuisances_proximite",
-       "label": "Nuisances de proximité",
-       "status": "ok",
-       "detail": "aucune nuisance signalée",
-       "subscore": 1.0,
-       "weight": 0.294,
-       "contribution": 29.4
-      },
-      {
-       "key": "aerien",
-       "label": "Nuisances aériennes (PEB)",
-       "status": "pending",
-       "detail": "PEB / servitudes aéro",
-       "subscore": null,
-       "weight": 0.0,
-       "contribution": 0.0
-      }
-     ],
-     "weight": 0.161,
-     "contribution": 15.8
-    },
-    {
-     "key": "cadre",
-     "label": "Cadre & nature",
-     "score": 45.0,
-     "status": "ok",
-     "subpillars": [
-      {
-       "key": "nature",
-       "label": "Qualité nature",
-       "status": "ok",
-       "detail": "score nature 0",
-       "subscore": 0.5,
-       "weight": 0.5,
-       "contribution": 25.0
-      },
-      {
-       "key": "exception",
-       "label": "Caractère d'exception",
-       "status": "ok",
-       "detail": "ordinaire",
-       "subscore": 0.4,
-       "weight": 0.3,
-       "contribution": 12.0
-      },
-      {
-       "key": "authenticite",
-       "label": "Authenticité / cachet",
-       "status": "ok",
-       "detail": "non précisé",
-       "subscore": 0.4,
-       "weight": 0.2,
-       "contribution": 8.0
-      }
-     ],
-     "weight": 0.215,
-     "contribution": 9.7
-    },
-    {
-     "key": "etat",
-     "label": "État & travaux",
-     "score": null,
-     "status": "pending",
-     "subpillars": [
-      {
-       "key": "travaux",
-       "label": "Niveau de travaux",
-       "status": "n/a",
-       "detail": "état inconnu",
-       "subscore": null,
-       "weight": 0.0,
-       "contribution": 0.0
-      }
-     ],
-     "weight": 0.0,
-     "contribution": 0.0
-    },
-    {
-     "key": "accessibilite",
-     "label": "Accessibilité & services",
-     "score": 0.0,
-     "status": "ok",
-     "subpillars": [
-      {
-       "key": "train",
-       "label": "Trajet train",
-       "status": "ok",
-       "detail": "~11h35 porte-à-porte (Paris)",
-       "subscore": 0.0,
-       "weight": 0.5,
-       "contribution": 0.0
-      },
-      {
-       "key": "gare",
-       "label": "Proximité gare",
-       "status": "ok",
-       "detail": "gare de Plouaret-Tregor à 30.4 km",
-       "subscore": 0.0,
-       "weight": 0.25,
-       "contribution": 0.0
-      },
-      {
-       "key": "fibre",
-       "label": "Fibre",
-       "status": "ok",
-       "detail": "pas de fibre",
-       "subscore": 0.0,
-       "weight": 0.25,
-       "contribution": 0.0
-      }
-     ],
-     "weight": 0.086,
-     "contribution": 0.0
-    }
-   ],
-   "scores_by_set": {
-    "4": {
-     "match_score": 83.6,
-     "details": [
-      {
-       "kind": "budget",
-       "label": "Budget ≤ 400 000 €",
-       "weight": 5.0,
-       "status": "ok",
-       "detail": "11920€ — 3% du budget 400000€",
-       "subscore": 1.0,
-       "contribution": 5.0
-      },
-      {
-       "kind": "constructible",
-       "label": "Terrain constructible (tiny house)",
-       "weight": 5.0,
-       "status": "ok",
-       "detail": "constructible (zonage U)",
-       "subscore": 1.0,
-       "contribution": 5.0
-      },
-      {
-       "kind": "prix_m2_terrain",
-       "label": "Rapport qualité/prix (€/m² terrain)",
-       "weight": 4.0,
-       "status": "ok",
-       "detail": "6 €/m² de terrain",
-       "subscore": 1.0,
-       "contribution": 4.0
-      },
-      {
-       "kind": "en_hauteur_geo",
-       "label": "Surélevé / position dominante (relief réel)",
-       "weight": 4.0,
-       "status": "ok",
-       "detail": "dominant (+6 m sur 300 m)",
-       "subscore": 0.792,
-       "contribution": 3.167
-      },
-      {
-       "kind": "has_terrain",
-       "label": "Avec terrain",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "1982 m²",
-       "subscore": 1.0,
-       "contribution": 3.0
-      },
-      {
-       "kind": "nature_exception",
-       "label": "Nature d'exception",
-       "weight": 4.0,
-       "status": "ok",
-       "detail": "qualité nature 0/4",
-       "subscore": 0.4,
-       "contribution": 1.6
-      },
-      {
-       "kind": "feature",
-       "label": "Isolé / sauvage",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "commune de 1242 hab.",
-       "subscore": 0.533,
-       "contribution": 1.599
-      },
-      {
-       "kind": "fiber",
-       "label": "Fibre (télétravail)",
-       "weight": 2.0,
-       "status": "ok",
-       "detail": "10% des locaux de la commune éligibles (à vérifier pour ce bien)",
-       "subscore": 0.1,
-       "contribution": 0.2
-      },
-      {
-       "kind": "feature",
-       "label": "Bord de mer / première ligne",
-       "weight": 5.0,
-       "status": "n/a",
-       "detail": "bord_de_mer : non mentionné (ignoré)",
-       "subscore": null
-      },
-      {
-       "kind": "distance_mer",
-       "label": "Proximité mer (distance réelle)",
-       "weight": 5.0,
-       "status": "n/a",
-       "detail": "distance mer non calculée",
-       "subscore": null
-      },
-      {
-       "kind": "feature",
-       "label": "Bord d'eau (rivière / étang / ria)",
-       "weight": 4.0,
-       "status": "n/a",
-       "detail": "bord_eau : non mentionné (ignoré)",
-       "subscore": null
-      },
-      {
-       "kind": "feature",
-       "label": "Vue (mer / dégagée)",
-       "weight": 4.0,
-       "status": "n/a",
-       "detail": "vue : non mentionné (ignoré)",
-       "subscore": null
-      },
-      {
-       "kind": "feature",
-       "label": "En hauteur (mention annonce)",
-       "weight": 2.0,
-       "status": "n/a",
-       "detail": "en_hauteur : non mentionné (ignoré)",
-       "subscore": null
-      },
-      {
-       "kind": "no_vis_a_vis",
-       "label": "Sans vis-à-vis",
-       "weight": 3.0,
-       "status": "n/a",
-       "detail": "vis-à-vis non précisé (ignoré)",
-       "subscore": null
-      },
-      {
-       "kind": "authentic",
-       "label": "Charme / cachet",
-       "weight": 3.0,
-       "status": "n/a",
-       "detail": "cachet non mentionné (ignoré)",
-       "subscore": null
-      },
-      {
-       "kind": "hiking",
-       "label": "Sentiers côtiers / randonnées",
-       "weight": 2.0,
-       "status": "pending",
-       "detail": "provider non branché",
-       "subscore": null
-      },
-      {
-       "kind": "nuisance_sonore",
-       "label": "Calme (loin autoroute/rail)",
-       "weight": 2.0,
-       "status": "pending",
-       "detail": "proximité infrastructures non vérifiée",
-       "subscore": null
-      },
-      {
-       "kind": "commerces",
-       "label": "Commerces/services à proximité",
-       "weight": 2.0,
-       "status": "pending",
-       "detail": "commerces non vérifiés",
-       "subscore": null
-      }
-     ]
-    }
-   },
-   "viager": false,
-   "residence_tourisme": false,
-   "is_favori": false,
-   "favori_note": null,
-   "n_photos_source": 1,
-   "photos": []
-  },
-  {
    "condition": "renover",
    "niveau_travaux": null,
    "nuisances": [],
@@ -47811,7 +46970,9 @@
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 1,
-   "photos": []
+   "photos": [
+    "photos/bienici_ag922880-544205798/0.jpg"
+   ]
   },
   {
    "condition": null,
@@ -50170,7 +49331,7 @@
    ],
    "scores_by_set": {
     "4": {
-     "match_score": 91.7,
+     "match_score": 84.8,
      "details": [
       {
        "kind": "budget",
@@ -50236,6 +49397,15 @@
        "contribution": 2.8
       },
       {
+       "kind": "distance_mer",
+       "label": "Proximité mer (distance réelle)",
+       "weight": 5.0,
+       "status": "ok",
+       "detail": "mer à ~2000 m",
+       "subscore": 0.433,
+       "contribution": 2.167
+      },
+      {
        "kind": "fiber",
        "label": "Fibre (télétravail)",
        "weight": 2.0,
@@ -50268,14 +49438,6 @@
        "weight": 5.0,
        "status": "n/a",
        "detail": "bord_de_mer : non mentionné (ignoré)",
-       "subscore": null
-      },
-      {
-       "kind": "distance_mer",
-       "label": "Proximité mer (distance réelle)",
-       "weight": 5.0,
-       "status": "n/a",
-       "detail": "distance mer non calculée",
        "subscore": null
       },
       {
@@ -50334,7 +49496,20 @@
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 12,
-   "photos": []
+   "photos": [
+    "photos/bienici_netty-company54396zsr-house-60985/0.jpg",
+    "photos/bienici_netty-company54396zsr-house-60985/1.jpg",
+    "photos/bienici_netty-company54396zsr-house-60985/2.jpg",
+    "photos/bienici_netty-company54396zsr-house-60985/3.jpg",
+    "photos/bienici_netty-company54396zsr-house-60985/4.jpg",
+    "photos/bienici_netty-company54396zsr-house-60985/5.jpg",
+    "photos/bienici_netty-company54396zsr-house-60985/6.jpg",
+    "photos/bienici_netty-company54396zsr-house-60985/7.jpg",
+    "photos/bienici_netty-company54396zsr-house-60985/8.jpg",
+    "photos/bienici_netty-company54396zsr-house-60985/9.jpg",
+    "photos/bienici_netty-company54396zsr-house-60985/10.jpg",
+    "photos/bienici_netty-company54396zsr-house-60985/11.jpg"
+   ]
   },
   {
    "condition": "renover",
@@ -63325,433 +62500,6 @@
     "photos/leboncoin_3119111310/5.jpg",
     "photos/leboncoin_3119111310/6.jpg"
    ]
-  },
-  {
-   "condition": "renover",
-   "niveau_travaux": 2,
-   "nuisances": [],
-   "nature_score": 4,
-   "nature_exception": true,
-   "constructible": true,
-   "est_zone_au": false,
-   "zone_urba": "U",
-   "altitude": 92.7,
-   "rail_time_min": 202,
-   "risques": [
-    "seisme",
-    "retraitGonflementArgile",
-    "feuForet",
-    "radon"
-   ],
-   "prix_m2_secteur": 1832.2,
-   "ecart_prix_pct": 16.7,
-   "pollution_eau_score": 1.0,
-   "eau_potable_conforme": true,
-   "pollutions": [],
-   "age_median": null,
-   "part_gauche": null,
-   "population_commune": 3848,
-   "isolement_score": 0.244,
-   "price_decreased": true,
-   "id": 1286,
-   "source": "bienici",
-   "external_id": "iad-france-946576",
-   "type_bien": "maison",
-   "prix": 295000.0,
-   "nb_chambres": 5,
-   "nb_pieces": 7,
-   "surface_terrain": 753.0,
-   "surface_bati": 138.0,
-   "commune": "Pleumeur-Bodou",
-   "code_postal": "22560",
-   "code_commune": "22198",
-   "departement": "22",
-   "latitude": 48.77236142926813,
-   "longitude": -3.5212913908730643,
-   "url": "https://www.bienici.com/annonce/iad-france-946576",
-   "description": "iad France - Florence Cararon vous propose: MAISON A PLEUEMEUR-BODOU BOURG<br>Charmante maison traditionnelle de 7 pièces avec 5 chambres et un bureau à Pleumeur-Bodou<br>Située dans un quartier prisé de Pleumeur-Bodou, cette maison traditionnelle offre un cadre de vie paisible et verdoyant. Construite en 1977, elle présente une surface habitable de 138m² répartie sur 2 étages, sur un terrain de 753m².<br>Au rez-de-chaussée, vous découvrirez une entrée chaleureuse avec placard, une cuisine  équipée, un salon avec cheminée et salle a manger avec une ouverture sur une jolie véranda exposé sud.<br> une salle d'eau et deux chambres. À l'étage, un bel espace nuit. Il se compose de 3 chambres supplémentaires, un bureau, une salles d'eau, d'un WC indépendants et un dressing. Vous pourrez également profiter d'une mezzanine propice à la détente et d'une salle à manger accueillante.<br>Le jardin arboré offre un havre de paix, idéal pour les moments de détente en famille ou entre amis. Un garage et un sous-sol total complète ce bien, offrant des espaces de rangement pratiques.<br>Cette maison nécessite des travaux de rénovation pour mettre en valeur tout son potentiel. La situation géographique est idéale, à proximité des écoles et des commerces.<br>Les principales caractéristiques à retenir sont les suivantes :<br>- Chauffage pompe à chaleur<br>- Exposition au sud pour une luminosité optimale<br>- Cuisine équipée, Entrée, Bureau, Chambres, Dressing, Mezzanine, Salle à manger et WC<br>Cette demeure pleine de charme est à découvrir sans plus attendre. Contactez-Moi pour organiser une visite et laissez-vous séduire par le potentiel qu'elle offre.<br>Honoraires d'agence à la charge du vendeur.<br>La présentation d'une pièce d'identité en cours de validité sera demandée à la visite, conformément à l'article L.561-5 du Code monétaire et financier. Les informations sur les risques auxquels ce bien est exposé, y compris l'obligation légale de débroussaillement, sont disponibles sur le site Géorisques : http://www.georisques.gouv.fr.<br>La présente annonce immobilière a été rédigée sous la responsabilité éditoriale de Mme Florence Cararon mandataire indépendant en immobilier (sans détention de fonds), agent commercial de la SAS I@D France immatriculé au RSAC de SAINT BRIEUC sous le numéro 789580388, titulaire de la carte de démarchage immobilier pour le compte de la société I@D France SAS.",
-   "dpe_classe": "C",
-   "features": [
-    "arbore",
-    "authentique",
-    "calme",
-    "eau",
-    "cheminee",
-    "garage"
-   ],
-   "score": 76.8,
-   "score_details": [
-    {
-     "key": "cadre",
-     "label": "Cadre & nature",
-     "score": 99.0,
-     "status": "ok",
-     "subpillars": [
-      {
-       "key": "nature",
-       "label": "Qualité nature",
-       "status": "ok",
-       "detail": "score nature 4",
-       "subscore": 0.98,
-       "weight": 0.5,
-       "contribution": 49.0
-      },
-      {
-       "key": "exception",
-       "label": "Caractère d'exception",
-       "status": "ok",
-       "detail": "exception",
-       "subscore": 1.0,
-       "weight": 0.3,
-       "contribution": 30.0
-      },
-      {
-       "key": "authenticite",
-       "label": "Authenticité / cachet",
-       "status": "ok",
-       "detail": "cachet/authentique",
-       "subscore": 1.0,
-       "weight": 0.2,
-       "contribution": 20.0
-      }
-     ],
-     "weight": 0.2,
-     "contribution": 19.8
-    },
-    {
-     "key": "prix",
-     "label": "Prix & opportunité",
-     "score": 62.9,
-     "status": "ok",
-     "subpillars": [
-      {
-       "key": "niveau_prix",
-       "label": "Niveau de prix (€/m²)",
-       "status": "ok",
-       "detail": "2138 €/m² habitable (repère : 1200–3500)",
-       "subscore": 0.694,
-       "weight": 0.45,
-       "contribution": 31.2
-      },
-      {
-       "key": "affaire",
-       "label": "Affaire vs marché",
-       "status": "ok",
-       "detail": "+17% vs marché local",
-       "subscore": 0.333,
-       "weight": 0.35,
-       "contribution": 11.7
-      },
-      {
-       "key": "baisse_prix",
-       "label": "Négociation (baisse)",
-       "status": "ok",
-       "detail": "prix en baisse constatée",
-       "subscore": 1.0,
-       "weight": 0.2,
-       "contribution": 20.0
-      }
-     ],
-     "weight": 0.3,
-     "contribution": 18.9
-    },
-    {
-     "key": "foncier",
-     "label": "Foncier & constructibilité",
-     "score": 85.0,
-     "status": "ok",
-     "subpillars": [
-      {
-       "key": "zonage",
-       "label": "Zonage / constructibilité",
-       "status": "ok",
-       "detail": "zone U",
-       "subscore": 1.0,
-       "weight": 0.6,
-       "contribution": 60.0
-      },
-      {
-       "key": "terrain",
-       "label": "Présence de terrain",
-       "status": "ok",
-       "detail": "753 m²",
-       "subscore": 0.626,
-       "weight": 0.4,
-       "contribution": 25.0
-      }
-     ],
-     "weight": 0.2,
-     "contribution": 17.0
-    },
-    {
-     "key": "risques",
-     "label": "Risques & nuisances",
-     "score": 89.3,
-     "status": "ok",
-     "subpillars": [
-      {
-       "key": "risques_naturels",
-       "label": "Risques naturels/techno",
-       "status": "ok",
-       "detail": "feuForet, retraitGonflementArgile, seisme, radon",
-       "subscore": 0.698,
-       "weight": 0.353,
-       "contribution": 24.6
-      },
-      {
-       "key": "pollution_eau",
-       "label": "Pollution / qualité de l'eau",
-       "status": "ok",
-       "detail": "eau conforme",
-       "subscore": 1.0,
-       "weight": 0.353,
-       "contribution": 35.3
-      },
-      {
-       "key": "nuisances_proximite",
-       "label": "Nuisances de proximité",
-       "status": "ok",
-       "detail": "aucune nuisance signalée",
-       "subscore": 1.0,
-       "weight": 0.294,
-       "contribution": 29.4
-      },
-      {
-       "key": "aerien",
-       "label": "Nuisances aériennes (PEB)",
-       "status": "pending",
-       "detail": "PEB / servitudes aéro",
-       "subscore": null,
-       "weight": 0.0,
-       "contribution": 0.0
-      }
-     ],
-     "weight": 0.15,
-     "contribution": 13.4
-    },
-    {
-     "key": "etat",
-     "label": "État & travaux",
-     "score": 70.0,
-     "status": "ok",
-     "subpillars": [
-      {
-       "key": "travaux",
-       "label": "Niveau de travaux",
-       "status": "ok",
-       "detail": "renover",
-       "subscore": 0.7,
-       "weight": 1.0,
-       "contribution": 70.0
-      }
-     ],
-     "weight": 0.07,
-     "contribution": 4.9
-    },
-    {
-     "key": "accessibilite",
-     "label": "Accessibilité & services",
-     "score": 35.1,
-     "status": "ok",
-     "subpillars": [
-      {
-       "key": "train",
-       "label": "Trajet train",
-       "status": "ok",
-       "detail": "~11h53 porte-à-porte (Paris)",
-       "subscore": 0.0,
-       "weight": 0.5,
-       "contribution": 0.0
-      },
-      {
-       "key": "gare",
-       "label": "Proximité gare",
-       "status": "ok",
-       "detail": "gare de Plouaret-Tregor à 17.9 km",
-       "subscore": 0.403,
-       "weight": 0.25,
-       "contribution": 10.1
-      },
-      {
-       "key": "fibre",
-       "label": "Fibre",
-       "status": "ok",
-       "detail": "fibre",
-       "subscore": 1.0,
-       "weight": 0.25,
-       "contribution": 25.0
-      }
-     ],
-     "weight": 0.08,
-     "contribution": 2.8
-    }
-   ],
-   "scores_by_set": {
-    "4": {
-     "match_score": 78.0,
-     "details": [
-      {
-       "kind": "constructible",
-       "label": "Terrain constructible (tiny house)",
-       "weight": 5.0,
-       "status": "ok",
-       "detail": "constructible (zonage U)",
-       "subscore": 1.0,
-       "contribution": 5.0
-      },
-      {
-       "kind": "budget",
-       "label": "Budget ≤ 400 000 €",
-       "weight": 5.0,
-       "status": "ok",
-       "detail": "295000€ — 74% du budget 400000€ (haut de fourchette)",
-       "subscore": 0.975,
-       "contribution": 4.875
-      },
-      {
-       "kind": "nature_exception",
-       "label": "Nature d'exception",
-       "weight": 4.0,
-       "status": "ok",
-       "detail": "site d'exception (nature remarquable)",
-       "subscore": 1.0,
-       "contribution": 4.0
-      },
-      {
-       "kind": "has_terrain",
-       "label": "Avec terrain",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "753 m²",
-       "subscore": 1.0,
-       "contribution": 3.0
-      },
-      {
-       "kind": "authentic",
-       "label": "Charme / cachet",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "cachet / authentique mentionné",
-       "subscore": 1.0,
-       "contribution": 3.0
-      },
-      {
-       "kind": "fiber",
-       "label": "Fibre (télétravail)",
-       "weight": 2.0,
-       "status": "ok",
-       "detail": "92% des locaux de la commune éligibles (à vérifier pour ce bien)",
-       "subscore": 0.92,
-       "contribution": 1.84
-      },
-      {
-       "kind": "en_hauteur_geo",
-       "label": "Surélevé / position dominante (relief réel)",
-       "weight": 4.0,
-       "status": "ok",
-       "detail": "plat (+1 m sur 300 m)",
-       "subscore": 0.35,
-       "contribution": 1.4
-      },
-      {
-       "kind": "prix_m2_terrain",
-       "label": "Rapport qualité/prix (€/m² terrain)",
-       "weight": 4.0,
-       "status": "ok",
-       "detail": "392 €/m² de terrain",
-       "subscore": 0.191,
-       "contribution": 0.766
-      },
-      {
-       "kind": "feature",
-       "label": "Isolé / sauvage",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "commune de 3848 hab.",
-       "subscore": 0.244,
-       "contribution": 0.732
-      },
-      {
-       "kind": "feature",
-       "label": "Bord de mer / première ligne",
-       "weight": 5.0,
-       "status": "n/a",
-       "detail": "bord_de_mer : non mentionné (ignoré)",
-       "subscore": null
-      },
-      {
-       "kind": "distance_mer",
-       "label": "Proximité mer (distance réelle)",
-       "weight": 5.0,
-       "status": "n/a",
-       "detail": "distance mer non calculée",
-       "subscore": null
-      },
-      {
-       "kind": "feature",
-       "label": "Bord d'eau (rivière / étang / ria)",
-       "weight": 4.0,
-       "status": "n/a",
-       "detail": "bord_eau : non mentionné (ignoré)",
-       "subscore": null
-      },
-      {
-       "kind": "feature",
-       "label": "Vue (mer / dégagée)",
-       "weight": 4.0,
-       "status": "n/a",
-       "detail": "vue : non mentionné (ignoré)",
-       "subscore": null
-      },
-      {
-       "kind": "feature",
-       "label": "En hauteur (mention annonce)",
-       "weight": 2.0,
-       "status": "n/a",
-       "detail": "en_hauteur : non mentionné (ignoré)",
-       "subscore": null
-      },
-      {
-       "kind": "no_vis_a_vis",
-       "label": "Sans vis-à-vis",
-       "weight": 3.0,
-       "status": "n/a",
-       "detail": "vis-à-vis non précisé (ignoré)",
-       "subscore": null
-      },
-      {
-       "kind": "hiking",
-       "label": "Sentiers côtiers / randonnées",
-       "weight": 2.0,
-       "status": "pending",
-       "detail": "provider non branché",
-       "subscore": null
-      },
-      {
-       "kind": "nuisance_sonore",
-       "label": "Calme (loin autoroute/rail)",
-       "weight": 2.0,
-       "status": "pending",
-       "detail": "proximité infrastructures non vérifiée",
-       "subscore": null
-      },
-      {
-       "kind": "commerces",
-       "label": "Commerces/services à proximité",
-       "weight": 2.0,
-       "status": "pending",
-       "detail": "commerces non vérifiés",
-       "subscore": null
-      }
-     ]
-    }
-   },
-   "viager": false,
-   "residence_tourisme": false,
-   "is_favori": false,
-   "favori_note": null,
-   "n_photos_source": 11,
-   "photos": []
   },
   {
    "condition": "habitable",
@@ -83788,6 +82536,444 @@
    "photos": []
   },
   {
+   "condition": "habitable",
+   "niveau_travaux": 0,
+   "nuisances": [],
+   "nature_score": 2,
+   "nature_exception": false,
+   "constructible": true,
+   "est_zone_au": false,
+   "zone_urba": "U",
+   "altitude": 79.5,
+   "rail_time_min": 210,
+   "risques": [
+    "seisme",
+    "radon"
+   ],
+   "prix_m2_secteur": 2048.3,
+   "ecart_prix_pct": -7.7,
+   "pollution_eau_score": 1.0,
+   "eau_potable_conforme": true,
+   "pollutions": [],
+   "age_median": null,
+   "part_gauche": null,
+   "population_commune": 3192,
+   "isolement_score": 0.292,
+   "price_decreased": false,
+   "id": 1317,
+   "source": "bienici",
+   "external_id": "ag440414-527147750",
+   "type_bien": "maison",
+   "prix": 312000.0,
+   "nb_chambres": 4,
+   "nb_pieces": 6,
+   "surface_terrain": 1116.0,
+   "surface_bati": 165.0,
+   "commune": "Plougasnou",
+   "code_postal": "29630",
+   "code_commune": "29188",
+   "departement": "29",
+   "latitude": 48.695913214,
+   "longitude": -3.792230336,
+   "url": "https://www.bienici.com/annonce/ag440414-527147750",
+   "description": "Charme, douceur de vivre et esprit bord de mer ? Maison familiale avec gîte !\n\nA seulement 2 km des plages et du bourg, laissez-vous séduire par cette maison familiale aux belles énergies, décorée avec goût et authenticité d'environ 110 m², où chaque espace a été pensé pour offrir confort, chaleur et convivialité.\n\nDès l'entrée, l'atmosphère enveloppante vous accueille : une cuisine aménagée et équipée ouverte sur un espace de vie lumineux, un salon cosy avec cheminée pour vos soirées d'hiver, ainsi qu'une véranda baignée de lumière, véritable cocon pour profiter de chaque saison.\nAu premier étage, 2 grandes chambres accueillantes, ainsi qu'une de salle de bain et son wc. Au second étage, 2 autres chambres mansardées, et un wc séparé.\n\nDans la continuité de la maison, un gîte indépendant de moins de 50 m², tout aussi charmant, offre de multiples possibilités (accueil famille, location saisonnière..) avec :\n- une cuisine aménagée et équipée\n- un salon\n- 2 chambres mansardée\n- une salle d'eau avec WC\n\nA l'extérieur, le coup de coeur se confirme : un terrain arboré et fleuri, agrémenté d'arbres fruitiers, invite à la détente et aux moments partagés en plein air. Un cellier attenant au gîte permet le rangement du matériel de jardin.\n\nCôté confort :\n- Chaudière Thermor neuve\n- Poêle à bois\n\nUn bien rare, idéal pour une vie de famille proche de la mer, ou pour conjuguer résidence principale et projet d'accueil.\nUn lieu où il fait bon vivre ! A découvrir sans tarder !\n\nPrix de vente 312 000 EUR honoraires charge acquéreur inclus de 4 % soit 300 000 EUR hors honoraires\nDPE : D GES :D\nMontant estimé des dépenses annuelles d'énergie pour un usage standard entre 1014  euros et 1372  euros indexées aux années 2021, 2022 et 2023. Logement à consommation énergétique excessive .\n\nNe laissez pas passer cette opportunité ! Contactez Stéphanie HEITZ dès maintenant au <span class=\"importDescriptionDecorator\" data-type=\"phone\">06 98 91 71 22</span> ou par courriel à <span class=\"importDescriptionDecorator\" data-type=\"email\">s.heitz@proprietes-privees.com</span> pour organiser votre visite.\n\nSelon l'article L.561.5 du Code Monétaire et Financier, pour l'organisation de la visite, la présentation d'une pièce d'identité vous sera demandée.\n\nCette présente annonce a été rédigée sous la responsabilité éditoriale de Stéphanie HEITZ agissant sous le statut d'agent commercial immatriculé au RSAC RENNES 809 763 121 auprès de SAS PROPRIETES PRIVEES, au capital de 44 920 euros, ZAC LE CHÊNE FERRÉ - 44 ALLÉE DES CINQ CONTINENTS 44120 VERTOU; SIRET 487 624 777 00040, RCS Nantes. Carte Professionnelle Transactions sur immeubles et fonds de commerce (T) et Gestion immobilière (G) n°CPI 4401 2016 000 010 388 délivrée par la CCI Nantes - Saint Nazaire. Compte séquestre n°30932508467 BPA SAINT-SEBASTIEN-SUR-LOIRE (44230). Garantie GALIAN-SMABTP - 89 rue de la Boétie, 75008 Paris - n°28137 J pour 2 000 000 euros pour T et 120 000 euros pour G. Assurance responsabilité civile professionnelle par GALIAN-SMABTP n° de police 28137.J\n\nMandat réf : 449334HZS - Le professionnel garantit et sécurise votre projet immobilier.\n (4.00 % honoraires TTC à la charge de l'acquéreur.)\n\n Stéphanie HEITZ (EI) Agent Commercial - Numéro RSAC : RENNES 809 763 121 - .\nLes informations sur les risques auxquels ce bien est exposé sont disponibles sur le site Géorisques : www.georisques.gouv.fr",
+   "dpe_classe": "NS",
+   "features": [
+    "arbore",
+    "authentique",
+    "cheminee",
+    "bord_de_mer"
+   ],
+   "score": 75.1,
+   "score_details": [
+    {
+     "key": "prix",
+     "label": "Prix & opportunité",
+     "score": 68.8,
+     "status": "ok",
+     "subpillars": [
+      {
+       "key": "niveau_prix",
+       "label": "Niveau de prix (€/m²)",
+       "status": "ok",
+       "detail": "1891 €/m² habitable (repère : 1200–3500)",
+       "subscore": 0.775,
+       "weight": 0.562,
+       "contribution": 43.6
+      },
+      {
+       "key": "affaire",
+       "label": "Affaire vs marché",
+       "status": "ok",
+       "detail": "-8% vs marché local",
+       "subscore": 0.577,
+       "weight": 0.437,
+       "contribution": 25.2
+      },
+      {
+       "key": "baisse_prix",
+       "label": "Négociation (baisse)",
+       "status": "n/a",
+       "detail": "pas de baisse constatée",
+       "subscore": null,
+       "weight": 0.0,
+       "contribution": 0.0
+      }
+     ],
+     "weight": 0.3,
+     "contribution": 20.6
+    },
+    {
+     "key": "foncier",
+     "label": "Foncier & constructibilité",
+     "score": 89.4,
+     "status": "ok",
+     "subpillars": [
+      {
+       "key": "zonage",
+       "label": "Zonage / constructibilité",
+       "status": "ok",
+       "detail": "zone U",
+       "subscore": 1.0,
+       "weight": 0.6,
+       "contribution": 60.0
+      },
+      {
+       "key": "terrain",
+       "label": "Présence de terrain",
+       "status": "ok",
+       "detail": "1116 m²",
+       "subscore": 0.735,
+       "weight": 0.4,
+       "contribution": 29.4
+      }
+     ],
+     "weight": 0.2,
+     "contribution": 17.9
+    },
+    {
+     "key": "risques",
+     "label": "Risques & nuisances",
+     "score": 97.9,
+     "status": "ok",
+     "subpillars": [
+      {
+       "key": "risques_naturels",
+       "label": "Risques naturels/techno",
+       "status": "ok",
+       "detail": "seisme, radon",
+       "subscore": 0.941,
+       "weight": 0.353,
+       "contribution": 33.2
+      },
+      {
+       "key": "pollution_eau",
+       "label": "Pollution / qualité de l'eau",
+       "status": "ok",
+       "detail": "eau conforme",
+       "subscore": 1.0,
+       "weight": 0.353,
+       "contribution": 35.3
+      },
+      {
+       "key": "nuisances_proximite",
+       "label": "Nuisances de proximité",
+       "status": "ok",
+       "detail": "aucune nuisance signalée",
+       "subscore": 1.0,
+       "weight": 0.294,
+       "contribution": 29.4
+      },
+      {
+       "key": "aerien",
+       "label": "Nuisances aériennes (PEB)",
+       "status": "pending",
+       "detail": "PEB / servitudes aéro",
+       "subscore": null,
+       "weight": 0.0,
+       "contribution": 0.0
+      }
+     ],
+     "weight": 0.15,
+     "contribution": 14.7
+    },
+    {
+     "key": "cadre",
+     "label": "Cadre & nature",
+     "score": 69.0,
+     "status": "ok",
+     "subpillars": [
+      {
+       "key": "nature",
+       "label": "Qualité nature",
+       "status": "ok",
+       "detail": "score nature 2",
+       "subscore": 0.74,
+       "weight": 0.5,
+       "contribution": 37.0
+      },
+      {
+       "key": "exception",
+       "label": "Caractère d'exception",
+       "status": "ok",
+       "detail": "ordinaire",
+       "subscore": 0.4,
+       "weight": 0.3,
+       "contribution": 12.0
+      },
+      {
+       "key": "authenticite",
+       "label": "Authenticité / cachet",
+       "status": "ok",
+       "detail": "cachet/authentique",
+       "subscore": 1.0,
+       "weight": 0.2,
+       "contribution": 20.0
+      }
+     ],
+     "weight": 0.2,
+     "contribution": 13.8
+    },
+    {
+     "key": "etat",
+     "label": "État & travaux",
+     "score": 100.0,
+     "status": "ok",
+     "subpillars": [
+      {
+       "key": "travaux",
+       "label": "Niveau de travaux",
+       "status": "ok",
+       "detail": "habitable",
+       "subscore": 1.0,
+       "weight": 1.0,
+       "contribution": 100.0
+      }
+     ],
+     "weight": 0.07,
+     "contribution": 7.0
+    },
+    {
+     "key": "accessibilite",
+     "label": "Accessibilité & services",
+     "score": 13.9,
+     "status": "ok",
+     "subpillars": [
+      {
+       "key": "train",
+       "label": "Trajet train",
+       "status": "ok",
+       "detail": "~12h09 porte-à-porte (Paris)",
+       "subscore": 0.0,
+       "weight": 0.5,
+       "contribution": 0.0
+      },
+      {
+       "key": "gare",
+       "label": "Proximité gare",
+       "status": "ok",
+       "detail": "gare de Morlaix à 13.3 km",
+       "subscore": 0.557,
+       "weight": 0.25,
+       "contribution": 13.9
+      },
+      {
+       "key": "fibre",
+       "label": "Fibre",
+       "status": "ok",
+       "detail": "pas de fibre",
+       "subscore": 0.0,
+       "weight": 0.25,
+       "contribution": 0.0
+      }
+     ],
+     "weight": 0.08,
+     "contribution": 1.1
+    }
+   ],
+   "scores_by_set": {
+    "4": {
+     "match_score": 78.1,
+     "details": [
+      {
+       "kind": "feature",
+       "label": "Bord de mer / première ligne",
+       "weight": 5.0,
+       "status": "ok",
+       "detail": "bord_de_mer : mentionné",
+       "subscore": 1.0,
+       "contribution": 5.0
+      },
+      {
+       "kind": "constructible",
+       "label": "Terrain constructible (tiny house)",
+       "weight": 5.0,
+       "status": "ok",
+       "detail": "constructible (zonage U)",
+       "subscore": 1.0,
+       "contribution": 5.0
+      },
+      {
+       "kind": "budget",
+       "label": "Budget ≤ 400 000 €",
+       "weight": 5.0,
+       "status": "ok",
+       "detail": "312000€ — 78% du budget 400000€ (haut de fourchette)",
+       "subscore": 0.947,
+       "contribution": 4.733
+      },
+      {
+       "kind": "distance_mer",
+       "label": "Proximité mer (distance réelle)",
+       "weight": 5.0,
+       "status": "ok",
+       "detail": "mer à ~1000 m",
+       "subscore": 0.767,
+       "contribution": 3.833
+      },
+      {
+       "kind": "has_terrain",
+       "label": "Avec terrain",
+       "weight": 3.0,
+       "status": "ok",
+       "detail": "1116 m²",
+       "subscore": 1.0,
+       "contribution": 3.0
+      },
+      {
+       "kind": "authentic",
+       "label": "Charme / cachet",
+       "weight": 3.0,
+       "status": "ok",
+       "detail": "cachet / authentique mentionné",
+       "subscore": 1.0,
+       "contribution": 3.0
+      },
+      {
+       "kind": "nature_exception",
+       "label": "Nature d'exception",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "qualité nature 2/4",
+       "subscore": 0.6,
+       "contribution": 2.4
+      },
+      {
+       "kind": "en_hauteur_geo",
+       "label": "Surélevé / position dominante (relief réel)",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "plat (+4 m sur 300 m)",
+       "subscore": 0.592,
+       "contribution": 2.367
+      },
+      {
+       "kind": "prix_m2_terrain",
+       "label": "Rapport qualité/prix (€/m² terrain)",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "280 €/m² de terrain",
+       "subscore": 0.314,
+       "contribution": 1.255
+      },
+      {
+       "kind": "feature",
+       "label": "Isolé / sauvage",
+       "weight": 3.0,
+       "status": "ok",
+       "detail": "commune de 3192 hab.",
+       "subscore": 0.292,
+       "contribution": 0.876
+      },
+      {
+       "kind": "fiber",
+       "label": "Fibre (télétravail)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "32% des locaux de la commune éligibles (à vérifier pour ce bien)",
+       "subscore": 0.32,
+       "contribution": 0.64
+      },
+      {
+       "kind": "feature",
+       "label": "Bord d'eau (rivière / étang / ria)",
+       "weight": 4.0,
+       "status": "n/a",
+       "detail": "bord_eau : non mentionné (ignoré)",
+       "subscore": null
+      },
+      {
+       "kind": "feature",
+       "label": "Vue (mer / dégagée)",
+       "weight": 4.0,
+       "status": "n/a",
+       "detail": "vue : non mentionné (ignoré)",
+       "subscore": null
+      },
+      {
+       "kind": "feature",
+       "label": "En hauteur (mention annonce)",
+       "weight": 2.0,
+       "status": "n/a",
+       "detail": "en_hauteur : non mentionné (ignoré)",
+       "subscore": null
+      },
+      {
+       "kind": "no_vis_a_vis",
+       "label": "Sans vis-à-vis",
+       "weight": 3.0,
+       "status": "n/a",
+       "detail": "vis-à-vis non précisé (ignoré)",
+       "subscore": null
+      },
+      {
+       "kind": "hiking",
+       "label": "Sentiers côtiers / randonnées",
+       "weight": 2.0,
+       "status": "pending",
+       "detail": "provider non branché",
+       "subscore": null
+      },
+      {
+       "kind": "nuisance_sonore",
+       "label": "Calme (loin autoroute/rail)",
+       "weight": 2.0,
+       "status": "pending",
+       "detail": "proximité infrastructures non vérifiée",
+       "subscore": null
+      },
+      {
+       "kind": "commerces",
+       "label": "Commerces/services à proximité",
+       "weight": 2.0,
+       "status": "pending",
+       "detail": "commerces non vérifiés",
+       "subscore": null
+      }
+     ]
+    }
+   },
+   "viager": false,
+   "residence_tourisme": false,
+   "is_favori": false,
+   "favori_note": null,
+   "n_photos_source": 12,
+   "photos": [
+    "photos/bienici_ag440414-527147750/0.jpg",
+    "photos/bienici_ag440414-527147750/1.jpg",
+    "photos/bienici_ag440414-527147750/2.jpg",
+    "photos/bienici_ag440414-527147750/3.jpg",
+    "photos/bienici_ag440414-527147750/4.jpg",
+    "photos/bienici_ag440414-527147750/5.jpg",
+    "photos/bienici_ag440414-527147750/6.jpg",
+    "photos/bienici_ag440414-527147750/7.jpg",
+    "photos/bienici_ag440414-527147750/8.jpg",
+    "photos/bienici_ag440414-527147750/9.jpg",
+    "photos/bienici_ag440414-527147750/10.jpg",
+    "photos/bienici_ag440414-527147750/11.jpg"
+   ]
+  },
+  {
    "condition": "renover",
    "niveau_travaux": null,
    "nuisances": [],
@@ -88748,6 +87934,438 @@
     "photos/leboncoin_3209040694/9.jpg",
     "photos/leboncoin_3209040694/10.jpg",
     "photos/leboncoin_3209040694/11.jpg"
+   ]
+  },
+  {
+   "condition": null,
+   "niveau_travaux": null,
+   "nuisances": [],
+   "nature_score": 3,
+   "nature_exception": true,
+   "constructible": true,
+   "est_zone_au": false,
+   "zone_urba": "U",
+   "altitude": 43.4,
+   "rail_time_min": 206,
+   "risques": [
+    "seisme",
+    "radon"
+   ],
+   "prix_m2_secteur": 182.6,
+   "ecart_prix_pct": 8.5,
+   "pollution_eau_score": 1.0,
+   "eau_potable_conforme": true,
+   "pollutions": [],
+   "age_median": null,
+   "part_gauche": null,
+   "population_commune": 1555,
+   "isolement_score": 0.476,
+   "price_decreased": false,
+   "id": 1396,
+   "source": "bienici",
+   "external_id": "safti-1-1666680",
+   "type_bien": "terrain",
+   "prix": 192000.0,
+   "nb_chambres": null,
+   "nb_pieces": null,
+   "surface_terrain": 969.0,
+   "surface_bati": null,
+   "commune": "Locquirec",
+   "code_postal": "29241",
+   "code_commune": "29133",
+   "departement": "29",
+   "latitude": 48.69126717463077,
+   "longitude": -3.6543851409665997,
+   "url": "https://www.bienici.com/annonce/safti-1-1666680",
+   "description": "À vendre : Terrain constructible de 969 m² à Locquirec<br> <br>Profitez de cette belle opportunité avec un terrain constructible de 969 m², situé à seulement 500 mètres de la magnifique plage des Sables à Locquirec !<br> <br>Caractéristiques :<br>- Accès facile par une allée gravillonnée<br>- Terrain déjà clôturé, arboré et végétalisé, offrant une intimité et un cadre agréable<br>- Viabilisation simple à proximité, facilitant la mise en place de vos infrastructures<br> <br>Idéal pour les amoureux de la nature et de la mer, ce terrain vous permettra de construire la maison de vos rêves dans un environnement paisible et ressourçant.<br> <br>Ne manquez pas cette occasion unique d'acquérir un terrain dans un secteur prisé ! Pour plus d'informations ou pour planifier une visite, n'hésitez pas à nous contacter.<br> <br>Les informations sur les risques auxquels ce bien est exposé sont disponibles sur le site Géorisques : www.georisques.gouv.fr<br>Prix de vente : 192 000 €<br>Honoraires charge vendeur<br> <br>Contactez votre conseiller SAFTI : Thibault VALIERES, Tél. : <span class=\"importDescriptionDecorator\" data-type=\"phone\">0633524449</span>, E-mail : <span class=\"importDescriptionDecorator\" data-type=\"email\">thibault.valieres@safti.fr</span> - EI - Agent commercial immatriculé au RSAC de Brest  sous le numéro 909 119 000",
+   "dpe_classe": null,
+   "features": [
+    "arbore",
+    "calme",
+    "eau"
+   ],
+   "score": 74.2,
+   "score_details": [
+    {
+     "key": "prix",
+     "label": "Prix & opportunité",
+     "score": 58.8,
+     "status": "ok",
+     "subpillars": [
+      {
+       "key": "niveau_prix",
+       "label": "Niveau de prix (€/m²)",
+       "status": "ok",
+       "detail": "198 €/m² de terrain (repère : 80–400)",
+       "subscore": 0.723,
+       "weight": 0.562,
+       "contribution": 40.6
+      },
+      {
+       "key": "affaire",
+       "label": "Affaire vs marché",
+       "status": "ok",
+       "detail": "+8% vs marché local",
+       "subscore": 0.415,
+       "weight": 0.437,
+       "contribution": 18.1
+      },
+      {
+       "key": "baisse_prix",
+       "label": "Négociation (baisse)",
+       "status": "n/a",
+       "detail": "pas de baisse constatée",
+       "subscore": null,
+       "weight": 0.0,
+       "contribution": 0.0
+      }
+     ],
+     "weight": 0.323,
+     "contribution": 19.0
+    },
+    {
+     "key": "foncier",
+     "label": "Foncier & constructibilité",
+     "score": 87.6,
+     "status": "ok",
+     "subpillars": [
+      {
+       "key": "zonage",
+       "label": "Zonage / constructibilité",
+       "status": "ok",
+       "detail": "zone U",
+       "subscore": 1.0,
+       "weight": 0.6,
+       "contribution": 60.0
+      },
+      {
+       "key": "terrain",
+       "label": "Présence de terrain",
+       "status": "ok",
+       "detail": "969 m²",
+       "subscore": 0.691,
+       "weight": 0.4,
+       "contribution": 27.6
+      }
+     ],
+     "weight": 0.215,
+     "contribution": 18.8
+    },
+    {
+     "key": "cadre",
+     "label": "Cadre & nature",
+     "score": 81.0,
+     "status": "ok",
+     "subpillars": [
+      {
+       "key": "nature",
+       "label": "Qualité nature",
+       "status": "ok",
+       "detail": "score nature 3",
+       "subscore": 0.86,
+       "weight": 0.5,
+       "contribution": 43.0
+      },
+      {
+       "key": "exception",
+       "label": "Caractère d'exception",
+       "status": "ok",
+       "detail": "exception",
+       "subscore": 1.0,
+       "weight": 0.3,
+       "contribution": 30.0
+      },
+      {
+       "key": "authenticite",
+       "label": "Authenticité / cachet",
+       "status": "ok",
+       "detail": "non précisé",
+       "subscore": 0.4,
+       "weight": 0.2,
+       "contribution": 8.0
+      }
+     ],
+     "weight": 0.215,
+     "contribution": 17.4
+    },
+    {
+     "key": "risques",
+     "label": "Risques & nuisances",
+     "score": 97.9,
+     "status": "ok",
+     "subpillars": [
+      {
+       "key": "risques_naturels",
+       "label": "Risques naturels/techno",
+       "status": "ok",
+       "detail": "seisme, radon",
+       "subscore": 0.941,
+       "weight": 0.353,
+       "contribution": 33.2
+      },
+      {
+       "key": "pollution_eau",
+       "label": "Pollution / qualité de l'eau",
+       "status": "ok",
+       "detail": "eau conforme",
+       "subscore": 1.0,
+       "weight": 0.353,
+       "contribution": 35.3
+      },
+      {
+       "key": "nuisances_proximite",
+       "label": "Nuisances de proximité",
+       "status": "ok",
+       "detail": "aucune nuisance signalée",
+       "subscore": 1.0,
+       "weight": 0.294,
+       "contribution": 29.4
+      },
+      {
+       "key": "aerien",
+       "label": "Nuisances aériennes (PEB)",
+       "status": "pending",
+       "detail": "PEB / servitudes aéro",
+       "subscore": null,
+       "weight": 0.0,
+       "contribution": 0.0
+      }
+     ],
+     "weight": 0.161,
+     "contribution": 15.8
+    },
+    {
+     "key": "accessibilite",
+     "label": "Accessibilité & services",
+     "score": 36.6,
+     "status": "ok",
+     "subpillars": [
+      {
+       "key": "train",
+       "label": "Trajet train",
+       "status": "ok",
+       "detail": "~12h00 porte-à-porte (Paris)",
+       "subscore": 0.0,
+       "weight": 0.5,
+       "contribution": 0.0
+      },
+      {
+       "key": "gare",
+       "label": "Proximité gare",
+       "status": "ok",
+       "detail": "gare de Plouaret-Tregor à 16.1 km",
+       "subscore": 0.463,
+       "weight": 0.25,
+       "contribution": 11.6
+      },
+      {
+       "key": "fibre",
+       "label": "Fibre",
+       "status": "ok",
+       "detail": "fibre",
+       "subscore": 1.0,
+       "weight": 0.25,
+       "contribution": 25.0
+      }
+     ],
+     "weight": 0.086,
+     "contribution": 3.1
+    },
+    {
+     "key": "etat",
+     "label": "État & travaux",
+     "score": null,
+     "status": "pending",
+     "subpillars": [
+      {
+       "key": "travaux",
+       "label": "Niveau de travaux",
+       "status": "n/a",
+       "detail": "état inconnu",
+       "subscore": null,
+       "weight": 0.0,
+       "contribution": 0.0
+      }
+     ],
+     "weight": 0.0,
+     "contribution": 0.0
+    }
+   ],
+   "scores_by_set": {
+    "4": {
+     "match_score": 97.1,
+     "details": [
+      {
+       "kind": "budget",
+       "label": "Budget ≤ 400 000 €",
+       "weight": 5.0,
+       "status": "ok",
+       "detail": "192000€ — 48% du budget 400000€",
+       "subscore": 1.0,
+       "contribution": 5.0
+      },
+      {
+       "kind": "constructible",
+       "label": "Terrain constructible (tiny house)",
+       "weight": 5.0,
+       "status": "ok",
+       "detail": "constructible (zonage U)",
+       "subscore": 1.0,
+       "contribution": 5.0
+      },
+      {
+       "kind": "distance_mer",
+       "label": "Proximité mer (distance réelle)",
+       "weight": 5.0,
+       "status": "ok",
+       "detail": "mer à ~500 m",
+       "subscore": 0.933,
+       "contribution": 4.667
+      },
+      {
+       "kind": "nature_exception",
+       "label": "Nature d'exception",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "site d'exception (nature remarquable)",
+       "subscore": 1.0,
+       "contribution": 4.0
+      },
+      {
+       "kind": "en_hauteur_geo",
+       "label": "Surélevé / position dominante (relief réel)",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "dominant (+7 m sur 300 m)",
+       "subscore": 0.867,
+       "contribution": 3.467
+      },
+      {
+       "kind": "has_terrain",
+       "label": "Avec terrain",
+       "weight": 3.0,
+       "status": "ok",
+       "detail": "969 m²",
+       "subscore": 1.0,
+       "contribution": 3.0
+      },
+      {
+       "kind": "prix_m2_terrain",
+       "label": "Rapport qualité/prix (€/m² terrain)",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "198 €/m² de terrain",
+       "subscore": 0.568,
+       "contribution": 2.273
+      },
+      {
+       "kind": "fiber",
+       "label": "Fibre (télétravail)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "98% des locaux de la commune éligibles (à vérifier pour ce bien)",
+       "subscore": 0.98,
+       "contribution": 1.96
+      },
+      {
+       "kind": "feature",
+       "label": "Isolé / sauvage",
+       "weight": 3.0,
+       "status": "ok",
+       "detail": "commune de 1555 hab.",
+       "subscore": 0.476,
+       "contribution": 1.428
+      },
+      {
+       "kind": "feature",
+       "label": "Bord de mer / première ligne",
+       "weight": 5.0,
+       "status": "n/a",
+       "detail": "bord_de_mer : non mentionné (ignoré)",
+       "subscore": null
+      },
+      {
+       "kind": "feature",
+       "label": "Bord d'eau (rivière / étang / ria)",
+       "weight": 4.0,
+       "status": "n/a",
+       "detail": "bord_eau : non mentionné (ignoré)",
+       "subscore": null
+      },
+      {
+       "kind": "feature",
+       "label": "Vue (mer / dégagée)",
+       "weight": 4.0,
+       "status": "n/a",
+       "detail": "vue : non mentionné (ignoré)",
+       "subscore": null
+      },
+      {
+       "kind": "feature",
+       "label": "En hauteur (mention annonce)",
+       "weight": 2.0,
+       "status": "n/a",
+       "detail": "en_hauteur : non mentionné (ignoré)",
+       "subscore": null
+      },
+      {
+       "kind": "no_vis_a_vis",
+       "label": "Sans vis-à-vis",
+       "weight": 3.0,
+       "status": "n/a",
+       "detail": "vis-à-vis non précisé (ignoré)",
+       "subscore": null
+      },
+      {
+       "kind": "authentic",
+       "label": "Charme / cachet",
+       "weight": 3.0,
+       "status": "n/a",
+       "detail": "cachet non mentionné (ignoré)",
+       "subscore": null
+      },
+      {
+       "kind": "hiking",
+       "label": "Sentiers côtiers / randonnées",
+       "weight": 2.0,
+       "status": "pending",
+       "detail": "provider non branché",
+       "subscore": null
+      },
+      {
+       "kind": "nuisance_sonore",
+       "label": "Calme (loin autoroute/rail)",
+       "weight": 2.0,
+       "status": "pending",
+       "detail": "proximité infrastructures non vérifiée",
+       "subscore": null
+      },
+      {
+       "kind": "commerces",
+       "label": "Commerces/services à proximité",
+       "weight": 2.0,
+       "status": "pending",
+       "detail": "commerces non vérifiés",
+       "subscore": null
+      }
+     ]
+    }
+   },
+   "viager": false,
+   "residence_tourisme": false,
+   "is_favori": false,
+   "favori_note": null,
+   "n_photos_source": 9,
+   "photos": [
+    "photos/bienici_safti-1-1666680/0.jpg",
+    "photos/bienici_safti-1-1666680/1.jpg",
+    "photos/bienici_safti-1-1666680/2.jpg",
+    "photos/bienici_safti-1-1666680/3.jpg",
+    "photos/bienici_safti-1-1666680/4.jpg",
+    "photos/bienici_safti-1-1666680/5.jpg",
+    "photos/bienici_safti-1-1666680/6.jpg",
+    "photos/bienici_safti-1-1666680/7.jpg",
+    "photos/bienici_safti-1-1666680/8.jpg"
    ]
   },
   {
@@ -108206,426 +107824,6 @@
    "condition": null,
    "niveau_travaux": null,
    "nuisances": [],
-   "nature_score": 1,
-   "nature_exception": false,
-   "constructible": true,
-   "est_zone_au": false,
-   "zone_urba": "U",
-   "altitude": 43.4,
-   "rail_time_min": 201,
-   "risques": [
-    "seisme",
-    "radon"
-   ],
-   "prix_m2_secteur": 3610.1,
-   "ecart_prix_pct": -26.6,
-   "pollution_eau_score": 0.667,
-   "eau_potable_conforme": false,
-   "pollutions": [],
-   "age_median": null,
-   "part_gauche": null,
-   "population_commune": 2524,
-   "isolement_score": 0.352,
-   "price_decreased": false,
-   "id": 1300,
-   "source": "bienici",
-   "external_id": "iad-france-956236",
-   "type_bien": "maison",
-   "prix": 220000.0,
-   "nb_chambres": 2,
-   "nb_pieces": 5,
-   "surface_terrain": null,
-   "surface_bati": 83.0,
-   "commune": "Trégastel",
-   "code_postal": "22730",
-   "code_commune": "22353",
-   "departement": "22",
-   "latitude": 48.812729094071095,
-   "longitude": -3.5015862567903615,
-   "url": "https://www.bienici.com/annonce/iad-france-956236",
-   "description": "iad France - Audrey Plunet vous propose: TREGASTEL - EN PLEIN BOURG DE TREGASTEL JOLIE MAISON DE VILLE.<br>La maison comprend au rez de chaussée un salon séjour avec cheminée, une cuisine aménagée, une salle d'eau, un toilette, au 1er étage 2 belles chambres, 1 bureau et au deuxième étage 2 chambres. <br>Possibilité d'acquérir un terrain constructible  avec dépendance et un garage.<br>VOUS CHERCHEZ UNE MAISON EN PIERRES AVEC DU POTENTIEL ?<br> CETTE MAISON EST FAITE POUR VOUS.<br>Honoraires d'agence à la charge du vendeur.<br>La présentation d'une pièce d'identité en cours de validité sera demandée à la visite, conformément à l'article L.561-5 du Code monétaire et financier. Les informations sur les risques auxquels ce bien est exposé, y compris l'obligation légale de débroussaillement, sont disponibles sur le site Géorisques : http://www.georisques.gouv.fr.<br>La présente annonce immobilière a été rédigée sous la responsabilité éditoriale de Mme Audrey Plunet mandataire indépendant en immobilier (sans détention de fonds), agent commercial de la SAS I@D France immatriculé au RSAC de SAINT BRIEUC sous le numéro 833754732, titulaire de la carte de démarchage immobilier pour le compte de la société I@D France SAS.",
-   "dpe_classe": "E",
-   "features": [
-    "authentique",
-    "cheminee",
-    "garage"
-   ],
-   "score": 72.1,
-   "score_details": [
-    {
-     "key": "foncier",
-     "label": "Foncier & constructibilité",
-     "score": 100.0,
-     "status": "ok",
-     "subpillars": [
-      {
-       "key": "zonage",
-       "label": "Zonage / constructibilité",
-       "status": "ok",
-       "detail": "zone U",
-       "subscore": 1.0,
-       "weight": 1.0,
-       "contribution": 100.0
-      },
-      {
-       "key": "terrain",
-       "label": "Présence de terrain",
-       "status": "n/a",
-       "detail": "surface terrain inconnue",
-       "subscore": null,
-       "weight": 0.0,
-       "contribution": 0.0
-      }
-     ],
-     "weight": 0.215,
-     "contribution": 21.5
-    },
-    {
-     "key": "prix",
-     "label": "Prix & opportunité",
-     "score": 63.2,
-     "status": "ok",
-     "subpillars": [
-      {
-       "key": "niveau_prix",
-       "label": "Niveau de prix (€/m²)",
-       "status": "ok",
-       "detail": "2651 €/m² habitable (repère : 1200–3500)",
-       "subscore": 0.527,
-       "weight": 0.562,
-       "contribution": 29.6
-      },
-      {
-       "key": "affaire",
-       "label": "Affaire vs marché",
-       "status": "ok",
-       "detail": "-27% vs marché local",
-       "subscore": 0.766,
-       "weight": 0.437,
-       "contribution": 33.5
-      },
-      {
-       "key": "baisse_prix",
-       "label": "Négociation (baisse)",
-       "status": "n/a",
-       "detail": "pas de baisse constatée",
-       "subscore": null,
-       "weight": 0.0,
-       "contribution": 0.0
-      }
-     ],
-     "weight": 0.323,
-     "contribution": 20.4
-    },
-    {
-     "key": "risques",
-     "label": "Risques & nuisances",
-     "score": 86.2,
-     "status": "ok",
-     "subpillars": [
-      {
-       "key": "risques_naturels",
-       "label": "Risques naturels/techno",
-       "status": "ok",
-       "detail": "seisme, radon",
-       "subscore": 0.941,
-       "weight": 0.353,
-       "contribution": 33.2
-      },
-      {
-       "key": "pollution_eau",
-       "label": "Pollution / qualité de l'eau",
-       "status": "ok",
-       "detail": "eau NON conforme",
-       "subscore": 0.667,
-       "weight": 0.353,
-       "contribution": 23.5
-      },
-      {
-       "key": "nuisances_proximite",
-       "label": "Nuisances de proximité",
-       "status": "ok",
-       "detail": "aucune nuisance signalée",
-       "subscore": 1.0,
-       "weight": 0.294,
-       "contribution": 29.4
-      },
-      {
-       "key": "aerien",
-       "label": "Nuisances aériennes (PEB)",
-       "status": "pending",
-       "detail": "PEB / servitudes aéro",
-       "subscore": null,
-       "weight": 0.0,
-       "contribution": 0.0
-      }
-     ],
-     "weight": 0.161,
-     "contribution": 13.9
-    },
-    {
-     "key": "cadre",
-     "label": "Cadre & nature",
-     "score": 63.0,
-     "status": "ok",
-     "subpillars": [
-      {
-       "key": "nature",
-       "label": "Qualité nature",
-       "status": "ok",
-       "detail": "score nature 1",
-       "subscore": 0.62,
-       "weight": 0.5,
-       "contribution": 31.0
-      },
-      {
-       "key": "exception",
-       "label": "Caractère d'exception",
-       "status": "ok",
-       "detail": "ordinaire",
-       "subscore": 0.4,
-       "weight": 0.3,
-       "contribution": 12.0
-      },
-      {
-       "key": "authenticite",
-       "label": "Authenticité / cachet",
-       "status": "ok",
-       "detail": "cachet/authentique",
-       "subscore": 1.0,
-       "weight": 0.2,
-       "contribution": 20.0
-      }
-     ],
-     "weight": 0.215,
-     "contribution": 13.5
-    },
-    {
-     "key": "accessibilite",
-     "label": "Accessibilité & services",
-     "score": 31.6,
-     "status": "ok",
-     "subpillars": [
-      {
-       "key": "train",
-       "label": "Trajet train",
-       "status": "ok",
-       "detail": "~11h52 porte-à-porte (Paris)",
-       "subscore": 0.0,
-       "weight": 0.5,
-       "contribution": 0.0
-      },
-      {
-       "key": "gare",
-       "label": "Proximité gare",
-       "status": "ok",
-       "detail": "gare de Plouaret-Tregor à 22.1 km",
-       "subscore": 0.263,
-       "weight": 0.25,
-       "contribution": 6.6
-      },
-      {
-       "key": "fibre",
-       "label": "Fibre",
-       "status": "ok",
-       "detail": "fibre",
-       "subscore": 1.0,
-       "weight": 0.25,
-       "contribution": 25.0
-      }
-     ],
-     "weight": 0.086,
-     "contribution": 2.7
-    },
-    {
-     "key": "etat",
-     "label": "État & travaux",
-     "score": null,
-     "status": "pending",
-     "subpillars": [
-      {
-       "key": "travaux",
-       "label": "Niveau de travaux",
-       "status": "n/a",
-       "detail": "état inconnu",
-       "subscore": null,
-       "weight": 0.0,
-       "contribution": 0.0
-      }
-     ],
-     "weight": 0.0,
-     "contribution": 0.0
-    }
-   ],
-   "scores_by_set": {
-    "4": {
-     "match_score": 91.0,
-     "details": [
-      {
-       "kind": "budget",
-       "label": "Budget ≤ 400 000 €",
-       "weight": 5.0,
-       "status": "ok",
-       "detail": "220000€ — 55% du budget 400000€",
-       "subscore": 1.0,
-       "contribution": 5.0
-      },
-      {
-       "kind": "constructible",
-       "label": "Terrain constructible (tiny house)",
-       "weight": 5.0,
-       "status": "ok",
-       "detail": "constructible (zonage U)",
-       "subscore": 1.0,
-       "contribution": 5.0
-      },
-      {
-       "kind": "en_hauteur_geo",
-       "label": "Surélevé / position dominante (relief réel)",
-       "weight": 4.0,
-       "status": "ok",
-       "detail": "dominant (+9 m sur 300 m)",
-       "subscore": 1.0,
-       "contribution": 4.0
-      },
-      {
-       "kind": "authentic",
-       "label": "Charme / cachet",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "cachet / authentique mentionné",
-       "subscore": 1.0,
-       "contribution": 3.0
-      },
-      {
-       "kind": "nature_exception",
-       "label": "Nature d'exception",
-       "weight": 4.0,
-       "status": "ok",
-       "detail": "qualité nature 1/4",
-       "subscore": 0.5,
-       "contribution": 2.0
-      },
-      {
-       "kind": "fiber",
-       "label": "Fibre (télétravail)",
-       "weight": 2.0,
-       "status": "ok",
-       "detail": "85% des locaux de la commune éligibles (à vérifier pour ce bien)",
-       "subscore": 0.85,
-       "contribution": 1.7
-      },
-      {
-       "kind": "feature",
-       "label": "Isolé / sauvage",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "commune de 2524 hab.",
-       "subscore": 0.352,
-       "contribution": 1.056
-      },
-      {
-       "kind": "feature",
-       "label": "Bord de mer / première ligne",
-       "weight": 5.0,
-       "status": "n/a",
-       "detail": "bord_de_mer : non mentionné (ignoré)",
-       "subscore": null
-      },
-      {
-       "kind": "distance_mer",
-       "label": "Proximité mer (distance réelle)",
-       "weight": 5.0,
-       "status": "n/a",
-       "detail": "distance mer non calculée",
-       "subscore": null
-      },
-      {
-       "kind": "feature",
-       "label": "Bord d'eau (rivière / étang / ria)",
-       "weight": 4.0,
-       "status": "n/a",
-       "detail": "bord_eau : non mentionné (ignoré)",
-       "subscore": null
-      },
-      {
-       "kind": "feature",
-       "label": "Vue (mer / dégagée)",
-       "weight": 4.0,
-       "status": "n/a",
-       "detail": "vue : non mentionné (ignoré)",
-       "subscore": null
-      },
-      {
-       "kind": "feature",
-       "label": "En hauteur (mention annonce)",
-       "weight": 2.0,
-       "status": "n/a",
-       "detail": "en_hauteur : non mentionné (ignoré)",
-       "subscore": null
-      },
-      {
-       "kind": "prix_m2_terrain",
-       "label": "Rapport qualité/prix (€/m² terrain)",
-       "weight": 4.0,
-       "status": "n/a",
-       "detail": "prix ou surface terrain inconnu",
-       "subscore": null
-      },
-      {
-       "kind": "no_vis_a_vis",
-       "label": "Sans vis-à-vis",
-       "weight": 3.0,
-       "status": "n/a",
-       "detail": "vis-à-vis non précisé (ignoré)",
-       "subscore": null
-      },
-      {
-       "kind": "has_terrain",
-       "label": "Avec terrain",
-       "weight": 3.0,
-       "status": "n/a",
-       "detail": "surface terrain inconnue",
-       "subscore": null
-      },
-      {
-       "kind": "hiking",
-       "label": "Sentiers côtiers / randonnées",
-       "weight": 2.0,
-       "status": "pending",
-       "detail": "provider non branché",
-       "subscore": null
-      },
-      {
-       "kind": "nuisance_sonore",
-       "label": "Calme (loin autoroute/rail)",
-       "weight": 2.0,
-       "status": "pending",
-       "detail": "proximité infrastructures non vérifiée",
-       "subscore": null
-      },
-      {
-       "kind": "commerces",
-       "label": "Commerces/services à proximité",
-       "weight": 2.0,
-       "status": "pending",
-       "detail": "commerces non vérifiés",
-       "subscore": null
-      }
-     ]
-    }
-   },
-   "viager": false,
-   "residence_tourisme": false,
-   "is_favori": false,
-   "favori_note": null,
-   "n_photos_source": 8,
-   "photos": []
-  },
-  {
-   "condition": null,
-   "niveau_travaux": null,
-   "nuisances": [],
    "nature_score": 0,
    "nature_exception": false,
    "constructible": true,
@@ -117465,6 +116663,446 @@
    "n_photos_source": 0,
    "photos": [
     "photos/agences_ag_cb7691f5475e8a/0.jpg"
+   ]
+  },
+  {
+   "condition": "renover",
+   "niveau_travaux": 2,
+   "nuisances": [
+    "mitoyen"
+   ],
+   "nature_score": 3,
+   "nature_exception": true,
+   "constructible": true,
+   "est_zone_au": false,
+   "zone_urba": "U",
+   "altitude": 51.1,
+   "rail_time_min": 206,
+   "risques": [
+    "seisme",
+    "radon"
+   ],
+   "prix_m2_secteur": 3333.3,
+   "ecart_prix_pct": -15.9,
+   "pollution_eau_score": 1.0,
+   "eau_potable_conforme": true,
+   "pollutions": [],
+   "age_median": null,
+   "part_gauche": null,
+   "population_commune": 1555,
+   "isolement_score": 0.476,
+   "price_decreased": false,
+   "id": 1349,
+   "source": "bienici",
+   "external_id": "ag922880-496525280",
+   "type_bien": "maison",
+   "prix": 199000.0,
+   "nb_chambres": 3,
+   "nb_pieces": 5,
+   "surface_terrain": 599.0,
+   "surface_bati": 71.0,
+   "commune": "Locquirec",
+   "code_postal": "29241",
+   "code_commune": "29133",
+   "departement": "29",
+   "latitude": 48.68226314517062,
+   "longitude": -3.6608716983115057,
+   "url": "https://www.bienici.com/annonce/ag922880-496525280",
+   "description": "Marie Dominique THOMAS vous propose ce bien :\n\nMaison individuelle 5 pièces avec jardin privatif, garage et plage à proximité – Locquirec (29241)\n\nÀ vendre, au calme et à deux pas des plages de Locquirec, cette maison individuelle des années 1960 offre un cadre de vie recherché sur un terrain plat et clos de 599 m², avec vue dégagée et au calme. Idéale comme résidence principale ou secondaire, elle conjugue emplacement, fonctionnalité et potentiel.\n\nAtouts majeurs\n- Emplacement privilégié : proche plage, commerces, bus et pharmacies, dans un environnement paisible.\n- Terrain plat de 599 m² : jardin privatif facile à entretenir, parfait pour les familles et loisirs extérieurs.\n- Stationnement aisé : garage accolé + 2 places de parking extérieures.\n- Maison pratique au quotidien avec une Vie de plain-pied : Cuisine ouverte sur la pièce de vie principale, 3 chambres, salle de bains, buanderie, chaufferie et garage.  Les combles pourraient être aménagées.\n- Confort et fiabilité : assainissement tout à l'égout, toiture en ardoises, revêtement principal en parquet.\n\nSi vous avez envie de redonner vie à cette maison, et de vous lancer dans une rénovation afin de la transformer, ce bien n'attend plus que vous.\n\nPrix de vente: 199 000€ FAI\n\nUne opportunité rare alliant proximité de la mer, calme, jardin plat et garage. Contactez-nous pour organiser une visite et découvrir tout le potentiel de cette maison.\nLes informations sur les risques auxquels ce bien est exposé, sont disponibles sur le site Géorisques : www.georisque.gouv.fr\n\nVotre Conseiller MeilleursBiens : Marie-Dominique THOMAS - Agent commercial (Entreprise individuelle)  - RSAC 919 757 617 00015 - SAINT BRIEUC\\nLes informations sur les risques auxquels ce bien est exposé sont disponibles sur le site Géorisques : www.georisques.gouv.fr",
+   "dpe_classe": "G",
+   "features": [
+    "calme",
+    "eau",
+    "vue",
+    "vue_panoramique",
+    "garage"
+   ],
+   "score": 71.0,
+   "score_details": [
+    {
+     "key": "prix",
+     "label": "Prix & opportunité",
+     "score": 55.7,
+     "status": "ok",
+     "subpillars": [
+      {
+       "key": "niveau_prix",
+       "label": "Niveau de prix (€/m²)",
+       "status": "ok",
+       "detail": "2803 €/m² habitable (repère : 1200–3500)",
+       "subscore": 0.477,
+       "weight": 0.562,
+       "contribution": 26.8
+      },
+      {
+       "key": "affaire",
+       "label": "Affaire vs marché",
+       "status": "ok",
+       "detail": "-16% vs marché local",
+       "subscore": 0.659,
+       "weight": 0.437,
+       "contribution": 28.8
+      },
+      {
+       "key": "baisse_prix",
+       "label": "Négociation (baisse)",
+       "status": "n/a",
+       "detail": "pas de baisse constatée",
+       "subscore": null,
+       "weight": 0.0,
+       "contribution": 0.0
+      }
+     ],
+     "weight": 0.3,
+     "contribution": 16.7
+    },
+    {
+     "key": "foncier",
+     "label": "Foncier & constructibilité",
+     "score": 83.2,
+     "status": "ok",
+     "subpillars": [
+      {
+       "key": "zonage",
+       "label": "Zonage / constructibilité",
+       "status": "ok",
+       "detail": "zone U",
+       "subscore": 1.0,
+       "weight": 0.6,
+       "contribution": 60.0
+      },
+      {
+       "key": "terrain",
+       "label": "Présence de terrain",
+       "status": "ok",
+       "detail": "599 m²",
+       "subscore": 0.58,
+       "weight": 0.4,
+       "contribution": 23.2
+      }
+     ],
+     "weight": 0.2,
+     "contribution": 16.6
+    },
+    {
+     "key": "cadre",
+     "label": "Cadre & nature",
+     "score": 81.0,
+     "status": "ok",
+     "subpillars": [
+      {
+       "key": "nature",
+       "label": "Qualité nature",
+       "status": "ok",
+       "detail": "score nature 3",
+       "subscore": 0.86,
+       "weight": 0.5,
+       "contribution": 43.0
+      },
+      {
+       "key": "exception",
+       "label": "Caractère d'exception",
+       "status": "ok",
+       "detail": "exception",
+       "subscore": 1.0,
+       "weight": 0.3,
+       "contribution": 30.0
+      },
+      {
+       "key": "authenticite",
+       "label": "Authenticité / cachet",
+       "status": "ok",
+       "detail": "non précisé",
+       "subscore": 0.4,
+       "weight": 0.2,
+       "contribution": 8.0
+      }
+     ],
+     "weight": 0.2,
+     "contribution": 16.2
+    },
+    {
+     "key": "risques",
+     "label": "Risques & nuisances",
+     "score": 90.6,
+     "status": "ok",
+     "subpillars": [
+      {
+       "key": "risques_naturels",
+       "label": "Risques naturels/techno",
+       "status": "ok",
+       "detail": "seisme, radon",
+       "subscore": 0.941,
+       "weight": 0.353,
+       "contribution": 33.2
+      },
+      {
+       "key": "pollution_eau",
+       "label": "Pollution / qualité de l'eau",
+       "status": "ok",
+       "detail": "eau conforme",
+       "subscore": 1.0,
+       "weight": 0.353,
+       "contribution": 35.3
+      },
+      {
+       "key": "nuisances_proximite",
+       "label": "Nuisances de proximité",
+       "status": "ok",
+       "detail": "mitoyen",
+       "subscore": 0.75,
+       "weight": 0.294,
+       "contribution": 22.0
+      },
+      {
+       "key": "aerien",
+       "label": "Nuisances aériennes (PEB)",
+       "status": "pending",
+       "detail": "PEB / servitudes aéro",
+       "subscore": null,
+       "weight": 0.0,
+       "contribution": 0.0
+      }
+     ],
+     "weight": 0.15,
+     "contribution": 13.6
+    },
+    {
+     "key": "etat",
+     "label": "État & travaux",
+     "score": 70.0,
+     "status": "ok",
+     "subpillars": [
+      {
+       "key": "travaux",
+       "label": "Niveau de travaux",
+       "status": "ok",
+       "detail": "renover",
+       "subscore": 0.7,
+       "weight": 1.0,
+       "contribution": 70.0
+      }
+     ],
+     "weight": 0.07,
+     "contribution": 4.9
+    },
+    {
+     "key": "accessibilite",
+     "label": "Accessibilité & services",
+     "score": 36.7,
+     "status": "ok",
+     "subpillars": [
+      {
+       "key": "train",
+       "label": "Trajet train",
+       "status": "ok",
+       "detail": "~12h00 porte-à-porte (Paris)",
+       "subscore": 0.0,
+       "weight": 0.5,
+       "contribution": 0.0
+      },
+      {
+       "key": "gare",
+       "label": "Proximité gare",
+       "status": "ok",
+       "detail": "gare de Plouaret-Tregor à 16.0 km",
+       "subscore": 0.467,
+       "weight": 0.25,
+       "contribution": 11.7
+      },
+      {
+       "key": "fibre",
+       "label": "Fibre",
+       "status": "ok",
+       "detail": "fibre",
+       "subscore": 1.0,
+       "weight": 0.25,
+       "contribution": 25.0
+      }
+     ],
+     "weight": 0.08,
+     "contribution": 2.9
+    }
+   ],
+   "scores_by_set": {
+    "4": {
+     "match_score": 86.9,
+     "details": [
+      {
+       "kind": "budget",
+       "label": "Budget ≤ 400 000 €",
+       "weight": 5.0,
+       "status": "ok",
+       "detail": "199000€ — 50% du budget 400000€",
+       "subscore": 1.0,
+       "contribution": 5.0
+      },
+      {
+       "kind": "constructible",
+       "label": "Terrain constructible (tiny house)",
+       "weight": 5.0,
+       "status": "ok",
+       "detail": "constructible (zonage U)",
+       "subscore": 1.0,
+       "contribution": 5.0
+      },
+      {
+       "kind": "feature",
+       "label": "Vue (mer / dégagée)",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "vue : mentionné",
+       "subscore": 1.0,
+       "contribution": 4.0
+      },
+      {
+       "kind": "nature_exception",
+       "label": "Nature d'exception",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "site d'exception (nature remarquable)",
+       "subscore": 1.0,
+       "contribution": 4.0
+      },
+      {
+       "kind": "en_hauteur_geo",
+       "label": "Surélevé / position dominante (relief réel)",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "dominant (+6 m sur 300 m)",
+       "subscore": 0.808,
+       "contribution": 3.233
+      },
+      {
+       "kind": "distance_mer",
+       "label": "Proximité mer (distance réelle)",
+       "weight": 5.0,
+       "status": "ok",
+       "detail": "mer à ~1500 m",
+       "subscore": 0.6,
+       "contribution": 3.0
+      },
+      {
+       "kind": "has_terrain",
+       "label": "Avec terrain",
+       "weight": 3.0,
+       "status": "ok",
+       "detail": "599 m²",
+       "subscore": 1.0,
+       "contribution": 3.0
+      },
+      {
+       "kind": "fiber",
+       "label": "Fibre (télétravail)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "98% des locaux de la commune éligibles (à vérifier pour ce bien)",
+       "subscore": 0.98,
+       "contribution": 1.96
+      },
+      {
+       "kind": "feature",
+       "label": "Isolé / sauvage",
+       "weight": 3.0,
+       "status": "ok",
+       "detail": "commune de 1555 hab.",
+       "subscore": 0.476,
+       "contribution": 1.428
+      },
+      {
+       "kind": "prix_m2_terrain",
+       "label": "Rapport qualité/prix (€/m² terrain)",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "332 €/m² de terrain",
+       "subscore": 0.226,
+       "contribution": 0.903
+      },
+      {
+       "kind": "feature",
+       "label": "Bord de mer / première ligne",
+       "weight": 5.0,
+       "status": "n/a",
+       "detail": "bord_de_mer : non mentionné (ignoré)",
+       "subscore": null
+      },
+      {
+       "kind": "feature",
+       "label": "Bord d'eau (rivière / étang / ria)",
+       "weight": 4.0,
+       "status": "n/a",
+       "detail": "bord_eau : non mentionné (ignoré)",
+       "subscore": null
+      },
+      {
+       "kind": "feature",
+       "label": "En hauteur (mention annonce)",
+       "weight": 2.0,
+       "status": "n/a",
+       "detail": "en_hauteur : non mentionné (ignoré)",
+       "subscore": null
+      },
+      {
+       "kind": "no_vis_a_vis",
+       "label": "Sans vis-à-vis",
+       "weight": 3.0,
+       "status": "n/a",
+       "detail": "vis-à-vis non précisé (ignoré)",
+       "subscore": null
+      },
+      {
+       "kind": "authentic",
+       "label": "Charme / cachet",
+       "weight": 3.0,
+       "status": "n/a",
+       "detail": "cachet non mentionné (ignoré)",
+       "subscore": null
+      },
+      {
+       "kind": "hiking",
+       "label": "Sentiers côtiers / randonnées",
+       "weight": 2.0,
+       "status": "pending",
+       "detail": "provider non branché",
+       "subscore": null
+      },
+      {
+       "kind": "nuisance_sonore",
+       "label": "Calme (loin autoroute/rail)",
+       "weight": 2.0,
+       "status": "pending",
+       "detail": "proximité infrastructures non vérifiée",
+       "subscore": null
+      },
+      {
+       "kind": "commerces",
+       "label": "Commerces/services à proximité",
+       "weight": 2.0,
+       "status": "pending",
+       "detail": "commerces non vérifiés",
+       "subscore": null
+      }
+     ]
+    }
+   },
+   "viager": false,
+   "residence_tourisme": false,
+   "is_favori": false,
+   "favori_note": null,
+   "n_photos_source": 12,
+   "photos": [
+    "photos/bienici_ag922880-496525280/0.jpg",
+    "photos/bienici_ag922880-496525280/1.jpg",
+    "photos/bienici_ag922880-496525280/2.jpg",
+    "photos/bienici_ag922880-496525280/3.jpg",
+    "photos/bienici_ag922880-496525280/4.jpg",
+    "photos/bienici_ag922880-496525280/5.jpg",
+    "photos/bienici_ag922880-496525280/6.jpg",
+    "photos/bienici_ag922880-496525280/7.jpg",
+    "photos/bienici_ag922880-496525280/8.jpg",
+    "photos/bienici_ag922880-496525280/9.jpg",
+    "photos/bienici_ag922880-496525280/10.jpg",
+    "photos/bienici_ag922880-496525280/11.jpg"
    ]
   },
   {
@@ -144465,6 +144103,434 @@
    "constructible": true,
    "est_zone_au": false,
    "zone_urba": "U",
+   "altitude": 55.5,
+   "rail_time_min": 200,
+   "risques": [
+    "seisme",
+    "radon"
+   ],
+   "prix_m2_secteur": 3682.0,
+   "ecart_prix_pct": -23.2,
+   "pollution_eau_score": 1.0,
+   "eau_potable_conforme": true,
+   "pollutions": [],
+   "age_median": null,
+   "part_gauche": null,
+   "population_commune": 7336,
+   "isolement_score": 0.079,
+   "price_decreased": false,
+   "id": 1267,
+   "source": "bienici",
+   "external_id": "gedeon-33614966",
+   "type_bien": "maison",
+   "prix": 288400.0,
+   "nb_chambres": 4,
+   "nb_pieces": 6,
+   "surface_terrain": null,
+   "surface_bati": 102.0,
+   "commune": "Perros-Guirec",
+   "code_postal": "22700",
+   "code_commune": "22168",
+   "departement": "22",
+   "latitude": 48.81511331,
+   "longitude": -3.439466146,
+   "url": "https://www.bienici.com/annonce/gedeon-33614966",
+   "description": "Fiche Id-182360 : A deux minutes à pieds du port, maison composée d'une entrée, une cuisine aménagée, un séjour, deux chambres, une salle d'eau et un wc. En rez de jardin une cuisine d'été, deux chambres, une salle d'eau avec wc et un garage. Un grenier pouvant être aménagé. - Mentions légales :  Proposé à la vente à 288400 Euros (Dont 3% TTC d'honoraires à la charge de l'acquéreur, soit un prix hors honoraires de 280000 Euros) - DPE réalisé le : 14/04/2025 - Classe-Energie D : 214 kWh.m2.an  - Montant estimé des dépenses annuelles d'énergie pour un usage standard compris entre 1960 et 2690 Euros - Affaire suivie par Mme Véronique LE TYNEVEZ  : <span class=\"importDescriptionDecorator\" data-type=\"phone\">0636663206</span> - Agence Coté Immo Perros Guirec - Pour plus d'informations, contactez notre secrétariat au <span class=\"importDescriptionDecorator\" data-type=\"phone\">02 96 23 21 21</span> (Appel gratuit ou prix d'une communication locale) - Les informations sur les risques auxquels ce bien est exposé sont disponibles sur le site Géorisques : www.georisques.gouv.fr",
+   "dpe_classe": "D",
+   "features": [
+    "garage"
+   ],
+   "score": 68.5,
+   "score_details": [
+    {
+     "key": "foncier",
+     "label": "Foncier & constructibilité",
+     "score": 100.0,
+     "status": "ok",
+     "subpillars": [
+      {
+       "key": "zonage",
+       "label": "Zonage / constructibilité",
+       "status": "ok",
+       "detail": "zone U",
+       "subscore": 1.0,
+       "weight": 1.0,
+       "contribution": 100.0
+      },
+      {
+       "key": "terrain",
+       "label": "Présence de terrain",
+       "status": "n/a",
+       "detail": "surface terrain inconnue",
+       "subscore": null,
+       "weight": 0.0,
+       "contribution": 0.0
+      }
+     ],
+     "weight": 0.215,
+     "contribution": 21.5
+    },
+    {
+     "key": "prix",
+     "label": "Prix & opportunité",
+     "score": 58.4,
+     "status": "ok",
+     "subpillars": [
+      {
+       "key": "niveau_prix",
+       "label": "Niveau de prix (€/m²)",
+       "status": "ok",
+       "detail": "2827 €/m² habitable (repère : 1200–3500)",
+       "subscore": 0.469,
+       "weight": 0.562,
+       "contribution": 26.4
+      },
+      {
+       "key": "affaire",
+       "label": "Affaire vs marché",
+       "status": "ok",
+       "detail": "-23% vs marché local",
+       "subscore": 0.732,
+       "weight": 0.437,
+       "contribution": 32.0
+      },
+      {
+       "key": "baisse_prix",
+       "label": "Négociation (baisse)",
+       "status": "n/a",
+       "detail": "pas de baisse constatée",
+       "subscore": null,
+       "weight": 0.0,
+       "contribution": 0.0
+      }
+     ],
+     "weight": 0.323,
+     "contribution": 18.9
+    },
+    {
+     "key": "risques",
+     "label": "Risques & nuisances",
+     "score": 97.9,
+     "status": "ok",
+     "subpillars": [
+      {
+       "key": "risques_naturels",
+       "label": "Risques naturels/techno",
+       "status": "ok",
+       "detail": "seisme, radon",
+       "subscore": 0.941,
+       "weight": 0.353,
+       "contribution": 33.2
+      },
+      {
+       "key": "pollution_eau",
+       "label": "Pollution / qualité de l'eau",
+       "status": "ok",
+       "detail": "eau conforme",
+       "subscore": 1.0,
+       "weight": 0.353,
+       "contribution": 35.3
+      },
+      {
+       "key": "nuisances_proximite",
+       "label": "Nuisances de proximité",
+       "status": "ok",
+       "detail": "aucune nuisance signalée",
+       "subscore": 1.0,
+       "weight": 0.294,
+       "contribution": 29.4
+      },
+      {
+       "key": "aerien",
+       "label": "Nuisances aériennes (PEB)",
+       "status": "pending",
+       "detail": "PEB / servitudes aéro",
+       "subscore": null,
+       "weight": 0.0,
+       "contribution": 0.0
+      }
+     ],
+     "weight": 0.161,
+     "contribution": 15.8
+    },
+    {
+     "key": "cadre",
+     "label": "Cadre & nature",
+     "score": 45.0,
+     "status": "ok",
+     "subpillars": [
+      {
+       "key": "nature",
+       "label": "Qualité nature",
+       "status": "ok",
+       "detail": "score nature 0",
+       "subscore": 0.5,
+       "weight": 0.5,
+       "contribution": 25.0
+      },
+      {
+       "key": "exception",
+       "label": "Caractère d'exception",
+       "status": "ok",
+       "detail": "ordinaire",
+       "subscore": 0.4,
+       "weight": 0.3,
+       "contribution": 12.0
+      },
+      {
+       "key": "authenticite",
+       "label": "Authenticité / cachet",
+       "status": "ok",
+       "detail": "non précisé",
+       "subscore": 0.4,
+       "weight": 0.2,
+       "contribution": 8.0
+      }
+     ],
+     "weight": 0.215,
+     "contribution": 9.7
+    },
+    {
+     "key": "accessibilite",
+     "label": "Accessibilité & services",
+     "score": 31.4,
+     "status": "ok",
+     "subpillars": [
+      {
+       "key": "train",
+       "label": "Trajet train",
+       "status": "ok",
+       "detail": "~11h48 porte-à-porte (Paris)",
+       "subscore": 0.0,
+       "weight": 0.5,
+       "contribution": 0.0
+      },
+      {
+       "key": "gare",
+       "label": "Proximité gare",
+       "status": "ok",
+       "detail": "gare de Plouaret-Tregor à 22.3 km",
+       "subscore": 0.257,
+       "weight": 0.25,
+       "contribution": 6.4
+      },
+      {
+       "key": "fibre",
+       "label": "Fibre",
+       "status": "ok",
+       "detail": "fibre",
+       "subscore": 1.0,
+       "weight": 0.25,
+       "contribution": 25.0
+      }
+     ],
+     "weight": 0.086,
+     "contribution": 2.7
+    },
+    {
+     "key": "etat",
+     "label": "État & travaux",
+     "score": null,
+     "status": "pending",
+     "subpillars": [
+      {
+       "key": "travaux",
+       "label": "Niveau de travaux",
+       "status": "n/a",
+       "detail": "état inconnu",
+       "subscore": null,
+       "weight": 0.0,
+       "contribution": 0.0
+      }
+     ],
+     "weight": 0.0,
+     "contribution": 0.0
+    }
+   ],
+   "scores_by_set": {
+    "4": {
+     "match_score": 80.4,
+     "details": [
+      {
+       "kind": "constructible",
+       "label": "Terrain constructible (tiny house)",
+       "weight": 5.0,
+       "status": "ok",
+       "detail": "constructible (zonage U)",
+       "subscore": 1.0,
+       "contribution": 5.0
+      },
+      {
+       "kind": "budget",
+       "label": "Budget ≤ 400 000 €",
+       "weight": 5.0,
+       "status": "ok",
+       "detail": "288400€ — 72% du budget 400000€ (haut de fourchette)",
+       "subscore": 0.986,
+       "contribution": 4.93
+      },
+      {
+       "kind": "distance_mer",
+       "label": "Proximité mer (distance réelle)",
+       "weight": 5.0,
+       "status": "ok",
+       "detail": "mer à ~750 m",
+       "subscore": 0.85,
+       "contribution": 4.25
+      },
+      {
+       "kind": "en_hauteur_geo",
+       "label": "Surélevé / position dominante (relief réel)",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "dominant (+8 m sur 300 m)",
+       "subscore": 0.958,
+       "contribution": 3.833
+      },
+      {
+       "kind": "nature_exception",
+       "label": "Nature d'exception",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "qualité nature 0/4",
+       "subscore": 0.4,
+       "contribution": 1.6
+      },
+      {
+       "kind": "fiber",
+       "label": "Fibre (télétravail)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "75% des locaux de la commune éligibles (à vérifier pour ce bien)",
+       "subscore": 0.75,
+       "contribution": 1.5
+      },
+      {
+       "kind": "feature",
+       "label": "Isolé / sauvage",
+       "weight": 3.0,
+       "status": "ok",
+       "detail": "commune de 7336 hab.",
+       "subscore": 0.079,
+       "contribution": 0.237
+      },
+      {
+       "kind": "feature",
+       "label": "Bord de mer / première ligne",
+       "weight": 5.0,
+       "status": "n/a",
+       "detail": "bord_de_mer : non mentionné (ignoré)",
+       "subscore": null
+      },
+      {
+       "kind": "feature",
+       "label": "Bord d'eau (rivière / étang / ria)",
+       "weight": 4.0,
+       "status": "n/a",
+       "detail": "bord_eau : non mentionné (ignoré)",
+       "subscore": null
+      },
+      {
+       "kind": "feature",
+       "label": "Vue (mer / dégagée)",
+       "weight": 4.0,
+       "status": "n/a",
+       "detail": "vue : non mentionné (ignoré)",
+       "subscore": null
+      },
+      {
+       "kind": "feature",
+       "label": "En hauteur (mention annonce)",
+       "weight": 2.0,
+       "status": "n/a",
+       "detail": "en_hauteur : non mentionné (ignoré)",
+       "subscore": null
+      },
+      {
+       "kind": "prix_m2_terrain",
+       "label": "Rapport qualité/prix (€/m² terrain)",
+       "weight": 4.0,
+       "status": "n/a",
+       "detail": "prix ou surface terrain inconnu",
+       "subscore": null
+      },
+      {
+       "kind": "no_vis_a_vis",
+       "label": "Sans vis-à-vis",
+       "weight": 3.0,
+       "status": "n/a",
+       "detail": "vis-à-vis non précisé (ignoré)",
+       "subscore": null
+      },
+      {
+       "kind": "has_terrain",
+       "label": "Avec terrain",
+       "weight": 3.0,
+       "status": "n/a",
+       "detail": "surface terrain inconnue",
+       "subscore": null
+      },
+      {
+       "kind": "authentic",
+       "label": "Charme / cachet",
+       "weight": 3.0,
+       "status": "n/a",
+       "detail": "cachet non mentionné (ignoré)",
+       "subscore": null
+      },
+      {
+       "kind": "hiking",
+       "label": "Sentiers côtiers / randonnées",
+       "weight": 2.0,
+       "status": "pending",
+       "detail": "provider non branché",
+       "subscore": null
+      },
+      {
+       "kind": "nuisance_sonore",
+       "label": "Calme (loin autoroute/rail)",
+       "weight": 2.0,
+       "status": "pending",
+       "detail": "proximité infrastructures non vérifiée",
+       "subscore": null
+      },
+      {
+       "kind": "commerces",
+       "label": "Commerces/services à proximité",
+       "weight": 2.0,
+       "status": "pending",
+       "detail": "commerces non vérifiés",
+       "subscore": null
+      }
+     ]
+    }
+   },
+   "viager": false,
+   "residence_tourisme": false,
+   "is_favori": false,
+   "favori_note": null,
+   "n_photos_source": 9,
+   "photos": [
+    "photos/bienici_gedeon-33614966/0.jpg",
+    "photos/bienici_gedeon-33614966/1.jpg",
+    "photos/bienici_gedeon-33614966/2.jpg",
+    "photos/bienici_gedeon-33614966/3.jpg",
+    "photos/bienici_gedeon-33614966/4.jpg",
+    "photos/bienici_gedeon-33614966/5.jpg",
+    "photos/bienici_gedeon-33614966/6.jpg",
+    "photos/bienici_gedeon-33614966/7.jpg",
+    "photos/bienici_gedeon-33614966/8.jpg"
+   ]
+  },
+  {
+   "condition": null,
+   "niveau_travaux": null,
+   "nuisances": [],
+   "nature_score": 0,
+   "nature_exception": false,
+   "constructible": true,
+   "est_zone_au": false,
+   "zone_urba": "U",
    "altitude": 95.8,
    "rail_time_min": 238,
    "risques": [
@@ -146128,6 +146194,439 @@
     "photos/leboncoin_3071450195/5.jpg",
     "photos/leboncoin_3071450195/6.jpg",
     "photos/leboncoin_3071450195/7.jpg"
+   ]
+  },
+  {
+   "condition": null,
+   "niveau_travaux": null,
+   "nuisances": [],
+   "nature_score": 3,
+   "nature_exception": false,
+   "constructible": true,
+   "est_zone_au": false,
+   "zone_urba": "U",
+   "altitude": 65.3,
+   "rail_time_min": 213,
+   "risques": [],
+   "prix_m2_secteur": 2115.7,
+   "ecart_prix_pct": 10.1,
+   "pollution_eau_score": 1.0,
+   "eau_potable_conforme": true,
+   "pollutions": [],
+   "age_median": null,
+   "part_gauche": null,
+   "population_commune": 790,
+   "isolement_score": 0.649,
+   "price_decreased": false,
+   "id": 1431,
+   "source": "bienici",
+   "external_id": "immo-facile-60829140",
+   "type_bien": "maison",
+   "prix": 270300.0,
+   "nb_chambres": 2,
+   "nb_pieces": 6,
+   "surface_terrain": 366.0,
+   "surface_bati": 116.0,
+   "commune": "Locquénolé",
+   "code_postal": "29670",
+   "code_commune": "29132",
+   "departement": "29",
+   "latitude": 48.6266445521629,
+   "longitude": -3.8673206896020145,
+   "url": "https://www.bienici.com/annonce/immo-facile-60829140",
+   "description": "A vendre. Maison de village au coeur du village de Locquénolé.<br>Laissé vous charmer par cette maison en pierres, pleine de possibilités.<br>Jolie vue sur la rivière et le port du Dourduff.<br>Chambre et salle d'eau au rdc.<br>Charmant jardin clos.<br>Cave. (6.00 % d'honoraires TTC à la charge de l'acquéreur.)",
+   "dpe_classe": "D",
+   "features": [
+    "authentique",
+    "eau",
+    "vue"
+   ],
+   "score": 68.4,
+   "score_details": [
+    {
+     "key": "foncier",
+     "label": "Foncier & constructibilité",
+     "score": 80.4,
+     "status": "ok",
+     "subpillars": [
+      {
+       "key": "zonage",
+       "label": "Zonage / constructibilité",
+       "status": "ok",
+       "detail": "zone U",
+       "subscore": 1.0,
+       "weight": 0.6,
+       "contribution": 60.0
+      },
+      {
+       "key": "terrain",
+       "label": "Présence de terrain",
+       "status": "ok",
+       "detail": "366 m²",
+       "subscore": 0.51,
+       "weight": 0.4,
+       "contribution": 20.4
+      }
+     ],
+     "weight": 0.215,
+     "contribution": 17.3
+    },
+    {
+     "key": "prix",
+     "label": "Prix & opportunité",
+     "score": 53.0,
+     "status": "ok",
+     "subpillars": [
+      {
+       "key": "niveau_prix",
+       "label": "Niveau de prix (€/m²)",
+       "status": "ok",
+       "detail": "2330 €/m² habitable (repère : 1200–3500)",
+       "subscore": 0.631,
+       "weight": 0.562,
+       "contribution": 35.5
+      },
+      {
+       "key": "affaire",
+       "label": "Affaire vs marché",
+       "status": "ok",
+       "detail": "+10% vs marché local",
+       "subscore": 0.399,
+       "weight": 0.437,
+       "contribution": 17.4
+      },
+      {
+       "key": "baisse_prix",
+       "label": "Négociation (baisse)",
+       "status": "n/a",
+       "detail": "pas de baisse constatée",
+       "subscore": null,
+       "weight": 0.0,
+       "contribution": 0.0
+      }
+     ],
+     "weight": 0.323,
+     "contribution": 17.1
+    },
+    {
+     "key": "cadre",
+     "label": "Cadre & nature",
+     "score": 75.0,
+     "status": "ok",
+     "subpillars": [
+      {
+       "key": "nature",
+       "label": "Qualité nature",
+       "status": "ok",
+       "detail": "score nature 3",
+       "subscore": 0.86,
+       "weight": 0.5,
+       "contribution": 43.0
+      },
+      {
+       "key": "exception",
+       "label": "Caractère d'exception",
+       "status": "ok",
+       "detail": "ordinaire",
+       "subscore": 0.4,
+       "weight": 0.3,
+       "contribution": 12.0
+      },
+      {
+       "key": "authenticite",
+       "label": "Authenticité / cachet",
+       "status": "ok",
+       "detail": "cachet/authentique",
+       "subscore": 1.0,
+       "weight": 0.2,
+       "contribution": 20.0
+      }
+     ],
+     "weight": 0.215,
+     "contribution": 16.1
+    },
+    {
+     "key": "risques",
+     "label": "Risques & nuisances",
+     "score": 100.0,
+     "status": "ok",
+     "subpillars": [
+      {
+       "key": "risques_naturels",
+       "label": "Risques naturels/techno",
+       "status": "ok",
+       "detail": "aucun risque recensé",
+       "subscore": 1.0,
+       "weight": 0.353,
+       "contribution": 35.3
+      },
+      {
+       "key": "pollution_eau",
+       "label": "Pollution / qualité de l'eau",
+       "status": "ok",
+       "detail": "eau conforme",
+       "subscore": 1.0,
+       "weight": 0.353,
+       "contribution": 35.3
+      },
+      {
+       "key": "nuisances_proximite",
+       "label": "Nuisances de proximité",
+       "status": "ok",
+       "detail": "aucune nuisance signalée",
+       "subscore": 1.0,
+       "weight": 0.294,
+       "contribution": 29.4
+      },
+      {
+       "key": "aerien",
+       "label": "Nuisances aériennes (PEB)",
+       "status": "pending",
+       "detail": "PEB / servitudes aéro",
+       "subscore": null,
+       "weight": 0.0,
+       "contribution": 0.0
+      }
+     ],
+     "weight": 0.161,
+     "contribution": 16.1
+    },
+    {
+     "key": "accessibilite",
+     "label": "Accessibilité & services",
+     "score": 20.0,
+     "status": "ok",
+     "subpillars": [
+      {
+       "key": "train",
+       "label": "Trajet train",
+       "status": "ok",
+       "detail": "~12h13 porte-à-porte (Paris)",
+       "subscore": 0.0,
+       "weight": 0.5,
+       "contribution": 0.0
+      },
+      {
+       "key": "gare",
+       "label": "Proximité gare",
+       "status": "ok",
+       "detail": "gare de Morlaix à 6.0 km",
+       "subscore": 0.8,
+       "weight": 0.25,
+       "contribution": 20.0
+      },
+      {
+       "key": "fibre",
+       "label": "Fibre",
+       "status": "ok",
+       "detail": "pas de fibre",
+       "subscore": 0.0,
+       "weight": 0.25,
+       "contribution": 0.0
+      }
+     ],
+     "weight": 0.086,
+     "contribution": 1.7
+    },
+    {
+     "key": "etat",
+     "label": "État & travaux",
+     "score": null,
+     "status": "pending",
+     "subpillars": [
+      {
+       "key": "travaux",
+       "label": "Niveau de travaux",
+       "status": "n/a",
+       "detail": "état inconnu",
+       "subscore": null,
+       "weight": 0.0,
+       "contribution": 0.0
+      }
+     ],
+     "weight": 0.0,
+     "contribution": 0.0
+    }
+   ],
+   "scores_by_set": {
+    "4": {
+     "match_score": 79.5,
+     "details": [
+      {
+       "kind": "budget",
+       "label": "Budget ≤ 400 000 €",
+       "weight": 5.0,
+       "status": "ok",
+       "detail": "270300€ — 68% du budget 400000€",
+       "subscore": 1.0,
+       "contribution": 5.0
+      },
+      {
+       "kind": "constructible",
+       "label": "Terrain constructible (tiny house)",
+       "weight": 5.0,
+       "status": "ok",
+       "detail": "constructible (zonage U)",
+       "subscore": 1.0,
+       "contribution": 5.0
+      },
+      {
+       "kind": "feature",
+       "label": "Vue (mer / dégagée)",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "vue : mentionné",
+       "subscore": 1.0,
+       "contribution": 4.0
+      },
+      {
+       "kind": "distance_mer",
+       "label": "Proximité mer (distance réelle)",
+       "weight": 5.0,
+       "status": "ok",
+       "detail": "mer à ~1250 m",
+       "subscore": 0.683,
+       "contribution": 3.417
+      },
+      {
+       "kind": "en_hauteur_geo",
+       "label": "Surélevé / position dominante (relief réel)",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "dominant (+6 m sur 300 m)",
+       "subscore": 0.8,
+       "contribution": 3.2
+      },
+      {
+       "kind": "has_terrain",
+       "label": "Avec terrain",
+       "weight": 3.0,
+       "status": "ok",
+       "detail": "366 m²",
+       "subscore": 1.0,
+       "contribution": 3.0
+      },
+      {
+       "kind": "authentic",
+       "label": "Charme / cachet",
+       "weight": 3.0,
+       "status": "ok",
+       "detail": "cachet / authentique mentionné",
+       "subscore": 1.0,
+       "contribution": 3.0
+      },
+      {
+       "kind": "nature_exception",
+       "label": "Nature d'exception",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "qualité nature 3/4",
+       "subscore": 0.7,
+       "contribution": 2.8
+      },
+      {
+       "kind": "feature",
+       "label": "Isolé / sauvage",
+       "weight": 3.0,
+       "status": "ok",
+       "detail": "commune de 790 hab.",
+       "subscore": 0.649,
+       "contribution": 1.947
+      },
+      {
+       "kind": "prix_m2_terrain",
+       "label": "Rapport qualité/prix (€/m² terrain)",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "739 €/m² de terrain",
+       "subscore": 0.102,
+       "contribution": 0.406
+      },
+      {
+       "kind": "fiber",
+       "label": "Fibre (télétravail)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "0% des locaux de la commune éligibles (à vérifier pour ce bien)",
+       "subscore": 0.0,
+       "contribution": 0.0
+      },
+      {
+       "kind": "feature",
+       "label": "Bord de mer / première ligne",
+       "weight": 5.0,
+       "status": "n/a",
+       "detail": "bord_de_mer : non mentionné (ignoré)",
+       "subscore": null
+      },
+      {
+       "kind": "feature",
+       "label": "Bord d'eau (rivière / étang / ria)",
+       "weight": 4.0,
+       "status": "n/a",
+       "detail": "bord_eau : non mentionné (ignoré)",
+       "subscore": null
+      },
+      {
+       "kind": "feature",
+       "label": "En hauteur (mention annonce)",
+       "weight": 2.0,
+       "status": "n/a",
+       "detail": "en_hauteur : non mentionné (ignoré)",
+       "subscore": null
+      },
+      {
+       "kind": "no_vis_a_vis",
+       "label": "Sans vis-à-vis",
+       "weight": 3.0,
+       "status": "n/a",
+       "detail": "vis-à-vis non précisé (ignoré)",
+       "subscore": null
+      },
+      {
+       "kind": "hiking",
+       "label": "Sentiers côtiers / randonnées",
+       "weight": 2.0,
+       "status": "pending",
+       "detail": "provider non branché",
+       "subscore": null
+      },
+      {
+       "kind": "nuisance_sonore",
+       "label": "Calme (loin autoroute/rail)",
+       "weight": 2.0,
+       "status": "pending",
+       "detail": "proximité infrastructures non vérifiée",
+       "subscore": null
+      },
+      {
+       "kind": "commerces",
+       "label": "Commerces/services à proximité",
+       "weight": 2.0,
+       "status": "pending",
+       "detail": "commerces non vérifiés",
+       "subscore": null
+      }
+     ]
+    }
+   },
+   "viager": false,
+   "residence_tourisme": false,
+   "is_favori": false,
+   "favori_note": null,
+   "n_photos_source": 11,
+   "photos": [
+    "photos/bienici_immo-facile-60829140/0.jpg",
+    "photos/bienici_immo-facile-60829140/1.jpg",
+    "photos/bienici_immo-facile-60829140/2.jpg",
+    "photos/bienici_immo-facile-60829140/3.jpg",
+    "photos/bienici_immo-facile-60829140/4.jpg",
+    "photos/bienici_immo-facile-60829140/5.jpg",
+    "photos/bienici_immo-facile-60829140/6.jpg",
+    "photos/bienici_immo-facile-60829140/7.jpg",
+    "photos/bienici_immo-facile-60829140/8.jpg",
+    "photos/bienici_immo-facile-60829140/9.jpg",
+    "photos/bienici_immo-facile-60829140/10.jpg"
    ]
   },
   {
@@ -152077,6 +152576,437 @@
    "favori_note": null,
    "n_photos_source": 0,
    "photos": []
+  },
+  {
+   "condition": "renover",
+   "niveau_travaux": 2,
+   "nuisances": [],
+   "nature_score": 3,
+   "nature_exception": false,
+   "constructible": true,
+   "est_zone_au": false,
+   "zone_urba": "U",
+   "altitude": 178.3,
+   "rail_time_min": 209,
+   "risques": [
+    "seisme",
+    "radon"
+   ],
+   "prix_m2_secteur": 1353.1,
+   "ecart_prix_pct": 68.4,
+   "pollution_eau_score": 1.0,
+   "eau_potable_conforme": true,
+   "pollutions": [],
+   "age_median": null,
+   "part_gauche": null,
+   "population_commune": 3382,
+   "isolement_score": 0.277,
+   "price_decreased": false,
+   "id": 1395,
+   "source": "bienici",
+   "external_id": "safti-1-1653260",
+   "type_bien": "maison",
+   "prix": 159500.0,
+   "nb_chambres": 2,
+   "nb_pieces": 3,
+   "surface_terrain": 1380.0,
+   "surface_bati": 70.0,
+   "commune": "Plougonven",
+   "code_postal": "29640",
+   "code_commune": "29191",
+   "departement": "29",
+   "latitude": 48.52297982524087,
+   "longitude": -3.715741538685486,
+   "url": "https://www.bienici.com/annonce/safti-1-1653260",
+   "description": "Située à Plougonven (29640), cette longère du XVIIème siècle rénovée offre un cadre de vie authentique à la périphérie immédiate de la commune. Cet emplacement paisible allie charme de la campagne et proximité avec les commodités citadines, offrant ainsi un équilibre idéal pour les amoureux de nature tout en restant proche des services essentiels.<br> <br>Cette maison de 70m² habitables s'étend sur deux niveaux. Le rez-de-chaussée abrite un salon convivial, une cuisine fonctionnelle, une chambre avec accès au grenier aménageable, une salle d'eau et un wc indépendant. À l'étage, vous trouverez un grand cabinet de toilette avec vasque et wc, ainsi qu'une chambre supplémentaire. Dotée d'un assainissement individuel aux normes, d'un chauffage principal au poêle à bois et de radiateurs à inertie au rez-de-chaussée, cette propriété bénéficie d'une rénovation récente en électricité, plomberie et peintures. Offrant un cadre chaleureux et plein de charme, ce bien saura séduire les amateurs d'histoire et de confort cosy.<br> <br>Les informations sur les risques auxquels ce bien est exposé sont disponibles sur le site Géorisques : www.georisques.gouv.fr<br>Prix de vente : 159 500 €<br>Honoraires charge vendeur<br> <br>Contactez votre conseiller SAFTI : Sonia HAMON, Tél. : <span class=\"importDescriptionDecorator\" data-type=\"phone\">06 14 38 53 72</span>, E-mail : <span class=\"importDescriptionDecorator\" data-type=\"email\">sonia.hamon@safti.fr</span> - EI - Agent commercial immatriculé au RSAC de BREST sous le numéro 853 371 631",
+   "dpe_classe": "G",
+   "features": [
+    "authentique",
+    "calme",
+    "eau",
+    "cheminee"
+   ],
+   "score": 67.4,
+   "score_details": [
+    {
+     "key": "foncier",
+     "label": "Foncier & constructibilité",
+     "score": 92.6,
+     "status": "ok",
+     "subpillars": [
+      {
+       "key": "zonage",
+       "label": "Zonage / constructibilité",
+       "status": "ok",
+       "detail": "zone U",
+       "subscore": 1.0,
+       "weight": 0.6,
+       "contribution": 60.0
+      },
+      {
+       "key": "terrain",
+       "label": "Présence de terrain",
+       "status": "ok",
+       "detail": "1380 m²",
+       "subscore": 0.814,
+       "weight": 0.4,
+       "contribution": 32.6
+      }
+     ],
+     "weight": 0.2,
+     "contribution": 18.5
+    },
+    {
+     "key": "cadre",
+     "label": "Cadre & nature",
+     "score": 75.0,
+     "status": "ok",
+     "subpillars": [
+      {
+       "key": "nature",
+       "label": "Qualité nature",
+       "status": "ok",
+       "detail": "score nature 3",
+       "subscore": 0.86,
+       "weight": 0.5,
+       "contribution": 43.0
+      },
+      {
+       "key": "exception",
+       "label": "Caractère d'exception",
+       "status": "ok",
+       "detail": "ordinaire",
+       "subscore": 0.4,
+       "weight": 0.3,
+       "contribution": 12.0
+      },
+      {
+       "key": "authenticite",
+       "label": "Authenticité / cachet",
+       "status": "ok",
+       "detail": "cachet/authentique",
+       "subscore": 1.0,
+       "weight": 0.2,
+       "contribution": 20.0
+      }
+     ],
+     "weight": 0.2,
+     "contribution": 15.0
+    },
+    {
+     "key": "risques",
+     "label": "Risques & nuisances",
+     "score": 97.9,
+     "status": "ok",
+     "subpillars": [
+      {
+       "key": "risques_naturels",
+       "label": "Risques naturels/techno",
+       "status": "ok",
+       "detail": "seisme, radon",
+       "subscore": 0.941,
+       "weight": 0.353,
+       "contribution": 33.2
+      },
+      {
+       "key": "pollution_eau",
+       "label": "Pollution / qualité de l'eau",
+       "status": "ok",
+       "detail": "eau conforme",
+       "subscore": 1.0,
+       "weight": 0.353,
+       "contribution": 35.3
+      },
+      {
+       "key": "nuisances_proximite",
+       "label": "Nuisances de proximité",
+       "status": "ok",
+       "detail": "aucune nuisance signalée",
+       "subscore": 1.0,
+       "weight": 0.294,
+       "contribution": 29.4
+      },
+      {
+       "key": "aerien",
+       "label": "Nuisances aériennes (PEB)",
+       "status": "pending",
+       "detail": "PEB / servitudes aéro",
+       "subscore": null,
+       "weight": 0.0,
+       "contribution": 0.0
+      }
+     ],
+     "weight": 0.15,
+     "contribution": 14.7
+    },
+    {
+     "key": "prix",
+     "label": "Prix & opportunité",
+     "score": 36.5,
+     "status": "ok",
+     "subpillars": [
+      {
+       "key": "niveau_prix",
+       "label": "Niveau de prix (€/m²)",
+       "status": "ok",
+       "detail": "2279 €/m² habitable (repère : 1200–3500)",
+       "subscore": 0.648,
+       "weight": 0.562,
+       "contribution": 36.4
+      },
+      {
+       "key": "affaire",
+       "label": "Affaire vs marché",
+       "status": "ok",
+       "detail": "+68% vs marché local",
+       "subscore": 0.0,
+       "weight": 0.437,
+       "contribution": 0.0
+      },
+      {
+       "key": "baisse_prix",
+       "label": "Négociation (baisse)",
+       "status": "n/a",
+       "detail": "pas de baisse constatée",
+       "subscore": null,
+       "weight": 0.0,
+       "contribution": 0.0
+      }
+     ],
+     "weight": 0.3,
+     "contribution": 10.9
+    },
+    {
+     "key": "etat",
+     "label": "État & travaux",
+     "score": 70.0,
+     "status": "ok",
+     "subpillars": [
+      {
+       "key": "travaux",
+       "label": "Niveau de travaux",
+       "status": "ok",
+       "detail": "renover",
+       "subscore": 0.7,
+       "weight": 1.0,
+       "contribution": 70.0
+      }
+     ],
+     "weight": 0.07,
+     "contribution": 4.9
+    },
+    {
+     "key": "accessibilite",
+     "label": "Accessibilité & services",
+     "score": 41.3,
+     "status": "ok",
+     "subpillars": [
+      {
+       "key": "train",
+       "label": "Trajet train",
+       "status": "ok",
+       "detail": "~12h01 porte-à-porte (Paris)",
+       "subscore": 0.0,
+       "weight": 0.5,
+       "contribution": 0.0
+      },
+      {
+       "key": "gare",
+       "label": "Proximité gare",
+       "status": "ok",
+       "detail": "gare de Morlaix à 10.4 km",
+       "subscore": 0.653,
+       "weight": 0.25,
+       "contribution": 16.3
+      },
+      {
+       "key": "fibre",
+       "label": "Fibre",
+       "status": "ok",
+       "detail": "fibre",
+       "subscore": 1.0,
+       "weight": 0.25,
+       "contribution": 25.0
+      }
+     ],
+     "weight": 0.08,
+     "contribution": 3.3
+    }
+   ],
+   "scores_by_set": {
+    "4": {
+     "match_score": 78.4,
+     "details": [
+      {
+       "kind": "budget",
+       "label": "Budget ≤ 400 000 €",
+       "weight": 5.0,
+       "status": "ok",
+       "detail": "159500€ — 40% du budget 400000€",
+       "subscore": 1.0,
+       "contribution": 5.0
+      },
+      {
+       "kind": "constructible",
+       "label": "Terrain constructible (tiny house)",
+       "weight": 5.0,
+       "status": "ok",
+       "detail": "constructible (zonage U)",
+       "subscore": 1.0,
+       "contribution": 5.0
+      },
+      {
+       "kind": "en_hauteur_geo",
+       "label": "Surélevé / position dominante (relief réel)",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "dominant (+7 m sur 300 m)",
+       "subscore": 0.867,
+       "contribution": 3.467
+      },
+      {
+       "kind": "prix_m2_terrain",
+       "label": "Rapport qualité/prix (€/m² terrain)",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "116 €/m² de terrain",
+       "subscore": 0.826,
+       "contribution": 3.305
+      },
+      {
+       "kind": "has_terrain",
+       "label": "Avec terrain",
+       "weight": 3.0,
+       "status": "ok",
+       "detail": "1380 m²",
+       "subscore": 1.0,
+       "contribution": 3.0
+      },
+      {
+       "kind": "authentic",
+       "label": "Charme / cachet",
+       "weight": 3.0,
+       "status": "ok",
+       "detail": "cachet / authentique mentionné",
+       "subscore": 1.0,
+       "contribution": 3.0
+      },
+      {
+       "kind": "nature_exception",
+       "label": "Nature d'exception",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "qualité nature 3/4",
+       "subscore": 0.7,
+       "contribution": 2.8
+      },
+      {
+       "kind": "fiber",
+       "label": "Fibre (télétravail)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "78% des locaux de la commune éligibles (à vérifier pour ce bien)",
+       "subscore": 0.78,
+       "contribution": 1.56
+      },
+      {
+       "kind": "feature",
+       "label": "Isolé / sauvage",
+       "weight": 3.0,
+       "status": "ok",
+       "detail": "commune de 3382 hab.",
+       "subscore": 0.277,
+       "contribution": 0.831
+      },
+      {
+       "kind": "distance_mer",
+       "label": "Proximité mer (distance réelle)",
+       "weight": 5.0,
+       "status": "ok",
+       "detail": "mer à > 3000 m",
+       "subscore": 0.1,
+       "contribution": 0.5
+      },
+      {
+       "kind": "feature",
+       "label": "Bord de mer / première ligne",
+       "weight": 5.0,
+       "status": "n/a",
+       "detail": "bord_de_mer : non mentionné (ignoré)",
+       "subscore": null
+      },
+      {
+       "kind": "feature",
+       "label": "Bord d'eau (rivière / étang / ria)",
+       "weight": 4.0,
+       "status": "n/a",
+       "detail": "bord_eau : non mentionné (ignoré)",
+       "subscore": null
+      },
+      {
+       "kind": "feature",
+       "label": "Vue (mer / dégagée)",
+       "weight": 4.0,
+       "status": "n/a",
+       "detail": "vue : non mentionné (ignoré)",
+       "subscore": null
+      },
+      {
+       "kind": "feature",
+       "label": "En hauteur (mention annonce)",
+       "weight": 2.0,
+       "status": "n/a",
+       "detail": "en_hauteur : non mentionné (ignoré)",
+       "subscore": null
+      },
+      {
+       "kind": "no_vis_a_vis",
+       "label": "Sans vis-à-vis",
+       "weight": 3.0,
+       "status": "n/a",
+       "detail": "vis-à-vis non précisé (ignoré)",
+       "subscore": null
+      },
+      {
+       "kind": "hiking",
+       "label": "Sentiers côtiers / randonnées",
+       "weight": 2.0,
+       "status": "pending",
+       "detail": "provider non branché",
+       "subscore": null
+      },
+      {
+       "kind": "nuisance_sonore",
+       "label": "Calme (loin autoroute/rail)",
+       "weight": 2.0,
+       "status": "pending",
+       "detail": "proximité infrastructures non vérifiée",
+       "subscore": null
+      },
+      {
+       "kind": "commerces",
+       "label": "Commerces/services à proximité",
+       "weight": 2.0,
+       "status": "pending",
+       "detail": "commerces non vérifiés",
+       "subscore": null
+      }
+     ]
+    }
+   },
+   "viager": false,
+   "residence_tourisme": false,
+   "is_favori": false,
+   "favori_note": null,
+   "n_photos_source": 6,
+   "photos": [
+    "photos/bienici_safti-1-1653260/0.jpg",
+    "photos/bienici_safti-1-1653260/1.jpg",
+    "photos/bienici_safti-1-1653260/2.jpg",
+    "photos/bienici_safti-1-1653260/3.jpg",
+    "photos/bienici_safti-1-1653260/4.jpg",
+    "photos/bienici_safti-1-1653260/5.jpg"
+   ]
   },
   {
    "condition": null,
@@ -158335,6 +159265,433 @@
    ]
   },
   {
+   "condition": null,
+   "niveau_travaux": null,
+   "nuisances": [],
+   "nature_score": 1,
+   "nature_exception": false,
+   "constructible": true,
+   "est_zone_au": false,
+   "zone_urba": "U",
+   "altitude": 23.3,
+   "rail_time_min": 216,
+   "risques": [
+    "seisme",
+    "radon"
+   ],
+   "prix_m2_secteur": null,
+   "ecart_prix_pct": null,
+   "pollution_eau_score": 1.0,
+   "eau_potable_conforme": true,
+   "pollutions": [],
+   "age_median": null,
+   "part_gauche": null,
+   "population_commune": 458,
+   "isolement_score": 0.788,
+   "price_decreased": false,
+   "id": 1400,
+   "source": "bienici",
+   "external_id": "safti-1-1520571",
+   "type_bien": "terrain",
+   "prix": 255000.0,
+   "nb_chambres": null,
+   "nb_pieces": null,
+   "surface_terrain": 1054.0,
+   "surface_bati": null,
+   "commune": "Île-de-Batz",
+   "code_postal": "29253",
+   "code_commune": "29082",
+   "departement": "29",
+   "latitude": 48.745788733060195,
+   "longitude": -4.013113932625704,
+   "url": "https://www.bienici.com/annonce/safti-1-1520571",
+   "description": "Rare opportunité ! CU OPERATIONNEL ! Nous mettons en vente un terrain unique sur l'Île<br>de Batz, offrant un cadre exceptionnel avec une vue<br>imprenable sur la mer.<br>Terrain de 1054 m2, borné, constructible, hors lotissement.<br>Belle exposition.<br>Ne ratez pas cette occasion rare d'acquérir un morceau de<br>paradis. Pour plus d'informations ou pour organiser une<br>visite, n'hésitez pas à nous contacter!!<br> <br>Les informations sur les risques auxquels ce bien est exposé sont disponibles sur le site Géorisques : www.georisques.gouv.fr<br>Prix de vente : 255 000 €<br>Honoraires charge vendeur<br> <br>Contactez votre conseiller SAFTI : Guénaël DAVID, Tél. : <span class=\"importDescriptionDecorator\" data-type=\"phone\">0658095116</span>, E-mail : <span class=\"importDescriptionDecorator\" data-type=\"email\">guenael.david@safti.fr</span> - EI - Agent commercial immatriculé au RSAC de BREST sous le numéro 441 658 754",
+   "dpe_classe": null,
+   "features": [
+    "vue"
+   ],
+   "score": 66.3,
+   "score_details": [
+    {
+     "key": "prix",
+     "label": "Prix & opportunité",
+     "score": 62.0,
+     "status": "ok",
+     "subpillars": [
+      {
+       "key": "niveau_prix",
+       "label": "Niveau de prix (€/m²)",
+       "status": "ok",
+       "detail": "242 €/m² de terrain (repère : 80–400)",
+       "subscore": 0.62,
+       "weight": 1.0,
+       "contribution": 62.0
+      },
+      {
+       "key": "affaire",
+       "label": "Affaire vs marché",
+       "status": "pending",
+       "detail": "comparables DVF indisponibles",
+       "subscore": null,
+       "weight": 0.0,
+       "contribution": 0.0
+      },
+      {
+       "key": "baisse_prix",
+       "label": "Négociation (baisse)",
+       "status": "n/a",
+       "detail": "pas de baisse constatée",
+       "subscore": null,
+       "weight": 0.0,
+       "contribution": 0.0
+      }
+     ],
+     "weight": 0.323,
+     "contribution": 20.0
+    },
+    {
+     "key": "foncier",
+     "label": "Foncier & constructibilité",
+     "score": 88.6,
+     "status": "ok",
+     "subpillars": [
+      {
+       "key": "zonage",
+       "label": "Zonage / constructibilité",
+       "status": "ok",
+       "detail": "zone U",
+       "subscore": 1.0,
+       "weight": 0.6,
+       "contribution": 60.0
+      },
+      {
+       "key": "terrain",
+       "label": "Présence de terrain",
+       "status": "ok",
+       "detail": "1054 m²",
+       "subscore": 0.716,
+       "weight": 0.4,
+       "contribution": 28.6
+      }
+     ],
+     "weight": 0.215,
+     "contribution": 19.0
+    },
+    {
+     "key": "risques",
+     "label": "Risques & nuisances",
+     "score": 97.9,
+     "status": "ok",
+     "subpillars": [
+      {
+       "key": "risques_naturels",
+       "label": "Risques naturels/techno",
+       "status": "ok",
+       "detail": "seisme, radon",
+       "subscore": 0.941,
+       "weight": 0.353,
+       "contribution": 33.2
+      },
+      {
+       "key": "pollution_eau",
+       "label": "Pollution / qualité de l'eau",
+       "status": "ok",
+       "detail": "eau conforme",
+       "subscore": 1.0,
+       "weight": 0.353,
+       "contribution": 35.3
+      },
+      {
+       "key": "nuisances_proximite",
+       "label": "Nuisances de proximité",
+       "status": "ok",
+       "detail": "aucune nuisance signalée",
+       "subscore": 1.0,
+       "weight": 0.294,
+       "contribution": 29.4
+      },
+      {
+       "key": "aerien",
+       "label": "Nuisances aériennes (PEB)",
+       "status": "pending",
+       "detail": "PEB / servitudes aéro",
+       "subscore": null,
+       "weight": 0.0,
+       "contribution": 0.0
+      }
+     ],
+     "weight": 0.161,
+     "contribution": 15.8
+    },
+    {
+     "key": "cadre",
+     "label": "Cadre & nature",
+     "score": 51.0,
+     "status": "ok",
+     "subpillars": [
+      {
+       "key": "nature",
+       "label": "Qualité nature",
+       "status": "ok",
+       "detail": "score nature 1",
+       "subscore": 0.62,
+       "weight": 0.5,
+       "contribution": 31.0
+      },
+      {
+       "key": "exception",
+       "label": "Caractère d'exception",
+       "status": "ok",
+       "detail": "ordinaire",
+       "subscore": 0.4,
+       "weight": 0.3,
+       "contribution": 12.0
+      },
+      {
+       "key": "authenticite",
+       "label": "Authenticité / cachet",
+       "status": "ok",
+       "detail": "non précisé",
+       "subscore": 0.4,
+       "weight": 0.2,
+       "contribution": 8.0
+      }
+     ],
+     "weight": 0.215,
+     "contribution": 11.0
+    },
+    {
+     "key": "accessibilite",
+     "label": "Accessibilité & services",
+     "score": 5.8,
+     "status": "ok",
+     "subpillars": [
+      {
+       "key": "train",
+       "label": "Trajet train",
+       "status": "ok",
+       "detail": "~12h25 porte-à-porte (Paris)",
+       "subscore": 0.0,
+       "weight": 0.5,
+       "contribution": 0.0
+      },
+      {
+       "key": "gare",
+       "label": "Proximité gare",
+       "status": "ok",
+       "detail": "gare de Morlaix à 23.0 km",
+       "subscore": 0.233,
+       "weight": 0.25,
+       "contribution": 5.8
+      },
+      {
+       "key": "fibre",
+       "label": "Fibre",
+       "status": "ok",
+       "detail": "pas de fibre",
+       "subscore": 0.0,
+       "weight": 0.25,
+       "contribution": 0.0
+      }
+     ],
+     "weight": 0.086,
+     "contribution": 0.5
+    },
+    {
+     "key": "etat",
+     "label": "État & travaux",
+     "score": null,
+     "status": "pending",
+     "subpillars": [
+      {
+       "key": "travaux",
+       "label": "Niveau de travaux",
+       "status": "n/a",
+       "detail": "état inconnu",
+       "subscore": null,
+       "weight": 0.0,
+       "contribution": 0.0
+      }
+     ],
+     "weight": 0.0,
+     "contribution": 0.0
+    }
+   ],
+   "scores_by_set": {
+    "4": {
+     "match_score": 84.7,
+     "details": [
+      {
+       "kind": "budget",
+       "label": "Budget ≤ 400 000 €",
+       "weight": 5.0,
+       "status": "ok",
+       "detail": "255000€ — 64% du budget 400000€",
+       "subscore": 1.0,
+       "contribution": 5.0
+      },
+      {
+       "kind": "constructible",
+       "label": "Terrain constructible (tiny house)",
+       "weight": 5.0,
+       "status": "ok",
+       "detail": "constructible (zonage U)",
+       "subscore": 1.0,
+       "contribution": 5.0
+      },
+      {
+       "kind": "en_hauteur_geo",
+       "label": "Surélevé / position dominante (relief réel)",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "dominant (+10 m sur 300 m)",
+       "subscore": 1.0,
+       "contribution": 4.0
+      },
+      {
+       "kind": "feature",
+       "label": "Vue (mer / dégagée)",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "vue : mentionné",
+       "subscore": 1.0,
+       "contribution": 4.0
+      },
+      {
+       "kind": "distance_mer",
+       "label": "Proximité mer (distance réelle)",
+       "weight": 5.0,
+       "status": "ok",
+       "detail": "mer à ~1000 m",
+       "subscore": 0.767,
+       "contribution": 3.833
+      },
+      {
+       "kind": "has_terrain",
+       "label": "Avec terrain",
+       "weight": 3.0,
+       "status": "ok",
+       "detail": "1054 m²",
+       "subscore": 1.0,
+       "contribution": 3.0
+      },
+      {
+       "kind": "feature",
+       "label": "Isolé / sauvage",
+       "weight": 3.0,
+       "status": "ok",
+       "detail": "commune de 458 hab.",
+       "subscore": 0.788,
+       "contribution": 2.364
+      },
+      {
+       "kind": "nature_exception",
+       "label": "Nature d'exception",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "qualité nature 1/4",
+       "subscore": 0.5,
+       "contribution": 2.0
+      },
+      {
+       "kind": "prix_m2_terrain",
+       "label": "Rapport qualité/prix (€/m² terrain)",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "242 €/m² de terrain",
+       "subscore": 0.431,
+       "contribution": 1.726
+      },
+      {
+       "kind": "fiber",
+       "label": "Fibre (télétravail)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "0% des locaux de la commune éligibles (à vérifier pour ce bien)",
+       "subscore": 0.0,
+       "contribution": 0.0
+      },
+      {
+       "kind": "feature",
+       "label": "Bord de mer / première ligne",
+       "weight": 5.0,
+       "status": "n/a",
+       "detail": "bord_de_mer : non mentionné (ignoré)",
+       "subscore": null
+      },
+      {
+       "kind": "feature",
+       "label": "Bord d'eau (rivière / étang / ria)",
+       "weight": 4.0,
+       "status": "n/a",
+       "detail": "bord_eau : non mentionné (ignoré)",
+       "subscore": null
+      },
+      {
+       "kind": "feature",
+       "label": "En hauteur (mention annonce)",
+       "weight": 2.0,
+       "status": "n/a",
+       "detail": "en_hauteur : non mentionné (ignoré)",
+       "subscore": null
+      },
+      {
+       "kind": "no_vis_a_vis",
+       "label": "Sans vis-à-vis",
+       "weight": 3.0,
+       "status": "n/a",
+       "detail": "vis-à-vis non précisé (ignoré)",
+       "subscore": null
+      },
+      {
+       "kind": "authentic",
+       "label": "Charme / cachet",
+       "weight": 3.0,
+       "status": "n/a",
+       "detail": "cachet non mentionné (ignoré)",
+       "subscore": null
+      },
+      {
+       "kind": "hiking",
+       "label": "Sentiers côtiers / randonnées",
+       "weight": 2.0,
+       "status": "pending",
+       "detail": "provider non branché",
+       "subscore": null
+      },
+      {
+       "kind": "nuisance_sonore",
+       "label": "Calme (loin autoroute/rail)",
+       "weight": 2.0,
+       "status": "pending",
+       "detail": "proximité infrastructures non vérifiée",
+       "subscore": null
+      },
+      {
+       "kind": "commerces",
+       "label": "Commerces/services à proximité",
+       "weight": 2.0,
+       "status": "pending",
+       "detail": "commerces non vérifiés",
+       "subscore": null
+      }
+     ]
+    }
+   },
+   "viager": false,
+   "residence_tourisme": false,
+   "is_favori": false,
+   "favori_note": null,
+   "n_photos_source": 5,
+   "photos": [
+    "photos/bienici_safti-1-1520571/0.jpg",
+    "photos/bienici_safti-1-1520571/1.jpg",
+    "photos/bienici_safti-1-1520571/2.jpg",
+    "photos/bienici_safti-1-1520571/3.jpg",
+    "photos/bienici_safti-1-1520571/4.jpg"
+   ]
+  },
+  {
    "condition": "gros_travaux",
    "niveau_travaux": null,
    "nuisances": [],
@@ -159638,6 +160995,432 @@
     "photos/bienici_netty-company40386csq-house-32013/7.jpg",
     "photos/bienici_netty-company40386csq-house-32013/8.jpg",
     "photos/bienici_netty-company40386csq-house-32013/9.jpg"
+   ]
+  },
+  {
+   "condition": "habitable",
+   "niveau_travaux": 0,
+   "nuisances": [],
+   "nature_score": 0,
+   "nature_exception": false,
+   "constructible": true,
+   "est_zone_au": false,
+   "zone_urba": "U",
+   "altitude": 55.5,
+   "rail_time_min": 200,
+   "risques": [
+    "seisme",
+    "radon"
+   ],
+   "prix_m2_secteur": 3682.0,
+   "ecart_prix_pct": 10.9,
+   "pollution_eau_score": 1.0,
+   "eau_potable_conforme": true,
+   "pollutions": [],
+   "age_median": null,
+   "part_gauche": null,
+   "population_commune": 7336,
+   "isolement_score": 0.079,
+   "price_decreased": true,
+   "id": 1268,
+   "source": "bienici",
+   "external_id": "gedeon-33614968",
+   "type_bien": "maison",
+   "prix": 326810.0,
+   "nb_chambres": 2,
+   "nb_pieces": 4,
+   "surface_terrain": null,
+   "surface_bati": 80.0,
+   "commune": "Perros-Guirec",
+   "code_postal": "22700",
+   "code_commune": "22168",
+   "departement": "22",
+   "latitude": 48.81511331,
+   "longitude": -3.439466146,
+   "url": "https://www.bienici.com/annonce/gedeon-33614968",
+   "description": "Fiche Id-182791 : Vous serez charmé par cette jolie maison pierres entièrement rénovée situé au centre-ville et comprenant un séjour salon avec cuisine ouverte aménagée et équipée, un wc. A l'étage: un palier desservant deux chambres , une salle d'eau avec wc. Une petite dépendance attenante . Cour devant et cour à l'arrière avec chaufferie et petite dépendance pour stockage. - Mentions légales :  Proposé à la vente à 326810 Euros (Dont 3.75% TTC d'honoraires à la charge de l'acquéreur, soit un prix hors honoraires de 315000 Euros) - DPE réalisé le : 28/07/2026 - Classe-Energie D : 196 kWh.m2.an  - Montant estimé des dépenses annuelles d'énergie pour un usage standard compris entre 1380 et 1900 Euros - Affaire suivie par Mme Véronique LE TYNEVEZ  : <span class=\"importDescriptionDecorator\" data-type=\"phone\">0636663206</span> - Agence Coté Immo Perros Guirec - Pour plus d'informations, contactez notre secrétariat au <span class=\"importDescriptionDecorator\" data-type=\"phone\">02 96 23 21 21</span> (Appel gratuit ou prix d'une communication locale) - Les informations sur les risques auxquels ce bien est exposé sont disponibles sur le site Géorisques : www.georisques.gouv.fr",
+   "dpe_classe": "D",
+   "features": [],
+   "score": 66.2,
+   "score_details": [
+    {
+     "key": "foncier",
+     "label": "Foncier & constructibilité",
+     "score": 100.0,
+     "status": "ok",
+     "subpillars": [
+      {
+       "key": "zonage",
+       "label": "Zonage / constructibilité",
+       "status": "ok",
+       "detail": "zone U",
+       "subscore": 1.0,
+       "weight": 1.0,
+       "contribution": 100.0
+      },
+      {
+       "key": "terrain",
+       "label": "Présence de terrain",
+       "status": "n/a",
+       "detail": "surface terrain inconnue",
+       "subscore": null,
+       "weight": 0.0,
+       "contribution": 0.0
+      }
+     ],
+     "weight": 0.2,
+     "contribution": 20.0
+    },
+    {
+     "key": "risques",
+     "label": "Risques & nuisances",
+     "score": 97.9,
+     "status": "ok",
+     "subpillars": [
+      {
+       "key": "risques_naturels",
+       "label": "Risques naturels/techno",
+       "status": "ok",
+       "detail": "seisme, radon",
+       "subscore": 0.941,
+       "weight": 0.353,
+       "contribution": 33.2
+      },
+      {
+       "key": "pollution_eau",
+       "label": "Pollution / qualité de l'eau",
+       "status": "ok",
+       "detail": "eau conforme",
+       "subscore": 1.0,
+       "weight": 0.353,
+       "contribution": 35.3
+      },
+      {
+       "key": "nuisances_proximite",
+       "label": "Nuisances de proximité",
+       "status": "ok",
+       "detail": "aucune nuisance signalée",
+       "subscore": 1.0,
+       "weight": 0.294,
+       "contribution": 29.4
+      },
+      {
+       "key": "aerien",
+       "label": "Nuisances aériennes (PEB)",
+       "status": "pending",
+       "detail": "PEB / servitudes aéro",
+       "subscore": null,
+       "weight": 0.0,
+       "contribution": 0.0
+      }
+     ],
+     "weight": 0.15,
+     "contribution": 14.7
+    },
+    {
+     "key": "prix",
+     "label": "Prix & opportunité",
+     "score": 43.3,
+     "status": "ok",
+     "subpillars": [
+      {
+       "key": "niveau_prix",
+       "label": "Niveau de prix (€/m²)",
+       "status": "ok",
+       "detail": "4085 €/m² habitable (repère : 1200–3500)",
+       "subscore": 0.214,
+       "weight": 0.45,
+       "contribution": 9.6
+      },
+      {
+       "key": "affaire",
+       "label": "Affaire vs marché",
+       "status": "ok",
+       "detail": "+11% vs marché local",
+       "subscore": 0.391,
+       "weight": 0.35,
+       "contribution": 13.7
+      },
+      {
+       "key": "baisse_prix",
+       "label": "Négociation (baisse)",
+       "status": "ok",
+       "detail": "prix en baisse constatée",
+       "subscore": 1.0,
+       "weight": 0.2,
+       "contribution": 20.0
+      }
+     ],
+     "weight": 0.3,
+     "contribution": 13.0
+    },
+    {
+     "key": "cadre",
+     "label": "Cadre & nature",
+     "score": 45.0,
+     "status": "ok",
+     "subpillars": [
+      {
+       "key": "nature",
+       "label": "Qualité nature",
+       "status": "ok",
+       "detail": "score nature 0",
+       "subscore": 0.5,
+       "weight": 0.5,
+       "contribution": 25.0
+      },
+      {
+       "key": "exception",
+       "label": "Caractère d'exception",
+       "status": "ok",
+       "detail": "ordinaire",
+       "subscore": 0.4,
+       "weight": 0.3,
+       "contribution": 12.0
+      },
+      {
+       "key": "authenticite",
+       "label": "Authenticité / cachet",
+       "status": "ok",
+       "detail": "non précisé",
+       "subscore": 0.4,
+       "weight": 0.2,
+       "contribution": 8.0
+      }
+     ],
+     "weight": 0.2,
+     "contribution": 9.0
+    },
+    {
+     "key": "etat",
+     "label": "État & travaux",
+     "score": 100.0,
+     "status": "ok",
+     "subpillars": [
+      {
+       "key": "travaux",
+       "label": "Niveau de travaux",
+       "status": "ok",
+       "detail": "habitable",
+       "subscore": 1.0,
+       "weight": 1.0,
+       "contribution": 100.0
+      }
+     ],
+     "weight": 0.07,
+     "contribution": 7.0
+    },
+    {
+     "key": "accessibilite",
+     "label": "Accessibilité & services",
+     "score": 31.4,
+     "status": "ok",
+     "subpillars": [
+      {
+       "key": "train",
+       "label": "Trajet train",
+       "status": "ok",
+       "detail": "~11h48 porte-à-porte (Paris)",
+       "subscore": 0.0,
+       "weight": 0.5,
+       "contribution": 0.0
+      },
+      {
+       "key": "gare",
+       "label": "Proximité gare",
+       "status": "ok",
+       "detail": "gare de Plouaret-Tregor à 22.3 km",
+       "subscore": 0.257,
+       "weight": 0.25,
+       "contribution": 6.4
+      },
+      {
+       "key": "fibre",
+       "label": "Fibre",
+       "status": "ok",
+       "detail": "fibre",
+       "subscore": 1.0,
+       "weight": 0.25,
+       "contribution": 25.0
+      }
+     ],
+     "weight": 0.08,
+     "contribution": 2.5
+    }
+   ],
+   "scores_by_set": {
+    "4": {
+     "match_score": 78.7,
+     "details": [
+      {
+       "kind": "constructible",
+       "label": "Terrain constructible (tiny house)",
+       "weight": 5.0,
+       "status": "ok",
+       "detail": "constructible (zonage U)",
+       "subscore": 1.0,
+       "contribution": 5.0
+      },
+      {
+       "kind": "budget",
+       "label": "Budget ≤ 400 000 €",
+       "weight": 5.0,
+       "status": "ok",
+       "detail": "326810€ — 82% du budget 400000€ (haut de fourchette)",
+       "subscore": 0.922,
+       "contribution": 4.61
+      },
+      {
+       "kind": "distance_mer",
+       "label": "Proximité mer (distance réelle)",
+       "weight": 5.0,
+       "status": "ok",
+       "detail": "mer à ~750 m",
+       "subscore": 0.85,
+       "contribution": 4.25
+      },
+      {
+       "kind": "en_hauteur_geo",
+       "label": "Surélevé / position dominante (relief réel)",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "dominant (+8 m sur 300 m)",
+       "subscore": 0.958,
+       "contribution": 3.833
+      },
+      {
+       "kind": "nature_exception",
+       "label": "Nature d'exception",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "qualité nature 0/4",
+       "subscore": 0.4,
+       "contribution": 1.6
+      },
+      {
+       "kind": "fiber",
+       "label": "Fibre (télétravail)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "75% des locaux de la commune éligibles (à vérifier pour ce bien)",
+       "subscore": 0.75,
+       "contribution": 1.5
+      },
+      {
+       "kind": "feature",
+       "label": "Isolé / sauvage",
+       "weight": 3.0,
+       "status": "ok",
+       "detail": "commune de 7336 hab.",
+       "subscore": 0.079,
+       "contribution": 0.237
+      },
+      {
+       "kind": "feature",
+       "label": "Bord de mer / première ligne",
+       "weight": 5.0,
+       "status": "n/a",
+       "detail": "bord_de_mer : non mentionné (ignoré)",
+       "subscore": null
+      },
+      {
+       "kind": "feature",
+       "label": "Bord d'eau (rivière / étang / ria)",
+       "weight": 4.0,
+       "status": "n/a",
+       "detail": "bord_eau : non mentionné (ignoré)",
+       "subscore": null
+      },
+      {
+       "kind": "feature",
+       "label": "Vue (mer / dégagée)",
+       "weight": 4.0,
+       "status": "n/a",
+       "detail": "vue : non mentionné (ignoré)",
+       "subscore": null
+      },
+      {
+       "kind": "feature",
+       "label": "En hauteur (mention annonce)",
+       "weight": 2.0,
+       "status": "n/a",
+       "detail": "en_hauteur : non mentionné (ignoré)",
+       "subscore": null
+      },
+      {
+       "kind": "prix_m2_terrain",
+       "label": "Rapport qualité/prix (€/m² terrain)",
+       "weight": 4.0,
+       "status": "n/a",
+       "detail": "prix ou surface terrain inconnu",
+       "subscore": null
+      },
+      {
+       "kind": "no_vis_a_vis",
+       "label": "Sans vis-à-vis",
+       "weight": 3.0,
+       "status": "n/a",
+       "detail": "vis-à-vis non précisé (ignoré)",
+       "subscore": null
+      },
+      {
+       "kind": "has_terrain",
+       "label": "Avec terrain",
+       "weight": 3.0,
+       "status": "n/a",
+       "detail": "surface terrain inconnue",
+       "subscore": null
+      },
+      {
+       "kind": "authentic",
+       "label": "Charme / cachet",
+       "weight": 3.0,
+       "status": "n/a",
+       "detail": "cachet non mentionné (ignoré)",
+       "subscore": null
+      },
+      {
+       "kind": "hiking",
+       "label": "Sentiers côtiers / randonnées",
+       "weight": 2.0,
+       "status": "pending",
+       "detail": "provider non branché",
+       "subscore": null
+      },
+      {
+       "kind": "nuisance_sonore",
+       "label": "Calme (loin autoroute/rail)",
+       "weight": 2.0,
+       "status": "pending",
+       "detail": "proximité infrastructures non vérifiée",
+       "subscore": null
+      },
+      {
+       "kind": "commerces",
+       "label": "Commerces/services à proximité",
+       "weight": 2.0,
+       "status": "pending",
+       "detail": "commerces non vérifiés",
+       "subscore": null
+      }
+     ]
+    }
+   },
+   "viager": false,
+   "residence_tourisme": false,
+   "is_favori": false,
+   "favori_note": null,
+   "n_photos_source": 9,
+   "photos": [
+    "photos/bienici_gedeon-33614968/0.jpg",
+    "photos/bienici_gedeon-33614968/1.jpg",
+    "photos/bienici_gedeon-33614968/2.jpg",
+    "photos/bienici_gedeon-33614968/3.jpg",
+    "photos/bienici_gedeon-33614968/4.jpg",
+    "photos/bienici_gedeon-33614968/5.jpg",
+    "photos/bienici_gedeon-33614968/6.jpg",
+    "photos/bienici_gedeon-33614968/7.jpg",
+    "photos/bienici_gedeon-33614968/8.jpg"
    ]
   },
   {
@@ -161559,433 +163342,6 @@
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
-   "photos": []
-  },
-  {
-   "condition": "rafraichir",
-   "niveau_travaux": 1,
-   "nuisances": [],
-   "nature_score": 3,
-   "nature_exception": false,
-   "constructible": true,
-   "est_zone_au": false,
-   "zone_urba": "U",
-   "altitude": 49.7,
-   "rail_time_min": 200,
-   "risques": [
-    "seisme",
-    "retraitGonflementArgile",
-    "radon"
-   ],
-   "prix_m2_secteur": 2130.5,
-   "ecart_prix_pct": 25.3,
-   "pollution_eau_score": 0.75,
-   "eau_potable_conforme": false,
-   "pollutions": [],
-   "age_median": null,
-   "part_gauche": null,
-   "population_commune": 20315,
-   "isolement_score": 0.0,
-   "price_decreased": false,
-   "id": 1295,
-   "source": "bienici",
-   "external_id": "megagence-1-206101",
-   "type_bien": "maison",
-   "prix": 267000.0,
-   "nb_chambres": 4,
-   "nb_pieces": 6,
-   "surface_terrain": 612.0,
-   "surface_bati": 100.0,
-   "commune": "Lannion",
-   "code_postal": "22300",
-   "code_commune": "22113",
-   "departement": "22",
-   "latitude": 48.736470721938765,
-   "longitude": -3.4630366368477365,
-   "url": "https://www.bienici.com/annonce/megagence-1-206101",
-   "description": "Derrière sa façade en pierre, cette maison de ville domine un joli jardin qui n'attend que vous pour retrouver l'esprit des jardins ouvriers de l'époque.<br> <br>Elle s'organise autour d'un vaste séjour avec cuisine ouverte et salon, prolongé par un balcon-terrasse offrant une vue dégagée sur l'extérieur.<br>Le premier niveau accueille une chambre, une salle d'eau et un WC. Au second, trois chambres supplémentaires, un dressing, une salle de bains avec WC.<br>Un grand garage avec cave complète l'ensemble et apporte un espace de rangement et/ou de stationnement.<br>La maison bénéficie d'un chauffage central au gaz de ville, d'un poêle à granulés, d'un système de climatisation sur le premier niveau et de panneaux solaires en autoconsommation.<br> <br>Habitable de suite, elle peut, avec quelques travaux de confort et de style, embarquer votre famille pour un voyage à deux pas de la ville.<br> <br>Les informations sur les risques auxquels ce bien est exposé sont disponibles sur le site Géorisques : www.georisques.gouv.fr<br>Prix de vente : 267 000 €<br>Honoraires charge vendeur<br> <br>Contactez votre consultant megAgence : Sébastien BERTRAND, Tél. : <span class=\"importDescriptionDecorator\" data-type=\"phone\">0607607849</span>, E-mail : <span class=\"importDescriptionDecorator\" data-type=\"email\">sebastien.bertrand@megagence.com</span> - EI - Agent commercial immatriculé au RSAC de SAINT-BRIEUC sous le numéro 503 967 036",
-   "dpe_classe": "C",
-   "features": [
-    "authentique",
-    "vue",
-    "vue_panoramique",
-    "cheminee",
-    "terrasse",
-    "garage"
-   ],
-   "score": 65.6,
-   "score_details": [
-    {
-     "key": "foncier",
-     "label": "Foncier & constructibilité",
-     "score": 83.3,
-     "status": "ok",
-     "subpillars": [
-      {
-       "key": "zonage",
-       "label": "Zonage / constructibilité",
-       "status": "ok",
-       "detail": "zone U",
-       "subscore": 1.0,
-       "weight": 0.6,
-       "contribution": 60.0
-      },
-      {
-       "key": "terrain",
-       "label": "Présence de terrain",
-       "status": "ok",
-       "detail": "612 m²",
-       "subscore": 0.584,
-       "weight": 0.4,
-       "contribution": 23.4
-      }
-     ],
-     "weight": 0.2,
-     "contribution": 16.7
-    },
-    {
-     "key": "cadre",
-     "label": "Cadre & nature",
-     "score": 75.0,
-     "status": "ok",
-     "subpillars": [
-      {
-       "key": "nature",
-       "label": "Qualité nature",
-       "status": "ok",
-       "detail": "score nature 3",
-       "subscore": 0.86,
-       "weight": 0.5,
-       "contribution": 43.0
-      },
-      {
-       "key": "exception",
-       "label": "Caractère d'exception",
-       "status": "ok",
-       "detail": "ordinaire",
-       "subscore": 0.4,
-       "weight": 0.3,
-       "contribution": 12.0
-      },
-      {
-       "key": "authenticite",
-       "label": "Authenticité / cachet",
-       "status": "ok",
-       "detail": "cachet/authentique",
-       "subscore": 1.0,
-       "weight": 0.2,
-       "contribution": 20.0
-      }
-     ],
-     "weight": 0.2,
-     "contribution": 15.0
-    },
-    {
-     "key": "risques",
-     "label": "Risques & nuisances",
-     "score": 85.5,
-     "status": "ok",
-     "subpillars": [
-      {
-       "key": "risques_naturels",
-       "label": "Risques naturels/techno",
-       "status": "ok",
-       "detail": "retraitGonflementArgile, seisme, radon",
-       "subscore": 0.84,
-       "weight": 0.353,
-       "contribution": 29.7
-      },
-      {
-       "key": "pollution_eau",
-       "label": "Pollution / qualité de l'eau",
-       "status": "ok",
-       "detail": "eau NON conforme",
-       "subscore": 0.75,
-       "weight": 0.353,
-       "contribution": 26.5
-      },
-      {
-       "key": "nuisances_proximite",
-       "label": "Nuisances de proximité",
-       "status": "ok",
-       "detail": "aucune nuisance signalée",
-       "subscore": 1.0,
-       "weight": 0.294,
-       "contribution": 29.4
-      },
-      {
-       "key": "aerien",
-       "label": "Nuisances aériennes (PEB)",
-       "status": "pending",
-       "detail": "PEB / servitudes aéro",
-       "subscore": null,
-       "weight": 0.0,
-       "contribution": 0.0
-      }
-     ],
-     "weight": 0.15,
-     "contribution": 12.8
-    },
-    {
-     "key": "prix",
-     "label": "Prix & opportunité",
-     "score": 40.1,
-     "status": "ok",
-     "subpillars": [
-      {
-       "key": "niveau_prix",
-       "label": "Niveau de prix (€/m²)",
-       "status": "ok",
-       "detail": "2670 €/m² habitable (repère : 1200–3500)",
-       "subscore": 0.521,
-       "weight": 0.562,
-       "contribution": 29.3
-      },
-      {
-       "key": "affaire",
-       "label": "Affaire vs marché",
-       "status": "ok",
-       "detail": "+25% vs marché local",
-       "subscore": 0.247,
-       "weight": 0.437,
-       "contribution": 10.8
-      },
-      {
-       "key": "baisse_prix",
-       "label": "Négociation (baisse)",
-       "status": "n/a",
-       "detail": "pas de baisse constatée",
-       "subscore": null,
-       "weight": 0.0,
-       "contribution": 0.0
-      }
-     ],
-     "weight": 0.3,
-     "contribution": 12.0
-    },
-    {
-     "key": "etat",
-     "label": "État & travaux",
-     "score": 85.0,
-     "status": "ok",
-     "subpillars": [
-      {
-       "key": "travaux",
-       "label": "Niveau de travaux",
-       "status": "ok",
-       "detail": "rafraichir",
-       "subscore": 0.85,
-       "weight": 1.0,
-       "contribution": 85.0
-      }
-     ],
-     "weight": 0.07,
-     "contribution": 6.0
-    },
-    {
-     "key": "accessibilite",
-     "label": "Accessibilité & services",
-     "score": 38.8,
-     "status": "ok",
-     "subpillars": [
-      {
-       "key": "train",
-       "label": "Trajet train",
-       "status": "ok",
-       "detail": "~11h48 porte-à-porte (Paris)",
-       "subscore": 0.0,
-       "weight": 0.5,
-       "contribution": 0.0
-      },
-      {
-       "key": "gare",
-       "label": "Proximité gare",
-       "status": "ok",
-       "detail": "gare de Plouaret-Tregor à 13.4 km",
-       "subscore": 0.553,
-       "weight": 0.25,
-       "contribution": 13.8
-      },
-      {
-       "key": "fibre",
-       "label": "Fibre",
-       "status": "ok",
-       "detail": "fibre",
-       "subscore": 1.0,
-       "weight": 0.25,
-       "contribution": 25.0
-      }
-     ],
-     "weight": 0.08,
-     "contribution": 3.1
-    }
-   ],
-   "scores_by_set": {
-    "4": {
-     "match_score": 85.1,
-     "details": [
-      {
-       "kind": "budget",
-       "label": "Budget ≤ 400 000 €",
-       "weight": 5.0,
-       "status": "ok",
-       "detail": "267000€ — 67% du budget 400000€",
-       "subscore": 1.0,
-       "contribution": 5.0
-      },
-      {
-       "kind": "constructible",
-       "label": "Terrain constructible (tiny house)",
-       "weight": 5.0,
-       "status": "ok",
-       "detail": "constructible (zonage U)",
-       "subscore": 1.0,
-       "contribution": 5.0
-      },
-      {
-       "kind": "en_hauteur_geo",
-       "label": "Surélevé / position dominante (relief réel)",
-       "weight": 4.0,
-       "status": "ok",
-       "detail": "dominant (+14 m sur 300 m)",
-       "subscore": 1.0,
-       "contribution": 4.0
-      },
-      {
-       "kind": "feature",
-       "label": "Vue (mer / dégagée)",
-       "weight": 4.0,
-       "status": "ok",
-       "detail": "vue : mentionné",
-       "subscore": 1.0,
-       "contribution": 4.0
-      },
-      {
-       "kind": "has_terrain",
-       "label": "Avec terrain",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "612 m²",
-       "subscore": 1.0,
-       "contribution": 3.0
-      },
-      {
-       "kind": "authentic",
-       "label": "Charme / cachet",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "cachet / authentique mentionné",
-       "subscore": 1.0,
-       "contribution": 3.0
-      },
-      {
-       "kind": "nature_exception",
-       "label": "Nature d'exception",
-       "weight": 4.0,
-       "status": "ok",
-       "detail": "qualité nature 3/4",
-       "subscore": 0.7,
-       "contribution": 2.8
-      },
-      {
-       "kind": "fiber",
-       "label": "Fibre (télétravail)",
-       "weight": 2.0,
-       "status": "ok",
-       "detail": "98% des locaux de la commune éligibles (à vérifier pour ce bien)",
-       "subscore": 0.98,
-       "contribution": 1.96
-      },
-      {
-       "kind": "prix_m2_terrain",
-       "label": "Rapport qualité/prix (€/m² terrain)",
-       "weight": 4.0,
-       "status": "ok",
-       "detail": "436 €/m² de terrain",
-       "subscore": 0.172,
-       "contribution": 0.688
-      },
-      {
-       "kind": "feature",
-       "label": "Isolé / sauvage",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "commune de 20315 hab.",
-       "subscore": 0.0,
-       "contribution": 0.0
-      },
-      {
-       "kind": "feature",
-       "label": "Bord de mer / première ligne",
-       "weight": 5.0,
-       "status": "n/a",
-       "detail": "bord_de_mer : non mentionné (ignoré)",
-       "subscore": null
-      },
-      {
-       "kind": "distance_mer",
-       "label": "Proximité mer (distance réelle)",
-       "weight": 5.0,
-       "status": "n/a",
-       "detail": "distance mer non calculée",
-       "subscore": null
-      },
-      {
-       "kind": "feature",
-       "label": "Bord d'eau (rivière / étang / ria)",
-       "weight": 4.0,
-       "status": "n/a",
-       "detail": "bord_eau : non mentionné (ignoré)",
-       "subscore": null
-      },
-      {
-       "kind": "feature",
-       "label": "En hauteur (mention annonce)",
-       "weight": 2.0,
-       "status": "n/a",
-       "detail": "en_hauteur : non mentionné (ignoré)",
-       "subscore": null
-      },
-      {
-       "kind": "no_vis_a_vis",
-       "label": "Sans vis-à-vis",
-       "weight": 3.0,
-       "status": "n/a",
-       "detail": "vis-à-vis non précisé (ignoré)",
-       "subscore": null
-      },
-      {
-       "kind": "hiking",
-       "label": "Sentiers côtiers / randonnées",
-       "weight": 2.0,
-       "status": "pending",
-       "detail": "provider non branché",
-       "subscore": null
-      },
-      {
-       "kind": "nuisance_sonore",
-       "label": "Calme (loin autoroute/rail)",
-       "weight": 2.0,
-       "status": "pending",
-       "detail": "proximité infrastructures non vérifiée",
-       "subscore": null
-      },
-      {
-       "kind": "commerces",
-       "label": "Commerces/services à proximité",
-       "weight": 2.0,
-       "status": "pending",
-       "detail": "commerces non vérifiés",
-       "subscore": null
-      }
-     ]
-    }
-   },
-   "viager": false,
-   "residence_tourisme": false,
-   "is_favori": false,
-   "favori_note": null,
-   "n_photos_source": 5,
    "photos": []
   },
   {
@@ -198883,7 +200239,8 @@
    "n_photos_source": 3,
    "photos": [
     "photos/bienici_safti-1-1682449/0.jpg",
-    "photos/bienici_safti-1-1682449/1.jpg"
+    "photos/bienici_safti-1-1682449/1.jpg",
+    "photos/bienici_safti-1-1682449/2.jpg"
    ]
   },
   {
@@ -217253,427 +218610,6 @@
    "is_favori": false,
    "favori_note": null,
    "n_photos_source": 0,
-   "photos": []
-  },
-  {
-   "condition": "gros_travaux",
-   "niveau_travaux": 3,
-   "nuisances": [],
-   "nature_score": 2,
-   "nature_exception": false,
-   "constructible": true,
-   "est_zone_au": false,
-   "zone_urba": "U",
-   "altitude": 84.2,
-   "rail_time_min": 200,
-   "risques": [
-    "seisme",
-    "retraitGonflementArgile",
-    "radon"
-   ],
-   "prix_m2_secteur": 2101.8,
-   "ecart_prix_pct": 40.0,
-   "pollution_eau_score": 0.75,
-   "eau_potable_conforme": false,
-   "pollutions": [],
-   "age_median": null,
-   "part_gauche": null,
-   "population_commune": 20315,
-   "isolement_score": 0.0,
-   "price_decreased": false,
-   "id": 1283,
-   "source": "bienici",
-   "external_id": "ag922880-539755724",
-   "type_bien": "maison",
-   "prix": 359000.0,
-   "nb_chambres": 4,
-   "nb_pieces": 6,
-   "surface_terrain": null,
-   "surface_bati": 122.0,
-   "commune": "Lannion",
-   "code_postal": "22300",
-   "code_commune": "22113",
-   "departement": "22",
-   "latitude": 48.74841319408251,
-   "longitude": -3.4487853148158347,
-   "url": "https://www.bienici.com/annonce/ag922880-539755724",
-   "description": "Julien VINSON vous propose ce bien :\n\n122 m² en impasse, DPE B, chambre au RDC, 6 pièces\n\nConstruite en 2007, entièrement repensée en 2023-2024 avec une extension de 32 m² et un nouveau chauffage central, cette belle maison familiale confortable dans laquelle vous n'aurez qu'à poser vos valises a bénéficié d'une rénovation complète soignée réalisée par des entreprises locales, avec des garanties décennales en cours.\nAu calme d'une impasse, proche des commerces, à quelques minutes du centre-ville et de la zone d'emploi de Pégase.\n\nConfiguration :\nPièce de vie de 57 m² avec une triple exposition est/sud/ouest.\nCuisine ouverte de 2022.\nChambre de 18 m² au rez-de-chaussée, avec accès direct au jardin. Salle d'eau\nÀ l'étage : 3 chambres avec placards, salle de bain.\nJardin clos et aménagé de 540 m², terrasse ouest.\n47 m² de stockage (grenier + dépendance).\n2 places de stationnement + parking proche de l'impasse.\n\nPerformance énergétique élevée :\nDiagnostic énergétique classe B,  pompe à chaleur de 2023, poêle à bois de 2024, pré-équipement panneaux solaires. Fibre installée.\n\nLe quartier :\nÉcole maternelle et primaire du Rusquet et commerces accessibles à pied/vélo. Proche des bus (Lignes C et F) avec accès facile aux collèges et lycées. Côte de Granit Rose à 10 min. Gare de Lannion à 5 min.\n\nLannion, ville dynamique des Côtes-d'Armor, est appréciée pour sa qualité de vie, ses services de proximité et son attractivité familiale. Son centre-ville, ses équipements scolaires et commerciaux, ainsi que son cadre de vie agréable proche de la mer, en font une commune recherchée pour s'installer durablement.\\nLes informations sur les risques auxquels ce bien est exposé sont disponibles sur le site Géorisques : www.georisques.gouv.fr",
-   "dpe_classe": "B",
-   "features": [
-    "calme",
-    "eau",
-    "cheminee",
-    "terrasse"
-   ],
-   "score": 59.4,
-   "score_details": [
-    {
-     "key": "foncier",
-     "label": "Foncier & constructibilité",
-     "score": 100.0,
-     "status": "ok",
-     "subpillars": [
-      {
-       "key": "zonage",
-       "label": "Zonage / constructibilité",
-       "status": "ok",
-       "detail": "zone U",
-       "subscore": 1.0,
-       "weight": 1.0,
-       "contribution": 100.0
-      },
-      {
-       "key": "terrain",
-       "label": "Présence de terrain",
-       "status": "n/a",
-       "detail": "surface terrain inconnue",
-       "subscore": null,
-       "weight": 0.0,
-       "contribution": 0.0
-      }
-     ],
-     "weight": 0.2,
-     "contribution": 20.0
-    },
-    {
-     "key": "risques",
-     "label": "Risques & nuisances",
-     "score": 85.5,
-     "status": "ok",
-     "subpillars": [
-      {
-       "key": "risques_naturels",
-       "label": "Risques naturels/techno",
-       "status": "ok",
-       "detail": "retraitGonflementArgile, seisme, radon",
-       "subscore": 0.84,
-       "weight": 0.353,
-       "contribution": 29.7
-      },
-      {
-       "key": "pollution_eau",
-       "label": "Pollution / qualité de l'eau",
-       "status": "ok",
-       "detail": "eau NON conforme",
-       "subscore": 0.75,
-       "weight": 0.353,
-       "contribution": 26.5
-      },
-      {
-       "key": "nuisances_proximite",
-       "label": "Nuisances de proximité",
-       "status": "ok",
-       "detail": "aucune nuisance signalée",
-       "subscore": 1.0,
-       "weight": 0.294,
-       "contribution": 29.4
-      },
-      {
-       "key": "aerien",
-       "label": "Nuisances aériennes (PEB)",
-       "status": "pending",
-       "detail": "PEB / servitudes aéro",
-       "subscore": null,
-       "weight": 0.0,
-       "contribution": 0.0
-      }
-     ],
-     "weight": 0.15,
-     "contribution": 12.8
-    },
-    {
-     "key": "cadre",
-     "label": "Cadre & nature",
-     "score": 57.0,
-     "status": "ok",
-     "subpillars": [
-      {
-       "key": "nature",
-       "label": "Qualité nature",
-       "status": "ok",
-       "detail": "score nature 2",
-       "subscore": 0.74,
-       "weight": 0.5,
-       "contribution": 37.0
-      },
-      {
-       "key": "exception",
-       "label": "Caractère d'exception",
-       "status": "ok",
-       "detail": "ordinaire",
-       "subscore": 0.4,
-       "weight": 0.3,
-       "contribution": 12.0
-      },
-      {
-       "key": "authenticite",
-       "label": "Authenticité / cachet",
-       "status": "ok",
-       "detail": "non précisé",
-       "subscore": 0.4,
-       "weight": 0.2,
-       "contribution": 8.0
-      }
-     ],
-     "weight": 0.2,
-     "contribution": 11.4
-    },
-    {
-     "key": "prix",
-     "label": "Prix & opportunité",
-     "score": 28.7,
-     "status": "ok",
-     "subpillars": [
-      {
-       "key": "niveau_prix",
-       "label": "Niveau de prix (€/m²)",
-       "status": "ok",
-       "detail": "2943 €/m² habitable (repère : 1200–3500)",
-       "subscore": 0.432,
-       "weight": 0.562,
-       "contribution": 24.3
-      },
-      {
-       "key": "affaire",
-       "label": "Affaire vs marché",
-       "status": "ok",
-       "detail": "+40% vs marché local",
-       "subscore": 0.1,
-       "weight": 0.437,
-       "contribution": 4.4
-      },
-      {
-       "key": "baisse_prix",
-       "label": "Négociation (baisse)",
-       "status": "n/a",
-       "detail": "pas de baisse constatée",
-       "subscore": null,
-       "weight": 0.0,
-       "contribution": 0.0
-      }
-     ],
-     "weight": 0.3,
-     "contribution": 8.6
-    },
-    {
-     "key": "etat",
-     "label": "État & travaux",
-     "score": 50.0,
-     "status": "ok",
-     "subpillars": [
-      {
-       "key": "travaux",
-       "label": "Niveau de travaux",
-       "status": "ok",
-       "detail": "gros_travaux",
-       "subscore": 0.5,
-       "weight": 1.0,
-       "contribution": 50.0
-      }
-     ],
-     "weight": 0.07,
-     "contribution": 3.5
-    },
-    {
-     "key": "accessibilite",
-     "label": "Accessibilité & services",
-     "score": 37.7,
-     "status": "ok",
-     "subpillars": [
-      {
-       "key": "train",
-       "label": "Trajet train",
-       "status": "ok",
-       "detail": "~11h47 porte-à-porte (Paris)",
-       "subscore": 0.0,
-       "weight": 0.5,
-       "contribution": 0.0
-      },
-      {
-       "key": "gare",
-       "label": "Proximité gare",
-       "status": "ok",
-       "detail": "gare de Plouaret-Tregor à 14.8 km",
-       "subscore": 0.507,
-       "weight": 0.25,
-       "contribution": 12.7
-      },
-      {
-       "key": "fibre",
-       "label": "Fibre",
-       "status": "ok",
-       "detail": "fibre",
-       "subscore": 1.0,
-       "weight": 0.25,
-       "contribution": 25.0
-      }
-     ],
-     "weight": 0.08,
-     "contribution": 3.0
-    }
-   ],
-   "scores_by_set": {
-    "4": {
-     "match_score": 78.5,
-     "details": [
-      {
-       "kind": "constructible",
-       "label": "Terrain constructible (tiny house)",
-       "weight": 5.0,
-       "status": "ok",
-       "detail": "constructible (zonage U)",
-       "subscore": 1.0,
-       "contribution": 5.0
-      },
-      {
-       "kind": "budget",
-       "label": "Budget ≤ 400 000 €",
-       "weight": 5.0,
-       "status": "ok",
-       "detail": "359000€ — 90% du budget 400000€ (haut de fourchette)",
-       "subscore": 0.868,
-       "contribution": 4.342
-      },
-      {
-       "kind": "en_hauteur_geo",
-       "label": "Surélevé / position dominante (relief réel)",
-       "weight": 4.0,
-       "status": "ok",
-       "detail": "dominant (+7 m sur 300 m)",
-       "subscore": 0.883,
-       "contribution": 3.533
-      },
-      {
-       "kind": "nature_exception",
-       "label": "Nature d'exception",
-       "weight": 4.0,
-       "status": "ok",
-       "detail": "qualité nature 2/4",
-       "subscore": 0.6,
-       "contribution": 2.4
-      },
-      {
-       "kind": "fiber",
-       "label": "Fibre (télétravail)",
-       "weight": 2.0,
-       "status": "ok",
-       "detail": "98% des locaux de la commune éligibles (à vérifier pour ce bien)",
-       "subscore": 0.98,
-       "contribution": 1.96
-      },
-      {
-       "kind": "feature",
-       "label": "Isolé / sauvage",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "commune de 20315 hab.",
-       "subscore": 0.0,
-       "contribution": 0.0
-      },
-      {
-       "kind": "feature",
-       "label": "Bord de mer / première ligne",
-       "weight": 5.0,
-       "status": "n/a",
-       "detail": "bord_de_mer : non mentionné (ignoré)",
-       "subscore": null
-      },
-      {
-       "kind": "distance_mer",
-       "label": "Proximité mer (distance réelle)",
-       "weight": 5.0,
-       "status": "n/a",
-       "detail": "distance mer non calculée",
-       "subscore": null
-      },
-      {
-       "kind": "feature",
-       "label": "Bord d'eau (rivière / étang / ria)",
-       "weight": 4.0,
-       "status": "n/a",
-       "detail": "bord_eau : non mentionné (ignoré)",
-       "subscore": null
-      },
-      {
-       "kind": "feature",
-       "label": "Vue (mer / dégagée)",
-       "weight": 4.0,
-       "status": "n/a",
-       "detail": "vue : non mentionné (ignoré)",
-       "subscore": null
-      },
-      {
-       "kind": "feature",
-       "label": "En hauteur (mention annonce)",
-       "weight": 2.0,
-       "status": "n/a",
-       "detail": "en_hauteur : non mentionné (ignoré)",
-       "subscore": null
-      },
-      {
-       "kind": "prix_m2_terrain",
-       "label": "Rapport qualité/prix (€/m² terrain)",
-       "weight": 4.0,
-       "status": "n/a",
-       "detail": "prix ou surface terrain inconnu",
-       "subscore": null
-      },
-      {
-       "kind": "no_vis_a_vis",
-       "label": "Sans vis-à-vis",
-       "weight": 3.0,
-       "status": "n/a",
-       "detail": "vis-à-vis non précisé (ignoré)",
-       "subscore": null
-      },
-      {
-       "kind": "has_terrain",
-       "label": "Avec terrain",
-       "weight": 3.0,
-       "status": "n/a",
-       "detail": "surface terrain inconnue",
-       "subscore": null
-      },
-      {
-       "kind": "authentic",
-       "label": "Charme / cachet",
-       "weight": 3.0,
-       "status": "n/a",
-       "detail": "cachet non mentionné (ignoré)",
-       "subscore": null
-      },
-      {
-       "kind": "hiking",
-       "label": "Sentiers côtiers / randonnées",
-       "weight": 2.0,
-       "status": "pending",
-       "detail": "provider non branché",
-       "subscore": null
-      },
-      {
-       "kind": "nuisance_sonore",
-       "label": "Calme (loin autoroute/rail)",
-       "weight": 2.0,
-       "status": "pending",
-       "detail": "proximité infrastructures non vérifiée",
-       "subscore": null
-      },
-      {
-       "kind": "commerces",
-       "label": "Commerces/services à proximité",
-       "weight": 2.0,
-       "status": "pending",
-       "detail": "commerces non vérifiés",
-       "subscore": null
-      }
-     ]
-    }
-   },
-   "viager": false,
-   "residence_tourisme": false,
-   "is_favori": false,
-   "favori_note": null,
-   "n_photos_source": 12,
    "photos": []
   },
   {
@@ -356876,10 +357812,10 @@
  ],
  "searches": [],
  "stats": {
-  "n_biens": 630,
+  "n_biens": 632,
   "n_sets": 4,
   "n_searches": 0,
-  "n_viager": 23,
+  "n_viager": 24,
   "n_residence_tourisme": 13
  }
 }
