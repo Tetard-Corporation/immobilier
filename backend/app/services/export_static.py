@@ -54,7 +54,38 @@ _MAX_PHOTOS = 12
 # Distances aux infrastructures bruyantes (autoroute/voie ferrée) via Overpass (OSM),
 # mises en cache sur disque pour ne pas re-interroger à chaque export.
 _INFRA_CACHE = os.path.join(os.path.dirname(__file__), "..", "..", "data", "infra_cache.json")
-_OVERPASS = os.environ.get("OVERPASS_URL", "https://overpass-api.de/api/interpreter")
+# Instance Overpass par défaut : la FRANÇAISE. Le choix n'est pas un réglage de
+# performance mais de CONTENU — voir `verifier_overpass` juste dessous.
+_OVERPASS = os.environ.get("OVERPASS_URL", "https://overpass.openstreetmap.fr/api/interpreter")
+
+# Point témoin : un bourg ardéchois dont on sait qu'il a des commerces (48 relevés par une
+# instance saine). Sert à démasquer une instance qui répond « rien » au lieu d'échouer.
+_TEMOIN = (44.6596, 4.3435)
+
+
+def verifier_overpass(url: str | None = None) -> tuple[bool, str]:
+    """L'instance interrogée couvre-t-elle bien la France ?
+
+    Une instance régionale (overpass.osm.ch, suisse) répond **200 avec zéro élément** sur
+    un point français. Rien ne distingue cette réponse de « il n'y a pas de commerce ici » :
+    le cache se remplit de zéros, le critère « village vivant » tombe à 0 pour tout un lot,
+    et le run se déclare réussi. Vécu : 850 biens neufs tous à zéro commerce, dont des
+    bourgs qui ont un supermarché, et un runbook qui recommandait cette instance sur la foi
+    d'un taux de succès mesuré... sur le code HTTP.
+    """
+    global _OVERPASS
+    ancien, _OVERPASS = _OVERPASS, (url or _OVERPASS)
+    try:
+        res = _query_poi(*_TEMOIN)
+    finally:
+        _OVERPASS = ancien
+    if res is None:
+        return False, f"{url or ancien} : pas de réponse exploitable"
+    n = res.get("n_commerces") or 0
+    if n == 0:
+        return False, (f"{url or ancien} : zéro commerce sur le point témoin — instance "
+                       f"qui ne couvre pas la France, le cache se remplirait de zéros")
+    return True, f"{url or ancien} : {n} commerces sur le point témoin, couverture OK"
 
 
 def _load_infra_cache() -> dict:
@@ -565,31 +596,74 @@ def _download_photos(row: Listing, photos_dir: str, rel_base: str) -> list[str]:
     return rels
 
 
-def _passes_pepites_gate(scores_by_set: dict, member: set, primary_set_id: int, min_score: float) -> bool:
-    """Filtre « pépites » : ne garde un bien du set primaire que si son match_score y est
-    ≥ seuil. Un bien qui n'appartient PAS au set primaire (ex. Pauline vs têtard) est
-    toujours conservé — le gate ne concerne que la recherche resserrée d'un set donné.
+def _biens_publies(chemin: str) -> set:
+    """Les (source, external_id) présents dans un data.json — pour republier un set à
+    l'identique au lieu de le recouper."""
+    try:
+        with open(chemin, encoding="utf-8") as fh:
+            data = json.load(fh)
+    except Exception:
+        return set()
+    return {(b.get("source"), b.get("external_id")) for b in data.get("biens", [])}
+
+
+def _passes_pepites_gate(scores_by_set: dict, member: set, seuils: dict,
+                         conserver: dict | None = None, cle: tuple | None = None) -> bool:
+    """Filtre « pépites » : un bien n'est gardé que s'il tient le seuil de CHAQUE set
+    resserré auquel il appartient. Un bien membre d'aucun set resserré (ex. Pauline
+    quand on resserre têtard et le littoral) est toujours conservé.
+
+    Plusieurs seuils, et pas un seul, parce que la base est partagée : elle garde tout
+    le catalogue de chaque set alors que data.json n'en publie que le haut du panier.
+    Resserrer un seul set à l'export ferait revenir en bloc le catalogue complet des
+    autres — le resserrage breton (690 biens ramenés à 12) serait annulé par la
+    première collecte têtard venue.
     """
-    if member and primary_set_id not in member:
-        return True  # hors du set primaire -> non concerné par le resserrage
-    sc = (scores_by_set.get(str(primary_set_id)) or {}).get("match_score")
-    return isinstance(sc, (int, float)) and sc >= min_score
+    # Sets republiés à l'identique : le score ne décide plus, l'appartenance à la
+    # publication précédente décide. Sert quand une correction de données a déplacé les
+    # scores d'un set qu'on ne veut PAS recouper au passage — recouper le set de
+    # quelqu'un d'autre sans le lui dire n'est pas une décision qui se prend à l'export.
+    for set_id, garder in (conserver or {}).items():
+        if member and set_id not in member:
+            continue
+        if cle not in garder:
+            return False
+    for set_id, seuil in (seuils or {}).items():
+        if member and set_id not in member:
+            continue  # hors de ce set -> non concerné par SON resserrage
+        sc = (scores_by_set.get(str(set_id)) or {}).get("match_score")
+        if not isinstance(sc, (int, float)) or sc < seuil:
+            return False
+    return True
+
+
+def _seuils_pepites(min_match_score: float | None, primary_set_id: int | None,
+                    pepites: dict | None) -> dict:
+    """Normalise les deux façons de demander un resserrage en un {set_id: seuil}."""
+    seuils = dict(pepites or {})
+    if min_match_score is not None and primary_set_id is not None:
+        seuils.setdefault(int(primary_set_id), float(min_match_score))
+    return seuils
 
 
 def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = False,
-                  min_match_score: float | None = None, primary_set_id: int | None = None) -> dict:
+                  min_match_score: float | None = None, primary_set_id: int | None = None,
+                  pepites: dict | None = None, conserver: dict | None = None) -> dict:
     """Construit le dataset statique. Si download_photos, écrit les images sous out_dir.
 
-    Mode « pépites » (optionnel) : si `min_match_score` est fourni, ne conserve dans
-    l'export que les biens du `primary_set_id` dont le match_score y est ≥ seuil (les
-    biens des autres sets sont préservés). Sert à resserrer une recherche sur le haut
-    du panier sans toucher aux autres sets partageant le dataset.
+    Mode « pépites » (optionnel), deux écritures équivalentes :
+    - `min_match_score` + `primary_set_id` : un seul set resserré ;
+    - `pepites={set_id: seuil}` : plusieurs, ce qu'il faut dès que deux sets publient
+      leur haut du panier depuis la même base.
+
+    Les biens des sets non resserrés sont préservés.
     """
     sets = (
         db.query(FilterSet)
         .order_by(FilterSet.parent_id.isnot(None), FilterSet.id)
         .all()
     )
+    seuils = _seuils_pepites(min_match_score, primary_set_id, pepites)
     set_prefs: dict[int, list] = {}
     set_exigences: dict[int, list] = {}
     sets_out = []
@@ -693,10 +767,10 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
                                    "weight": 0, "status": "ko", "subscore": 0, "detail": pdetail})
             scores_by_set[str(fs_id)] = {"match_score": match, "details": details}
 
-        # Mode pépites : on saute les biens du set primaire sous le seuil (autres sets gardés).
-        if min_match_score is not None and primary_set_id is not None:
-            if not _passes_pepites_gate(scores_by_set, member, primary_set_id, min_match_score):
-                continue
+        # Mode pépites : on saute les biens sous le seuil de leur set (autres sets gardés).
+        if (seuils or conserver) and not _passes_pepites_gate(
+                scores_by_set, member, seuils, conserver, (row.source, row.external_id)):
+            continue
 
         sv = saved.get((row.source, row.external_id))
         photos = _download_photos(row, photos_dir, "photos") if (download_photos and photos_dir) else []
@@ -744,14 +818,16 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
 
 
 def export_to_dir(db, out_dir: str, *, download_photos: bool = True,
-                  min_match_score: float | None = None, primary_set_id: int | None = None) -> dict:
+                  min_match_score: float | None = None, primary_set_id: int | None = None,
+                  pepites: dict | None = None, conserver: dict | None = None) -> dict:
     """Écrit out_dir/data.json (+ photos/) et renvoie les stats.
 
-    `min_match_score`/`primary_set_id` : voir build_dataset (mode « pépites »).
+    `min_match_score`/`primary_set_id`/`pepites` : voir build_dataset (mode « pépites »).
     """
     os.makedirs(out_dir, exist_ok=True)
     data = build_dataset(db, out_dir=out_dir, download_photos=download_photos,
-                         min_match_score=min_match_score, primary_set_id=primary_set_id)
+                         min_match_score=min_match_score, primary_set_id=primary_set_id,
+                         pepites=pepites, conserver=conserver)
     # Écriture ATOMIQUE : fichier temporaire puis renommage. `open(..., "w")` tronque
     # puis écrit en flux — deux exports concurrents (une collecte lancée d'un côté, un
     # ré-export de l'autre) s'entrelacent alors dans le même fichier et produisent un
@@ -779,11 +855,24 @@ if __name__ == "__main__":  # python -m app.services.export_static [out_dir]
 
     out = sys.argv[1] if len(sys.argv) > 1 else "../data"
     no_photos = "--no-photos" in sys.argv
-    # Mode pépites optionnel : EXPORT_MIN_MATCH_SCORE=78 EXPORT_PRIMARY_SET_ID=1
+    # Mode pépites optionnel, un set : EXPORT_MIN_MATCH_SCORE=78 EXPORT_PRIMARY_SET_ID=1
+    # Plusieurs sets à la fois        : EXPORT_PEPITES="1:78.5,4:80"
     _mms = os.environ.get("EXPORT_MIN_MATCH_SCORE")
     _psid = os.environ.get("EXPORT_PRIMARY_SET_ID")
     min_score = float(_mms) if _mms else None
     primary = int(_psid) if _psid else None
+    pepites = {}
+    for morceau in (os.environ.get("EXPORT_PEPITES") or "").split(","):
+        if ":" in morceau:
+            sid, seuil = morceau.split(":", 1)
+            pepites[int(sid.strip())] = float(seuil.strip())
+    # Republier un set à l'identique : EXPORT_CONSERVER="4:../data/data.json"
+    conserver = {}
+    for morceau in (os.environ.get("EXPORT_CONSERVER") or "").split(","):
+        if ":" in morceau:
+            sid, chemin = morceau.split(":", 1)
+            conserver[int(sid.strip())] = _biens_publies(chemin.strip())
     stats = export_to_dir(SessionLocal(), out, download_photos=not no_photos,
-                          min_match_score=min_score, primary_set_id=primary)
+                          min_match_score=min_score, primary_set_id=primary,
+                          pepites=pepites or None, conserver=conserver or None)
     print(f"Export -> {out}/data.json : {stats}")

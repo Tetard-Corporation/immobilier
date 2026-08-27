@@ -90,6 +90,49 @@ Mesuré sur les 840 biens du set : 225 écartés, 2 repêchés au bord d'eau, **
 annonce ne mentionne aucune eau — elle montait sur le rapport qualité/prix et le terrain.
 C'est le compromis assumé de l'étage : sur un set littoral, l'arrière-pays sort.
 
+**Deux profils, parce que les deux sets ne se décident pas au même endroit.**
+
+| Profil | Étage 0 (annonce) | Étage 1 (commune) |
+|---|---|---|
+| `littoral` (set 4) | écarte le rebut évident | distance à la mer |
+| `montagne` (set 1, têtard) | écarte le rebut évident | **référence de prix DVF**, puis altitude |
+
+Dans les deux cas, **l'étage 0 écarte, il ne sélectionne pas** — la tentation est de
+croire que têtard échappe à la règle parce que budget, capacité et prix au m² sont des
+champs bruts de l'annonce. C'est faux pour le prix : 2 700 €/m² est cher dans le Diois et
+bon marché en Savoie du lac. Un prix au m² ne devient un critère qu'une fois rapporté à
+son marché, et c'est ce que fait l'étage 1 (DVF par commune, 0,3 à 0,8 s, cache permanent).
+
+```bash
+python collect_tetard.py --min-altitude 250   # écarte les communes plus basses (défaut)
+python collect_tetard.py --min-altitude 0     # étage altitude sauté
+python collect_tetard.py --keep 700           # plafond, appliqué à la note d'annonce
+```
+
+**Calibrage du plafond : ne pas descendre sous 30 %.** Mesuré sur les 450 biens du set,
+dont 12 pépites connues :
+
+| On garde le top | pépites conservées |
+|---|---|
+| 5 % | 5/12 |
+| 11,5 % | 7/12 |
+| 20 % | 10/12 |
+| **30 %** | **11/12** |
+
+À 30 % la seule perdue est à 451 336 €, au-dessus du plafond budgétaire, donc écartée à
+juste titre. La première collecte a coupé à 11,5 % et n'aurait gardé que 7 pépites sur 12.
+
+Mêmes garde-fous que côté mer : une commune non mesurée est **retenue**, et une annonce
+qui parle d'eau, de bois ou de vue dégagée est **repêchée** même en commune basse —
+l'altitude ne mesure ni une rivière ni un point de vue sur la vallée.
+
+⚠️ **Un étage qui échoue en silence ressemble trait pour trait à un étage qui ne trouve
+rien.** L'API IGN plafonne les rafales : sur un lot de plusieurs centaines de communes,
+l'étage altitude en a mesuré 25 puis écarté 3 biens sur 2 180 — et le garde-fou « commune
+non mesurée = retenue » a fait passer ce no-op pour un run propre. L'entonnoir annonce
+maintenant le nombre de communes non mesurées ; si la ligne `⚠ N communes non mesurées`
+apparaît, l'étage n'a pas tranché et il faut relancer (les caches sont incrémentaux).
+
 ### 2 ter. Ajouter une agence locale
 
 Le moteur ingère les sites d'agences par quatre voies, essayées dans cet ordre. Les trois
@@ -164,16 +207,25 @@ Remplit `backend/data/poi_cache.json` (commerces, remontées) et `infra_cache.js
 (autoroute, rail, randonnées) — ce sont eux qui font passer les critères
 *commerces / calme / rando* de « pending » à noté.
 
-**Choisir le miroir Overpass est le réglage qui compte.** Mesuré sur ce jeu de données :
+🛑 **`overpass.osm.ch` ne couvre PAS la France. Ne pas l'utiliser.** Cette page l'a
+recommandé, sur la foi d'un taux de succès de 100 % — mesuré sur le code HTTP, pas sur le
+contenu. L'instance est suisse : sur un point français elle répond **200 avec zéro
+élément**, réponse rigoureusement indiscernable de « il n'y a pas de commerce ici ». Un
+réchauffage de 2 224 points s'est déclaré réussi en 7 minutes et a rempli le cache de
+zéros ; 850 biens neufs se sont retrouvés à « zéro commerce », dont des bourgs à
+supermarché, et le critère *village vivant* est tombé à 0,01 de moyenne sur tout le lot.
+Le classement s'en est trouvé faussé de bout en bout, sans un seul message d'erreur.
 
-| Endpoint | Temps / requête | Taux de succès | 1 100 points |
-|---|---|---|---|
-| `overpass-api.de` (défaut) | ~13 s | **44 %** | ~4 h, incomplet |
-| `overpass.osm.ch` | **0,4 s** | **100 %** | **3 min 41 s** |
+| Endpoint | Temps / requête | Couverture France |
+|---|---|---|
+| **`overpass.openstreetmap.fr`** (défaut) | ~1 s | ✅ vérifiée contre le cache sain |
+| `overpass-api.de` | ~13 s, souvent refusé | ✅ mais saturé (44 % d'échecs) |
+| `overpass.osm.ch` | 0,4 s | ❌ **répond vide sur la France** |
+| `kumi.systems`, `private.coffee`, `maps.mail.ru` | — | en panne (500/502/504) au test |
 
-L'instance principale est saturée et rejette (406/429) ; le miroir suisse encaisse le lot
-entier sans un seul échec. `overpass.kumi.systems` et `overpass.private.coffee` étaient
-tous deux en panne (500/502) au moment du test.
+`warm.py` interroge maintenant un **point témoin** au démarrage — un bourg ardéchois dont
+on sait qu'il a des commerces — et refuse de tourner si l'instance y répond zéro. Une
+instance qui ment ne peut plus remplir le cache en silence.
 
 **Ne pas augmenter `WARM_WORKERS`** (2 par défaut) : c'est le nombre de slots
 qu'Overpass accorde par IP, et au-delà les requêtes sont rejetées.
@@ -200,7 +252,29 @@ critères Overpass soient pris en compte :
 ```bash
 python -m app.services.export_static ../data
 ```
-Puis, pour ne garder que le haut du panier d'un set (les autres sets sont préservés) :
+Puis, pour ne garder que le haut du panier (les sets non cités sont préservés) :
+```bash
+EXPORT_PEPITES="1:78.5,4:80" python -m app.services.export_static ../data
+```
+
+⚠️ **Citer TOUS les sets déjà resserrés, pas seulement celui sur lequel on travaille.**
+La base garde le catalogue complet de chaque set quand `data.json` n'en publie que le haut
+du panier : le set 4 y pèse 901 biens pour 12 publiés. Un export qui ne resserre que le
+set 1 republie donc les 889 autres et annule le resserrage breton — sans erreur, sans
+avertissement, et c'est le site qui le dit à ta place.
+
+**Republier un set à l'identique** plutôt que le recouper, quand une correction de
+données a déplacé ses scores :
+```bash
+EXPORT_CONSERVER="4:../data/data.json" python -m app.services.export_static ../data
+```
+Le set 4 est alors republié exactement tel qu'il l'était, quels que soient les nouveaux
+scores. C'est le bon outil quand une réparation profite à un set qu'on n'est pas en train
+de retravailler : après la correction Overpass, la règle « ≥ 80 » du set breton
+sélectionnait 32 biens au lieu de 12. Recouper le set de quelqu'un d'autre au passage
+n'est pas une décision qui se prend à l'export.
+
+L'ancienne écriture pour un seul set reste acceptée :
 ```bash
 EXPORT_MIN_MATCH_SCORE=<seuil> EXPORT_PRIMARY_SET_ID=<set> python -m app.services.export_static ../data
 ```
@@ -218,10 +292,15 @@ Repères mesurés (jeu du 24 août 2026, 1 152 biens, caches Overpass chauds) :
 
 | Set | Seuil | Nb de pépites |
 |---|---|---|
-| 4 — Bretagne sud | 76 | 30 |
-| 4 — Bretagne sud | **78** | **18** ← cible ~15-20 |
-| 4 — Bretagne sud | 80 | 9 |
-| 1 — têtard | 78 | ~15 (repère d'août 2026) |
+| 4 — Littoral breton | 78 | 18 (jeu du 24 août) |
+| 4 — Littoral breton | **80** | **12** ← publié |
+| 1 — têtard | 84 | 21 (jeu du 27 août, 1 300 biens) |
+| 1 — têtard | **84,8** | **13** ← publié, cible 12-15 |
+| 1 — têtard | 85 | 12 |
+
+⚠️ Les seuils ne sont pas transposables d'un jeu à l'autre : après la correction Overpass,
+le même seuil de 80 est passé de 12 à 32 pépites côté breton. **Recalibrer sur la
+distribution du moment**, à chaque fois.
 
 ⚠️ L'export pépites **retire de `data.json` les biens du set primaire sous le seuil**. Le
 catalogue complet reste dans la base SQLite : un `python -m app.services.export_static
@@ -375,9 +454,43 @@ SCRAPER_RATE_LIMIT_MS=3000 python collect_seloger.py --zone ploemeur --dry-run  
 SCRAPER_RATE_LIMIT_MS=3000 python collect_seloger.py                            # collecte + export
 ```
 
-### Zone « têtard » (référence)
-Drôme/Ardèche/Savoie/Ain — maisons, budget ≤ 600 k€. Codes postaux et centres géo dans
-`backend/collect_leboncoin.py` (`TETARD_ZIPS`) et déductibles des biens existants.
+### Zone « têtard » (set 1, sous-set « Léo » id 2)
+Maison de retrait entre copains — Drôme / Ardèche / Savoie / Ain, à moins de 4h
+porte-à-porte de Paris, **budget ≤ 450 k€** (600 k€ jusqu'en août 2026).
+
+```bash
+python backend/collect_tetard.py                 # collecte + enrichissement + export
+python backend/collect_tetard.py --pivot diois   # un seul foyer de collecte
+python backend/collect_tetard.py --rescore-only  # pas de collecte : re-note et ré-exporte
+```
+
+Huit foyers de collecte (`PIVOTS`), tous dans les départements déjà couverts mais sur
+leur partie **montagne** : Diois, Vercors drômois, Haut-Vivarais, Cévennes ardéchoises,
+Bauges, Bugey, Mézenc, Pilat. La zone n'a pas changé ; ce sont les points de départ qui
+ont quitté la vallée du Rhône, d'où venait l'essentiel de l'ancien haut de classement
+(Châteauneuf-sur-Isère, 154 m d'altitude, était premier).
+
+Les codes postaux leboncoin restent dans `backend/collect_leboncoin.py` (`TETARD_ZIPS`).
+
+**Ce que le set note, et pourquoi.** Deux critères mènent le classement — ce que le bien
+vaut pour son prix, et ce qu'on a devant la porte :
+
+- **`rapport_qualite_prix`** (poids 5) — prix au m² du bien contre celui des ventes du
+  secteur (DVF). C'est le ratio qui parle, pas le prix absolu : 2 000 €/m² est cher en
+  Ardèche et donné au bord du lac du Bourget.
+- **`coin_nature`** et **`relief_mountain`** (poids 4) — « l'accès à la nature/montagne
+  grand OUI ». Mesurés, pas devinés dans le texte.
+- **`tranquillite` avec `poids_isolement: 0`** — « mais pas isolé ». Le critère garde le
+  vis-à-vis et le lotissement, il cesse de récompenser le bout du monde. Le sous-set
+  « Léo », lui, garde les poids par défaut : il revendique l'isolement.
+- **`chambres_min` (min 3)** — « 3/4 chambres ». Le critère se replie sur les pièces puis
+  sur la surface : sans ce repli il était `n/a` sur la moitié des annonces, donc neutre,
+  et une maison d'**une seule pièce** est arrivée deuxième du classement.
+
+**Trois paliers** (`EXIGENCES`) ferment les portes par lesquelles un bien mal mesuré
+monte : au-dessus de 75 il faut trois chambres avérées, au-dessus de 78 un rapport
+qualité/prix mesuré (sans surface bâtie, il n'y a rien à comparer), au-dessus de 85 une
+nature ou un relief avérés.
 
 ### Zone « Littoral breton » (set 4)
 Terrains et petites maisons d'exception en bord de mer, budget ≤ 400 k€, collectés via
@@ -415,12 +528,8 @@ Une version antérieure notait la côte via un référentiel de littoral fabriqu
 distance mesurée — voir l'historique git si le référentiel doit être ressorti.
 
 ### Export « pépites » (peu de biens, haut du panier)
-L'export accepte un filtre optionnel qui ne conserve que les biens d'un set au-dessus
-d'un seuil de score, **en préservant les autres sets** (ex. Pauline) :
-```bash
-EXPORT_MIN_MATCH_SCORE=78 EXPORT_PRIMARY_SET_ID=1 python -m app.services.export_static ../data
-```
-Repère de calibrage (dataset d'août 2026) : seuil **78 → ~15 pépites** têtard (set 1).
+Voir §5 ci-dessus : `EXPORT_PEPITES="1:78.5,4:80"`, et **citer tous les sets déjà
+resserrés** sous peine de republier leur catalogue complet.
 
 ---
 

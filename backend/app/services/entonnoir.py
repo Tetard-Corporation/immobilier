@@ -29,6 +29,7 @@ from __future__ import annotations
 
 import json
 import os
+import time
 
 # Signaux lisibles dans l'annonce, pondérés comme dans les sets littoraux.
 _SIGNAUX = {"bord_de_mer": 5.0, "bord_eau": 4.0, "vue": 4.0, "en_hauteur": 2.0}
@@ -64,22 +65,30 @@ def note_annonce(item) -> float:
 # --------------------------------------------------------------------------- #
 # Étage 1 — la commune (1 appel par commune, partagé par ses annonces)
 # --------------------------------------------------------------------------- #
-def _charger_cache_commune() -> dict:
+def _charger_cache(chemin: str) -> dict:
     try:
-        with open(_COMMUNE_MER_CACHE, encoding="utf-8") as fh:
+        with open(chemin, encoding="utf-8") as fh:
             return json.load(fh)
     except Exception:
         return {}
 
 
-def _ecrire_cache_commune(cache: dict) -> None:
+def _ecrire_cache(chemin: str, cache: dict) -> None:
     try:
-        tmp = _COMMUNE_MER_CACHE + ".tmp"
+        tmp = chemin + ".tmp"
         with open(tmp, "w", encoding="utf-8") as fh:
             json.dump(cache, fh)
-        os.replace(tmp, _COMMUNE_MER_CACHE)  # écriture atomique : un run interrompu
-    except Exception:                        # ne laisse pas un cache tronqué
+        os.replace(tmp, chemin)  # écriture atomique : un run interrompu ne laisse
+    except Exception:            # pas un cache tronqué
         pass
+
+
+def _charger_cache_commune() -> dict:
+    return _charger_cache(_COMMUNE_MER_CACHE)
+
+
+def _ecrire_cache_commune(cache: dict) -> None:
+    _ecrire_cache(_COMMUNE_MER_CACHE, cache)
 
 
 def distance_mer_commune(items: list, maxm: int = 12000, step: int = 2000) -> dict[str, float]:
@@ -159,26 +168,247 @@ def filtrer_par_commune(items: list, max_km: float = 10.0,
 
 
 # --------------------------------------------------------------------------- #
+# Profil « montagne » (set têtard) — ici l'étage 0 trie vraiment
+# --------------------------------------------------------------------------- #
+#
+# Sur le littoral, l'étage gratuit ne pouvait pas sélectionner : ce qui décidait (distance
+# à la mer, proéminence) était mesuré et absent des annonces. Le set têtard est l'inverse.
+# Ses critères de tête — budget, capacité d'accueil, prix au m² — sont des champs bruts de
+# l'annonce, disponibles avant le moindre appel réseau. L'étage 0 y fait donc le gros du
+# tri, et l'étage 1 ne sert qu'à écarter la plaine.
+_MONTAGNE_SIGNAUX = {"vue_panoramique": 2.5, "eau": 2.5, "vue": 1.5, "foret": 1.5, "arbore": 1.0}
+_MONTAGNE_TRAVAUX = {"habitable": 2.0, "rafraichir": 1.0, "renover": -0.5,
+                     "gros_travaux": -3.0, "ruine": -4.0}
+
+
+def note_annonce_montagne(item, *, prix_max: float = 450_000, chambres_min: int = 3,
+                          reference_m2: float | None = None) -> float:
+    """Note d'annonce du profil montagne. Négative = ne mérite pas l'enrichissement.
+
+    `reference_m2` : prix au m² du secteur (DVF). Sans lui, le terme prix est NEUTRE.
+
+    Le prix au m² ne veut rien dire dans l'absolu, et s'en servir comme tel contredit le
+    critère qu'on prétend approcher. Mesuré : une coupe au prix absolu écartait
+    Saint-François-Longchamp à 2 694 €/m² — « cher » — alors que le secteur y est à
+    3 700 et que le score en fait une pépite à 78,6. Faute de référence, on ne tranche pas.
+    """
+    from .classify import classify
+    from .export_static import _detect_pavillon_neuf
+    from .quality import classify_quality
+
+    desc = getattr(item, "description", None)
+    prix = getattr(item, "prix", None)
+    if prix is not None and prix > prix_max:
+        return -99.0  # hors budget : rédhibitoire, et gratuit à constater
+
+    note = 0.0
+
+    # Capacité d'accueil. C'est le trou par lequel une maison d'une seule pièce est
+    # arrivée deuxième du classement : les chambres manquent une fois sur deux, les
+    # pièces presque jamais.
+    ch = getattr(item, "nb_chambres", None)
+    pieces = getattr(item, "nb_pieces", None)
+    if ch is None and pieces:
+        ch = max(1, int(pieces) - 1)
+    if ch is not None:
+        note += 3.0 if ch >= chambres_min else -4.0 * (chambres_min - ch)
+
+    bati = getattr(item, "surface_bati", None)
+    if bati:
+        note += 2.0 if bati >= 120 else (1.0 if bati >= 90 else -2.0)
+        if prix and reference_m2:
+            # Rapport qualité/prix : le RATIO au marché local, comme le fait le critère
+            # `rapport_qualite_prix` du set. Bornes calées sur la distribution mesurée
+            # (p20 = 0,75 · médiane = 1,17 · p80 = 1,68).
+            ratio = (prix / bati) / reference_m2
+            note += 3.0 if ratio <= 0.75 else (1.5 if ratio <= 1.17 else (0.0 if ratio < 1.7 else -2.0))
+
+    note += _MONTAGNE_TRAVAUX.get(classify(desc).get("condition"), 0.0)
+
+    feats = set(classify_quality(desc).get("features") or [])
+    note += sum(w for k, w in _MONTAGNE_SIGNAUX.items() if k in feats)
+    if _detect_pavillon_neuf(desc):
+        note -= 3.0
+
+    terrain = getattr(item, "surface_terrain", None) or 0
+    note += (1.0 if terrain >= 1000 else 0.0) + (1.0 if terrain >= 3000 else 0.0)
+    return note
+
+
+_ALTITUDE_CACHE = os.path.join(os.path.dirname(__file__), "..", "..", "data",
+                               "commune_altitude_cache.json")
+
+
+def altitude_commune(items: list) -> dict[str, float]:
+    """Altitude par commune, mesurée UNE fois au barycentre de ses annonces (IGN).
+
+    Un appel par commune, pas par bien — c'est ce qui rend l'étage payable. Cache
+    permanent : une seconde collecte dans la même région ne le repaie pas.
+    """
+    from ..enrichment.relief import ReliefProvider
+
+    cache = _charger_cache(_ALTITUDE_CACHE)
+    groupes: dict[str, list] = {}
+    for it in items:
+        code = getattr(it, "code_commune", None)
+        if code and getattr(it, "latitude", None) and getattr(it, "longitude", None):
+            groupes.setdefault(code, []).append(it)
+
+    provider, neufs = ReliefProvider(), 0
+    for code, membres in groupes.items():
+        if code in cache:
+            continue
+        lat = sum(m.latitude for m in membres) / len(membres)
+        lon = sum(m.longitude for m in membres) / len(membres)
+        # Réessais : l'API IGN plafonne les rafales. Sans back-off, un lot de 300 communes
+        # se fait jeter après la vingtaine et l'étage devient un no-op — que le garde-fou
+        # « commune non mesurée = retenue » fait passer pour un run propre. Vécu : 25
+        # communes mesurées sur plusieurs centaines, 3 biens écartés, aucun message.
+        alt = None
+        for essai in range(3):
+            try:
+                alt = (provider.enrich(lat, lon) or {}).get("altitude")
+            except Exception:  # noqa: BLE001
+                alt = None
+            if alt is not None:
+                break
+            time.sleep(1.5 * (essai + 1))
+        if alt is None:
+            continue  # échec réseau : on ne cache pas, et le bien passe (bénéfice du doute)
+        cache[code] = alt
+        neufs += 1
+        if neufs % 10 == 0:
+            _ecrire_cache(_ALTITUDE_CACHE, cache)
+    if neufs:
+        _ecrire_cache(_ALTITUDE_CACHE, cache)
+    return {c: cache[c] for c in groupes if c in cache}
+
+
+_DVF_CACHE = os.path.join(os.path.dirname(__file__), "..", "..", "data",
+                          "commune_dvf_cache.json")
+
+
+def prix_m2_commune(items: list, log=print) -> dict[str, float]:
+    """Prix au m² bâti du secteur, par commune (DVF), mesuré une fois au barycentre.
+
+    C'est l'étage qui décide vraiment pour ce set : le critère de tête est le rapport
+    qualité/prix, et il n'a de sens que rapporté au marché local. 0,3 à 0,8 s par commune,
+    cache permanent — une seconde collecte dans la même région ne le repaie pas.
+    """
+    from ..enrichment.dvf import DvfComparablesProvider
+
+    cache = _charger_cache(_DVF_CACHE)
+    groupes: dict[str, list] = {}
+    for it in items:
+        code = getattr(it, "code_commune", None)
+        if code and getattr(it, "latitude", None) and getattr(it, "longitude", None):
+            groupes.setdefault(code, []).append(it)
+
+    provider, neufs, sans = DvfComparablesProvider(), 0, 0
+    for code, membres in groupes.items():
+        if code in cache:
+            continue
+        lat = sum(m.latitude for m in membres) / len(membres)
+        lon = sum(m.longitude for m in membres) / len(membres)
+        try:
+            ref = (provider.enrich(lat, lon) or {}).get("prix_m2_secteur_bati")
+        except Exception:  # noqa: BLE001
+            ref = None
+        if ref is None:
+            sans += 1
+            continue  # commune sans ventes exploitables : pas de référence, pas de verdict
+        cache[code] = ref
+        neufs += 1
+        if neufs % 25 == 0:
+            _ecrire_cache(_DVF_CACHE, cache)
+    if neufs:
+        _ecrire_cache(_DVF_CACHE, cache)
+    mesures = {c: cache[c] for c in groupes if c in cache}
+    log(f"  références DVF     : {len(mesures)}/{len(groupes)} communes ({neufs} neuves, "
+        f"{sans} sans ventes exploitables)")
+    return mesures
+
+
+# Ce qui repêche un bien de plaine : l'annonce parle d'un cadre qui vaut le déplacement.
+# L'altitude ne mesure ni une rivière ni une vue sur la vallée.
+_SIGNAUX_REPECHE = ("eau", "vue_panoramique", "foret")
+
+
+def _annonce_parle_de_nature(item) -> bool:
+    from .quality import classify_quality
+
+    feats = set(classify_quality(getattr(item, "description", None)).get("features") or [])
+    return any(s in feats for s in _SIGNAUX_REPECHE)
+
+
+def filtrer_par_altitude(items: list, min_altitude: float = 250.0,
+                         repecher_nature: bool = True) -> tuple[list, list, int]:
+    """Sépare (retenus, écartés, repêchés) selon l'altitude de leur commune.
+
+    Mêmes garde-fous que l'étage littoral : une commune non mesurée est RETENUE, et une
+    annonce qui parle d'eau, de bois ou de vue dégagée est retenue même en plaine.
+    """
+    par_commune = altitude_commune(items)
+    communes = {getattr(it, "code_commune", None) for it in items} - {None}
+    non_mesurees = len(communes - set(par_commune))
+    retenus, ecartes, repeches = [], [], 0
+    for it in items:
+        alt = par_commune.get(getattr(it, "code_commune", None))
+        if alt is None or alt >= min_altitude:
+            retenus.append(it)
+        elif repecher_nature and _annonce_parle_de_nature(it):
+            retenus.append(it)
+            repeches += 1
+        else:
+            ecartes.append(it)
+    return retenus, ecartes, repeches, non_mesurees
+
+
+# --------------------------------------------------------------------------- #
 # Le pipeline
 # --------------------------------------------------------------------------- #
-def appliquer(items: list, *, max_km: float | None = 10.0, garder: int | None = None,
+def appliquer(items: list, *, profil: str = "littoral", max_km: float | None = 10.0,
+              min_altitude: float | None = 250.0, garder: int | None = None,
               rebut: float = 0.0, log=print) -> list:
     """Passe `items` dans l'entonnoir et renvoie ce qui mérite l'enrichissement.
 
-    - `max_km` : écarte les communes plus éloignées de la mer (None = étage sauté).
+    - `profil` : « littoral » (étage 1 = distance à la mer) ou « montagne » (étage 1 =
+      référence de prix DVF par commune, puis altitude). La note d'annonce change avec le
+      profil : les deux sets ne cherchent pas la même chose et n'ont pas le même rebut.
+    - `max_km` : littoral — écarte les communes plus éloignées de la mer (None = sauté).
+    - `min_altitude` : montagne — écarte les communes de plaine (None = étage sauté).
     - `rebut`  : écarte les annonces sous cette note (pavillon neuf, lotissement).
     - `garder` : plafond final, appliqué au classement par note d'annonce (None = tout).
     """
     depart = len(items)
     if not items:
         return items
+    montagne = profil == "montagne"
+    noter = note_annonce_montagne if montagne else note_annonce
 
-    restants = [it for it in items if note_annonce(it) > rebut] or items
+    restants = [it for it in items if noter(it) > rebut] or items
     if len(restants) < depart:
         log(f"  étage 0 (annonce)  : {len(restants)}/{depart} retenus, "
             f"{depart - len(restants)} écartés (rebut évident)")
 
-    if max_km:
+    if montagne:
+        # Étage 1 — le marché local. C'est LUI qui classe : le critère de tête du set est
+        # le rapport qualité/prix, et un prix au m² ne veut rien dire hors de son secteur.
+        refs = prix_m2_commune(restants, log=log)
+        noter = lambda it: note_annonce_montagne(  # noqa: E731
+            it, reference_m2=refs.get(getattr(it, "code_commune", None)))
+        if min_altitude:
+            avant = len(restants)
+            restants, ecartes, repeches, non_mesurees = filtrer_par_altitude(restants, min_altitude)
+            détail = f", {repeches} repêchés (eau / bois / vue dégagée)" if repeches else ""
+            log(f"  étage 1 (altitude) : {len(restants)}/{avant} retenus, "
+                f"{len(ecartes)} écartés (commune sous {min_altitude:g} m){détail}")
+            if non_mesurees:
+                # Un étage qui échoue en silence ressemble trait pour trait à un étage qui
+                # ne trouve rien : il faut que le run le dise.
+                log(f"  ⚠ {non_mesurees} communes non mesurées (IGN) — leurs biens sont "
+                    f"retenus par défaut, l'étage n'a donc pas tranché pour eux")
+    elif max_km:
         avant = len(restants)
         restants, ecartes, repeches = filtrer_par_commune(restants, max_km)
         if ecartes:
@@ -188,9 +418,9 @@ def appliquer(items: list, *, max_km: float | None = 10.0, garder: int | None = 
 
     if garder and len(restants) > garder:
         avant = len(restants)
-        restants = sorted(restants, key=note_annonce, reverse=True)[:garder]
+        restants = sorted(restants, key=noter, reverse=True)[:garder]
         log(f"  plafond            : {garder}/{avant} retenus "
-            f"(note d'annonce ≥ {note_annonce(restants[-1]):.1f})")
+            f"(note d'annonce ≥ {noter(restants[-1]):.1f})")
 
     log(f"  -> {len(restants)} biens à enrichir sur {depart} collectés "
         f"({depart - len(restants)} évités, ~{(depart - len(restants)) * 2.3 / 60:.0f} min économisées)")

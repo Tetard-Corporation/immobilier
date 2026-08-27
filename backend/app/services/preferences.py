@@ -18,6 +18,7 @@ PREFERENCE_KINDS = [
     "has_terrain",
     "constructible",
     "prix_m2_terrain",
+    "rapport_qualite_prix",
     "en_hauteur_geo",
     "distance_mer",
     "surface_habitable",
@@ -156,7 +157,21 @@ def _eval_one(item, kind: str, params: dict):
 
     if kind == "chambres_min":
         mn = params.get("min", 1)
-        nb = item.nb_chambres
+        nb, source = item.nb_chambres, "ch."
+        if nb is None:
+            # Sans repli, le critère est `n/a` — donc NEUTRE — sur la moitié des annonces,
+            # et une maison d'une seule pièce peut finir deuxième du classement d'un set
+            # qui demande quatre chambres. C'est arrivé (Montcel, 87,8). Les pièces sont
+            # données par 91 % des annonces contre 51 % pour les chambres.
+            pieces = getattr(item, "nb_pieces", None)
+            if pieces:
+                nb, source = max(1, int(pieces) - 1), "ch. estimées (pièces - 1)"
+        if nb is None:
+            # Dernier repli : la surface habitable, à raison d'une chambre par tranche.
+            s = getattr(item, "surface_bati", None)
+            m2 = params.get("m2_par_chambre", 35)
+            if s:
+                nb, source = max(1, int(s // m2)), f"ch. estimées ({m2} m²/ch.)"
         if nb is None:
             return None, "n/a", "nb chambres inconnu"
         if nb >= mn:
@@ -166,7 +181,7 @@ def _eval_one(item, kind: str, params: dict):
             # 3/4 = 0.75, 2/4 = 0.5, 1/4 = 0.25. Garde la direction (plus de chambres = mieux)
             # sans écraser le match des biens à rénover (souvent 2-3 ch).
             sub = _clamp(nb / mn)
-        return sub, "ok", f"{nb} ch. (min {mn})"
+        return sub, "ok", f"{nb} {source} (min {mn})"
 
     if kind == "has_terrain":
         if item.surface_terrain is None:
@@ -205,6 +220,33 @@ def _eval_one(item, kind: str, params: dict):
         else:
             sub = _clamp(1 - (ppm - bon) / (cher - bon) * (1 - _CHER_FLOOR))
         return sub, "ok", f"{round(ppm)} €/m² de terrain"
+
+    if kind == "rapport_qualite_prix":
+        # Bonne affaire sur du BÂTI : prix au m² du bien rapporté au prix au m² observé
+        # dans le secteur (DVF, transactions réelles). C'est le RATIO qui parle, pas le
+        # prix absolu — 2 000 €/m² est cher en Ardèche et donné en Savoie du lac.
+        # Renseigné sur 87 % des biens du set têtard.
+        pm2 = flags.get("prix_m2_secteur")
+        s = getattr(item, "surface_bati", None)
+        if item.prix is None or not s or not pm2:
+            return None, "n/a", "prix, surface bâtie ou référence de secteur manquante"
+        ratio = (item.prix / s) / pm2
+        # Repères mesurés sur les 393 biens notés du set : p20 = 0,75 · médiane = 1,17 ·
+        # p80 = 1,68. Le prix affiché est structurellement au-dessus des ventes passées ;
+        # les ancres sont donc calées sur la distribution réelle, pas sur la parité.
+        bon = params.get("bon", 0.75)
+        cher = params.get("cher", 1.7)
+        if ratio <= bon:
+            sub = 1.0
+        elif ratio >= cher:
+            # Au-delà de « cher », on continue de décroître en 1/ratio : sinon un bien à
+            # deux fois le prix du secteur et un autre à quatre fois se valent.
+            sub = _CHER_FLOOR * cher / ratio
+        else:
+            sub = _clamp(1 - (ratio - bon) / (cher - bon) * (1 - _CHER_FLOOR))
+        ecart = round((ratio - 1) * 100)
+        situe = f"+{ecart} %" if ecart > 0 else f"{ecart} %"
+        return sub, "ok", f"{round(item.prix / s)} €/m² — {situe} du secteur ({round(pm2)} €/m²)"
 
     if kind == "en_hauteur_geo":
         # Proéminence locale (m) = altitude du point − alentours (couronne 300 m).
@@ -282,17 +324,22 @@ def _eval_one(item, kind: str, params: dict):
         # que par 4 à 15 % des annonces, donc en `n/a` ils ne servaient que de bonus et
         # aucun bien ne pouvait mal noter. Ici le silence vaut le socle neutre, les
         # mentions favorables montent et le lotissement fait descendre.
+        # « Isolé c'est mieux » n'est pas universel : le set têtard veut le calme SANS
+        # l'isolement (« pas isolé »). Les deux poids sont donc réglables, et un poids nul
+        # retire le signal du calcul au lieu de le compter pour rien.
+        p_isole = params.get("poids_isolement", 0.25)
+        p_densite = params.get("poids_densite", 0.20)
         feats, nuis = flags.get("features") or [], flags.get("nuisances") or []
         note, motifs = _TRANQ_SOCLE, []
         if "sans_vis_a_vis" in feats:
             note += 0.30; motifs.append("sans vis-à-vis")
-        if "isole" in feats:
-            note += 0.25; motifs.append("isolé / pleine nature")
+        if "isole" in feats and p_isole:
+            note += p_isole; motifs.append("isolé / pleine nature")
         if "calme" in feats:
             note += 0.10; motifs.append("calme")
         iso = flags.get("isolement_score")
-        if iso:
-            note += 0.20 * iso
+        if iso and p_densite:
+            note += p_densite * iso
             motifs.append(f"commune peu dense ({flags.get('population_commune')} hab.)")
         if "vis_a_vis" in nuis:
             note -= 0.45; motifs.append("vis-à-vis signalé")

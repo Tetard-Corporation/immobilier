@@ -400,3 +400,66 @@ def test_sans_exigences_le_score_est_inchange():
     avec, _ = _score_haut({"dist_mer_m": 3500}, poids_mer=1)
     sans, _ = _score_haut({"dist_mer_m": 3500}, poids_mer=1, exigences=None)
     assert avec == 90 and sans > 90
+
+
+def test_chambres_min_toujours_mesure():
+    """Le critère capacité doit s'appliquer à TOUTES les annonces. Sans repli il était
+    `n/a` — donc neutre — sur la moitié du lot têtard, et une maison d'une pièce a fini
+    deuxième d'un classement qui exigeait quatre chambres."""
+    pref = [Preference(kind="chambres_min", params={"min": 3})]
+
+    def sub(**kw):
+        _, d = evaluate(_listing(type_bien="maison", flags={}, **kw), pref)
+        return d[0]["subscore"], d[0]["status"], d[0]["detail"]
+
+    assert sub(nb_chambres=4)[0] == 1.0                  # au-dessus du minimum
+    assert sub(nb_chambres=3)[0] == 1.0                  # pile au minimum
+    assert sub(nb_chambres=1)[0] < sub(nb_chambres=2)[0] < 1.0  # dégradé, pas un mur
+    # Repli 1 : les pièces (91 % des annonces, contre 51 % pour les chambres).
+    assert sub(nb_pieces=5)[0] == 1.0 and "pièces - 1" in sub(nb_pieces=5)[2]
+    assert sub(nb_pieces=1)[0] < 1.0                     # une pièce n'est pas une pépite
+    # Repli 2 : la surface habitable, quand l'annonce ne donne ni chambres ni pièces.
+    assert sub(surface_bati=140)[0] == 1.0
+    assert sub(surface_bati=45)[0] < 1.0
+    assert sub()[1] == "n/a"                             # plus rien à quoi se raccrocher
+
+
+def test_rapport_qualite_prix_compare_au_secteur():
+    """« Le rapport qualité/prix c'est essentiel » : le prix au m² du bien contre celui
+    du secteur (DVF). C'est le ratio qui parle — 2 000 €/m² est cher en Ardèche."""
+    pref = [Preference(kind="rapport_qualite_prix", params={"bon": 0.75, "cher": 1.7})]
+
+    def sub(prix=None, bati=None, secteur=None):
+        it = _listing(type_bien="maison", prix=prix, surface_bati=bati,
+                      flags={"prix_m2_secteur": secteur} if secteur else {})
+        _, d = evaluate(it, pref)
+        return d[0]["subscore"], d[0]["status"]
+
+    # 1 000 €/m² dans un secteur à 2 000 -> moitié prix -> plein score.
+    assert sub(prix=100_000, bati=100, secteur=2000) == (1.0, "ok")
+    # Au prix du secteur : note intermédiaire, ni bonne affaire ni excès.
+    milieu = sub(prix=200_000, bati=100, secteur=2000)[0]
+    assert 0.2 < milieu < 1.0
+    # Deux fois le secteur, puis quatre fois : la note continue de descendre.
+    assert sub(prix=400_000, bati=100, secteur=2000)[0] > sub(prix=800_000, bati=100, secteur=2000)[0]
+    assert sub(prix=800_000, bati=100, secteur=2000)[0] > 0
+    assert sub(prix=200_000, bati=100)[1] == "n/a"        # pas de référence DVF
+    assert sub(prix=200_000, secteur=2000)[1] == "n/a"    # surface bâtie inconnue
+
+
+def test_tranquillite_sans_isolement():
+    """Le set têtard veut le calme SANS l'isolement (« pas isolé »). Poids nul = le
+    signal sort du calcul, il ne compte pas pour zéro non plus."""
+    sans_iso = [Preference(kind="tranquillite", params={"poids_isolement": 0, "poids_densite": 0})]
+    defaut = [Preference(kind="tranquillite")]
+    flags = {"features": ["isole"], "isolement_score": 1.0}
+
+    def sub(pref, fl):
+        _, d = evaluate(_listing(flags=fl), pref)
+        return d[0]["subscore"], d[0]["detail"]
+
+    assert sub(sans_iso, flags)[0] < sub(defaut, flags)[0]   # l'isolement ne rapporte plus
+    assert "isolé" not in sub(sans_iso, flags)[1]            # ni ne s'affiche comme un plus
+    # Le reste du critère continue de fonctionner dans les deux sens.
+    assert sub(sans_iso, {"features": ["sans_vis_a_vis"]})[0] > sub(sans_iso, {})[0]
+    assert sub(sans_iso, {"pavillon_neuf": True})[0] < sub(sans_iso, {})[0]
