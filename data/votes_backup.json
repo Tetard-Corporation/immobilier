@@ -1,6 +1,31 @@
 {
- "backed_up_at": "2026-08-26T04:56:55.599365+00:00",
+ "backed_up_at": "2026-08-27T15:16:00.931400+00:00",
  "source_url": "https://jmmflsrlegttdnxpidmo.supabase.co",
- "count": 0,
- "votes": []
+ "count": 3,
+ "votes": [
+  {
+   "bien_id": "bienici__safti-1-1666680",
+   "voter": "Léo",
+   "criterion": "__overall__",
+   "stars": null,
+   "comment": null,
+   "updated_at": "2026-08-27T11:20:09.474+00:00"
+  },
+  {
+   "bien_id": "bienici__safti-1-1666680",
+   "voter": "Léo",
+   "criterion": "Avec terrain",
+   "stars": 1,
+   "comment": "oui mais le terrain est assez alambiqué avec une allée qui prend toute la place",
+   "updated_at": "2026-08-27T11:20:02.096+00:00"
+  },
+  {
+   "bien_id": "bienici__safti-1-1666680",
+   "voter": "Léo",
+   "criterion": "Sans vis-à-vis",
+   "stars": 1,
+   "comment": "vis-à-vis présent",
+   "updated_at": "2026-08-27T11:19:46.738+00:00"
+  }
+ ]
 }
