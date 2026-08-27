@@ -136,3 +136,78 @@ def parse_site(url: str, html: str) -> list[dict]:
     host = (urlparse(url).hostname or "").removeprefix("www.")
     fn = SITE_PARSERS.get(host)
     return fn(html, url) if fn else []
+
+
+# --------------------------------------------------------------------------- #
+# Voie C — générique : suivre les liens de détail et y lire le JSON-LD.
+#
+# Beaucoup de sites d'agences ne mettent aucun JSON-LD sur la page de LISTE mais en
+# posent un propre (RealEstateListing, Product) sur chaque page de BIEN. Mesuré sur les
+# agences bretonnes : liste 0 bien, détail 1 bien avec prix. Cette voie récupère donc
+# les liens de détail de la liste, sans rien savoir du site, et laisse le JSON-LD de
+# chaque fiche faire le travail. Elle évite d'écrire un parser par agence.
+# --------------------------------------------------------------------------- #
+
+# Un lien de détail porte presque toujours l'un de ces mots, et un identifiant. Le mot
+# n'est pas exigé en début de segment : « /a-vendre-belle-propriete-… » est un format
+# courant, et le chercher seulement après « / » le manquait.
+_DETAIL_MOTS = re.compile(
+    r"(?:vente|vendre|annonce|bien|propriete|maison|terrain|appartement|detail|offre)",
+    re.I)
+_A_HREF = re.compile(r'<a\b[^>]*href=["\']([^"\'#]+)["\']', re.I)
+
+# Pages de service à ne jamais confondre avec un bien.
+_DETAIL_EXCLU = re.compile(
+    r"/(?:estimation|estimer|contact|mentions|cgv|cgu|blog|actualite|equipe|agence|"
+    r"honoraires|recrutement|vendu|nos-dernieres-ventes|login|panier)", re.I)
+
+
+_CODE_POSTAL_RE = re.compile(r"\b\d{5}\b")
+
+
+def _ressemblance_fiche(chemin: str) -> int:
+    """Note « ce lien ressemble-t-il à une fiche plutôt qu'à une rubrique ? ».
+
+    Le tri compte autant que le filtre : les rubriques apparaissent souvent en haut de
+    page (menus), donc sans tri le plafond se consomme entièrement dessus avant
+    d'atteindre la moindre fiche. Vu sur un site de prestige où les six premiers liens
+    récoltés étaient des menus, pour zéro bien trouvé.
+    """
+    note = 0
+    if _CODE_POSTAL_RE.search(chemin):
+        note += 3          # « /fr-lorient-56100/ » : signature d'une fiche localisée
+    if re.search(r"[-/](?:ofr-)?\d{4,}(?:[-.]|$)", chemin):
+        note += 3          # référence longue en fin de chemin
+    note += min(chemin.count("-"), 6)   # slug descriptif = fiche ; slug court = rubrique
+    note += min(chemin.strip("/").count("/"), 3)
+    return note
+
+
+def harvest_detail_links(html: str, base_url: str, max_links: int = 40) -> list[str]:
+    """Liens de fiches candidates sur une page de liste : même hôte, mots d'annonce,
+    et un identifiant numérique (ce qui écarte les pages de rubrique).
+
+    Volontairement permissif — une fiche sans JSON-LD exploitable sera écartée plus loin,
+    alors qu'un lien manqué est un bien perdu — mais TRIÉ : les liens qui ressemblent le
+    plus à des fiches passent devant, pour que le plafond serve à des biens et non à des
+    menus.
+    """
+    hote = (urlparse(base_url).hostname or "").removeprefix("www.")
+    vus: dict[str, int] = {}
+    for href in _A_HREF.findall(html or ""):
+        url = urljoin(base_url, href)
+        p = urlparse(url)
+        if p.scheme not in ("http", "https"):
+            continue
+        if (p.hostname or "").removeprefix("www.") != hote:
+            continue
+        chemin = p.path
+        if not _DETAIL_MOTS.search(chemin) or _DETAIL_EXCLU.search(chemin):
+            continue
+        if not re.search(r"\d{2,}", chemin):  # une fiche porte une référence
+            continue
+        if url.rstrip("/") == base_url.rstrip("/"):
+            continue
+        vus.setdefault(url, _ressemblance_fiche(chemin))
+    classes = sorted(vus, key=lambda u: -vus[u])
+    return classes[:max_links]

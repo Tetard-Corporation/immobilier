@@ -90,6 +90,51 @@ Mesuré sur les 840 biens du set : 225 écartés, 2 repêchés au bord d'eau, **
 annonce ne mentionne aucune eau — elle montait sur le rapport qualité/prix et le terrain.
 C'est le compromis assumé de l'étage : sur un set littoral, l'arrière-pays sort.
 
+### 2 ter. Ajouter une agence locale
+
+Le moteur ingère les sites d'agences par quatre voies, essayées dans cet ordre. Les trois
+dernières ne demandent **aucun code** :
+
+| Voie | Ce qu'elle lit | À écrire |
+|---|---|---|
+| A | JSON-LD sur la page de liste | rien (rare) |
+| B | parser dédié au domaine | un parser dans `agences_parsers.py` |
+| C | JSON-LD sur chaque fiche | rien |
+| D | texte de chaque fiche, via l'extracteur | rien |
+
+**Sonder avant d'ajouter**, avec le script prévu :
+
+```bash
+python scripts/probe_agence.py https://www.agence.fr/nos-biens
+python scripts/probe_agence.py --cap 6 --fichier candidats.txt
+```
+
+Il répond à la seule question qui compte : combien de biens **avec prix ET commune** ce
+site donne, et par quelle voie. Sans commune un bien n'est pas géocodable, donc invisible
+pour les filtres de zone et le scoring — un site qui ne donne que des prix ne sert à rien.
+
+Mesuré sur dix agences bretonnes et de prestige : **0 sur 10 par les voies A à C, 8 sur 10
+en ajoutant la voie D**. Les sites d'agences n'exposent presque jamais de données
+structurées, mais le prix et le code postal sont en clair dans la page. Les deux échecs
+restants sont un site rendu en JavaScript et un serveur qui ne répond pas.
+
+Ajouter ensuite l'agence dans `backend/agences.yaml` :
+
+```yaml
+  - nom: "Orpi Trégorimmo"
+    set_id: 4          # sans lui, ses biens sont notés pour TOUS les sets
+    sites:
+      - https://www.orpi.com/orpi-tregorimmo/
+```
+
+`set_id` n'est pas décoratif : sans lui, `set_ids` reste vide et l'export note le bien
+pour tous les sets — une agence bretonne apparaîtrait dans le set Drôme/Ardèche.
+
+**Réseaux nationaux de prestige** (Safti Prestige, Barnes) : ils passent la voie D mais
+leur flux n'est pas filtrable par région, donc la collecte ramène Paris et Béziers pour un
+set breton. Les ajouter suppose soit une URL filtrée par région, soit un set dédié aux
+biens d'exception, où le budget ne serait plus un critère éliminatoire.
+
 ### 3. Collecter, source par source
 
 ```bash
