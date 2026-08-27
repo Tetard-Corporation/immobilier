@@ -77,8 +77,18 @@ mer, proéminence du relief — sont *mesurés* et n'apparaissent jamais dans l'
 L'étage 0 sert donc à écarter le rebut évident (pavillon neuf, lotissement viabilisé), pas
 à sélectionner. Le tri par qualité, c'est l'étage 1.
 
-Un bien dont la commune n'a pas pu être mesurée est **retenu** : mieux vaut enrichir pour
-rien qu'écarter une pépite sur une mesure manquante.
+**Deux garde-fous, parce qu'un entonnoir qui perd une pépite coûte plus qu'il ne rapporte :**
+
+- un bien dont la commune n'a pas pu être mesurée est **retenu** — mieux vaut enrichir pour
+  rien qu'écarter sur une mesure manquante ;
+- un bien dont l'annonce parle de **bord d'eau** est retenu même en commune lointaine. Le
+  set note `bord_eau` (rivière, étang, lac, ria, aber, estuaire) au poids 4 : l'eau du set
+  ne se réduit pas à la mer, et la distance à la côte ne mesure pas les rivières.
+
+Mesuré sur les 840 biens du set : 225 écartés, 2 repêchés au bord d'eau, **11 pépites sur
+12 conservées**. La perdue (Caouënnec-Lanvézéac, 80,0) est à plus de 12 km de la mer et son
+annonce ne mentionne aucune eau — elle montait sur le rapport qualité/prix et le terrain.
+C'est le compromis assumé de l'étage : sur un set littoral, l'arrière-pays sort.
 
 ### 3. Collecter, source par source
 

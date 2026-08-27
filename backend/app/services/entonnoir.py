@@ -118,19 +118,44 @@ def distance_mer_commune(items: list, maxm: int = 12000, step: int = 2000) -> di
     return {c: cache[c] for c in groupes if c in cache}
 
 
-def filtrer_par_commune(items: list, max_km: float = 10.0) -> tuple[list, list]:
+# L'eau du set ne se réduit pas à la mer : `bord_eau` (rivière, étang, lac, ria, aber,
+# estuaire) est un critère à part entière, pondéré 4. Un bien de l'intérieur posé au bord
+# d'une rivière est donc légitime, et la distance à la mer ne le dit pas.
+_SIGNAUX_EAU = ("bord_eau", "bord_de_mer")
+
+
+def _annonce_parle_d_eau(item) -> bool:
+    from .export_static import _detect_equipements
+
+    return any(s in _detect_equipements(getattr(item, "description", None))
+               for s in _SIGNAUX_EAU)
+
+
+def filtrer_par_commune(items: list, max_km: float = 10.0,
+                        repecher_bord_eau: bool = True) -> tuple[list, list]:
     """Sépare (retenus, écartés) selon la distance à la mer de leur commune.
 
-    Un bien dont la commune n'a pas pu être mesurée est RETENU : mieux vaut enrichir pour
-    rien qu'écarter une pépite sur une mesure manquante.
+    Deux garde-fous, parce qu'un entonnoir qui perd une pépite coûte plus qu'il ne
+    rapporte :
+
+    - un bien dont la commune n'a pas pu être mesurée est RETENU (mieux vaut enrichir
+      pour rien qu'écarter sur une mesure manquante) ;
+    - un bien dont l'annonce parle de bord d'eau est RETENU même en commune lointaine —
+      la distance à la mer ne mesure pas les rivières, et le set les note.
     """
     par_commune = distance_mer_commune(items)
     maxm = max_km * 1000
-    retenus, ecartes = [], []
+    retenus, ecartes, repeches = [], [], 0
     for it in items:
         d = par_commune.get(getattr(it, "code_commune", None))
-        (ecartes if (d is not None and d > maxm) else retenus).append(it)
-    return retenus, ecartes
+        if d is None or d <= maxm:
+            retenus.append(it)
+        elif repecher_bord_eau and _annonce_parle_d_eau(it):
+            retenus.append(it)
+            repeches += 1
+        else:
+            ecartes.append(it)
+    return retenus, ecartes, repeches
 
 
 # --------------------------------------------------------------------------- #
@@ -153,12 +178,13 @@ def appliquer(items: list, *, max_km: float | None = 10.0, garder: int | None = 
         log(f"  étage 0 (annonce)  : {len(restants)}/{depart} retenus, "
             f"{depart - len(restants)} écartés (rebut évident)")
 
-    if max_km is not None:
+    if max_km:
         avant = len(restants)
-        restants, ecartes = filtrer_par_commune(restants, max_km)
+        restants, ecartes, repeches = filtrer_par_commune(restants, max_km)
         if ecartes:
+            détail = f", {repeches} repêchés (bord d'eau)" if repeches else ""
             log(f"  étage 1 (commune)  : {len(restants)}/{avant} retenus, "
-                f"{len(ecartes)} écartés (commune à plus de {max_km:g} km de la mer)")
+                f"{len(ecartes)} écartés (commune à plus de {max_km:g} km de la mer){détail}")
 
     if garder and len(restants) > garder:
         avant = len(restants)
