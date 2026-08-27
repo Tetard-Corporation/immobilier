@@ -31,6 +31,12 @@ logger = logging.getLogger("immobilier.agences")
 _UA = {"User-Agent": "Mozilla/5.0 (compatible; ImmobilierBot/0.1)"}
 
 
+def _EXTRACTEUR():
+    """Extracteur d'annonces (LLM si clé Anthropic, sinon heuristique). Résolu à l'appel
+    pour que les tests puissent l'injecter."""
+    return get_extractor()
+
+
 def _external_id(agency: str, url: str | None, d: dict) -> str:
     if url:
         seed = url
@@ -111,19 +117,23 @@ def _og(html: str, prop: str) -> str | None:
     return m.group(1) if m else None
 
 
-def _enrich_from_detail(nl: NormalizedListing) -> NormalizedListing:
+def _enrich_from_detail(nl: NormalizedListing, html: str | None = None) -> NormalizedListing:
     """Complète depuis la page détail : garantit la PHOTO (og:image) et, si manquants,
     le prix (class="prix") et la commune (og:title/description). Une seule requête, et
-    seulement si quelque chose manque -> pas de surcoût pour les agences déjà complètes."""
+    seulement si quelque chose manque -> pas de surcoût pour les agences déjà complètes.
+
+    `html` : page déjà téléchargée. La voie générique l'a en main, et la redemander
+    doublait le nombre de requêtes envoyées aux sites d'agences."""
     need_photo = not ((nl.raw or {}).get("photos"))
     need_commune = not nl.commune
     need_price = nl.prix is None
     if not nl.url or not (need_photo or need_commune or need_price):
         return nl
-    try:
-        html = httpx.get(nl.url, headers=_DETAIL_UA, timeout=20, follow_redirects=True).text
-    except Exception:
-        return nl
+    if html is None:
+        try:
+            html = httpx.get(nl.url, headers=_DETAIL_UA, timeout=20, follow_redirects=True).text
+        except Exception:
+            return nl
     if need_photo and (img := _og(html, "og:image")):
         nl.raw = {**(nl.raw or {}), "photos": [img]}
     if need_price:
@@ -147,6 +157,18 @@ def _fill_geo(nl: NormalizedListing) -> NormalizedListing:
     """Résout la commune (souvent un titre libre) via la BAN -> commune canonique +
     dept/coords, pour rendre les biens d'agences exploitables (filtre dept, carte,
     scoring). Étape réseau, séparée de la normalisation (pure)."""
+    # Pas de commune mais un code postal : les fiches d'agence portent presque toujours
+    # le CP (« à LORIENT (56100) »), et lui seul suffit. Sur un CP rural qui couvre
+    # plusieurs communes on prend la plus peuplée, comme la source SeLoger.
+    if not nl.commune and nl.code_postal:
+        from .geo_communes import main_commune_for_postcode
+
+        c = main_commune_for_postcode(nl.code_postal)
+        if c:
+            nl.commune = c.get("nom")
+            nl.code_commune = nl.code_commune or c.get("code")
+            if nl.latitude is None:
+                nl.latitude, nl.longitude = c.get("lat"), c.get("lon")
     if nl.commune and nl.latitude is None:
         from .geo import geocode_locality
 
@@ -233,11 +255,12 @@ def _scrape_via_fiches(client, agency: str, url: str, html: str, settings,
         except Exception as exc:  # noqa: BLE001
             logger.debug("Fiche agence injoignable %s : %s", lien, exc)
             continue
+        fiche = None
         for obj in json_ld_items(page.text):
             f = realestate_fields(obj)
             if not f or f.get("price") is None:
                 continue
-            nl = _to_normalized({
+            fiche = {
                 "type_bien": None,
                 "prix": f.get("price"),
                 "surface_bati": f.get("surface"),
@@ -246,11 +269,30 @@ def _scrape_via_fiches(client, agency: str, url: str, html: str, settings,
                 "code_postal": f.get("postal_code"),
                 "url": lien,
                 "description": f.get("description") or f.get("name"),
-            }, agency)
-            if f.get("latitude") is not None:
-                nl.latitude, nl.longitude = f["latitude"], f["longitude"]
-            trouves.append(_fill_geo(_enrich_from_detail(nl)))
+                "_geo": (f.get("latitude"), f.get("longitude")),
+            }
             break  # une fiche = un bien
+
+        # Voie D — la fiche n'a aucun JSON-LD immobilier : on lit son texte. Mesuré sur
+        # les agences de prestige, c'est le cas le plus courant (safti-prestige, espaces
+        # atypiques, orpi) : le prix et le code postal sont en clair dans la page, seule
+        # la donnée structurée manque.
+        if fiche is None:
+            for d in _EXTRACTEUR().extract(_og(page.text, "og:title") or lien,
+                                           page.text, is_html=True):
+                if d.get("prix"):
+                    fiche = {**d, "url": lien, "_geo": (None, None)}
+                    break
+
+        if fiche is None:
+            continue
+        lat, lon = fiche.pop("_geo", (None, None))
+        nl = _to_normalized(fiche, agency)
+        if lat is not None:
+            nl.latitude, nl.longitude = lat, lon
+        nl = _fill_geo(_enrich_from_detail(nl, page.text))
+        if nl.prix is not None and nl.commune:
+            trouves.append(nl)
     logger.info("Agence %s : %s bien(s) via fiches (%s liens suivis).",
                 agency, len(trouves), len(liens))
     return trouves

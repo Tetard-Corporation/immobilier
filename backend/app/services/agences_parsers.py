@@ -162,15 +162,38 @@ _DETAIL_EXCLU = re.compile(
     r"honoraires|recrutement|vendu|nos-dernieres-ventes|login|panier)", re.I)
 
 
+_CODE_POSTAL_RE = re.compile(r"\b\d{5}\b")
+
+
+def _ressemblance_fiche(chemin: str) -> int:
+    """Note « ce lien ressemble-t-il à une fiche plutôt qu'à une rubrique ? ».
+
+    Le tri compte autant que le filtre : les rubriques apparaissent souvent en haut de
+    page (menus), donc sans tri le plafond se consomme entièrement dessus avant
+    d'atteindre la moindre fiche. Vu sur un site de prestige où les six premiers liens
+    récoltés étaient des menus, pour zéro bien trouvé.
+    """
+    note = 0
+    if _CODE_POSTAL_RE.search(chemin):
+        note += 3          # « /fr-lorient-56100/ » : signature d'une fiche localisée
+    if re.search(r"[-/](?:ofr-)?\d{4,}(?:[-.]|$)", chemin):
+        note += 3          # référence longue en fin de chemin
+    note += min(chemin.count("-"), 6)   # slug descriptif = fiche ; slug court = rubrique
+    note += min(chemin.strip("/").count("/"), 3)
+    return note
+
+
 def harvest_detail_links(html: str, base_url: str, max_links: int = 40) -> list[str]:
     """Liens de fiches candidates sur une page de liste : même hôte, mots d'annonce,
     et un identifiant numérique (ce qui écarte les pages de rubrique).
 
-    Volontairement permissif : une fiche sans JSON-LD exploitable sera écartée plus loin,
-    alors qu'un lien manqué est un bien perdu.
+    Volontairement permissif — une fiche sans JSON-LD exploitable sera écartée plus loin,
+    alors qu'un lien manqué est un bien perdu — mais TRIÉ : les liens qui ressemblent le
+    plus à des fiches passent devant, pour que le plafond serve à des biens et non à des
+    menus.
     """
     hote = (urlparse(base_url).hostname or "").removeprefix("www.")
-    vus: dict[str, None] = {}
+    vus: dict[str, int] = {}
     for href in _A_HREF.findall(html or ""):
         url = urljoin(base_url, href)
         p = urlparse(url)
@@ -185,7 +208,6 @@ def harvest_detail_links(html: str, base_url: str, max_links: int = 40) -> list[
             continue
         if url.rstrip("/") == base_url.rstrip("/"):
             continue
-        vus.setdefault(url, None)
-        if len(vus) >= max_links:
-            break
-    return list(vus)
+        vus.setdefault(url, _ressemblance_fiche(chemin))
+    classes = sorted(vus, key=lambda u: -vus[u])
+    return classes[:max_links]
