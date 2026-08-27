@@ -497,8 +497,68 @@ def _eval_one(item, kind: str, params: dict):
     return None, "n/a", "inconnu"
 
 
-def evaluate(item, preferences) -> tuple[float | None, list[dict]]:
-    """Calcule le match_score (0-100) et le détail par préférence."""
+def _exigence_remplie(exig: dict, par_kind: dict) -> tuple[bool, str]:
+    """Une exigence est-elle satisfaite ? Renvoie (ok, explication)."""
+    requis = exig.get("requires") or []
+    seuil = float(exig.get("min_subscore", 0.5))
+    mode = exig.get("mode", "any")
+
+    remplis, manquants = [], []
+    for kind in requis:
+        d = par_kind.get(kind)
+        etiquette = (d or {}).get("label") or kind
+        if d and d.get("status") == "ok" and (d.get("subscore") or 0) >= seuil:
+            remplis.append(etiquette)
+        else:
+            # Un critère jamais mesuré (pending / n/a) ne peut pas valider une exigence :
+            # sans la mesure, rien ne prouve que le bien la remplit.
+            manquants.append(etiquette)
+
+    if mode == "all":
+        return (not manquants), ", ".join(manquants)
+    return (bool(remplis)), ", ".join(manquants)
+
+
+def appliquer_exigences(score: float | None, details: list[dict],
+                        exigences: list[dict] | None) -> tuple[float | None, list[dict]]:
+    """Plafonne le score tant qu'une exigence de palier n'est pas remplie.
+
+    Un bien mal mesuré peut monter très haut par accident : `evaluate` renormalise sur les
+    seuls critères notés, donc un bien dont trois critères sur dix-huit sont mesurés est
+    jugé sur ces trois-là. Les paliers hauts servent à dire « au-delà de ce score, tel
+    critère n'est plus optionnel » — sans mesure de la vue mer, un bien ne peut plus
+    prétendre au haut du classement.
+
+    Chaque exigence : {"above": 90, "requires": [kinds], "mode": "any"|"all",
+    "min_subscore": 0.5, "label": "..."}. Le score est ramené au palier, jamais annulé.
+    """
+    if score is None or not exigences:
+        return score, details
+    par_kind = {d.get("kind"): d for d in details}
+    for exig in sorted(exigences, key=lambda e: float(e.get("above", 0))):
+        palier = float(exig.get("above", 0))
+        if score <= palier:
+            continue
+        ok, manquants = _exigence_remplie(exig, par_kind)
+        if ok:
+            continue
+        etiquette = exig.get("label") or f"Requis au-dessus de {palier:g}"
+        details.append({
+            "kind": "exigence", "label": etiquette, "weight": 0, "status": "ko",
+            "subscore": None,
+            "detail": f"plafonné à {palier:g} (score {score:g}) — manque : {manquants}"
+                      if manquants else f"plafonné à {palier:g} (score {score:g})",
+        })
+        score = palier
+    return score, details
+
+
+def evaluate(item, preferences, exigences: list[dict] | None = None) -> tuple[float | None, list[dict]]:
+    """Calcule le match_score (0-100) et le détail par préférence.
+
+    `exigences` (optionnel) : paliers au-delà desquels certains critères deviennent
+    obligatoires — voir `appliquer_exigences`.
+    """
     if not preferences:
         return None, []
     details = []
@@ -531,4 +591,4 @@ def evaluate(item, preferences) -> tuple[float | None, list[dict]]:
         return None, details
     score = round(_contraste(acc / total_w) * 100, 1)
     details.sort(key=lambda d: d.get("contribution", -1), reverse=True)
-    return score, details
+    return appliquer_exigences(score, details, exigences)

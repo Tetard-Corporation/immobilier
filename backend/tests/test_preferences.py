@@ -334,3 +334,69 @@ def test_distance_mer():
     assert sub(3500) == (0.1, "ok")    # loin
     assert sub(1000)[0] < 1.0 and sub(1000)[0] > 0.1
     assert sub(None) == (None, "n/a")  # non calculé
+
+
+# --------------------------------------------------------------------------- #
+# Exigences de palier : au-delà d'un score, certains critères deviennent requis.
+# --------------------------------------------------------------------------- #
+_EXIG_EAU = [{
+    "above": 90,
+    "label": "Vue ou contact avec l'eau",
+    "requires": ["distance_mer", "bord_de_mer", "vue"],
+    "mode": "any",
+    "min_subscore": 0.6,
+}]
+
+
+def _prefs_haut(poids_mer=5):
+    return [Preference(kind="budget", weight=5, params={"budget_max": 400000}),
+            Preference(kind="has_terrain", weight=3),
+            Preference(kind="distance_mer", weight=poids_mer,
+                       params={"proche": 300, "loin": 3000})]
+
+
+def _score_haut(flags, poids_mer=5, exigences=_EXIG_EAU):
+    """Un bien qui score très haut sur les critères mesurés (donc au-dessus de 90).
+
+    `poids_mer` faible = le score vient d'ailleurs (budget, terrain) : c'est le cas que
+    les paliers visent, celui où un bien monte haut sans rien prouver sur l'eau.
+    """
+    item = _listing(prix=50000, surface_terrain=2000, flags=flags)
+    return evaluate(item, _prefs_haut(poids_mer), exigences)
+
+
+def test_exigence_laisse_passer_le_bien_qui_la_remplit():
+    score, details = _score_haut({"dist_mer_m": 200})
+    assert score > 90
+    assert not [d for d in details if d["kind"] == "exigence"]
+
+
+def test_exigence_plafonne_le_bien_loin_de_l_eau():
+    """Score porté par le budget et le terrain, mer mesurée mais lointaine -> plafonné."""
+    score, details = _score_haut({"dist_mer_m": 3500}, poids_mer=1)
+    assert score == 90
+    cap = [d for d in details if d["kind"] == "exigence"]
+    assert cap and cap[0]["status"] == "ko" and "plafonné à 90" in cap[0]["detail"]
+
+
+def test_exigence_non_validee_par_un_critere_jamais_mesure():
+    """Sans mesure, rien ne prouve que le bien voit l'eau : le palier doit tenir."""
+    score, details = _score_haut({})  # dist_mer_m absent -> statut n/a
+    assert score == 90
+    assert [d for d in details if d["kind"] == "exigence"]
+
+
+def test_exigence_ignoree_sous_le_palier():
+    """Un bien à 70 n'est pas concerné : l'exigence ne s'applique qu'au-dessus de 90."""
+    pref = [Preference(kind="budget", weight=5, params={"budget_max": 100000})]
+    item = _listing(prix=115000, flags={})  # hors budget -> score bas
+    score, details = evaluate(item, pref, _EXIG_EAU)
+    assert score is not None and score < 90
+    assert not [d for d in details if d["kind"] == "exigence"]
+
+
+def test_sans_exigences_le_score_est_inchange():
+    """Le plafond ne doit exister que si le set le déclare : les autres sets ne bougent pas."""
+    avec, _ = _score_haut({"dist_mer_m": 3500}, poids_mer=1)
+    sans, _ = _score_haut({"dist_mer_m": 3500}, poids_mer=1, exigences=None)
+    assert avec == 90 and sans > 90

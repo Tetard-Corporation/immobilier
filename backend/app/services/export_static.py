@@ -591,6 +591,7 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
         .all()
     )
     set_prefs: dict[int, list] = {}
+    set_exigences: dict[int, list] = {}
     sets_out = []
     for fs in sets:
         # Préférences RÉSOLUES : un sous-set hérite des préférences de son parent
@@ -598,6 +599,7 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
         resolved = resolve_criteria(fs) or {}
         prefs = resolved.get("preferences") or []
         set_prefs[fs.id] = prefs
+        set_exigences[fs.id] = resolved.get("exigences") or []
         # property_types persisté pour le round-trip seed->export (sinon un set terrain
         # redeviendrait maison par défaut au ré-export).
         ptypes = resolved.get("property_types") or (fs.criteria or {}).get("property_types")
@@ -606,6 +608,9 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
             "description": fs.description,
             "property_types": ptypes or ["maison"],
             "preferences": [_pref_dump(p) for p in prefs],
+            # Paliers au-delà desquels certains critères deviennent obligatoires. Persisté
+            # pour le round-trip seed->export, comme property_types.
+            "exigences": set_exigences.get(fs.id) or [],
         })
 
     saved = {(s.source, s.external_id): s for s in db.query(SavedListing).all()}
@@ -679,7 +684,7 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
                 continue
             if member and fs_id not in member:
                 continue  # bien hors de ce set (ex. montagne vs Pauline) -> pas de score
-            match, details = evaluate(item, prefs)
+            match, details = evaluate(item, prefs, set_exigences.get(fs_id))
             if penalty and match is not None:
                 # Pénalité forte : ce type plafonne très bas quelles que soient ses qualités.
                 factor, plabel, pdetail = penalty
