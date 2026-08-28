@@ -295,9 +295,9 @@ Repères mesurés (jeu du 24 août 2026, 1 152 biens, caches Overpass chauds) :
 | 4 — Littoral breton | 78 | 18 (jeu du 24 août) |
 | 4 — Littoral breton | **80** | **12** ← publié |
 | 1 — têtard | 84,8 | 13 (jeu du 27 août, 1 300 biens, plafond 450 k€) |
-| 1 — têtard | 83 | 11 (jeu du 28 août, 3 310 biens, plafond 300 k€) |
-| 1 — têtard | **82,5** | **14** ← publié, cible 12-15 |
-| 1 — têtard | 82 | 15 |
+| 1 — têtard | 82,5 | 12 (jeu du 28 août, 3 310 biens, plafond 300 k€, 5 paliers) |
+| 1 — têtard | **82** | **13** ← publié, cible 12-15 |
+| 1 — têtard | 81,5 | 15 |
 
 ⚠️ Les seuils ne sont pas transposables d'un jeu à l'autre : après la correction Overpass,
 le même seuil de 80 est passé de 12 à 32 pépites côté breton. **Recalibrer sur la
@@ -494,12 +494,13 @@ vaut pour son prix, et ce qu'on a devant la porte :
   sur la surface : sans ce repli il était `n/a` sur la moitié des annonces, donc neutre,
   et une maison d'**une seule pièce** est arrivée deuxième du classement.
 
-**Quatre paliers** (`EXIGENCES`) ferment les portes par lesquelles un bien mal mesuré —
+**Cinq paliers** (`EXIGENCES`) ferment les portes par lesquelles un bien mal mesuré —
 ou hors sujet — monte au classement :
 
 | Au-dessus de | Il faut | Pourquoi |
 |---|---|---|
 | 70 | être dans le budget | Le critère budget est **pondéré** : il pénalise le dépassement sans l'exclure, et un bien excellent partout ailleurs le compense sans peine. Mesuré : sept des treize premières pépites dépassaient le plafond, jusqu'à +39 %. Un plafond doit être un palier, pas un poids. |
+| 70 | pas de gros travaux | Même raison : `light_works` étant pondéré, une ruine bien placée et bon marché se rattrapait ailleurs. Seuil 0,85 sur le barème du critère — habitable, à rafraîchir et à rénover passent ; gros travaux (0,4) et ruine (0,1) non. **L'état non renseigné ne valide pas non plus**, et c'est 45 % des annonces : le palier coûte cher, c'est assumé. Sur un site fait pour voter, un bien dont on ignore l'état ne se juge pas — comme un bien sans photo. |
 | 75 | trois chambres avérées | Sinon une maison d'une seule pièce finit deuxième. |
 | 78 | un rapport qualité/prix mesuré | Sans surface bâtie il n'y a rien à comparer, et le bien montait précisément parce qu'il était peu mesuré. |
 | 85 | une nature ou un relief avérés | Un critère jamais mesuré ne prouve rien. |
