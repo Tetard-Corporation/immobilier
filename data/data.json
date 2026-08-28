@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-08-28T09:45:48.550699+00:00",
+ "generated_at": "2026-08-28T10:18:58.189704+00:00",
  "sets": [
   {
    "id": 1,
@@ -167,6 +167,15 @@
      ],
      "mode": "all",
      "min_subscore": 0.79
+    },
+    {
+     "above": 70,
+     "label": "Pas de gros travaux (requis au-dessus de 70)",
+     "requires": [
+      "light_works"
+     ],
+     "mode": "all",
+     "min_subscore": 0.85
     },
     {
      "above": 75,
@@ -604,6 +613,15 @@
      ],
      "mode": "all",
      "min_subscore": 0.79
+    },
+    {
+     "above": 70,
+     "label": "Pas de gros travaux (requis au-dessus de 70)",
+     "requires": [
+      "light_works"
+     ],
+     "mode": "all",
+     "min_subscore": 0.85
     },
     {
      "above": 75,
@@ -2863,626 +2881,6 @@
    "condition": null,
    "niveau_travaux": null,
    "nuisances": [],
-   "nature_score": 4,
-   "nature_exception": true,
-   "constructible": true,
-   "est_zone_au": false,
-   "zone_urba": "U",
-   "altitude": 590.7,
-   "rail_time_min": 219,
-   "risques": [
-    "seisme",
-    "retraitGonflementArgile",
-    "radon"
-   ],
-   "prix_m2_secteur": 1327.6,
-   "ecart_prix_pct": -19.0,
-   "pollution_eau_score": 0.5,
-   "eau_potable_conforme": false,
-   "pollutions": [],
-   "age_median": null,
-   "part_gauche": null,
-   "population_commune": 1982,
-   "isolement_score": 0.414,
-   "price_decreased": false,
-   "id": 3351,
-   "source": "leboncoin",
-   "external_id": "3249721561",
-   "type_bien": "maison",
-   "prix": 215000.0,
-   "nb_chambres": null,
-   "nb_pieces": 9,
-   "surface_terrain": 657.0,
-   "surface_bati": 200.0,
-   "commune": "Vernoux-en-Vivarais",
-   "code_postal": "07240",
-   "code_commune": "Vernoux-en-Vivarais 07240",
-   "departement": "7",
-   "latitude": 44.89573,
-   "longitude": 4.6443415,
-   "url": "https://www.leboncoin.fr/ad/ventes_immobilieres/3249721561",
-   "description": "Maison 9 pièces 200 m²\n\nGrande Maison Familiale avec jardin clos & fort potentiel  avec possibilités d'appartements  Vernoux-en-Vivarais Emplacement idéal : En plein coeur du centre-ville, profitez de la proximité immédiate des commerces et services tout en bénéficiant d'un cadre de vie paisible. Les Points Forts du Bien -Superficie généreuse : 200m2 habitables répartis sur 3 niveaux. - Extérieurs : Superbe terrain clos de 657 m2, idéal pour les moments en famille. -Luminosité : 2 belles vérandas (RDC et 1er étage) orientées vers le jardin. -Dépendance : Bâtiment annexe dans le jardin offrant la possibilité d'aménager un studio indépendant ou un second garage. -Stationnement : Un garage attenant. ****Description Détaillée: *Rez-de-Chaussée: Entrée Cuisine séparée. Salon chaleureux. Dégagement, salle d'eau et WC indépendant. -Première véranda baignée de lumière avec vue sur le jardin. -Accès au garage. *1er Étage -5 chambres spacieuses (parfait pour les familles nombreuses ou le télétravail) dont une avec salle d'eau et un WC. -Une seconde véranda surplombant le jardin. *2ème Étage -2 chambres supplémentaires. -Un grand volume sous combles aménageable selon vos envies (salle de jeux, dortoir, suite parentale, atelier...). Contactez-moi pour plus d'informations ou pour une visite: Jérôme BRUNEL agent commercial en immobilier RSAC Aubenas 813309838 - Tél : O6 66 74 41\n   - Annonce rédigée et publiée par un Agent Mandataire -\n\nSurface : 200 m²\nDate de réalisation du diagnostic énergétique : 17/02/2026\n\nConsommation énergie primaire : 117 kWh/m²/an\nConsommation énergie finale : 0 kWh/m²/an\n\nMontant estimé des dépenses annuelles d'énergie pour un usage standard : entre 3 190 € et 4 360 € sur les années 2021, 2022 et 2023 (abonnements compris).",
-   "dpe_classe": "d",
-   "features": [
-    "calme",
-    "eau",
-    "vue",
-    "vue_panoramique",
-    "garage",
-    "en_hauteur"
-   ],
-   "score": 82.0,
-   "score_details": [
-    {
-     "key": "prix",
-     "label": "Prix & opportunité",
-     "score": 86.4,
-     "status": "ok",
-     "subpillars": [
-      {
-       "key": "niveau_prix",
-       "label": "Niveau de prix (€/m²)",
-       "status": "ok",
-       "detail": "1075 €/m² habitable (repère : 1200–3500)",
-       "subscore": 1.0,
-       "weight": 0.562,
-       "contribution": 56.2
-      },
-      {
-       "key": "affaire",
-       "label": "Affaire vs marché",
-       "status": "ok",
-       "detail": "-19% vs marché local",
-       "subscore": 0.69,
-       "weight": 0.437,
-       "contribution": 30.2
-      },
-      {
-       "key": "baisse_prix",
-       "label": "Négociation (baisse)",
-       "status": "n/a",
-       "detail": "pas de baisse constatée",
-       "subscore": null,
-       "weight": 0.0,
-       "contribution": 0.0
-      }
-     ],
-     "weight": 0.323,
-     "contribution": 27.9
-    },
-    {
-     "key": "cadre",
-     "label": "Cadre & nature",
-     "score": 87.0,
-     "status": "ok",
-     "subpillars": [
-      {
-       "key": "nature",
-       "label": "Qualité nature",
-       "status": "ok",
-       "detail": "score nature 4",
-       "subscore": 0.98,
-       "weight": 0.5,
-       "contribution": 49.0
-      },
-      {
-       "key": "exception",
-       "label": "Caractère d'exception",
-       "status": "ok",
-       "detail": "exception",
-       "subscore": 1.0,
-       "weight": 0.3,
-       "contribution": 30.0
-      },
-      {
-       "key": "authenticite",
-       "label": "Authenticité / cachet",
-       "status": "ok",
-       "detail": "non précisé",
-       "subscore": 0.4,
-       "weight": 0.2,
-       "contribution": 8.0
-      }
-     ],
-     "weight": 0.215,
-     "contribution": 18.7
-    },
-    {
-     "key": "foncier",
-     "label": "Foncier & constructibilité",
-     "score": 83.9,
-     "status": "ok",
-     "subpillars": [
-      {
-       "key": "zonage",
-       "label": "Zonage / constructibilité",
-       "status": "ok",
-       "detail": "zone U",
-       "subscore": 1.0,
-       "weight": 0.6,
-       "contribution": 60.0
-      },
-      {
-       "key": "terrain",
-       "label": "Présence de terrain",
-       "status": "ok",
-       "detail": "657 m²",
-       "subscore": 0.597,
-       "weight": 0.4,
-       "contribution": 23.9
-      }
-     ],
-     "weight": 0.215,
-     "contribution": 18.0
-    },
-    {
-     "key": "risques",
-     "label": "Risques & nuisances",
-     "score": 76.7,
-     "status": "ok",
-     "subpillars": [
-      {
-       "key": "risques_naturels",
-       "label": "Risques naturels/techno",
-       "status": "ok",
-       "detail": "retraitGonflementArgile, seisme, radon",
-       "subscore": 0.84,
-       "weight": 0.353,
-       "contribution": 29.7
-      },
-      {
-       "key": "pollution_eau",
-       "label": "Pollution / qualité de l'eau",
-       "status": "ok",
-       "detail": "eau NON conforme",
-       "subscore": 0.5,
-       "weight": 0.353,
-       "contribution": 17.6
-      },
-      {
-       "key": "nuisances_proximite",
-       "label": "Nuisances de proximité",
-       "status": "ok",
-       "detail": "aucune nuisance signalée",
-       "subscore": 1.0,
-       "weight": 0.294,
-       "contribution": 29.4
-      },
-      {
-       "key": "aerien",
-       "label": "Nuisances aériennes (PEB)",
-       "status": "pending",
-       "detail": "PEB / servitudes aéro",
-       "subscore": null,
-       "weight": 0.0,
-       "contribution": 0.0
-      }
-     ],
-     "weight": 0.161,
-     "contribution": 12.3
-    },
-    {
-     "key": "accessibilite",
-     "label": "Accessibilité & services",
-     "score": 58.3,
-     "status": "ok",
-     "subpillars": [
-      {
-       "key": "train",
-       "label": "Trajet train",
-       "status": "ok",
-       "detail": "~2h48 porte-à-porte (Paris)",
-       "subscore": 0.629,
-       "weight": 0.667,
-       "contribution": 42.0
-      },
-      {
-       "key": "gare",
-       "label": "Proximité gare",
-       "status": "ok",
-       "detail": "gare de La Voulte-sur-Rhone à 15.2 km",
-       "subscore": 0.493,
-       "weight": 0.333,
-       "contribution": 16.4
-      },
-      {
-       "key": "fibre",
-       "label": "Fibre",
-       "status": "pending",
-       "detail": "éligibilité fibre (Arcep)",
-       "subscore": null,
-       "weight": 0.0,
-       "contribution": 0.0
-      }
-     ],
-     "weight": 0.086,
-     "contribution": 5.0
-    },
-    {
-     "key": "etat",
-     "label": "État & travaux",
-     "score": null,
-     "status": "pending",
-     "subpillars": [
-      {
-       "key": "travaux",
-       "label": "Niveau de travaux",
-       "status": "n/a",
-       "detail": "état inconnu",
-       "subscore": null,
-       "weight": 0.0,
-       "contribution": 0.0
-      }
-     ],
-     "weight": 0.0,
-     "contribution": 0.0
-    }
-   ],
-   "scores_by_set": {
-    "1": {
-     "match_score": 83.3,
-     "details": [
-      {
-       "kind": "rapport_qualite_prix",
-       "label": "Rapport qualité/prix (vs prix du secteur)",
-       "weight": 5.0,
-       "status": "ok",
-       "detail": "1075 €/m² — -19 % du secteur (1328 €/m²)",
-       "subscore": 0.953,
-       "contribution": 4.764
-      },
-      {
-       "kind": "chambres_min",
-       "label": "3 chambres minimum",
-       "weight": 4.0,
-       "status": "ok",
-       "detail": "8 ch. estimées (pièces - 1) (min 3)",
-       "subscore": 1.0,
-       "contribution": 4.0
-      },
-      {
-       "kind": "coin_nature",
-       "label": "Coin de nature (eau, bois, vue dégagée)",
-       "weight": 4.0,
-       "status": "ok",
-       "detail": "eau (rivière, ruisseau, étang) · vue dégagée · vue · en hauteur (591 m)",
-       "subscore": 1.0,
-       "contribution": 4.0
-      },
-      {
-       "kind": "budget",
-       "label": "Budget ≤ 300 000 €",
-       "weight": 4.0,
-       "status": "ok",
-       "detail": "215000€ — 72% du budget 300000€ (haut de fourchette)",
-       "subscore": 0.989,
-       "contribution": 3.956
-      },
-      {
-       "kind": "commerces",
-       "label": "Village vivant (commerces, services)",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "20 commerces/services à vélo (≤ 3 km)",
-       "subscore": 1.0,
-       "contribution": 3.0
-      },
-      {
-       "kind": "hiking",
-       "label": "Randonnées au départ",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "171 sentiers/itinéraires à proximité",
-       "subscore": 1.0,
-       "contribution": 3.0
-      },
-      {
-       "kind": "relief_mountain",
-       "label": "Montagne / relief",
-       "weight": 4.0,
-       "status": "ok",
-       "detail": "altitude 590.7 m (réf montagne 800 m)",
-       "subscore": 0.738,
-       "contribution": 2.954
-      },
-      {
-       "kind": "surface_habitable",
-       "label": "≥ 100 m² habitables",
-       "weight": 2.0,
-       "status": "ok",
-       "detail": "200 m² habitables (souhait ≥ 100 m²)",
-       "subscore": 1.0,
-       "contribution": 2.0
-      },
-      {
-       "kind": "nuisance_sonore",
-       "label": "Loin d'une autoroute / voie ferrée",
-       "weight": 2.0,
-       "status": "ok",
-       "detail": "aucune autoroute/voie ferrée à proximité",
-       "subscore": 1.0,
-       "contribution": 2.0
-      },
-      {
-       "kind": "has_terrain",
-       "label": "Terrain ≥ 1 000 m²",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "657 m² (souhait ≥ 1000 m²)",
-       "subscore": 0.657,
-       "contribution": 1.971
-      },
-      {
-       "kind": "temps_acces",
-       "label": "≤ 4h porte-à-porte depuis Paris",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "~2h48 porte-à-porte depuis Paris (max 4h)",
-       "subscore": 0.6,
-       "contribution": 1.8
-      },
-      {
-       "kind": "tranquillite",
-       "label": "Calme, sans vis-à-vis, hors lotissement",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "calme",
-       "subscore": 0.6,
-       "contribution": 1.8
-      },
-      {
-       "kind": "near_city",
-       "label": "Accessible depuis Marseille",
-       "weight": 2.0,
-       "status": "ok",
-       "detail": "187 km de Marseille",
-       "subscore": 0.377,
-       "contribution": 0.753
-      },
-      {
-       "kind": "near_corridor",
-       "label": "Axe Paris-Marseille",
-       "weight": 1.0,
-       "status": "ok",
-       "detail": "19 km de l'axe Paris – Marseille",
-       "subscore": 0.519,
-       "contribution": 0.519
-      },
-      {
-       "kind": "ski",
-       "label": "Station de ski à proximité",
-       "weight": 2.0,
-       "status": "ok",
-       "detail": "pas de remontée de ski à proximité",
-       "subscore": 0.15,
-       "contribution": 0.3
-      },
-      {
-       "kind": "near_gare",
-       "label": "Proche d'une gare",
-       "weight": 2.0,
-       "status": "ok",
-       "detail": "gare de La Voulte-sur-Rhone à 15.2 km",
-       "subscore": 0.0,
-       "contribution": 0.0
-      },
-      {
-       "kind": "light_works",
-       "label": "Peu de travaux",
-       "weight": 4.0,
-       "status": "n/a",
-       "detail": "état inconnu",
-       "subscore": null
-      },
-      {
-       "kind": "fiber",
-       "label": "Fibre (télétravail)",
-       "weight": 2.0,
-       "status": "pending",
-       "detail": "provider non branché",
-       "subscore": null
-      }
-     ]
-    },
-    "2": {
-     "match_score": 82.7,
-     "details": [
-      {
-       "kind": "rapport_qualite_prix",
-       "label": "Rapport qualité/prix (vs prix du secteur)",
-       "weight": 5.0,
-       "status": "ok",
-       "detail": "1075 €/m² — -19 % du secteur (1328 €/m²)",
-       "subscore": 0.953,
-       "contribution": 4.764
-      },
-      {
-       "kind": "chambres_min",
-       "label": "3 chambres minimum",
-       "weight": 4.0,
-       "status": "ok",
-       "detail": "8 ch. estimées (pièces - 1) (min 3)",
-       "subscore": 1.0,
-       "contribution": 4.0
-      },
-      {
-       "kind": "coin_nature",
-       "label": "Coin de nature (eau, bois, vue dégagée)",
-       "weight": 4.0,
-       "status": "ok",
-       "detail": "eau (rivière, ruisseau, étang) · vue dégagée · vue · en hauteur (591 m)",
-       "subscore": 1.0,
-       "contribution": 4.0
-      },
-      {
-       "kind": "budget",
-       "label": "Budget ≤ 300 000 €",
-       "weight": 4.0,
-       "status": "ok",
-       "detail": "215000€ — 72% du budget 300000€ (haut de fourchette)",
-       "subscore": 0.989,
-       "contribution": 3.956
-      },
-      {
-       "kind": "relief_mountain",
-       "label": "Montagne / relief",
-       "weight": 5.0,
-       "status": "ok",
-       "detail": "altitude 590.7 m (réf montagne 800 m)",
-       "subscore": 0.738,
-       "contribution": 3.692
-      },
-      {
-       "kind": "commerces",
-       "label": "Village vivant (commerces, services)",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "20 commerces/services à vélo (≤ 3 km)",
-       "subscore": 1.0,
-       "contribution": 3.0
-      },
-      {
-       "kind": "hiking",
-       "label": "Randonnées au départ",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "171 sentiers/itinéraires à proximité",
-       "subscore": 1.0,
-       "contribution": 3.0
-      },
-      {
-       "kind": "feature",
-       "label": "Vue panoramique",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "vue_panoramique : mentionné",
-       "subscore": 1.0,
-       "contribution": 3.0
-      },
-      {
-       "kind": "tranquillite",
-       "label": "Isolé, au calme, sans vis-à-vis",
-       "weight": 4.0,
-       "status": "ok",
-       "detail": "calme · commune peu dense (1982 hab.)",
-       "subscore": 0.683,
-       "contribution": 2.731
-      },
-      {
-       "kind": "surface_habitable",
-       "label": "≥ 100 m² habitables",
-       "weight": 2.0,
-       "status": "ok",
-       "detail": "200 m² habitables (souhait ≥ 100 m²)",
-       "subscore": 1.0,
-       "contribution": 2.0
-      },
-      {
-       "kind": "nuisance_sonore",
-       "label": "Loin d'une autoroute / voie ferrée",
-       "weight": 2.0,
-       "status": "ok",
-       "detail": "aucune autoroute/voie ferrée à proximité",
-       "subscore": 1.0,
-       "contribution": 2.0
-      },
-      {
-       "kind": "temps_acces",
-       "label": "≤ 4h porte-à-porte depuis Paris",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "~2h48 porte-à-porte depuis Paris (max 4h)",
-       "subscore": 0.6,
-       "contribution": 1.8
-      },
-      {
-       "kind": "has_terrain",
-       "label": "Grand terrain (≥ 1 500 m²)",
-       "weight": 4.0,
-       "status": "ok",
-       "detail": "657 m² (souhait ≥ 1500 m²)",
-       "subscore": 0.438,
-       "contribution": 1.752
-      },
-      {
-       "kind": "near_city",
-       "label": "Accessible depuis Marseille",
-       "weight": 2.0,
-       "status": "ok",
-       "detail": "187 km de Marseille",
-       "subscore": 0.377,
-       "contribution": 0.753
-      },
-      {
-       "kind": "near_corridor",
-       "label": "Axe Paris-Marseille",
-       "weight": 1.0,
-       "status": "ok",
-       "detail": "19 km de l'axe Paris – Marseille",
-       "subscore": 0.519,
-       "contribution": 0.519
-      },
-      {
-       "kind": "ski",
-       "label": "Station de ski à proximité",
-       "weight": 2.0,
-       "status": "ok",
-       "detail": "pas de remontée de ski à proximité",
-       "subscore": 0.15,
-       "contribution": 0.3
-      },
-      {
-       "kind": "near_gare",
-       "label": "Proche d'une gare",
-       "weight": 2.0,
-       "status": "ok",
-       "detail": "gare de La Voulte-sur-Rhone à 15.2 km",
-       "subscore": 0.0,
-       "contribution": 0.0
-      },
-      {
-       "kind": "light_works",
-       "label": "Peu de travaux",
-       "weight": 4.0,
-       "status": "n/a",
-       "detail": "état inconnu",
-       "subscore": null
-      },
-      {
-       "kind": "fiber",
-       "label": "Fibre (télétravail)",
-       "weight": 2.0,
-       "status": "pending",
-       "detail": "provider non branché",
-       "subscore": null
-      }
-     ]
-    }
-   },
-   "viager": false,
-   "residence_tourisme": false,
-   "is_favori": false,
-   "favori_note": null,
-   "n_photos_source": 12,
-   "photos": [
-    "photos/leboncoin_3249721561/0.jpg",
-    "photos/leboncoin_3249721561/1.jpg",
-    "photos/leboncoin_3249721561/2.jpg",
-    "photos/leboncoin_3249721561/3.jpg",
-    "photos/leboncoin_3249721561/4.jpg",
-    "photos/leboncoin_3249721561/5.jpg",
-    "photos/leboncoin_3249721561/6.jpg",
-    "photos/leboncoin_3249721561/7.jpg",
-    "photos/leboncoin_3249721561/8.jpg",
-    "photos/leboncoin_3249721561/9.jpg",
-    "photos/leboncoin_3249721561/10.jpg",
-    "photos/leboncoin_3249721561/11.jpg"
-   ]
-  },
-  {
-   "condition": null,
-   "niveau_travaux": null,
-   "nuisances": [],
    "nature_score": 1,
    "nature_exception": false,
    "constructible": true,
@@ -5155,6 +4553,627 @@
    "n_photos_source": 0,
    "photos": [
     "photos/notaires_1970324/0.jpg"
+   ]
+  },
+  {
+   "condition": "habitable",
+   "niveau_travaux": 0,
+   "nuisances": [],
+   "nature_score": 4,
+   "nature_exception": true,
+   "constructible": false,
+   "est_zone_au": false,
+   "zone_urba": "N",
+   "altitude": 455.1,
+   "rail_time_min": 203,
+   "risques": [
+    "seisme",
+    "retraitGonflementArgile",
+    "feuForet",
+    "radon"
+   ],
+   "prix_m2_secteur": 1191.8,
+   "ecart_prix_pct": -34.6,
+   "pollution_eau_score": 0.667,
+   "eau_potable_conforme": false,
+   "pollutions": [],
+   "age_median": null,
+   "part_gauche": null,
+   "population_commune": 1357,
+   "isolement_score": 0.511,
+   "price_decreased": false,
+   "id": 1569,
+   "source": "bienici",
+   "external_id": "safti-1-1552353",
+   "type_bien": "maison",
+   "prix": 234000.0,
+   "nb_chambres": 5,
+   "nb_pieces": 6,
+   "surface_terrain": 5450.0,
+   "surface_bati": 300.0,
+   "commune": "Saint-Marcel-lès-Annonay",
+   "code_postal": "07100",
+   "code_commune": "07265",
+   "departement": "07",
+   "latitude": 45.285966514539275,
+   "longitude": 4.6354750251616395,
+   "url": "https://www.bienici.com/annonce/safti-1-1552353",
+   "description": "Superbe corps de ferme, plein de charme et d’authenticité, niché dans un cadre verdoyant et paisible sur les hauteurs de Saint Marcel les Annonay.<br>Une bâtisse qui offre de beaux volumes et où chaque recoin des nombreuses pièces révèle une atmosphère unique, alliant charme de l’ancien et potentiel d’aménagement moderne.<br>A l’extérieur, vous profiterez d’un agréable jardin attenant et clos de 200 m2, à l’abri des regards, idéal pour des moments de détente en famille ou entre amis.<br>A proximité immédiate, un jardin potager avec accès à une source ainsi que deux grands prés (1 200 et 3 900 m2) complètent ce bien d’exception. Ces terrains offrent de multiples possibilités : espace équestre, projet de gîte, activité de bien être ou simple havre de paix pour les amoureux de nature et d’espace.<br> <br>Les informations sur les risques auxquels ce bien est exposé sont disponibles sur le site Géorisques : www.georisques.gouv.fr<br>Prix de vente : 234 000 €<br>Honoraires charge vendeur<br> <br>Contactez votre conseiller SAFTI : Christophe GALLE, Tél. : <span class=\"importDescriptionDecorator\" data-type=\"phone\">0611172323</span>, E-mail : <span class=\"importDescriptionDecorator\" data-type=\"email\">christophe.galle@safti.fr</span> - EI - Agent commercial immatriculé au RSAC de Saint-Etienne sous le numéro 988886594",
+   "dpe_classe": "NS",
+   "features": [
+    "arbore",
+    "authentique",
+    "calme",
+    "eau",
+    "en_hauteur"
+   ],
+   "score": 81.0,
+   "score_details": [
+    {
+     "key": "prix",
+     "label": "Prix & opportunité",
+     "score": 93.3,
+     "status": "ok",
+     "subpillars": [
+      {
+       "key": "niveau_prix",
+       "label": "Niveau de prix (€/m²)",
+       "status": "ok",
+       "detail": "780 €/m² habitable (repère : 1200–3500)",
+       "subscore": 1.0,
+       "weight": 0.562,
+       "contribution": 56.2
+      },
+      {
+       "key": "affaire",
+       "label": "Affaire vs marché",
+       "status": "ok",
+       "detail": "-35% vs marché local",
+       "subscore": 0.846,
+       "weight": 0.437,
+       "contribution": 37.0
+      },
+      {
+       "key": "baisse_prix",
+       "label": "Négociation (baisse)",
+       "status": "n/a",
+       "detail": "pas de baisse constatée",
+       "subscore": null,
+       "weight": 0.0,
+       "contribution": 0.0
+      }
+     ],
+     "weight": 0.3,
+     "contribution": 28.0
+    },
+    {
+     "key": "cadre",
+     "label": "Cadre & nature",
+     "score": 99.0,
+     "status": "ok",
+     "subpillars": [
+      {
+       "key": "nature",
+       "label": "Qualité nature",
+       "status": "ok",
+       "detail": "score nature 4",
+       "subscore": 0.98,
+       "weight": 0.5,
+       "contribution": 49.0
+      },
+      {
+       "key": "exception",
+       "label": "Caractère d'exception",
+       "status": "ok",
+       "detail": "exception",
+       "subscore": 1.0,
+       "weight": 0.3,
+       "contribution": 30.0
+      },
+      {
+       "key": "authenticite",
+       "label": "Authenticité / cachet",
+       "status": "ok",
+       "detail": "cachet/authentique",
+       "subscore": 1.0,
+       "weight": 0.2,
+       "contribution": 20.0
+      }
+     ],
+     "weight": 0.2,
+     "contribution": 19.8
+    },
+    {
+     "key": "risques",
+     "label": "Risques & nuisances",
+     "score": 77.6,
+     "status": "ok",
+     "subpillars": [
+      {
+       "key": "risques_naturels",
+       "label": "Risques naturels/techno",
+       "status": "ok",
+       "detail": "feuForet, retraitGonflementArgile, seisme, radon",
+       "subscore": 0.698,
+       "weight": 0.353,
+       "contribution": 24.6
+      },
+      {
+       "key": "pollution_eau",
+       "label": "Pollution / qualité de l'eau",
+       "status": "ok",
+       "detail": "eau NON conforme",
+       "subscore": 0.667,
+       "weight": 0.353,
+       "contribution": 23.5
+      },
+      {
+       "key": "nuisances_proximite",
+       "label": "Nuisances de proximité",
+       "status": "ok",
+       "detail": "aucune nuisance signalée",
+       "subscore": 1.0,
+       "weight": 0.294,
+       "contribution": 29.4
+      },
+      {
+       "key": "aerien",
+       "label": "Nuisances aériennes (PEB)",
+       "status": "pending",
+       "detail": "PEB / servitudes aéro",
+       "subscore": null,
+       "weight": 0.0,
+       "contribution": 0.0
+      }
+     ],
+     "weight": 0.15,
+     "contribution": 11.6
+    },
+    {
+     "key": "foncier",
+     "label": "Foncier & constructibilité",
+     "score": 46.0,
+     "status": "ok",
+     "subpillars": [
+      {
+       "key": "zonage",
+       "label": "Zonage / constructibilité",
+       "status": "ok",
+       "detail": "zone N",
+       "subscore": 0.1,
+       "weight": 0.6,
+       "contribution": 6.0
+      },
+      {
+       "key": "terrain",
+       "label": "Présence de terrain",
+       "status": "ok",
+       "detail": "5450 m²",
+       "subscore": 1.0,
+       "weight": 0.4,
+       "contribution": 40.0
+      }
+     ],
+     "weight": 0.2,
+     "contribution": 9.2
+    },
+    {
+     "key": "etat",
+     "label": "État & travaux",
+     "score": 100.0,
+     "status": "ok",
+     "subpillars": [
+      {
+       "key": "travaux",
+       "label": "Niveau de travaux",
+       "status": "ok",
+       "detail": "habitable",
+       "subscore": 1.0,
+       "weight": 1.0,
+       "contribution": 100.0
+      }
+     ],
+     "weight": 0.07,
+     "contribution": 7.0
+    },
+    {
+     "key": "accessibilite",
+     "label": "Accessibilité & services",
+     "score": 67.3,
+     "status": "ok",
+     "subpillars": [
+      {
+       "key": "train",
+       "label": "Trajet train",
+       "status": "ok",
+       "detail": "~2h58 porte-à-porte (Paris)",
+       "subscore": 0.581,
+       "weight": 0.5,
+       "contribution": 29.0
+      },
+      {
+       "key": "gare",
+       "label": "Proximité gare",
+       "status": "ok",
+       "detail": "gare de Saint-Rambert-d'Albon à 14.1 km",
+       "subscore": 0.53,
+       "weight": 0.25,
+       "contribution": 13.2
+      },
+      {
+       "key": "fibre",
+       "label": "Fibre",
+       "status": "ok",
+       "detail": "fibre",
+       "subscore": 1.0,
+       "weight": 0.25,
+       "contribution": 25.0
+      }
+     ],
+     "weight": 0.08,
+     "contribution": 5.4
+    }
+   ],
+   "scores_by_set": {
+    "1": {
+     "match_score": 82.1,
+     "details": [
+      {
+       "kind": "rapport_qualite_prix",
+       "label": "Rapport qualité/prix (vs prix du secteur)",
+       "weight": 5.0,
+       "status": "ok",
+       "detail": "780 €/m² — -35 % du secteur (1192 €/m²)",
+       "subscore": 1.0,
+       "contribution": 5.0
+      },
+      {
+       "kind": "chambres_min",
+       "label": "3 chambres minimum",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "5 ch. (min 3)",
+       "subscore": 1.0,
+       "contribution": 4.0
+      },
+      {
+       "kind": "light_works",
+       "label": "Peu de travaux",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "état : habitable de suite",
+       "subscore": 1.0,
+       "contribution": 4.0
+      },
+      {
+       "kind": "coin_nature",
+       "label": "Coin de nature (eau, bois, vue dégagée)",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "eau (rivière, ruisseau, étang) · terrain arboré · en hauteur (455 m)",
+       "subscore": 0.97,
+       "contribution": 3.88
+      },
+      {
+       "kind": "budget",
+       "label": "Budget ≤ 300 000 €",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "234000€ — 78% du budget 300000€ (haut de fourchette)",
+       "subscore": 0.947,
+       "contribution": 3.787
+      },
+      {
+       "kind": "hiking",
+       "label": "Randonnées au départ",
+       "weight": 3.0,
+       "status": "ok",
+       "detail": "50 sentiers/itinéraires à proximité",
+       "subscore": 1.0,
+       "contribution": 3.0
+      },
+      {
+       "kind": "has_terrain",
+       "label": "Terrain ≥ 1 000 m²",
+       "weight": 3.0,
+       "status": "ok",
+       "detail": "5450 m² (souhait ≥ 1000 m²)",
+       "subscore": 1.0,
+       "contribution": 3.0
+      },
+      {
+       "kind": "relief_mountain",
+       "label": "Montagne / relief",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "altitude 455.1 m (réf montagne 800 m)",
+       "subscore": 0.569,
+       "contribution": 2.276
+      },
+      {
+       "kind": "surface_habitable",
+       "label": "≥ 100 m² habitables",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "300 m² habitables (souhait ≥ 100 m²)",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "nuisance_sonore",
+       "label": "Loin d'une autoroute / voie ferrée",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "aucune autoroute/voie ferrée à proximité",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "commerces",
+       "label": "Village vivant (commerces, services)",
+       "weight": 3.0,
+       "status": "ok",
+       "detail": "9 commerces/services à vélo (≤ 3 km)",
+       "subscore": 0.6,
+       "contribution": 1.8
+      },
+      {
+       "kind": "tranquillite",
+       "label": "Calme, sans vis-à-vis, hors lotissement",
+       "weight": 3.0,
+       "status": "ok",
+       "detail": "calme",
+       "subscore": 0.6,
+       "contribution": 1.8
+      },
+      {
+       "kind": "temps_acces",
+       "label": "≤ 4h porte-à-porte depuis Paris",
+       "weight": 3.0,
+       "status": "ok",
+       "detail": "~2h58 porte-à-porte depuis Paris (max 4h)",
+       "subscore": 0.517,
+       "contribution": 1.55
+      },
+      {
+       "kind": "fiber",
+       "label": "Fibre (télétravail)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "77% des locaux de la commune éligibles (à vérifier pour ce bien)",
+       "subscore": 0.77,
+       "contribution": 1.54
+      },
+      {
+       "kind": "near_corridor",
+       "label": "Axe Paris-Marseille",
+       "weight": 1.0,
+       "status": "ok",
+       "detail": "18 km de l'axe Paris – Marseille",
+       "subscore": 0.545,
+       "contribution": 0.545
+      },
+      {
+       "kind": "near_city",
+       "label": "Accessible depuis Marseille",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "229 km de Marseille",
+       "subscore": 0.237,
+       "contribution": 0.475
+      },
+      {
+       "kind": "ski",
+       "label": "Station de ski à proximité",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de remontée de ski à proximité",
+       "subscore": 0.15,
+       "contribution": 0.3
+      },
+      {
+       "kind": "near_gare",
+       "label": "Proche d'une gare",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "gare de Saint-Rambert-d'Albon à 14.1 km",
+       "subscore": 0.06,
+       "contribution": 0.12
+      }
+     ]
+    },
+    "2": {
+     "match_score": 82.8,
+     "details": [
+      {
+       "kind": "rapport_qualite_prix",
+       "label": "Rapport qualité/prix (vs prix du secteur)",
+       "weight": 5.0,
+       "status": "ok",
+       "detail": "780 €/m² — -35 % du secteur (1192 €/m²)",
+       "subscore": 1.0,
+       "contribution": 5.0
+      },
+      {
+       "kind": "chambres_min",
+       "label": "3 chambres minimum",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "5 ch. (min 3)",
+       "subscore": 1.0,
+       "contribution": 4.0
+      },
+      {
+       "kind": "light_works",
+       "label": "Peu de travaux",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "état : habitable de suite",
+       "subscore": 1.0,
+       "contribution": 4.0
+      },
+      {
+       "kind": "has_terrain",
+       "label": "Grand terrain (≥ 1 500 m²)",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "5450 m² (souhait ≥ 1500 m²)",
+       "subscore": 1.0,
+       "contribution": 4.0
+      },
+      {
+       "kind": "coin_nature",
+       "label": "Coin de nature (eau, bois, vue dégagée)",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "eau (rivière, ruisseau, étang) · terrain arboré · en hauteur (455 m)",
+       "subscore": 0.97,
+       "contribution": 3.88
+      },
+      {
+       "kind": "budget",
+       "label": "Budget ≤ 300 000 €",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "234000€ — 78% du budget 300000€ (haut de fourchette)",
+       "subscore": 0.947,
+       "contribution": 3.787
+      },
+      {
+       "kind": "hiking",
+       "label": "Randonnées au départ",
+       "weight": 3.0,
+       "status": "ok",
+       "detail": "50 sentiers/itinéraires à proximité",
+       "subscore": 1.0,
+       "contribution": 3.0
+      },
+      {
+       "kind": "relief_mountain",
+       "label": "Montagne / relief",
+       "weight": 5.0,
+       "status": "ok",
+       "detail": "altitude 455.1 m (réf montagne 800 m)",
+       "subscore": 0.569,
+       "contribution": 2.844
+      },
+      {
+       "kind": "tranquillite",
+       "label": "Isolé, au calme, sans vis-à-vis",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "calme · commune peu dense (1357 hab.)",
+       "subscore": 0.702,
+       "contribution": 2.809
+      },
+      {
+       "kind": "surface_habitable",
+       "label": "≥ 100 m² habitables",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "300 m² habitables (souhait ≥ 100 m²)",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "nuisance_sonore",
+       "label": "Loin d'une autoroute / voie ferrée",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "aucune autoroute/voie ferrée à proximité",
+       "subscore": 1.0,
+       "contribution": 2.0
+      },
+      {
+       "kind": "commerces",
+       "label": "Village vivant (commerces, services)",
+       "weight": 3.0,
+       "status": "ok",
+       "detail": "9 commerces/services à vélo (≤ 3 km)",
+       "subscore": 0.6,
+       "contribution": 1.8
+      },
+      {
+       "kind": "temps_acces",
+       "label": "≤ 4h porte-à-porte depuis Paris",
+       "weight": 3.0,
+       "status": "ok",
+       "detail": "~2h58 porte-à-porte depuis Paris (max 4h)",
+       "subscore": 0.517,
+       "contribution": 1.55
+      },
+      {
+       "kind": "fiber",
+       "label": "Fibre (télétravail)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "77% des locaux de la commune éligibles (à vérifier pour ce bien)",
+       "subscore": 0.77,
+       "contribution": 1.54
+      },
+      {
+       "kind": "near_corridor",
+       "label": "Axe Paris-Marseille",
+       "weight": 1.0,
+       "status": "ok",
+       "detail": "18 km de l'axe Paris – Marseille",
+       "subscore": 0.545,
+       "contribution": 0.545
+      },
+      {
+       "kind": "near_city",
+       "label": "Accessible depuis Marseille",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "229 km de Marseille",
+       "subscore": 0.237,
+       "contribution": 0.475
+      },
+      {
+       "kind": "ski",
+       "label": "Station de ski à proximité",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "pas de remontée de ski à proximité",
+       "subscore": 0.15,
+       "contribution": 0.3
+      },
+      {
+       "kind": "near_gare",
+       "label": "Proche d'une gare",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "gare de Saint-Rambert-d'Albon à 14.1 km",
+       "subscore": 0.06,
+       "contribution": 0.12
+      },
+      {
+       "kind": "feature",
+       "label": "Vue panoramique",
+       "weight": 3.0,
+       "status": "n/a",
+       "detail": "vue_panoramique : non mentionné (ignoré)",
+       "subscore": null
+      }
+     ]
+    }
+   },
+   "viager": false,
+   "residence_tourisme": false,
+   "is_favori": false,
+   "favori_note": null,
+   "n_photos_source": 10,
+   "photos": [
+    "photos/bienici_safti-1-1552353/0.jpg",
+    "photos/bienici_safti-1-1552353/1.jpg",
+    "photos/bienici_safti-1-1552353/2.jpg",
+    "photos/bienici_safti-1-1552353/3.jpg",
+    "photos/bienici_safti-1-1552353/4.jpg",
+    "photos/bienici_safti-1-1552353/5.jpg",
+    "photos/bienici_safti-1-1552353/6.jpg",
+    "photos/bienici_safti-1-1552353/7.jpg",
+    "photos/bienici_safti-1-1552353/8.jpg",
+    "photos/bienici_safti-1-1552353/9.jpg"
    ]
   },
   {
@@ -25943,626 +25962,6 @@
     "photos/leboncoin_3178662189/9.jpg",
     "photos/leboncoin_3178662189/10.jpg",
     "photos/leboncoin_3178662189/11.jpg"
-   ]
-  },
-  {
-   "condition": null,
-   "niveau_travaux": null,
-   "nuisances": [],
-   "nature_score": 3,
-   "nature_exception": false,
-   "constructible": false,
-   "est_zone_au": false,
-   "zone_urba": "N",
-   "altitude": 881.8,
-   "rail_time_min": 208,
-   "risques": [
-    "seisme",
-    "radon"
-   ],
-   "prix_m2_secteur": 1410.6,
-   "ecart_prix_pct": -39.0,
-   "pollution_eau_score": 0.4,
-   "eau_potable_conforme": false,
-   "pollutions": [],
-   "age_median": null,
-   "part_gauche": null,
-   "population_commune": 2019,
-   "isolement_score": 0.409,
-   "price_decreased": false,
-   "id": 1801,
-   "source": "bienici",
-   "external_id": "ag440414-518307749",
-   "type_bien": "maison",
-   "prix": 260000.0,
-   "nb_chambres": 6,
-   "nb_pieces": 12,
-   "surface_terrain": 1613.0,
-   "surface_bati": 302.0,
-   "commune": "Saint-Julien-Chapteuil",
-   "code_postal": "43260",
-   "code_commune": "43200",
-   "departement": "43",
-   "latitude": 45.03081911064557,
-   "longitude": 4.0601886555437465,
-   "url": "https://www.bienici.com/annonce/ag440414-518307749",
-   "description": "Saint-Julien-Chapteuil  43260  maison traditionnelle de 1972 sur deux niveaux élevés sur sous-sol  302 m² habitables 6 chambres sur 1613m² de terrain.\nBudget : 260 000 euros, présentée par Gilles Courtial <span class=\"importDescriptionDecorator\" data-type=\"phone\">0624052042</span>\nAu coeur de la cité capitolienne, proche de toutes les commodités découvrez cette maison individuelle spacieuse construite en 1972 de façon traditionnelle. D'une surface habitable de 302 m² sur trois niveaux habitation élevée sur un sous-sol de 149 m² composé d'un double garage fermé avec un portail sectionnel motorisé, d'une chaufferie, d'une grande salle de jeux, d'un cellier, d'une cave, et de placards muraux.\nLe rez-de-chaussée comprend un hall d'entrée avec de nombreux placards muraux, une cuisine indépendante aménagée et équipée avec accès à une véranda agrémentée d'un chauffage au sol électrique (surface de 42 m² comprise dans la partie habitable), un séjour, un salon/salle-à-manger avec cheminée bénéficiant chacun d'un accès par des baies à des terrasses exposées Sud-Est, Sud et Sud-Ouest où se trouve une véranda avec un barbecue maçonné. Deux chambres dont une avec placard mural, salle de bain, WC avec lave-main complètent ce niveau.\nL'étage offre un dégagement avec placards muraux, quatre chambres, de nombreux greniers sous rampants une salle d'eau et WC séparé.\nVu la surface du sous-sol, possibilité de créer un studio avec entrée indépendante.\nChauffage:  convecteurs électriques et cheminée avec insert bois en appoint.\nEau chaude par un ballon électrique.\nRaccordée au réseau de tout-à-l'égout.\nAgréable terrain arboré clos de murs, haies et portail automatisé. Cour et accès bitumés permettant  le stationnement de plusieurs véhicules. Puits maçonné sur la parcelle.\nDPE : 345kMh/m2/an : E, GES : 13 : C.\nMontant estimé des dépenses annuelles d'énergie établi à partir des prix de l'énergie des années 2021, 2022, 2023 : entre 7970 et 10850 euros/an\nVeuillez noter que toutes les mesures sont approximatives, les informations sont fournies à titre indicatif seulement.\nPour visiter et vous accompagner dans votre projet contactez Gilles COURTIAL <span class=\"importDescriptionDecorator\" data-type=\"phone\"><span class=\"importDescriptionDecorator\" data-type=\"phone\">06.24.05.20.42</span></span> ou par courriel à <span class=\"importDescriptionDecorator\" data-type=\"email\">g.courtial@proprietes-privees.com</span>, agissant sous le statut d'agent commercial indépendant inscrit au RSAC du Puy en Velay n° 839 836 590. Mandat réf. 3842GCR  Le professionnel garantit et sécurise votre projet immobilier. Achat, vente, estimation, valorisation immobilière, contactez Gilles COURTIAL <span class=\"importDescriptionDecorator\" data-type=\"phone\"><span class=\"importDescriptionDecorator\" data-type=\"phone\">06.24.05.20.42</span></span>, votre Conseiller Immobilier à Yssingeaux et les villages alentours - ESTIMATION OFFERTE\nSAS Agence immobilière de Saint-Genest-Malifaux <span class=\"importDescriptionDecorator\" data-type=\"phone\">04.77.51.70.60</span> concession PROPRIETES PRIVEES ? 4 rue du Velay 42660 St-Genest-Malifaux, Carte professionnelle CPI 4202 2016 000 010 412 CCI Lyon Métropole St Etienne Roanne RCS 450 309 422 .\n\n Gilles COURTIAL (EI) Agent Commercial - Numéro RSAC : Le Puy-En-Velay 839836590 - .\nLes informations sur les risques auxquels ce bien est exposé sont disponibles sur le site Géorisques : www.georisques.gouv.fr",
-   "dpe_classe": "E",
-   "features": [
-    "arbore",
-    "authentique",
-    "eau",
-    "cheminee",
-    "terrasse",
-    "garage"
-   ],
-   "score": 72.1,
-   "score_details": [
-    {
-     "key": "prix",
-     "label": "Prix & opportunité",
-     "score": 95.2,
-     "status": "ok",
-     "subpillars": [
-      {
-       "key": "niveau_prix",
-       "label": "Niveau de prix (€/m²)",
-       "status": "ok",
-       "detail": "861 €/m² habitable (repère : 1200–3500)",
-       "subscore": 1.0,
-       "weight": 0.562,
-       "contribution": 56.2
-      },
-      {
-       "key": "affaire",
-       "label": "Affaire vs marché",
-       "status": "ok",
-       "detail": "-39% vs marché local",
-       "subscore": 0.89,
-       "weight": 0.437,
-       "contribution": 38.9
-      },
-      {
-       "key": "baisse_prix",
-       "label": "Négociation (baisse)",
-       "status": "n/a",
-       "detail": "pas de baisse constatée",
-       "subscore": null,
-       "weight": 0.0,
-       "contribution": 0.0
-      }
-     ],
-     "weight": 0.323,
-     "contribution": 30.7
-    },
-    {
-     "key": "cadre",
-     "label": "Cadre & nature",
-     "score": 75.0,
-     "status": "ok",
-     "subpillars": [
-      {
-       "key": "nature",
-       "label": "Qualité nature",
-       "status": "ok",
-       "detail": "score nature 3",
-       "subscore": 0.86,
-       "weight": 0.5,
-       "contribution": 43.0
-      },
-      {
-       "key": "exception",
-       "label": "Caractère d'exception",
-       "status": "ok",
-       "detail": "ordinaire",
-       "subscore": 0.4,
-       "weight": 0.3,
-       "contribution": 12.0
-      },
-      {
-       "key": "authenticite",
-       "label": "Authenticité / cachet",
-       "status": "ok",
-       "detail": "cachet/authentique",
-       "subscore": 1.0,
-       "weight": 0.2,
-       "contribution": 20.0
-      }
-     ],
-     "weight": 0.215,
-     "contribution": 16.1
-    },
-    {
-     "key": "risques",
-     "label": "Risques & nuisances",
-     "score": 76.7,
-     "status": "ok",
-     "subpillars": [
-      {
-       "key": "risques_naturels",
-       "label": "Risques naturels/techno",
-       "status": "ok",
-       "detail": "seisme, radon",
-       "subscore": 0.941,
-       "weight": 0.353,
-       "contribution": 33.2
-      },
-      {
-       "key": "pollution_eau",
-       "label": "Pollution / qualité de l'eau",
-       "status": "ok",
-       "detail": "eau NON conforme",
-       "subscore": 0.4,
-       "weight": 0.353,
-       "contribution": 14.1
-      },
-      {
-       "key": "nuisances_proximite",
-       "label": "Nuisances de proximité",
-       "status": "ok",
-       "detail": "aucune nuisance signalée",
-       "subscore": 1.0,
-       "weight": 0.294,
-       "contribution": 29.4
-      },
-      {
-       "key": "aerien",
-       "label": "Nuisances aériennes (PEB)",
-       "status": "pending",
-       "detail": "PEB / servitudes aéro",
-       "subscore": null,
-       "weight": 0.0,
-       "contribution": 0.0
-      }
-     ],
-     "weight": 0.161,
-     "contribution": 12.3
-    },
-    {
-     "key": "foncier",
-     "label": "Foncier & constructibilité",
-     "score": 41.4,
-     "status": "ok",
-     "subpillars": [
-      {
-       "key": "zonage",
-       "label": "Zonage / constructibilité",
-       "status": "ok",
-       "detail": "zone N",
-       "subscore": 0.1,
-       "weight": 0.6,
-       "contribution": 6.0
-      },
-      {
-       "key": "terrain",
-       "label": "Présence de terrain",
-       "status": "ok",
-       "detail": "1613 m²",
-       "subscore": 0.884,
-       "weight": 0.4,
-       "contribution": 35.4
-      }
-     ],
-     "weight": 0.215,
-     "contribution": 8.9
-    },
-    {
-     "key": "accessibilite",
-     "label": "Accessibilité & services",
-     "score": 46.7,
-     "status": "ok",
-     "subpillars": [
-      {
-       "key": "train",
-       "label": "Trajet train",
-       "status": "ok",
-       "detail": "~3h29 porte-à-porte (Paris)",
-       "subscore": 0.433,
-       "weight": 0.5,
-       "contribution": 21.6
-      },
-      {
-       "key": "gare",
-       "label": "Proximité gare",
-       "status": "ok",
-       "detail": "gare de Tain-l'Hermitage-Tournon à 61.2 km",
-       "subscore": 0.0,
-       "weight": 0.25,
-       "contribution": 0.0
-      },
-      {
-       "key": "fibre",
-       "label": "Fibre",
-       "status": "ok",
-       "detail": "fibre",
-       "subscore": 1.0,
-       "weight": 0.25,
-       "contribution": 25.0
-      }
-     ],
-     "weight": 0.086,
-     "contribution": 4.0
-    },
-    {
-     "key": "etat",
-     "label": "État & travaux",
-     "score": null,
-     "status": "pending",
-     "subpillars": [
-      {
-       "key": "travaux",
-       "label": "Niveau de travaux",
-       "status": "n/a",
-       "detail": "état inconnu",
-       "subscore": null,
-       "weight": 0.0,
-       "contribution": 0.0
-      }
-     ],
-     "weight": 0.0,
-     "contribution": 0.0
-    }
-   ],
-   "scores_by_set": {
-    "1": {
-     "match_score": 83.9,
-     "details": [
-      {
-       "kind": "rapport_qualite_prix",
-       "label": "Rapport qualité/prix (vs prix du secteur)",
-       "weight": 5.0,
-       "status": "ok",
-       "detail": "861 €/m² — -39 % du secteur (1411 €/m²)",
-       "subscore": 1.0,
-       "contribution": 5.0
-      },
-      {
-       "kind": "chambres_min",
-       "label": "3 chambres minimum",
-       "weight": 4.0,
-       "status": "ok",
-       "detail": "6 ch. (min 3)",
-       "subscore": 1.0,
-       "contribution": 4.0
-      },
-      {
-       "kind": "coin_nature",
-       "label": "Coin de nature (eau, bois, vue dégagée)",
-       "weight": 4.0,
-       "status": "ok",
-       "detail": "eau (rivière, ruisseau, étang) · terrain arboré · en hauteur (882 m)",
-       "subscore": 1.0,
-       "contribution": 4.0
-      },
-      {
-       "kind": "relief_mountain",
-       "label": "Montagne / relief",
-       "weight": 4.0,
-       "status": "ok",
-       "detail": "altitude 881.8 m (réf montagne 800 m)",
-       "subscore": 1.0,
-       "contribution": 4.0
-      },
-      {
-       "kind": "budget",
-       "label": "Budget ≤ 300 000 €",
-       "weight": 4.0,
-       "status": "ok",
-       "detail": "260000€ — 87% du budget 300000€ (haut de fourchette)",
-       "subscore": 0.889,
-       "contribution": 3.556
-      },
-      {
-       "kind": "commerces",
-       "label": "Village vivant (commerces, services)",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "18 commerces/services à vélo (≤ 3 km)",
-       "subscore": 1.0,
-       "contribution": 3.0
-      },
-      {
-       "kind": "hiking",
-       "label": "Randonnées au départ",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "96 sentiers/itinéraires à proximité",
-       "subscore": 1.0,
-       "contribution": 3.0
-      },
-      {
-       "kind": "has_terrain",
-       "label": "Terrain ≥ 1 000 m²",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "1613 m² (souhait ≥ 1000 m²)",
-       "subscore": 1.0,
-       "contribution": 3.0
-      },
-      {
-       "kind": "surface_habitable",
-       "label": "≥ 100 m² habitables",
-       "weight": 2.0,
-       "status": "ok",
-       "detail": "302 m² habitables (souhait ≥ 100 m²)",
-       "subscore": 1.0,
-       "contribution": 2.0
-      },
-      {
-       "kind": "nuisance_sonore",
-       "label": "Loin d'une autoroute / voie ferrée",
-       "weight": 2.0,
-       "status": "ok",
-       "detail": "aucune autoroute/voie ferrée à proximité",
-       "subscore": 1.0,
-       "contribution": 2.0
-      },
-      {
-       "kind": "fiber",
-       "label": "Fibre (télétravail)",
-       "weight": 2.0,
-       "status": "ok",
-       "detail": "95% des locaux de la commune éligibles (à vérifier pour ce bien)",
-       "subscore": 0.95,
-       "contribution": 1.9
-      },
-      {
-       "kind": "tranquillite",
-       "label": "Calme, sans vis-à-vis, hors lotissement",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "rien de signalé",
-       "subscore": 0.5,
-       "contribution": 1.5
-      },
-      {
-       "kind": "temps_acces",
-       "label": "≤ 4h porte-à-porte depuis Paris",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "~3h29 porte-à-porte depuis Paris (max 4h)",
-       "subscore": 0.258,
-       "contribution": 0.775
-      },
-      {
-       "kind": "near_city",
-       "label": "Accessible depuis Marseille",
-       "weight": 2.0,
-       "status": "ok",
-       "detail": "219 km de Marseille",
-       "subscore": 0.269,
-       "contribution": 0.538
-      },
-      {
-       "kind": "ski",
-       "label": "Station de ski à proximité",
-       "weight": 2.0,
-       "status": "ok",
-       "detail": "pas de remontée de ski à proximité",
-       "subscore": 0.15,
-       "contribution": 0.3
-      },
-      {
-       "kind": "near_gare",
-       "label": "Proche d'une gare",
-       "weight": 2.0,
-       "status": "ok",
-       "detail": "gare de Tain-l'Hermitage-Tournon à 61.2 km",
-       "subscore": 0.0,
-       "contribution": 0.0
-      },
-      {
-       "kind": "near_corridor",
-       "label": "Axe Paris-Marseille",
-       "weight": 1.0,
-       "status": "ok",
-       "detail": "65 km de l'axe Paris – Marseille",
-       "subscore": 0.0,
-       "contribution": 0.0
-      },
-      {
-       "kind": "light_works",
-       "label": "Peu de travaux",
-       "weight": 4.0,
-       "status": "n/a",
-       "detail": "état inconnu",
-       "subscore": null
-      }
-     ]
-    },
-    "2": {
-     "match_score": 85.2,
-     "details": [
-      {
-       "kind": "rapport_qualite_prix",
-       "label": "Rapport qualité/prix (vs prix du secteur)",
-       "weight": 5.0,
-       "status": "ok",
-       "detail": "861 €/m² — -39 % du secteur (1411 €/m²)",
-       "subscore": 1.0,
-       "contribution": 5.0
-      },
-      {
-       "kind": "relief_mountain",
-       "label": "Montagne / relief",
-       "weight": 5.0,
-       "status": "ok",
-       "detail": "altitude 881.8 m (réf montagne 800 m)",
-       "subscore": 1.0,
-       "contribution": 5.0
-      },
-      {
-       "kind": "chambres_min",
-       "label": "3 chambres minimum",
-       "weight": 4.0,
-       "status": "ok",
-       "detail": "6 ch. (min 3)",
-       "subscore": 1.0,
-       "contribution": 4.0
-      },
-      {
-       "kind": "coin_nature",
-       "label": "Coin de nature (eau, bois, vue dégagée)",
-       "weight": 4.0,
-       "status": "ok",
-       "detail": "eau (rivière, ruisseau, étang) · terrain arboré · en hauteur (882 m)",
-       "subscore": 1.0,
-       "contribution": 4.0
-      },
-      {
-       "kind": "has_terrain",
-       "label": "Grand terrain (≥ 1 500 m²)",
-       "weight": 4.0,
-       "status": "ok",
-       "detail": "1613 m² (souhait ≥ 1500 m²)",
-       "subscore": 1.0,
-       "contribution": 4.0
-      },
-      {
-       "kind": "budget",
-       "label": "Budget ≤ 300 000 €",
-       "weight": 4.0,
-       "status": "ok",
-       "detail": "260000€ — 87% du budget 300000€ (haut de fourchette)",
-       "subscore": 0.889,
-       "contribution": 3.556
-      },
-      {
-       "kind": "commerces",
-       "label": "Village vivant (commerces, services)",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "18 commerces/services à vélo (≤ 3 km)",
-       "subscore": 1.0,
-       "contribution": 3.0
-      },
-      {
-       "kind": "hiking",
-       "label": "Randonnées au départ",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "96 sentiers/itinéraires à proximité",
-       "subscore": 1.0,
-       "contribution": 3.0
-      },
-      {
-       "kind": "tranquillite",
-       "label": "Isolé, au calme, sans vis-à-vis",
-       "weight": 4.0,
-       "status": "ok",
-       "detail": "commune peu dense (2019 hab.)",
-       "subscore": 0.582,
-       "contribution": 2.327
-      },
-      {
-       "kind": "surface_habitable",
-       "label": "≥ 100 m² habitables",
-       "weight": 2.0,
-       "status": "ok",
-       "detail": "302 m² habitables (souhait ≥ 100 m²)",
-       "subscore": 1.0,
-       "contribution": 2.0
-      },
-      {
-       "kind": "nuisance_sonore",
-       "label": "Loin d'une autoroute / voie ferrée",
-       "weight": 2.0,
-       "status": "ok",
-       "detail": "aucune autoroute/voie ferrée à proximité",
-       "subscore": 1.0,
-       "contribution": 2.0
-      },
-      {
-       "kind": "fiber",
-       "label": "Fibre (télétravail)",
-       "weight": 2.0,
-       "status": "ok",
-       "detail": "95% des locaux de la commune éligibles (à vérifier pour ce bien)",
-       "subscore": 0.95,
-       "contribution": 1.9
-      },
-      {
-       "kind": "temps_acces",
-       "label": "≤ 4h porte-à-porte depuis Paris",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "~3h29 porte-à-porte depuis Paris (max 4h)",
-       "subscore": 0.258,
-       "contribution": 0.775
-      },
-      {
-       "kind": "near_city",
-       "label": "Accessible depuis Marseille",
-       "weight": 2.0,
-       "status": "ok",
-       "detail": "219 km de Marseille",
-       "subscore": 0.269,
-       "contribution": 0.538
-      },
-      {
-       "kind": "ski",
-       "label": "Station de ski à proximité",
-       "weight": 2.0,
-       "status": "ok",
-       "detail": "pas de remontée de ski à proximité",
-       "subscore": 0.15,
-       "contribution": 0.3
-      },
-      {
-       "kind": "near_gare",
-       "label": "Proche d'une gare",
-       "weight": 2.0,
-       "status": "ok",
-       "detail": "gare de Tain-l'Hermitage-Tournon à 61.2 km",
-       "subscore": 0.0,
-       "contribution": 0.0
-      },
-      {
-       "kind": "near_corridor",
-       "label": "Axe Paris-Marseille",
-       "weight": 1.0,
-       "status": "ok",
-       "detail": "65 km de l'axe Paris – Marseille",
-       "subscore": 0.0,
-       "contribution": 0.0
-      },
-      {
-       "kind": "light_works",
-       "label": "Peu de travaux",
-       "weight": 4.0,
-       "status": "n/a",
-       "detail": "état inconnu",
-       "subscore": null
-      },
-      {
-       "kind": "feature",
-       "label": "Vue panoramique",
-       "weight": 3.0,
-       "status": "n/a",
-       "detail": "vue_panoramique : non mentionné (ignoré)",
-       "subscore": null
-      }
-     ]
-    }
-   },
-   "viager": false,
-   "residence_tourisme": false,
-   "is_favori": false,
-   "favori_note": null,
-   "n_photos_source": 12,
-   "photos": [
-    "photos/bienici_ag440414-518307749/0.jpg",
-    "photos/bienici_ag440414-518307749/1.jpg",
-    "photos/bienici_ag440414-518307749/2.jpg",
-    "photos/bienici_ag440414-518307749/3.jpg",
-    "photos/bienici_ag440414-518307749/4.jpg",
-    "photos/bienici_ag440414-518307749/5.jpg",
-    "photos/bienici_ag440414-518307749/6.jpg",
-    "photos/bienici_ag440414-518307749/7.jpg",
-    "photos/bienici_ag440414-518307749/8.jpg",
-    "photos/bienici_ag440414-518307749/9.jpg",
-    "photos/bienici_ag440414-518307749/10.jpg",
-    "photos/bienici_ag440414-518307749/11.jpg"
    ]
   },
   {
@@ -72863,7 +72262,7 @@
  ],
  "searches": [],
  "stats": {
-  "n_biens": 188,
+  "n_biens": 187,
   "n_sets": 4,
   "n_searches": 0,
   "n_viager": 73,

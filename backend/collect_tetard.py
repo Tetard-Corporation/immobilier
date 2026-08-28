@@ -101,6 +101,21 @@ EXIGENCES = [
         "min_subscore": 0.79,  # = prix ≤ budget (la note au plafond exact vaut 0,80)
     },
     {
+        # « Pas de gros travaux » est un PLANCHER, au même titre que le budget. Le critère
+        # `light_works` étant pondéré, une ruine bien placée et bon marché se rattrapait
+        # ailleurs. Seuil 0,85 = le barème de `light_works` : habitable (1,0), à rafraîchir
+        # (1,0) et à rénover (0,85) passent ; gros travaux (0,4) et ruine (0,1) non.
+        #
+        # L'état non renseigné ne valide pas non plus — c'est 45 % des annonces, donc le
+        # palier coûte cher. C'est assumé : sur un site fait pour voter, un bien dont on
+        # ignore l'état ne se juge pas, exactement comme un bien sans photo.
+        "above": 70,
+        "label": "Pas de gros travaux (requis au-dessus de 70)",
+        "requires": ["light_works"],
+        "mode": "all",
+        "min_subscore": 0.85,
+    },
+    {
         "above": 75,
         "label": "Capacité d'accueil prouvée (requis au-dessus de 75)",
         "requires": ["chambres_min"],

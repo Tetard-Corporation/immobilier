@@ -463,3 +463,28 @@ def test_tranquillite_sans_isolement():
     # Le reste du critère continue de fonctionner dans les deux sens.
     assert sub(sans_iso, {"features": ["sans_vis_a_vis"]})[0] > sub(sans_iso, {})[0]
     assert sub(sans_iso, {"pavillon_neuf": True})[0] < sub(sans_iso, {})[0]
+
+
+def test_palier_travaux_ecarte_les_gros_travaux_et_l_etat_inconnu():
+    """« Pas de gros travaux » est un plancher, pas une préférence : `light_works` étant
+    pondéré, une ruine bien placée et bon marché se rattrapait ailleurs. L'état non
+    renseigné (45 % des annonces) ne valide pas non plus le palier — un bien dont on
+    ignore l'état ne se juge pas, exactement comme un bien sans photo."""
+    from app.services.preferences import appliquer_exigences
+
+    exig = [{"above": 70, "requires": ["light_works"], "mode": "all",
+             "min_subscore": 0.85, "label": "Pas de gros travaux"}]
+
+    def plafonne(subscore, status="ok"):
+        details = [{"kind": "light_works", "label": "Peu de travaux",
+                    "status": status, "subscore": subscore}]
+        return appliquer_exigences(88.0, details, exig)[0]
+
+    assert plafonne(1.0) == 88.0     # habitable / à rafraîchir : passe
+    assert plafonne(0.85) == 88.0    # à rénover : passe tout juste
+    assert plafonne(0.4) == 70.0     # gros travaux : plafonné
+    assert plafonne(0.1) == 70.0     # ruine : plafonnée
+    assert plafonne(None, "n/a") == 70.0   # état inconnu : ne prouve rien
+    # Sous le palier, l'exigence ne s'applique pas : elle trie le haut du panier.
+    assert appliquer_exigences(65.0, [{"kind": "light_works", "status": "n/a",
+                                       "subscore": None}], exig)[0] == 65.0
