@@ -44,7 +44,7 @@ ZONES = {
     "pauline": {"zips": PAULINE_ZIPS, "set_ids": [3], "types": ["maison", "appartement"],
                 "prix_max": 170000, "target": 60},
     "tetard": {"zips": TETARD_ZIPS, "set_ids": [1, 2], "types": ["maison"],
-               "prix_max": 600000, "target": 90},
+               "prix_max": 300000, "target": 300},
     # Terrains ≤400k ET maisons ≤400k AVEC terrain (longères/pépites à rénover) :
     # une maison sans terrain n'a pas d'intérêt pour ce set, d'où min_terrain_maison.
     "ploemeur": {"zips": PLOEMEUR_ZIPS, "set_ids": [4], "types": ["terrain", "maison"],

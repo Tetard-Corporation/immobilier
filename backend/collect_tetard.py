@@ -42,20 +42,20 @@ SET_NAME = "têtard"
 SET_DESC = ("Maison de retrait entre copains — Drôme / Ardèche / Savoie / Ain, à moins de "
             "4h porte-à-porte de Paris. Pépite : bon rapport qualité/prix, 3 chambres ou "
             "plus, peu de travaux, la montagne et la nature à la porte — mais un village "
-            "vivant autour, pas le bout du monde. ≤ 450 k€.")
+            "vivant autour, pas le bout du monde. ≤ 300 k€.")
 
 SOUS_SET_ID = 2
 SOUS_SET_NAME = "Léo"
 SOUS_SET_DESC = "Préférences perso de Léo : isolement assumé, grand terrain, vue panoramique."
 
-PRIX_MAX = 450_000
+PRIX_MAX = 300_000
 
 # Pondérations 1-5. Deux critères mènent le classement : ce que le bien vaut pour son prix,
 # et ce qu'on a devant la porte.
 PREFERENCES = [
     {"kind": "rapport_qualite_prix", "weight": 5, "label": "Rapport qualité/prix (vs prix du secteur)",
      "params": {"bon": 0.75, "cher": 1.7}},
-    {"kind": "budget", "weight": 4, "label": "Budget ≤ 450 000 €", "params": {"budget_max": PRIX_MAX}},
+    {"kind": "budget", "weight": 4, "label": "Budget ≤ 300 000 €", "params": {"budget_max": PRIX_MAX}},
     {"kind": "chambres_min", "weight": 4, "label": "3 chambres minimum", "params": {"min": 3}},
     {"kind": "light_works", "weight": 4, "label": "Peu de travaux", "params": {}},
     {"kind": "coin_nature", "weight": 4, "label": "Coin de nature (eau, bois, vue dégagée)",
@@ -309,7 +309,7 @@ def _traiter(db, args, collected: dict, pepites: dict) -> int:
 
     print(f"\nEntonnoir sur {len(collected)} annonces :", flush=True)
     todo = entonnoir(list(collected.values()), profil="montagne",
-                     min_altitude=args.min_altitude or None,
+                     min_altitude=args.min_altitude or None, prix_max=PRIX_MAX,
                      garder=args.keep or None)[: args.cap]
 
     print(f"\nEnrichissement de {len(todo)} biens ({args.workers} workers)...", flush=True)

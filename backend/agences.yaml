@@ -1,16 +1,43 @@
 # Agences locales (hors portails) scrapées via parsers dédiés (Voie B).
 # Ajouter une agence : un parser dans app/services/agences_parsers.py + ses URLs ici.
 # Les photos sont garanties par _enrich_from_detail (og:image) même si la carte n'en a pas.
+# Zone têtard (set 1) : Drôme, Ardèche, Savoie, Ain, Loire, Haute-Loire.
+# `set_id: 1` n'est pas décoratif — sans lui, `set_ids` reste vide et l'export note le
+# bien pour TOUS les sets : une ferme ardéchoise apparaissait dans le set breton.
 agences:
   - nom: "Agence Cévenole"        # plateau Vivarais-Lignon / nord-Ardèche (07/43)
+    set_id: 1
+    departements: [26, 7, 73, 1, 42, 43]
     sites:
       - https://www.agencecevenole.com/ventes-fermes-et-maisons-en-pierres-w1
   - nom: "Bauges Immobilier"      # massif des Bauges (Savoie 73)
+    set_id: 1
+    departements: [26, 7, 73, 1, 42, 43]
     sites:
       - https://bauges-immobilier.com/fr/ventes
   - nom: "Christine Miranda"      # Drôme provençale / Baronnies (26) - biens de caractère
+    # ⚠ Son parser dédié ressort 11 biens à 0 € sans commune : rien n'entre en base
+    # (l'ingestion exige prix ET commune). À réparer ou à retirer.
+    set_id: 1
+    departements: [26, 7, 73, 1, 42, 43]
     sites:
       - https://www.christinemiranda.com/
+  - nom: "Espaces Atypiques Drôme-Ardèche"   # biens de caractère, réseau national
+    set_id: 1
+    departements: [26, 7, 73, 1, 42, 43]
+    sites:
+      - https://www.espaces-atypiques.com/immobilier/acheter-un-bien-immobilier-dans-la-drome/
+      - https://www.espaces-atypiques.com/immobilier/acheter-un-bien-immobilier-en-ardeche/
+  - nom: "Diois Immobilier"       # Die, Haut-Diois, Vercors sud (26) — 45 biens, 44-128 k€
+    set_id: 1
+    departements: [26, 7, 73, 1, 42, 43]
+    sites:
+      - https://www.dioisimmobilier.com/annonces-vente.php
+  - nom: "Orpi Ain Agences"       # plateau d'Hauteville, Bugey (01)
+    set_id: 1
+    departements: [26, 7, 73, 1, 42, 43]
+    sites:
+      - https://www.orpi.com/ainagenceshauteville/acheter/biens-en-vente
   - nom: "Kreisker Immobilier"    # baie de Morlaix (29) : Locquirec, Plougasnou, Plouezoc'h
     # Site sans JSON-LD sur la liste mais avec un JSON-LD propre par fiche : c'est la
     # voie générique (harvest_detail_links) qui le traite, sans parser dédié.

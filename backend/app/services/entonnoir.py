@@ -369,7 +369,7 @@ def filtrer_par_altitude(items: list, min_altitude: float = 250.0,
 # --------------------------------------------------------------------------- #
 def appliquer(items: list, *, profil: str = "littoral", max_km: float | None = 10.0,
               min_altitude: float | None = 250.0, garder: int | None = None,
-              rebut: float = 0.0, log=print) -> list:
+              prix_max: float | None = None, rebut: float = 0.0, log=print) -> list:
     """Passe `items` dans l'entonnoir et renvoie ce qui mérite l'enrichissement.
 
     - `profil` : « littoral » (étage 1 = distance à la mer) ou « montagne » (étage 1 =
@@ -377,6 +377,7 @@ def appliquer(items: list, *, profil: str = "littoral", max_km: float | None = 1
       profil : les deux sets ne cherchent pas la même chose et n'ont pas le même rebut.
     - `max_km` : littoral — écarte les communes plus éloignées de la mer (None = sauté).
     - `min_altitude` : montagne — écarte les communes de plaine (None = étage sauté).
+    - `prix_max` : montagne — plafond budgétaire, écarté sans le moindre appel réseau.
     - `rebut`  : écarte les annonces sous cette note (pavillon neuf, lotissement).
     - `garder` : plafond final, appliqué au classement par note d'annonce (None = tout).
     """
@@ -384,7 +385,8 @@ def appliquer(items: list, *, profil: str = "littoral", max_km: float | None = 1
     if not items:
         return items
     montagne = profil == "montagne"
-    noter = note_annonce_montagne if montagne else note_annonce
+    plafond = {"prix_max": prix_max} if (montagne and prix_max) else {}
+    noter = (lambda it: note_annonce_montagne(it, **plafond)) if montagne else note_annonce
 
     restants = [it for it in items if noter(it) > rebut] or items
     if len(restants) < depart:
@@ -396,7 +398,7 @@ def appliquer(items: list, *, profil: str = "littoral", max_km: float | None = 1
         # le rapport qualité/prix, et un prix au m² ne veut rien dire hors de son secteur.
         refs = prix_m2_commune(restants, log=log)
         noter = lambda it: note_annonce_montagne(  # noqa: E731
-            it, reference_m2=refs.get(getattr(it, "code_commune", None)))
+            it, reference_m2=refs.get(getattr(it, "code_commune", None)), **plafond)
         if min_altitude:
             avant = len(restants)
             restants, ecartes, repeches, non_mesurees = filtrer_par_altitude(restants, min_altitude)
