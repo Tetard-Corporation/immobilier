@@ -369,9 +369,9 @@ def ingest(db, settings=None) -> dict:
             ignores += 1
             continue
         row = upsert_listing(db, annotate(item))
-        set_id = sets.get(agence)
-        if set_id is not None and set_id not in (row.set_ids or []):
-            row.set_ids = sorted({*(row.set_ids or []), set_id})
+        voulus = sets.get(agence) or []
+        if voulus and not set(voulus) <= set(row.set_ids or []):
+            row.set_ids = sorted({*(row.set_ids or []), *voulus})
         nb += 1
     db.commit()
     logger.info("Ingestion agences : %s annonce(s) traitée(s), %s hors zone ignorée(s) "

@@ -34,6 +34,9 @@ class AgenceConfig:
     nom: str
     sites: list[str] = field(default_factory=list)
     set_id: int | None = None
+    # Un set ET son sous-set : un bien rattaché au seul set parent disparaît quand on
+    # bascule sur le sous-set dans le front, alors qu'il le concerne tout autant.
+    set_ids: list[int] = field(default_factory=list)
     departements: list[str] = field(default_factory=list)
 
 
@@ -48,9 +51,14 @@ class AgencesConfig:
         return [(a.nom, url) for a in self.agences for url in a.sites]
 
     @property
-    def set_par_agence(self) -> dict[str, int]:
-        """{nom_agence: set_id} pour les agences qui en déclarent un."""
-        return {a.nom: a.set_id for a in self.agences if a.set_id is not None}
+    def set_par_agence(self) -> dict[str, list[int]]:
+        """{nom_agence: [set_ids]} pour les agences qui en déclarent."""
+        out = {}
+        for a in self.agences:
+            ids = list(a.set_ids) or ([a.set_id] if a.set_id is not None else [])
+            if ids:
+                out[a.nom] = sorted({int(i) for i in ids})
+        return out
 
     @property
     def departements_par_agence(self) -> dict[str, list[str]]:
@@ -69,6 +77,7 @@ def load_agences_config(path: str) -> AgencesConfig:
     agences = [
         AgenceConfig(nom=str(a.get("nom") or "Agence"), sites=list(a.get("sites") or []),
                      set_id=int(a["set_id"]) if a.get("set_id") is not None else None,
+                     set_ids=[int(i) for i in (a.get("set_ids") or [])],
                      departements=[str(d).zfill(2) for d in (a.get("departements") or [])])
         for a in (data.get("agences") or [])
     ]
