@@ -248,8 +248,22 @@ class SeLogerSource(ScraperSource):
             url=url,
             description=cls._text(card, "cardmfe-description-text-test-id"),
             flags={},
-            raw={"title": title, "keyfacts": facts, "address": addr},
+            # Les photos sont dans les <img> de la carte (mms.seloger.com). Sans elles, un
+            # bien SeLoger arrive sur le site sans une seule image — donc invotable : on ne
+            # juge pas une maison sur un tableau de chiffres.
+            raw={"title": title, "keyfacts": facts, "address": addr,
+                 "photos": cls._photos(card)},
         )
+
+    @staticmethod
+    def _photos(card) -> list[str]:
+        urls, vus = [], set()
+        for img in card.css("img"):
+            src = (img.attributes.get("src") or "").strip()
+            if src.startswith("http") and "mms.seloger.com" in src and src not in vus:
+                vus.add(src)
+                urls.append(src)
+        return urls
 
     @classmethod
     def _parse(cls, html: str) -> list[NormalizedListing]:

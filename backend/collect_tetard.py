@@ -89,6 +89,18 @@ PREFERENCES = [
 # deuxième d'un classement qui demandait quatre chambres.
 EXIGENCES = [
     {
+        # « Grand max 300 k€ » est un PLAFOND, pas une préférence. Le critère budget, lui,
+        # est pondéré : il pénalise le dépassement sans l'exclure, et un bien excellent
+        # partout ailleurs le compense sans peine. Mesuré : à 450 k€ de plafond, sept des
+        # treize pépites étaient au-dessus de 300 k€, jusqu'à 417 k€.
+        # Le palier est bas (70) pour que le hors-budget sorte franchement du panier.
+        "above": 70,
+        "label": "Dans le budget (requis au-dessus de 70)",
+        "requires": ["budget"],
+        "mode": "all",
+        "min_subscore": 0.79,  # = prix ≤ budget (la note au plafond exact vaut 0,80)
+    },
+    {
         "above": 75,
         "label": "Capacité d'accueil prouvée (requis au-dessus de 75)",
         "requires": ["chambres_min"],
