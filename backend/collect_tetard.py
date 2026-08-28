@@ -60,19 +60,32 @@ PREFERENCES = [
     {"kind": "light_works", "weight": 4, "label": "Peu de travaux", "params": {}},
     {"kind": "coin_nature", "weight": 4, "label": "Coin de nature (eau, bois, vue dégagée)",
      "params": {"alt_min": 400, "alt_ref": 900}},
-    {"kind": "relief_mountain", "weight": 4, "label": "Montagne / relief", "params": {"ref_altitude": 800}},
-    {"kind": "commerces", "weight": 3, "label": "Village vivant (commerces, services)", "params": {"ref": 15}},
+    # Relief monté à 5 : le groupe a demandé les Alpes après un premier jeu entièrement
+    # posé autour de Saint-Étienne. La collecte y va désormais, mais encore faut-il que
+    # le score valorise l'altitude qu'elle ramène.
+    {"kind": "relief_mountain", "weight": 5, "label": "Montagne / relief", "params": {"ref_altitude": 800}},
+    # Charme remonté à 4 : « pas de charme » revient trois fois en reproche (1★),
+    # « charme de la bâtisse » une fois en éloge (4★).
+    {"kind": "cachet", "weight": 4, "label": "Cachet (caractère, pas de pavillon)", "params": {}},
+    # Terrain monté à 4 : « pas de terrain » (1★) deux fois, « peu de terrain »,
+    # « le terrain est petit ».
+    {"kind": "has_terrain", "weight": 4, "label": "Terrain ≥ 1 000 m²", "params": {"min_surface": 1000}},
+    # `village_vivant` remplace `commerces`, qui saturait : deux biens notés 1★ « trop en
+    # ville » marquaient pourtant le maximum sur ce critère.
+    {"kind": "village_vivant", "weight": 3, "label": "Village vivant (ni désert, ni ville)",
+     "params": {"vivant": 8, "ideal": 25, "ville": 120}},
     {"kind": "hiking", "weight": 3, "label": "Randonnées au départ", "params": {}},
     {"kind": "temps_acces", "weight": 3, "label": "≤ 4h porte-à-porte depuis Paris",
      "params": {"max_minutes": 240}},
     # Isolement neutralisé : le groupe veut le calme, pas le bout du monde.
     {"kind": "tranquillite", "weight": 3, "label": "Calme, sans vis-à-vis, hors lotissement",
      "params": {"poids_isolement": 0, "poids_densite": 0}},
-    {"kind": "has_terrain", "weight": 3, "label": "Terrain ≥ 1 000 m²", "params": {"min_surface": 1000}},
+    # Bruit monté à 3, et il compte désormais les routes passantes : deux biens notés 1★
+    # « le long d'une route nationale », que le critère ne voyait pas.
+    {"kind": "nuisance_sonore", "weight": 3, "label": "Loin d'une route passante / autoroute / rail",
+     "params": {"min_m": 200, "ref_m": 1000, "poids_route": 0.45}},
     {"kind": "surface_habitable", "weight": 2, "label": "≥ 100 m² habitables", "params": {"min": 100}},
     {"kind": "near_gare", "weight": 2, "label": "Proche d'une gare", "params": {"max_km": 15}},
-    {"kind": "nuisance_sonore", "weight": 2, "label": "Loin d'une autoroute / voie ferrée",
-     "params": {"min_m": 200, "ref_m": 1000}},
     {"kind": "fiber", "weight": 2, "label": "Fibre (télétravail)", "params": {}},
     {"kind": "ski", "weight": 2, "label": "Station de ski à proximité", "params": {"max_km": 30}},
     {"kind": "near_city", "weight": 2, "label": "Accessible depuis Marseille",
@@ -154,15 +167,32 @@ PREFERENCES_LEO = [
 # (26, 07, 73, 01, 43, 42), toutes à moins de 4h porte-à-porte de Paris. La zone ne
 # change pas ; ce sont les points de départ qui quittent la vallée du Rhône, d'où venait
 # la majorité du haut de classement précédent (Châteauneuf-sur-Isère, 154 m).
+# Le porte-à-porte depuis Paris est mesuré, pas supposé : chacun de ces pivots est sous
+# les 4h (Vercors 3h04, Trièves 3h21, Chartreuse 3h29, Oisans 3h39, Aravis 3h53, Gap 3h54,
+# Maurienne 3h59). Tarentaise, Beaufortain, Chablais et Briançonnais dépassent (4h07 à
+# 4h23) et sont donc écartés — ils seraient notés bas par le critère de toute façon.
 PIVOTS = [
+    # Préalpes et vallées du Rhône (zone historique)
     ("Diois / Die", 44.754, 5.370, ["26"]),
     ("Vercors drômois / La Chapelle-en-Vercors", 44.968, 5.415, ["26"]),
     ("Haut-Vivarais / Lamastre", 44.985, 4.580, ["07"]),
     ("Cévennes ardéchoises / Antraigues-Aubenas", 44.730, 4.390, ["07"]),
-    ("Bauges / Le Châtelard", 45.700, 6.110, ["73"]),
-    ("Bugey / Hauteville-Lompnes", 45.980, 5.600, ["01"]),
     ("Mézenc / Le Monastier-sur-Gazeille", 44.940, 4.000, ["43"]),
     ("Pilat / Bourg-Argental", 45.330, 4.560, ["42", "07"]),
+    ("Bugey / Hauteville-Lompnes", 45.980, 5.600, ["01"]),
+    # Alpes — c'est ce que le groupe a demandé après avoir vu un premier jeu entièrement
+    # posé autour de Saint-Étienne : le rapport qualité/prix, critère de tête, favorise
+    # mécaniquement les secteurs les moins chers, et la haute montagne en fait les frais.
+    ("Chartreuse / Saint-Pierre", 45.335, 5.820, ["38", "73"]),
+    ("Vercors isérois / Villard-de-Lans", 45.070, 5.553, ["38"]),
+    ("Trièves / Mens", 44.815, 5.750, ["38"]),
+    ("Matheysine / La Mure", 44.900, 5.787, ["38"]),
+    ("Oisans / Bourg-d'Oisans", 45.055, 6.030, ["38"]),
+    ("Grésivaudan-Belledonne / Allevard", 45.395, 6.075, ["38", "73"]),
+    ("Bauges / Le Châtelard", 45.700, 6.110, ["73"]),
+    ("Maurienne / Saint-Jean", 45.276, 6.352, ["73"]),
+    ("Aravis-Bornes / Thônes", 45.881, 6.325, ["74"]),
+    ("Dévoluy / Gap", 44.620, 5.995, ["05"]),
 ]
 
 

@@ -287,10 +287,14 @@ def _tension_flags(commune: str | None, lut: dict) -> dict:
 
 
 def _query_overpass(lat: float, lon: float) -> dict | None:
-    # Une seule requête : autoroute/voie ferrée (bruit) + sentiers/itinéraires (rando).
+    # Une seule requête : autoroute/voie ferrée/route passante (bruit) + sentiers (rando).
+    # Les routes principales (nationales, départementales structurantes) sont cherchées
+    # dans un rayon plus court : leur bruit porte moins loin, et à 2,5 km on en trouve
+    # partout — le critère ne trierait plus rien.
     q = (f'[out:json][timeout:25];('
          f'way(around:2500,{lat},{lon})[highway~"motorway|trunk"];'
          f'way(around:2500,{lat},{lon})[railway=rail];'
+         f'way(around:800,{lat},{lon})[highway~"^(primary|secondary)$"];'
          f'way(around:1500,{lat},{lon})[highway~"path|footway|bridleway"];'
          f'relation(around:3000,{lat},{lon})[route=hiking];);out geom 300;')
     try:
@@ -300,7 +304,8 @@ def _query_overpass(lat: float, lon: float) -> dict | None:
             payload = json.loads(r.read())
     except Exception:
         return None
-    best = {"dist_autoroute_m": None, "dist_rail_m": None, "infra_checked": True}
+    best = {"dist_autoroute_m": None, "dist_rail_m": None, "dist_route_m": None,
+            "infra_checked": True}
     n_sentiers, n_routes = 0, 0
     for el in payload.get("elements", []):
         tags = el.get("tags", {})
@@ -311,7 +316,9 @@ def _query_overpass(lat: float, lon: float) -> dict | None:
         if hw in ("path", "footway", "bridleway"):
             n_sentiers += 1
             continue
-        key = "dist_autoroute_m" if hw in ("motorway", "trunk") else ("dist_rail_m" if tags.get("railway") == "rail" else None)
+        key = ("dist_autoroute_m" if hw in ("motorway", "trunk")
+               else "dist_route_m" if hw in ("primary", "secondary")
+               else "dist_rail_m" if tags.get("railway") == "rail" else None)
         if not key:
             continue
         for p in el.get("geometry", []):

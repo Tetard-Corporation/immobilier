@@ -37,6 +37,8 @@ PREFERENCE_KINDS = [
     "temps_acces",
     "nuisance_sonore",
     "commerces",
+    "village_vivant",
+    "cachet",
     "tension_locative",
     "ski",
     "population_jeune",
@@ -466,9 +468,17 @@ def _eval_one(item, kind: str, params: dict):
         if not flags.get("infra_checked"):
             return None, "pending", "proximité infrastructures non vérifiée"
         da, dr = flags.get("dist_autoroute_m"), flags.get("dist_rail_m")
+        # « Le long d'une route nationale », « le long d'une route » : deux biens notés
+        # 1★ pour ça. Le critère ne regardait qu'autoroutes et voies ferrées, donc une
+        # départementale passante devant la maison lui était invisible. Le bruit d'une
+        # nationale porte moins loin que celui d'une autoroute : on la compte à distance
+        # réduite (facteur `poids_route`) plutôt que de lui donner le même poids.
+        dro = flags.get("dist_route_m")
         vals = [d for d in (da, dr) if d is not None]
+        if dro is not None:
+            vals.append(dro / params.get("poids_route", 0.45))
         if not vals:
-            return 1.0, "ok", "aucune autoroute/voie ferrée à proximité"
+            return 1.0, "ok", "aucune route passante, autoroute ni voie ferrée à proximité"
         min_m = params.get("min_m", 200)
         ref_m = params.get("ref_m", 1000)
         sub = _clamp((min(vals) - min_m) / (ref_m - min_m))
@@ -477,7 +487,59 @@ def _eval_one(item, kind: str, params: dict):
             parts.append(f"autoroute {da} m")
         if dr is not None:
             parts.append(f"voie ferrée {dr} m")
+        if dro is not None:
+            parts.append(f"route passante {dro} m")
         return sub, "ok", " · ".join(parts)
+
+    if kind == "village_vivant":
+        # « Trop en ville » (deux biens notés 1★ pour cette seule raison). Le critère
+        # `commerces` sature : 15 commerces valent 1,0, et Chambéry avec 258 vaut 1,0
+        # aussi. Il ne distinguait donc pas le village vivant de la ville — alors que
+        # c'est précisément la distinction que le groupe fait.
+        #
+        # D'où une cloche : le désert commercial est mauvais, le bourg avec ses commerces
+        # est l'optimum, et l'agglomération redescend. Un lieu de retrait entre copains
+        # n'est ni un hameau sans boulangerie ni un centre-ville.
+        n = flags.get("n_commerces")
+        if n is None:
+            return None, "pending", "commerces non vérifiés"
+        vivant = params.get("vivant", 8)     # en dessous : trop isolé pour le quotidien
+        ideal = params.get("ideal", 25)      # bourg pourvu : l'optimum
+        ville = params.get("ville", 120)     # au-delà : on est en agglomération
+        if n < vivant:
+            sub = _clamp(0.25 + 0.75 * n / vivant)
+            mot = f"{n} commerces/services (peu, {round(sub*100)}%)"
+        elif n <= ideal:
+            sub, mot = 1.0, f"{n} commerces/services (bourg vivant)"
+        else:
+            # Décroissance douce jusqu'au seuil « ville », puis plancher : au-delà, plus
+            # de commerces ne rend pas le lieu plus urbain qu'il ne l'est déjà.
+            sub = _clamp(1 - 0.7 * min(1.0, (n - ideal) / (ville - ideal)))
+            mot = f"{n} commerces/services ({'ville' if n >= ville else 'gros bourg'})"
+        return sub, "ok", mot
+
+    if kind == "cachet":
+        # « Pas de charme » revient trois fois en reproche (1★), « charme de la bâtisse »
+        # une fois en éloge (4★) : le cachet compte. Il avait pourtant été retiré du set,
+        # sur la consigne « pas le bâti ancien, ça veut dire travaux » — mais le motif
+        # était les TRAVAUX, désormais couverts par leur propre palier. Le charme peut
+        # donc revenir sans ramener le risque.
+        #
+        # Composite et toujours évaluable, comme `tranquillite` : « authentique » n'est
+        # cité que par 38 % des annonces, donc en `n/a` il ne servirait que de bonus et
+        # aucun bien ne pourrait mal noter. Ici le pavillon fait descendre.
+        feats = flags.get("features") or []
+        note, motifs = params.get("socle", 0.5), []
+        if "authentique" in feats:
+            note += 0.35; motifs.append("caractère / pierre")
+        if flags.get("pavillon_neuf"):
+            note -= 0.45; motifs.append("pavillon / lotissement / neuf")
+        # « Trop ancien, trop rustique » (1★) : le cachet n'est un plus que si le bien
+        # reste habitable. Une ruine de caractère n'en est pas un.
+        cond = flags.get("condition")
+        if cond in ("ruine", "gros_travaux"):
+            note -= 0.25; motifs.append(f"état : {_COND_LABELS.get(cond, cond)}")
+        return _clamp(note), "ok", " · ".join(motifs) or "rien de signalé"
 
     if kind == "commerces":
         n = flags.get("n_commerces")

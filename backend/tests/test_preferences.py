@@ -488,3 +488,61 @@ def test_palier_travaux_ecarte_les_gros_travaux_et_l_etat_inconnu():
     # Sous le palier, l'exigence ne s'applique pas : elle trie le haut du panier.
     assert appliquer_exigences(65.0, [{"kind": "light_works", "status": "n/a",
                                        "subscore": None}], exig)[0] == 65.0
+
+
+def test_village_vivant_penalise_la_ville_autant_que_le_desert():
+    """« Trop en ville » : deux biens notés 1★ pour cette seule raison marquaient pourtant
+    le maximum sur `commerces`, qui sature à 15. Un lieu de retrait entre copains n'est ni
+    un hameau sans boulangerie ni un centre-ville — d'où une cloche."""
+    pref = [Preference(kind="village_vivant", params={"vivant": 8, "ideal": 25, "ville": 120})]
+
+    def sub(n):
+        _, d = evaluate(_listing(flags={"n_commerces": n} if n is not None else {}), pref)
+        return d[0]["subscore"], d[0]["status"]
+
+    assert sub(20)[0] == 1.0 and sub(25)[0] == 1.0   # bourg pourvu : l'optimum
+    assert sub(0)[0] < 0.5                            # désert commercial
+    assert sub(258)[0] < sub(20)[0]                   # Chambéry redescend
+    assert sub(258)[0] < sub(60)[0]                   # et plus bas qu'un gros bourg
+    assert sub(3)[0] < sub(20)[0]                     # le hameau aussi
+    assert sub(None)[1] == "pending"
+
+
+def test_cachet_monte_et_descend():
+    """« Pas de charme » trois fois en reproche, « charme de la bâtisse » une fois en
+    éloge : le cachet compte. Cité par 38 % des annonces seulement, il doit être un
+    composite toujours évaluable — sinon il ne sert que de bonus."""
+    pref = [Preference(kind="cachet")]
+
+    def sub(flags):
+        _, d = evaluate(_listing(flags=flags), pref)
+        return d[0]["subscore"], d[0]["status"]
+
+    neutre = sub({})[0]
+    assert sub({})[1] == "ok"                                   # jamais n/a
+    assert sub({"features": ["authentique"]})[0] > neutre
+    assert sub({"pavillon_neuf": True})[0] < neutre
+    # « Trop ancien, trop rustique » (1★) : le cachet ne rachète pas une ruine.
+    assert sub({"features": ["authentique"], "condition": "ruine"})[0] < \
+           sub({"features": ["authentique"]})[0]
+
+
+def test_bruit_compte_les_routes_passantes():
+    """« Le long d'une route nationale », « le long d'une route » : deux 1★. Le critère
+    ne regardait qu'autoroutes et voies ferrées, donc une départementale devant la porte
+    lui était invisible."""
+    pref = [Preference(kind="nuisance_sonore",
+                       params={"min_m": 200, "ref_m": 1000, "poids_route": 0.45})]
+
+    def sub(flags):
+        _, d = evaluate(_listing(flags={"infra_checked": True, **flags}), pref)
+        return d[0]["subscore"], d[0]["detail"]
+
+    au_calme = sub({})[0]
+    assert au_calme == 1.0
+    bord_de_route = sub({"dist_route_m": 60})[0]
+    assert bord_de_route < au_calme
+    assert "route passante" in sub({"dist_route_m": 60})[1]
+    # Le bruit d'une nationale porte moins loin que celui d'une autoroute : à distance
+    # égale, elle pénalise moins.
+    assert sub({"dist_route_m": 400})[0] > sub({"dist_autoroute_m": 400})[0]
