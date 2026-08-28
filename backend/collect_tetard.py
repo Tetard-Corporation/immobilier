@@ -42,20 +42,20 @@ SET_NAME = "têtard"
 SET_DESC = ("Maison de retrait entre copains — Drôme / Ardèche / Savoie / Ain, à moins de "
             "4h porte-à-porte de Paris. Pépite : bon rapport qualité/prix, 3 chambres ou "
             "plus, peu de travaux, la montagne et la nature à la porte — mais un village "
-            "vivant autour, pas le bout du monde. ≤ 450 k€.")
+            "vivant autour, pas le bout du monde. ≤ 300 k€.")
 
 SOUS_SET_ID = 2
 SOUS_SET_NAME = "Léo"
 SOUS_SET_DESC = "Préférences perso de Léo : isolement assumé, grand terrain, vue panoramique."
 
-PRIX_MAX = 450_000
+PRIX_MAX = 300_000
 
 # Pondérations 1-5. Deux critères mènent le classement : ce que le bien vaut pour son prix,
 # et ce qu'on a devant la porte.
 PREFERENCES = [
     {"kind": "rapport_qualite_prix", "weight": 5, "label": "Rapport qualité/prix (vs prix du secteur)",
      "params": {"bon": 0.75, "cher": 1.7}},
-    {"kind": "budget", "weight": 4, "label": "Budget ≤ 450 000 €", "params": {"budget_max": PRIX_MAX}},
+    {"kind": "budget", "weight": 4, "label": "Budget ≤ 300 000 €", "params": {"budget_max": PRIX_MAX}},
     {"kind": "chambres_min", "weight": 4, "label": "3 chambres minimum", "params": {"min": 3}},
     {"kind": "light_works", "weight": 4, "label": "Peu de travaux", "params": {}},
     {"kind": "coin_nature", "weight": 4, "label": "Coin de nature (eau, bois, vue dégagée)",
@@ -88,6 +88,33 @@ PREFERENCES = [
 # monde il loge. C'est exactement ce qui s'est produit : une annonce d'une seule pièce
 # deuxième d'un classement qui demandait quatre chambres.
 EXIGENCES = [
+    {
+        # « Grand max 300 k€ » est un PLAFOND, pas une préférence. Le critère budget, lui,
+        # est pondéré : il pénalise le dépassement sans l'exclure, et un bien excellent
+        # partout ailleurs le compense sans peine. Mesuré : à 450 k€ de plafond, sept des
+        # treize pépites étaient au-dessus de 300 k€, jusqu'à 417 k€.
+        # Le palier est bas (70) pour que le hors-budget sorte franchement du panier.
+        "above": 70,
+        "label": "Dans le budget (requis au-dessus de 70)",
+        "requires": ["budget"],
+        "mode": "all",
+        "min_subscore": 0.79,  # = prix ≤ budget (la note au plafond exact vaut 0,80)
+    },
+    {
+        # « Pas de gros travaux » est un PLANCHER, au même titre que le budget. Le critère
+        # `light_works` étant pondéré, une ruine bien placée et bon marché se rattrapait
+        # ailleurs. Seuil 0,85 = le barème de `light_works` : habitable (1,0), à rafraîchir
+        # (1,0) et à rénover (0,85) passent ; gros travaux (0,4) et ruine (0,1) non.
+        #
+        # L'état non renseigné ne valide pas non plus — c'est 45 % des annonces, donc le
+        # palier coûte cher. C'est assumé : sur un site fait pour voter, un bien dont on
+        # ignore l'état ne se juge pas, exactement comme un bien sans photo.
+        "above": 70,
+        "label": "Pas de gros travaux (requis au-dessus de 70)",
+        "requires": ["light_works"],
+        "mode": "all",
+        "min_subscore": 0.85,
+    },
     {
         "above": 75,
         "label": "Capacité d'accueil prouvée (requis au-dessus de 75)",
@@ -309,7 +336,7 @@ def _traiter(db, args, collected: dict, pepites: dict) -> int:
 
     print(f"\nEntonnoir sur {len(collected)} annonces :", flush=True)
     todo = entonnoir(list(collected.values()), profil="montagne",
-                     min_altitude=args.min_altitude or None,
+                     min_altitude=args.min_altitude or None, prix_max=PRIX_MAX,
                      garder=args.keep or None)[: args.cap]
 
     print(f"\nEnrichissement de {len(todo)} biens ({args.workers} workers)...", flush=True)

@@ -12,6 +12,7 @@ import hashlib
 import logging
 import re
 import time
+from collections import Counter
 from urllib.parse import urljoin
 
 import httpx
@@ -304,9 +305,35 @@ def _scrape_via_fiches(client, agency: str, url: str, html: str, settings,
         nl = _fill_geo(_enrich_from_detail(nl, page.text))
         if nl.prix is not None and nl.commune:
             trouves.append(nl)
+    trouves = _sans_prix_de_decor(trouves, agency)
     logger.info("Agence %s : %s bien(s) via fiches (%s liens suivis).",
                 agency, len(trouves), len(liens))
     return trouves
+
+
+# Second filet, après la correction de l'extracteur : une agence n'a pas la moitié de son
+# catalogue au centime près au même prix. Quand ça arrive, ce prix vient du décor du site
+# (borne d'un formulaire, garantie financière) et non des biens. Mieux vaut perdre le site
+# que le peupler de prix faux : un prix faux est imbattable au budget et au €/m², donc il
+# remonte en tête du classement — l'inverse exact de ce qu'on cherche.
+_DECOR_MIN_BIENS = 3
+_DECOR_PART = 0.5
+
+
+def _sans_prix_de_decor(biens: list, agency: str) -> list:
+    if len(biens) < _DECOR_MIN_BIENS:
+        return biens
+    compte = Counter(b.prix for b in biens if b.prix is not None)
+    suspects = {v for v, n in compte.items()
+                if n >= _DECOR_MIN_BIENS and n >= _DECOR_PART * len(biens)}
+    if not suspects:
+        return biens
+    gardes = [b for b in biens if b.prix not in suspects]
+    logger.warning(
+        "Agence %s : %s bien(s) écartés, prix répété %s fois — c'est du décor de site, "
+        "pas un prix (%s).", agency, len(biens) - len(gardes), max(compte.values()),
+        ", ".join(f"{v:.0f} €" for v in sorted(suspects)))
+    return gardes
 
 
 def ingest(db, settings=None) -> dict:
@@ -342,9 +369,9 @@ def ingest(db, settings=None) -> dict:
             ignores += 1
             continue
         row = upsert_listing(db, annotate(item))
-        set_id = sets.get(agence)
-        if set_id is not None and set_id not in (row.set_ids or []):
-            row.set_ids = sorted({*(row.set_ids or []), set_id})
+        voulus = sets.get(agence) or []
+        if voulus and not set(voulus) <= set(row.set_ids or []):
+            row.set_ids = sorted({*(row.set_ids or []), *voulus})
         nb += 1
     db.commit()
     logger.info("Ingestion agences : %s annonce(s) traitée(s), %s hors zone ignorée(s) "

@@ -72,7 +72,18 @@ def test_departements_par_agence():
         AgenceConfig(nom="Sans zone", set_id=4),
     ])
     assert cfg.departements_par_agence == {"Bretonne": ["22", "29"]}
-    assert cfg.set_par_agence == {"Bretonne": 4, "Sans zone": 4}
+    assert cfg.set_par_agence == {"Bretonne": [4], "Sans zone": [4]}
+
+
+def test_une_agence_peut_alimenter_un_set_et_son_sous_set():
+    """Un bien rattaché au seul set parent disparaît du front dès qu'on bascule sur le
+    sous-set, alors qu'il le concerne tout autant."""
+    cfg = AgencesConfig(agences=[
+        AgenceConfig(nom="Diois", set_ids=[1, 2]),
+        AgenceConfig(nom="Ancienne écriture", set_id=4),
+        AgenceConfig(nom="Sans set"),
+    ])
+    assert cfg.set_par_agence == {"Diois": [1, 2], "Ancienne écriture": [4]}
 
 
 def test_departements_normalises_sur_deux_chiffres(tmp_path):

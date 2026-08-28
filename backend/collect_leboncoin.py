@@ -16,7 +16,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from app.db import SessionLocal, init_db
 from app.enrichment import enrich_listing
 from app.models import Listing
-from app.seed import seed_from_data_json
+from app.seed import seed_from_data_json, seed_if_empty
 from app.services.enrich import annotate
 from app.services.export_static import _detect_viager
 from app.services.search import upsert_listing
@@ -43,8 +43,11 @@ PLOEMEUR_ZIPS = ["56270", "56100", "56600", "56260", "56530", "56850", "56620", 
 ZONES = {
     "pauline": {"zips": PAULINE_ZIPS, "set_ids": [3], "types": ["maison", "appartement"],
                 "prix_max": 170000, "target": 60},
+    # 12 pages = 1 200 annonces balayées : à 300 k€ le vivier est large, et le tri se
+    # fait au scoring, pas à la collecte. `target` borne ce qu'un run enrichit ; les
+    # suivants reprennent où celui-ci s'arrête (les biens déjà en base sont sautés).
     "tetard": {"zips": TETARD_ZIPS, "set_ids": [1, 2], "types": ["maison"],
-               "prix_max": 600000, "target": 90},
+               "prix_max": 300000, "target": 300, "pages": 12},
     # Terrains ≤400k ET maisons ≤400k AVEC terrain (longères/pépites à rénover) :
     # une maison sans terrain n'a pas d'intérêt pour ce set, d'où min_terrain_maison.
     "ploemeur": {"zips": PLOEMEUR_ZIPS, "set_ids": [4], "types": ["terrain", "maison"],
@@ -80,16 +83,35 @@ def search_zips(source, zips, types, prix_max, pages, limit=100):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--test", action="store_true", help="petit lot Pauline")
+    ap.add_argument("--zone", choices=sorted(ZONES), action="append",
+                    help="ne collecter que cette ou ces zones (défaut : toutes)")
     ap.add_argument("--workers", type=int, default=6)
+    ap.add_argument("--no-export", action="store_true", help="upsert sans ré-export data.json")
+    ap.add_argument("--pepites", default="",
+                    help="resserrage à l'export : « 1:84.8,4:80 ». Sans lui, l'export "
+                         "republie le catalogue COMPLET de chaque set et annule leur "
+                         "resserrage.")
+    ap.add_argument("--reseed", action="store_true",
+                    help="RECONSTRUIT la base depuis data.json (DESTRUCTIF)")
     args = ap.parse_args()
 
     init_db()
-    print("Seed DB depuis data.json...", flush=True)
-    recap = seed_from_data_json()
-    print(f"  -> {recap}", flush=True)
+    # `seed_from_data_json()` VIDE la table avant de la reconstruire depuis data.json.
+    # Appelé sans condition, il efface tout ce qui n'a pas encore été exporté — et depuis
+    # que l'export est resserré aux pépites, data.json ne contient plus qu'une poignée de
+    # biens : un seul appel détruirait des milliers de collectes. Cf. docs/OPERATIONS.md §0.
+    if args.reseed:
+        print("Reconstruction de la base depuis data.json (--reseed)...", flush=True)
+        print(f"  -> {seed_from_data_json()}", flush=True)
+    else:
+        recap = seed_if_empty()
+        print(f"Base {'seedée depuis data.json : ' + str(recap) if recap else 'déjà peuplée : seed sauté'}",
+              flush=True)
 
     source = LeboncoinSource()
-    zones = {"pauline": dict(ZONES["pauline"], pages=1, target=10)} if args.test else ZONES
+    zones = {"pauline": dict(ZONES["pauline"], pages=1, target=10)} if args.test else dict(ZONES)
+    if args.zone:
+        zones = {k: v for k, v in zones.items() if k in set(args.zone)}
 
     # 1) Collecte (dédupe par external_id, et retire ceux déjà en base)
     db = SessionLocal()
@@ -144,15 +166,25 @@ def main():
     n_lbc = db.query(Listing).filter(Listing.source == "leboncoin").count()
     print(f"\nEn base : {n_lbc} biens leboncoin.", flush=True)
 
-    # 4) Export data.json + photos (sauf en mode test)
-    if not args.test:
-        from app.services.export_static import export_to_dir
+    # 4) Export data.json + photos (sauf en mode test ou --no-export)
+    if not args.test and not args.no_export:
         import os
+
+        from app.services.export_static import export_to_dir
+        pepites = {}
+        for morceau in (args.pepites or "").split(","):
+            if ":" in morceau:
+                sid, seuil = morceau.split(":", 1)
+                pepites[int(sid.strip())] = float(seuil.strip())
         data_dir = os.path.join(os.path.dirname(__file__), "..", "data")
         print(f"\nExport vers {os.path.abspath(data_dir)} (photos incluses)...", flush=True)
+        if pepites:
+            print(f"  resserrage : {', '.join(f'set {k} ≥ {v:g}' for k, v in pepites.items())}", flush=True)
         t1 = time.time()
-        stats = export_to_dir(db, data_dir, download_photos=True)
+        stats = export_to_dir(db, data_dir, download_photos=True, pepites=pepites or None)
         print(f"  export OK en {time.time()-t1:.0f}s : {stats}", flush=True)
+    elif args.no_export:
+        print("\nExport sauté (--no-export) : les biens ne sont QUE dans la base.", flush=True)
     db.close()
     print("TERMINÉ.", flush=True)
 

@@ -107,6 +107,24 @@ class HeuristicExtractor(Extractor):
         r"mensualit[ée]|frais|commission|d[ée]p[ôo]t|garantie|caution|estimation\s+des\s+co[ûu]ts|"
         r"consommation|[ée]nerg|par\s+an|/\s*an|/\s*mois|au\s+m|du\s+m|par\s+m)",
         re.I)
+    # Le DÉCOR du site : bornes de son curseur de recherche, garantie financière,
+    # capital social. Ces montants sont souvent PLUS GROS que le prix réel, donc ils
+    # gagnent contre lui (on retient le plus grand montant plausible). Vu en vrai : un
+    # site du Diois dont les 45 biens, à 44 000-128 000 €, entraient tous à 1 000 000 €
+    # — la borne haute de son formulaire « Prix compris entre 0 € et 1 000 000 € ».
+    #
+    # On disqualifie la VALEUR annoncée, pas ce qui est proche d'elle : un filtre de
+    # proximité écartait aussi le vrai prix quand la page le plaçait sous le formulaire.
+    # Les séparateurs admis entre les morceaux ne sont pas que des espaces : la mise en
+    # page insère « : », des puces, des retours à la ligne (« entre : / 0 € / et / 1000000 € »).
+    _SEP = r"[\s:/|•·\-–>]*"
+    _BORNES = re.compile(
+        rf"(?:compris{_SEP}entre|entre|de){_SEP}([\d][\d\s.,]*)\s*€{_SEP}(?:et|[àa]){_SEP}([\d][\d\s.,]*)\s*€",
+        re.I)
+    # Ces étiquettes-là collent à leur montant : fenêtre courte, retours à la ligne aplatis.
+    _DECOR_ETIQUETTE = re.compile(
+        r"garantie\s+financi[èe]re|capital\s+social|chiffre\s+d[' ]affaires", re.I)
+
     _PRIX_MIN = 10_000        # sous ce seuil, ce n'est pas le prix d'un bien
     _PRIX_MAX = 30_000_000
 
@@ -119,6 +137,14 @@ class HeuristicExtractor(Extractor):
         taxe foncière, honoraires et charges apparaissent souvent avant le prix. Le prix
         de vente est en pratique le plus gros montant légitime d'une fiche.
         """
+        # Bornes du formulaire de recherche : ces valeurs précises sont du décor.
+        decor = set()
+        for b in cls._BORNES.finditer(texte or ""):
+            for brut in b.groups():
+                v = cls._to_float(brut)
+                if v is not None:
+                    decor.add(v)
+
         candidats = []
         for m in cls._PRICE.finditer(texte or ""):
             # Le contexte s'arrête à la ligne (ou la phrase) courante : remonter au-delà
@@ -130,8 +156,12 @@ class HeuristicExtractor(Extractor):
                 contexte = contexte[coupe + 1:]
             if cls._PAS_UN_PRIX.search(contexte):
                 continue
+            etiquette = (texte[max(0, m.start() - 60):m.start()]
+                         .replace("\n", " ").replace("\t", " "))
+            if cls._DECOR_ETIQUETTE.search(etiquette):
+                continue
             v = cls._to_float(m.group(1))
-            if v is not None and cls._PRIX_MIN <= v <= cls._PRIX_MAX:
+            if v is not None and v not in decor and cls._PRIX_MIN <= v <= cls._PRIX_MAX:
                 candidats.append(v)
         return max(candidats) if candidats else None
 

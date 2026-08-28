@@ -179,3 +179,36 @@ def test_commune_depuis_titre_refuse_de_deviner():
     assert commune_depuis_titre("Vente maison de plain-pied proche Morlaix") is None
     assert commune_depuis_titre("Vente maison vue mer 5 pièces") is None
     assert commune_depuis_titre("") is None
+
+
+def test_prix_ignore_les_bornes_du_formulaire_de_recherche():
+    """Vu en vrai : un site du Diois dont les 45 biens, à 44 000-128 000 €, entraient
+    tous à 1 000 000 € — la borne haute de son formulaire « Prix compris entre 0 € et
+    1 000 000 € ». Le prix retenu étant le plus gros montant plausible, le décor du site
+    gagnait contre le bien."""
+    from app.services.extract import HeuristicExtractor as H
+
+    curseur = ("Gîte / Prix compris entre : / 0 € / et / 1000000 €\n"
+               "Maison 3 pièces à Die\n100 000 €\nTaxe foncière : 571 €")
+    assert H._prix(curseur) == 100_000
+    assert H._prix("Budget de 50 000 € à 900 000 €\nFerme en pierre\n245 000 €") == 245_000
+    assert H._prix("Maison de village\n189 000 €\nGarantie financière : 1 200 000 €") == 189_000
+    # Sans borne déclarée, le plus gros montant légitime reste le prix.
+    assert H._prix("Maison A 210 000 €\nMaison B 480 000 €") == 480_000
+
+
+def test_prix_repete_sur_tout_un_site_est_ecarte():
+    """Second filet : une agence n'a pas la moitié de son catalogue au même prix exact.
+    Mieux vaut perdre le site que le peupler de prix faux — un prix faux est imbattable
+    au budget et au €/m², donc il remonte en tête au lieu d'être ignoré."""
+    from types import SimpleNamespace
+
+    from app.services.agences_ingest import _sans_prix_de_decor
+
+    faux = [SimpleNamespace(prix=1_000_000.0) for _ in range(5)]
+    vrais = [SimpleNamespace(prix=p) for p in (44_000.0, 128_000.0)]
+    gardes = _sans_prix_de_decor(faux + vrais, "Agence test")
+    assert [b.prix for b in gardes] == [44_000.0, 128_000.0]
+    # Deux biens au même prix, c'est une coïncidence ordinaire : on ne touche à rien.
+    ordinaire = [SimpleNamespace(prix=p) for p in (150_000.0, 150_000.0, 220_000.0, 310_000.0)]
+    assert len(_sans_prix_de_decor(ordinaire, "Agence test")) == 4

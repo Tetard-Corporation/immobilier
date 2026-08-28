@@ -294,9 +294,10 @@ Repères mesurés (jeu du 24 août 2026, 1 152 biens, caches Overpass chauds) :
 |---|---|---|
 | 4 — Littoral breton | 78 | 18 (jeu du 24 août) |
 | 4 — Littoral breton | **80** | **12** ← publié |
-| 1 — têtard | 84 | 21 (jeu du 27 août, 1 300 biens) |
-| 1 — têtard | **84,8** | **13** ← publié, cible 12-15 |
-| 1 — têtard | 85 | 12 |
+| 1 — têtard | 84,8 | 13 (jeu du 27 août, 1 300 biens, plafond 450 k€) |
+| 1 — têtard | 82,5 | 12 (jeu du 28 août, 3 310 biens, plafond 300 k€, 5 paliers) |
+| 1 — têtard | **82** | **13** ← publié, cible 12-15 |
+| 1 — têtard | 81,5 | 15 |
 
 ⚠️ Les seuils ne sont pas transposables d'un jeu à l'autre : après la correction Overpass,
 le même seuil de 80 est passé de 12 à 32 pépites côté breton. **Recalibrer sur la
@@ -343,6 +344,9 @@ repli silencieux.
 
 | Symptôme | Cause | Parade |
 |---|---|---|
+| Tous les biens d'une agence au même prix rond | l'extracteur a lu le **décor du site** : borne d'un curseur de recherche (« Prix compris entre 0 € et 1 000 000 € »), garantie financière. Le prix retenu est le plus gros montant plausible de la page, donc le décor gagne contre le bien | corrigé (les valeurs annoncées par un intervalle sont disqualifiées) ; second filet : l'ingestion écarte tout prix répété sur la moitié d'un catalogue |
+| Des milliers de biens disparaissent après une collecte leboncoin | `seed_from_data_json()` **vide** la table et la reconstruit depuis `data.json` — qui ne contient plus que les pépites | corrigé (`seed_if_empty()` par défaut, `--reseed` pour forcer) ; vérifier le compte en base avant/après |
+| Des biens SeLoger sans aucune photo | le parseur de cartes ne lisait pas les `<img>` | corrigé ; pour les biens déjà en base, rafraîchir leur `raw` sans ré-enrichir |
 | Des biens collectés disparaissent | une collecte a appelé `seed_from_data_json()`, qui **vide** la table avant de la reconstruire depuis `data.json` | exporter à chaque collecte ; `collect_seloger.py` ne seede que si la base est vide (`--reseed` pour forcer) |
 | `warm.py` tourne 1 h et le cache ne grossit pas | `WARM_WORKERS` > 2 → Overpass répond 406/429, les erreurs étaient avalées | rester à 2 workers ; le message `⚠ … abandonnés` signale le rendement nul |
 | Réchauffage interminable (~13 s/requête) même à 2 workers | l'instance `overpass-api.de` est saturée (44 % d'échecs) | `OVERPASS_URL=https://overpass.osm.ch/api/interpreter` (0,4 s/requête, 100 %) |
@@ -455,8 +459,11 @@ SCRAPER_RATE_LIMIT_MS=3000 python collect_seloger.py                            
 ```
 
 ### Zone « têtard » (set 1, sous-set « Léo » id 2)
-Maison de retrait entre copains — Drôme / Ardèche / Savoie / Ain, à moins de 4h
-porte-à-porte de Paris, **budget ≤ 450 k€** (600 k€ jusqu'en août 2026).
+Maison de retrait entre copains — Drôme / Ardèche / Savoie / Ain / Loire / Haute-Loire,
+à moins de 4h porte-à-porte de Paris, **budget ≤ 300 k€** (600 k€ puis 450 k€ en août 2026).
+
+Quatre sources : **bienici** (pivots montagne, sans cookie), **leboncoin** et **seloger**
+(cookie Datadome, §2), et six **agences** de la zone (`agences.yaml`).
 
 ```bash
 python backend/collect_tetard.py                 # collecte + enrichissement + export
@@ -487,10 +494,24 @@ vaut pour son prix, et ce qu'on a devant la porte :
   sur la surface : sans ce repli il était `n/a` sur la moitié des annonces, donc neutre,
   et une maison d'**une seule pièce** est arrivée deuxième du classement.
 
-**Trois paliers** (`EXIGENCES`) ferment les portes par lesquelles un bien mal mesuré
-monte : au-dessus de 75 il faut trois chambres avérées, au-dessus de 78 un rapport
-qualité/prix mesuré (sans surface bâtie, il n'y a rien à comparer), au-dessus de 85 une
-nature ou un relief avérés.
+**Cinq paliers** (`EXIGENCES`) ferment les portes par lesquelles un bien mal mesuré —
+ou hors sujet — monte au classement :
+
+| Au-dessus de | Il faut | Pourquoi |
+|---|---|---|
+| 70 | être dans le budget | Le critère budget est **pondéré** : il pénalise le dépassement sans l'exclure, et un bien excellent partout ailleurs le compense sans peine. Mesuré : sept des treize premières pépites dépassaient le plafond, jusqu'à +39 %. Un plafond doit être un palier, pas un poids. |
+| 70 | pas de gros travaux | Même raison : `light_works` étant pondéré, une ruine bien placée et bon marché se rattrapait ailleurs. Seuil 0,85 sur le barème du critère — habitable, à rafraîchir et à rénover passent ; gros travaux (0,4) et ruine (0,1) non. **L'état non renseigné ne valide pas non plus**, et c'est 45 % des annonces : le palier coûte cher, c'est assumé. Sur un site fait pour voter, un bien dont on ignore l'état ne se juge pas — comme un bien sans photo. |
+| 75 | trois chambres avérées | Sinon une maison d'une seule pièce finit deuxième. |
+| 78 | un rapport qualité/prix mesuré | Sans surface bâtie il n'y a rien à comparer, et le bien montait précisément parce qu'il était peu mesuré. |
+| 85 | une nature ou un relief avérés | Un critère jamais mesuré ne prouve rien. |
+
+**Les agences de la zone** (`set_ids: [1, 2]` — le set ET le sous-set Léo, sinon les biens
+disparaissent dès qu'on bascule sur le sous-set) : Agence Cévenole, Bauges Immobilier,
+Christine Miranda, Espaces Atypiques Drôme-Ardèche, Diois Immobilier, Orpi Ain Agences.
+
+Sondées et **écartées**, pour mémoire : Groupe Mercure démarre à 1,2 M€ (un réseau de
+prestige n'apporte rien sous 300 k€) ; API Pélussin publie des loyers ; Nestenn Yssingeaux
+et GTI ne donnent pas la commune ; Le Rouge et le Noir est rendu en JavaScript.
 
 ### Zone « Littoral breton » (set 4)
 Terrains et petites maisons d'exception en bord de mer, budget ≤ 400 k€, collectés via
