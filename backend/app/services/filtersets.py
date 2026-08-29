@@ -1,6 +1,6 @@
 """Résolution des sous-sets de filtres (héritage parent → enfant).
 
-Un sous-set (ex. « Léo ») hérite des critères de son parent (« têtard ») et les
+Un sous-set hérite des critères de son parent et les
 surcharge :
 - les champs simples (property_types, prix_max, secteur...) de l'enfant remplacent
   ceux du parent s'ils sont définis ;

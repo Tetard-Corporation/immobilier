@@ -34,7 +34,7 @@ class FilterSet(Base):
     description: Mapped[str | None] = mapped_column(Text, nullable=True)
     # Critères de recherche normalisés (voir schemas.SearchCriteria).
     criteria: Mapped[dict] = mapped_column(JSON, nullable=False, default=dict)
-    # Sous-set : hérite du parent et surcharge ses critères/préférences (ex. têtard -> Léo).
+    # Sous-set : hérite du parent et surcharge ses critères/préférences.
     parent_id: Mapped[int | None] = mapped_column(
         ForeignKey("filter_sets.id", ondelete="CASCADE"), nullable=True
     )
@@ -194,7 +194,7 @@ class SavedListing(Base):
     )
     source: Mapped[str] = mapped_column(String(50), nullable=False)
     external_id: Mapped[str] = mapped_column(String(120), nullable=False)
-    # Set de filtres rattaché (ex. têtard / Léo) : d'où vient ce favori.
+    # Set de filtres rattaché : d'où vient ce favori.
     filter_set_id: Mapped[int | None] = mapped_column(
         ForeignKey("filter_sets.id", ondelete="SET NULL"), nullable=True
     )

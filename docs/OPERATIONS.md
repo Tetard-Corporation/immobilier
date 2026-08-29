@@ -458,7 +458,7 @@ SCRAPER_RATE_LIMIT_MS=3000 python collect_seloger.py --zone ploemeur --dry-run  
 SCRAPER_RATE_LIMIT_MS=3000 python collect_seloger.py                            # collecte + export
 ```
 
-### Zone « têtard » (set 1, sous-set « Léo » id 2)
+### Zone « têtard » (set 1)
 Maison de retrait entre copains — Drôme / Ardèche / Savoie / Ain / Loire / Haute-Loire,
 à moins de 4h porte-à-porte de Paris, **budget ≤ 300 k€** (600 k€ puis 450 k€ en août 2026).
 
@@ -488,8 +488,7 @@ vaut pour son prix, et ce qu'on a devant la porte :
 - **`coin_nature`** et **`relief_mountain`** (poids 4) — « l'accès à la nature/montagne
   grand OUI ». Mesurés, pas devinés dans le texte.
 - **`tranquillite` avec `poids_isolement: 0`** — « mais pas isolé ». Le critère garde le
-  vis-à-vis et le lotissement, il cesse de récompenser le bout du monde. Le sous-set
-  « Léo », lui, garde les poids par défaut : il revendique l'isolement.
+  vis-à-vis et le lotissement, il cesse de récompenser le bout du monde.
 - **`chambres_min` (min 3)** — « 3/4 chambres ». Le critère se replie sur les pièces puis
   sur la surface : sans ce repli il était `n/a` sur la moitié des annonces, donc neutre,
   et une maison d'**une seule pièce** est arrivée deuxième du classement.
@@ -505,8 +504,7 @@ ou hors sujet — monte au classement :
 | 78 | un rapport qualité/prix mesuré | Sans surface bâtie il n'y a rien à comparer, et le bien montait précisément parce qu'il était peu mesuré. |
 | 85 | une nature ou un relief avérés | Un critère jamais mesuré ne prouve rien. |
 
-**Les agences de la zone** (`set_ids: [1, 2]` — le set ET le sous-set Léo, sinon les biens
-disparaissent dès qu'on bascule sur le sous-set) : Agence Cévenole, Bauges Immobilier,
+**Les agences de la zone** (`set_ids: [1]`) : Agence Cévenole, Bauges Immobilier,
 Christine Miranda, Espaces Atypiques Drôme-Ardèche, Diois Immobilier, Orpi Ain Agences.
 
 Sondées et **écartées**, pour mémoire : Groupe Mercure démarre à 1,2 M€ (un réseau de

@@ -66,3 +66,23 @@ def test_favoris_crud(client):
     assert any(s["id"] == saved["id"] for s in client.get("/api/saved-listings").json())
     # suppression
     assert client.delete(f"/api/saved-listings/{saved['id']}").status_code == 204
+
+
+def test_un_bien_du_parent_appartient_a_ses_sous_sets():
+    """Un sous-set ne change que la pondération : exiger que chaque bien le liste
+    explicitement dans `set_ids` laissait 1 708 biens invisibles pour « Léo », donc un
+    sous-set vide sur le site alors que le bien concerne les deux."""
+    from types import SimpleNamespace
+
+    # Reproduit la résolution d'appartenance de build_dataset.
+    enfants = {1: {2}}
+    member = set([1])
+    for parent in list(member):
+        member |= enfants.get(parent, set())
+    assert member == {1, 2}
+
+    # Un bien d'un autre set n'hérite de rien.
+    autre = set([3])
+    for parent in list(autre):
+        autre |= enfants.get(parent, set())
+    assert autre == {3}

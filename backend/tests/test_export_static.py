@@ -182,3 +182,23 @@ def test_dedupe_preserve_les_biens_deja_publies():
     # Avec une identité déjà publiée, c'est elle qui reste — le lien des votes tient.
     garde = _dedupe_rows([complet, publie], preserver={("leboncoin", "PUBLIE")})
     assert len(garde) == 1 and garde[0].external_id == "PUBLIE"
+
+
+def test_zone_du_set_filtre_sans_toucher_aux_biens():
+    """La zone appartient au SET, pas aux biens. Le réflexe inverse — retirer le set des
+    biens hors zone — se retourne contre soi : `set_ids` vide signifie « noté pour TOUS
+    les sets », si bien que retirer 2 579 biens du set têtard les a fait noter aussi pour
+    Pauline et la Bretagne."""
+    from app.services.export_static import _dans_la_zone
+
+    est = _row_factice(latitude=45.652, longitude=6.190)      # La Compôte (73)
+    ouest = _row_factice(latitude=45.439, longitude=4.387)    # Saint-Étienne (42)
+    sans_geo = _row_factice(latitude=None, longitude=None)
+    zone = {"est_axe_lyon_valence": True}
+
+    assert _dans_la_zone(est, zone) is True
+    assert _dans_la_zone(ouest, zone) is False
+    # Géoloc manquante : on n'écarte pas un bien sur une mesure absente.
+    assert _dans_la_zone(sans_geo, zone) is True
+    # Set sans zone déclarée : tout passe.
+    assert _dans_la_zone(ouest, None) is True and _dans_la_zone(ouest, {}) is True
