@@ -34,7 +34,7 @@ NUISANCES = "nuisances"
 MITOYEN = "mitoyen"
 
 _POSITIVE_KEYWORDS: dict[str, list[str]] = {
-    # Vue DÉGAGÉE / PANORAMIQUE : un champ de vision large, sans obstacle (critère "Léo").
+    # Vue DÉGAGÉE / PANORAMIQUE : un champ de vision large, sans obstacle.
     VUE_PANORAMIQUE: [
         "vue panoramique",
         "panorama",

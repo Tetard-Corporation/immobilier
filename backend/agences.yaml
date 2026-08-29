@@ -6,35 +6,35 @@
 # bien pour TOUS les sets : une ferme ardéchoise apparaissait dans le set breton.
 agences:
   - nom: "Agence Cévenole"        # plateau Vivarais-Lignon / nord-Ardèche (07/43)
-    set_ids: [1, 2]          # le set têtard ET le sous-set « Léo »
+    set_ids: [1]
     departements: [26, 7, 73, 1, 42, 43]
     sites:
       - https://www.agencecevenole.com/ventes-fermes-et-maisons-en-pierres-w1
   - nom: "Bauges Immobilier"      # massif des Bauges (Savoie 73)
-    set_ids: [1, 2]          # le set têtard ET le sous-set « Léo »
+    set_ids: [1]
     departements: [26, 7, 73, 1, 42, 43]
     sites:
       - https://bauges-immobilier.com/fr/ventes
   - nom: "Christine Miranda"      # Drôme provençale / Baronnies (26) - biens de caractère
     # ⚠ Son parser dédié ressort 11 biens à 0 € sans commune : rien n'entre en base
     # (l'ingestion exige prix ET commune). À réparer ou à retirer.
-    set_ids: [1, 2]          # le set têtard ET le sous-set « Léo »
+    set_ids: [1]
     departements: [26, 7, 73, 1, 42, 43]
     sites:
       - https://www.christinemiranda.com/
   - nom: "Espaces Atypiques Drôme-Ardèche"   # biens de caractère, réseau national
-    set_ids: [1, 2]          # le set têtard ET le sous-set « Léo »
+    set_ids: [1]
     departements: [26, 7, 73, 1, 42, 43]
     sites:
       - https://www.espaces-atypiques.com/immobilier/acheter-un-bien-immobilier-dans-la-drome/
       - https://www.espaces-atypiques.com/immobilier/acheter-un-bien-immobilier-en-ardeche/
   - nom: "Diois Immobilier"       # Die, Haut-Diois, Vercors sud (26) — 45 biens, 44-128 k€
-    set_ids: [1, 2]          # le set têtard ET le sous-set « Léo »
+    set_ids: [1]
     departements: [26, 7, 73, 1, 42, 43]
     sites:
       - https://www.dioisimmobilier.com/annonces-vente.php
   - nom: "Orpi Ain Agences"       # plateau d'Hauteville, Bugey (01)
-    set_ids: [1, 2]          # le set têtard ET le sous-set « Léo »
+    set_ids: [1]
     departements: [26, 7, 73, 1, 42, 43]
     sites:
       - https://www.orpi.com/ainagenceshauteville/acheter/biens-en-vente

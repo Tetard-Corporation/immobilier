@@ -103,7 +103,7 @@ function visibleBiens() {
   let list = (DATA.biens || []).filter((b) => {
     // Appartenance au set : on ne montre (liste ET carte) que les biens rattachés au
     // set courant (= qui ont un score pour ce set). Ainsi le set "Pauline" (Finistère)
-    // n'affiche pas les biens montagne de têtard/Léo, et inversement.
+    // n'affiche pas les biens montagne de têtard, et inversement.
     if (matchOf(b, currentSetId) == null) return false;
     // Favoris : perso (Supabase) si identifié, sinon repli sur les favoris curatés du dataset.
     if (favOnly) {

@@ -11,7 +11,7 @@ produit par le backend. Hébergeable gratuitement sur GitHub Pages.
 - **Mode Scroll** : feed des biens de l'historique (dédoublonnés), galerie photo
   balayable directement (scroll tactile / flèches).
 - **Mode Carte** : Leaflet + OpenStreetMap, marqueurs colorés selon le match du set.
-- **Tri & filtres** : par set / sous-set (têtard, ↳ Léo), score min, favoris.
+- **Tri & filtres** : par set (têtard, Pauline, Littoral breton), score min, favoris.
 - **Clic sur un bien** : tableau comparatif des scores — match par critère et par
   set (sous-score + texte explicatif) + détail du score d'investissement (piliers).
 
