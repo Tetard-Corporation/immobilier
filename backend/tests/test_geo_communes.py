@@ -28,3 +28,18 @@ def test_commune_zone_id_desambigue_par_proximite():
     ]
     zid = src._commune_zone_id({"nom": "École", "code": "73106", "lat": 45.6276, "lon": 6.1816})
     assert zid == "-103519"  # retient le proche, pas l'homonyme parisien
+
+
+def test_code_insee_depuis_nom_et_code_postal():
+    """Tous les portails ne donnent pas le code INSEE : Leboncoin renvoie un libellé
+    (« Chalencon 07240 »). Sans code, la fibre ne se résout pas — elle y est indexée — et
+    le dédoublonnage inter-sources échoue. Mesuré : 1 430 biens sur 1 580 sans fibre."""
+    from app.services.geo_communes import code_insee
+
+    assert code_insee("Chalencon", "07240") == "07048"
+    assert code_insee("Le Bessat", "42660") == "42017"
+    # Les accents et les tirets ne doivent pas faire échouer la correspondance.
+    assert code_insee("chalencon", "07240") == "07048"
+    # Sans code postal, on ne devine pas : des dizaines de communes portent le même nom.
+    assert code_insee("Chalencon", None) is None
+    assert code_insee(None, None) is None
