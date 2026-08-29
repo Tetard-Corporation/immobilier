@@ -119,3 +119,33 @@ def main_commune_for_postcode(code_postal: str) -> dict | None:
     plus peuplée, où se concentrent les annonces."""
     communes = communes_for_postcode(code_postal)
     return communes[0] if communes else None
+
+
+def _sans_accents(txt: str) -> str:
+    import unicodedata
+    base = unicodedata.normalize("NFD", (txt or "").lower())
+    return "".join(c for c in base if unicodedata.category(c) != "Mn").replace("-", " ").strip()
+
+
+def code_insee(commune: str | None, code_postal: str | None) -> str | None:
+    """Code INSEE d'une commune depuis son NOM et son code postal.
+
+    Nécessaire parce que tous les portails ne donnent pas le code : Leboncoin renvoie un
+    libellé (« Chalencon 07240 ») là où le modèle attend un code INSEE. Sans lui, la
+    fibre ne se résout pas (elle est indexée par code INSEE) et le dédoublonnage
+    inter-sources échoue — mesuré : 1 430 biens sur 1 580.
+
+    Le nom seul ne suffit pas (des dizaines de communes s'appellent Saint-Martin), le
+    code postal seul non plus (un CP rural couvre jusqu'à vingt communes) : il faut les
+    deux, et on retombe sur la plus peuplée du CP si le nom ne correspond à aucune.
+    """
+    if not code_postal:
+        return None
+    candidates = communes_for_postcode(code_postal)
+    if not candidates:
+        return None
+    cible = _sans_accents(commune or "")
+    for c in candidates:
+        if _sans_accents(c.get("nom")) == cible:
+            return c.get("code")
+    return candidates[0].get("code") if cible else None

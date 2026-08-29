@@ -653,6 +653,83 @@ def _seuils_pepites(min_match_score: float | None, primary_set_id: int | None,
     return seuils
 
 
+# Champs qui font la complétude d'une ligne : entre deux copies du même bien, on garde
+# celle qui en renseigne le plus. Pas la mieux notée — ce serait choisir le score le plus
+# flatteur plutôt que le plus fiable. Mesuré sur un doublon réel (Villes, 01) : la copie
+# complète notait 78,0 et la copie lacunaire 84,0, parce qu'un bien peu mesuré est jugé
+# sur les seuls critères qu'on a pu lui appliquer.
+def _round_or_none(value, base: int):
+    return None if value is None else int(round(value / base) * base)
+
+
+_COMPLETUDE = ("nb_chambres", "nb_pieces", "surface_bati", "surface_terrain", "dpe_classe",
+               "condition", "code_commune", "latitude", "description")
+
+
+def _completude(row) -> tuple:
+    renseignes = sum(1 for c in _COMPLETUDE if getattr(row, c, None) is not None)
+    return (renseignes, len(row.description or ""), len(_photo_urls(row)))
+
+
+def _dedupe_rows(rows: list, log=None, preserver: set | None = None) -> list:
+    """Une seule ligne par bien réel, toutes sources confondues.
+
+    Le dédoublonnage existait déjà, mais uniquement dans l'API de recherche live — jamais
+    à l'export, qui est pourtant ce qui produit le site. Résultat : le même bien vu par
+    Leboncoin ET bienici occupait deux places dans les pépites publiées, avec deux scores
+    différents (Chalencon apparaissait trois fois).
+
+    Le prix entre dans la clé, arrondi à 2 % : deux annonces du même bien portent en
+    pratique le même prix, alors que deux maisons voisines de surfaces comparables — que
+    la géo à 110 m près ne distingue pas — n'ont aucune raison d'être au même euro.
+    """
+    # Identités déjà publiées : elles GAGNENT le duel, quelle que soit leur complétude.
+    # Les votes du groupe sont attachés au couple (source, external_id) : fusionner une
+    # copie publiée dans une autre la ferait disparaître du site et emporterait ses votes.
+    # Vécu : le set breton est passé de 12 à 11 pépites et Pauline de 162 à 120 biens au
+    # premier export dédoublonné.
+    preserver = preserver or set()
+
+    def _cle(row) -> tuple:
+        # La commune, pas les coordonnées. L'empreinte de `dedup.py` géolocalise à 110 m
+        # près, ce qui suffit à séparer deux annonces du MÊME bien : les portails ne le
+        # placent pas au même endroit (Bien'ici floute), et Chalencon est resté deux fois
+        # dans les pépites pour 100 m d'écart. La commune tolère ce flou, et les surfaces
+        # + le prix (second temps) referment la porte : deux maisons de 140 m² au même
+        # euro dans la même commune sont le même bien.
+        return (row.code_commune or row.commune or "",
+                (row.type_bien or "").lower(),
+                _round_or_none(row.surface_bati, 10),
+                _round_or_none(row.surface_terrain, 100))
+
+    groupes: dict[tuple, list] = {}
+    for row in rows:
+        groupes.setdefault(_cle(row), []).append(row)
+
+    gardes, fusionnes = [], 0
+    for membres in groupes.values():
+        # Deuxième temps : à empreinte égale, on ne fusionne que les prix voisins. Une
+        # tranche de prix dans la clé aurait séparé deux annonces au bord de la tranche
+        # (152 400 et 152 600 €), ce qui est le contraire du but.
+        restants = sorted(membres,
+                          key=lambda r: ((r.source, r.external_id) in preserver, _completude(r)),
+                          reverse=True)
+        while restants:
+            chef = restants.pop(0)
+            gardes.append(chef)
+            if chef.prix is None:
+                continue
+            proches = [r for r in restants
+                       if r.prix is not None and abs(r.prix - chef.prix) <= 0.02 * chef.prix]
+            for r in proches:
+                restants.remove(r)
+            fusionnes += len(proches)
+    if fusionnes and log:
+        log(f"dédoublonnage : {fusionnes} doublons inter-sources fusionnés "
+            f"({len(rows)} lignes -> {len(gardes)} biens)")
+    return gardes
+
+
 def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = False,
                   min_match_score: float | None = None, primary_set_id: int | None = None,
                   pepites: dict | None = None, conserver: dict | None = None) -> dict:
@@ -715,6 +792,9 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
         .order_by(Listing.score.isnot(None).desc(), Listing.score.desc())
         .all()
     )
+    rows = _dedupe_rows(rows, log=lambda m: print(m, flush=True),
+                        preserver=_biens_publies(os.path.join(out_dir, "data.json"))
+                        if out_dir else set())
     for row in rows:
         # Types conservés mais fortement déclassés (renvoyés en fond de classement) :
         # viager/nue-propriété (prix = bouquet, occupé) et résidence de tourisme sous

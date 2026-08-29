@@ -123,3 +123,62 @@ def test_conserver_republie_un_set_a_l_identique():
     # Le set gouverné par un seuil continue de l'être.
     assert _passes_pepites_gate({"1": {"match_score": 86.0}}, {1, 2}, seuils, garder, ("x", "y")) is True
     assert _passes_pepites_gate({"1": {"match_score": 84.0}}, {1, 2}, seuils, garder, ("x", "y")) is False
+
+
+def _row_factice(**kw):
+    from types import SimpleNamespace
+    base = dict(source="bienici", external_id="A", type_bien="maison", prix=149000.0,
+                latitude=44.87, longitude=4.62, surface_bati=140.0, surface_terrain=None,
+                nb_pieces=6, nb_chambres=3, dpe_classe="d", condition="renover",
+                code_commune="07048", commune="Chalencon", description="x" * 200, raw={})
+    base.update(kw)
+    return SimpleNamespace(**base)
+
+
+def test_dedupe_export_fusionne_les_doublons_inter_sources():
+    """Le dédoublonnage existait, mais seulement dans l'API de recherche live — jamais à
+    l'export, qui produit pourtant le site. Chalencon occupait trois places dans les
+    pépites publiées."""
+    from app.services.export_static import _dedupe_rows
+
+    bienici = _row_factice(source="bienici", external_id="iad-france-853388")
+    # Les portails ne géolocalisent pas au même endroit : 100 m d'écart suffisaient à
+    # casser l'empreinte, et Chalencon restait deux fois dans les pépites.
+    leboncoin = _row_factice(source="leboncoin", external_id="3173025025",
+                             latitude=44.8712, longitude=4.6215,
+                             nb_chambres=None, description="y" * 90)
+    gardes = _dedupe_rows([bienici, leboncoin])
+    assert len(gardes) == 1
+    # On garde la copie la PLUS COMPLÈTE, pas la mieux notée : un bien peu mesuré est
+    # jugé sur les seuls critères qu'on a pu lui appliquer, donc il note plus haut.
+    assert gardes[0].source == "bienici"
+
+
+def test_dedupe_export_ne_fusionne_pas_deux_biens_voisins():
+    """La géo à 110 m près ne distingue pas deux maisons mitoyennes de surfaces
+    comparables. Le prix entre donc dans la clé : deux annonces du même bien portent le
+    même prix, deux maisons voisines n'ont aucune raison d'être au même euro."""
+    from app.services.export_static import _dedupe_rows
+
+    a = _row_factice(external_id="A", prix=149000.0)
+    b = _row_factice(external_id="B", prix=228000.0)
+    assert len(_dedupe_rows([a, b])) == 2
+    # Un écart de prix minime (arrondi de portail) reste un doublon.
+    c = _row_factice(source="leboncoin", external_id="C", prix=149500.0)
+    assert len(_dedupe_rows([a, c])) == 1
+
+
+def test_dedupe_preserve_les_biens_deja_publies():
+    """Les votes du groupe sont attachés au couple (source, external_id) : fusionner une
+    copie publiée dans une autre la ferait disparaître du site et emporterait ses votes.
+    Vécu : le set breton est passé de 12 à 11 pépites au premier export dédoublonné."""
+    from app.services.export_static import _dedupe_rows
+
+    complet = _row_factice(source="bienici", external_id="COMPLET")
+    publie = _row_factice(source="leboncoin", external_id="PUBLIE", latitude=44.8712,
+                          nb_chambres=None, description="court")
+    # Sans consigne, la copie la plus complète gagne.
+    assert _dedupe_rows([complet, publie])[0].external_id == "COMPLET"
+    # Avec une identité déjà publiée, c'est elle qui reste — le lien des votes tient.
+    garde = _dedupe_rows([complet, publie], preserver={("leboncoin", "PUBLIE")})
+    assert len(garde) == 1 and garde[0].external_id == "PUBLIE"

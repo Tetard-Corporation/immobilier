@@ -12,6 +12,7 @@ from __future__ import annotations
 from ..schemas import SearchCriteria
 from ..services.enrich import annotate
 from ..services.filters import matches
+from ..services.geo_communes import code_insee
 from .base import NormalizedListing, SearchResult
 from .scraper import ScraperSource
 
@@ -125,7 +126,11 @@ class LeboncoinSource(ScraperSource):
             adresse=ad.get("subject"),
             commune=loc.get("city"),
             code_postal=loc.get("zipcode"),
-            code_commune=loc.get("city_label"),
+            # `city_label` est un LIBELLÉ (« Chalencon 07240 »), pas un code INSEE — et le
+            # modèle attend un code : la fibre y est indexée, le dédoublonnage s'en sert.
+            # Mesuré avant correction : 1 430 biens leboncoin sur 1 580 sans fibre
+            # résolue, contre 2 295/2 295 côté bienici.
+            code_commune=code_insee(loc.get("city"), loc.get("zipcode")),
             departement=loc.get("department_id") or loc.get("department_name"),
             latitude=_num(loc.get("lat")),
             longitude=_num(loc.get("lng")),
