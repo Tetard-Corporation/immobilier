@@ -1,4 +1,4 @@
-"""Set « têtard » (id 1) et son sous-set « Léo » (id 2) : maison de retrait entre copains.
+"""Set « têtard » (id 1) : maison de retrait entre copains.
 
 Refonte des critères + collecte, dans l'esprit de ce qui a été fait sur le littoral
 breton. Ce que le groupe a tranché, et ce que le score en fait :
@@ -39,10 +39,11 @@ from app.sources.bienici import BienIciSource
 
 SET_ID = 1
 SET_NAME = "têtard"
-SET_DESC = ("Maison de retrait entre copains — Drôme / Ardèche / Savoie / Ain, à moins de "
-            "4h porte-à-porte de Paris. Pépite : bon rapport qualité/prix, 3 chambres ou "
-            "plus, peu de travaux, la montagne et la nature à la porte — mais un village "
-            "vivant autour, pas le bout du monde. ≤ 300 k€.")
+SET_DESC = ("Maison de retrait entre copains — Alpes et Préalpes, à l'EST de l'axe "
+            "Lyon-Valence (Isère, Savoie, Haute-Savoie, Hautes-Alpes, Bugey, Diois et "
+            "Vercors), à moins de 4h porte-à-porte de Paris. Pépite : bon rapport "
+            "qualité/prix, 3 chambres ou plus, habitable ou à rafraîchir, la montagne à "
+            "la porte — mais un village vivant autour. ≤ 300 k€.")
 
 SOUS_SET_ID = 2
 SOUS_SET_NAME = "Léo"
@@ -116,17 +117,19 @@ EXIGENCES = [
     {
         # « Pas de gros travaux » est un PLANCHER, au même titre que le budget. Le critère
         # `light_works` étant pondéré, une ruine bien placée et bon marché se rattrapait
-        # ailleurs. Seuil 0,85 = le barème de `light_works` : habitable (1,0), à rafraîchir
-        # (1,0) et à rénover (0,85) passent ; gros travaux (0,4) et ruine (0,1) non.
+        # ailleurs. Seuil 0,95 sur le barème de `light_works` : seuls habitable (1,0) et
+        # à rafraîchir (1,0) passent. « À rénover » (0,85) est écarté — le groupe l'a
+        # tranché après avoir vu les pépites : rénover est synonyme de gros travaux, donc
+        # ce n'est pas une pépite.
         #
         # L'état non renseigné ne valide pas non plus — c'est 45 % des annonces, donc le
         # palier coûte cher. C'est assumé : sur un site fait pour voter, un bien dont on
         # ignore l'état ne se juge pas, exactement comme un bien sans photo.
         "above": 70,
-        "label": "Pas de gros travaux (requis au-dessus de 70)",
+        "label": "Habitable ou à rafraîchir (requis au-dessus de 70)",
         "requires": ["light_works"],
         "mode": "all",
-        "min_subscore": 0.85,
+        "min_subscore": 0.95,
     },
     {
         "above": 75,
@@ -154,6 +157,14 @@ EXIGENCES = [
     },
 ]
 
+# Pivots de collecte : les parties MONTAGNE des départements déjà couverts par le set
+# (26, 07, 73, 01, 43, 42), toutes à moins de 4h porte-à-porte de Paris. La zone ne
+# change pas ; ce sont les points de départ qui quittent la vallée du Rhône, d'où venait
+# la majorité du haut de classement précédent (Châteauneuf-sur-Isère, 154 m).
+# Le porte-à-porte depuis Paris est mesuré, pas supposé : chacun de ces pivots est sous
+# les 4h (Vercors 3h04, Trièves 3h21, Chartreuse 3h29, Oisans 3h39, Aravis 3h53, Gap 3h54,
+# Maurienne 3h59). Tarentaise, Beaufortain, Chablais et Briançonnais dépassent (4h07 à
+# 4h23) et sont donc écartés — ils seraient notés bas par le critère de toute façon.
 # Sous-set « Léo » : seules les DIFFÉRENCES avec le parent (fusion par `kind`).
 PREFERENCES_LEO = [
     {"kind": "relief_mountain", "weight": 5, "label": "Montagne / relief", "params": {"ref_altitude": 800}},
@@ -163,26 +174,21 @@ PREFERENCES_LEO = [
     {"kind": "feature", "weight": 3, "label": "Vue panoramique", "params": {"name": "vue_panoramique"}},
 ]
 
-# Pivots de collecte : les parties MONTAGNE des départements déjà couverts par le set
-# (26, 07, 73, 01, 43, 42), toutes à moins de 4h porte-à-porte de Paris. La zone ne
-# change pas ; ce sont les points de départ qui quittent la vallée du Rhône, d'où venait
-# la majorité du haut de classement précédent (Châteauneuf-sur-Isère, 154 m).
+
+# À l'EST de l'axe Lyon-Valence, uniquement. Le premier jeu de pépites était posé autour
+# de Saint-Étienne : le rapport qualité/prix, critère de tête, favorise mécaniquement les
+# secteurs les moins chers, et l'Ardèche, la Loire et la Haute-Loire le sont. Le groupe a
+# donc resserré sur les Alpes et leurs avant-pays.
+#
 # Le porte-à-porte depuis Paris est mesuré, pas supposé : chacun de ces pivots est sous
 # les 4h (Vercors 3h04, Trièves 3h21, Chartreuse 3h29, Oisans 3h39, Aravis 3h53, Gap 3h54,
 # Maurienne 3h59). Tarentaise, Beaufortain, Chablais et Briançonnais dépassent (4h07 à
-# 4h23) et sont donc écartés — ils seraient notés bas par le critère de toute façon.
+# 4h23) et sont donc écartés.
 PIVOTS = [
-    # Préalpes et vallées du Rhône (zone historique)
+    # Préalpes drômoises (à l'est du Rhône)
     ("Diois / Die", 44.754, 5.370, ["26"]),
     ("Vercors drômois / La Chapelle-en-Vercors", 44.968, 5.415, ["26"]),
-    ("Haut-Vivarais / Lamastre", 44.985, 4.580, ["07"]),
-    ("Cévennes ardéchoises / Antraigues-Aubenas", 44.730, 4.390, ["07"]),
-    ("Mézenc / Le Monastier-sur-Gazeille", 44.940, 4.000, ["43"]),
-    ("Pilat / Bourg-Argental", 45.330, 4.560, ["42", "07"]),
-    ("Bugey / Hauteville-Lompnes", 45.980, 5.600, ["01"]),
-    # Alpes — c'est ce que le groupe a demandé après avoir vu un premier jeu entièrement
-    # posé autour de Saint-Étienne : le rapport qualité/prix, critère de tête, favorise
-    # mécaniquement les secteurs les moins chers, et la haute montagne en fait les frais.
+    # Alpes
     ("Chartreuse / Saint-Pierre", 45.335, 5.820, ["38", "73"]),
     ("Vercors isérois / Villard-de-Lans", 45.070, 5.553, ["38"]),
     ("Trièves / Mens", 44.815, 5.750, ["38"]),
@@ -193,18 +199,24 @@ PIVOTS = [
     ("Maurienne / Saint-Jean", 45.276, 6.352, ["73"]),
     ("Aravis-Bornes / Thônes", 45.881, 6.325, ["74"]),
     ("Dévoluy / Gap", 44.620, 5.995, ["05"]),
+    ("Bugey / Hauteville-Lompnes", 45.980, 5.600, ["01"]),
 ]
 
 
 def ensure_sets(db) -> None:
-    criteria = {"property_types": ["maison"], "preferences": PREFERENCES, "exigences": EXIGENCES}
+    criteria = {"property_types": ["maison"], "preferences": PREFERENCES,
+                "exigences": EXIGENCES,
+                # La zone appartient au set : elle se réapplique à chaque export sans
+                # qu'il faille repasser sur la base, et un bien collecté à l'ouest par
+                # une future recherche est écarté tout seul.
+                "zone": {"est_axe_lyon_valence": True}}
     fs = db.get(FilterSet, SET_ID)
     if fs is None:
         db.add(FilterSet(id=SET_ID, name=SET_NAME, description=SET_DESC, criteria=criteria))
     else:
         fs.name, fs.description, fs.criteria = SET_NAME, SET_DESC, criteria
-
-    # Le sous-set ne porte que ses différences : le reste (dont les paliers) est hérité.
+    # Le sous-set ne porte que ses différences : le reste (dont la zone et les paliers)
+    # est hérité par `resolve_criteria`.
     sous = db.get(FilterSet, SOUS_SET_ID)
     criteria_leo = {"preferences": PREFERENCES_LEO}
     if sous is None:
@@ -215,8 +227,8 @@ def ensure_sets(db) -> None:
             SOUS_SET_NAME, SOUS_SET_DESC, criteria_leo, SET_ID)
     db.commit()
     print(f"Sets prêts : « {SET_NAME} » ({len(PREFERENCES)} critères, {len(EXIGENCES)} paliers, "
-          f"≤{PRIX_MAX // 1000}k) et « {SOUS_SET_NAME} » ({len(PREFERENCES_LEO)} surcharges).",
-          flush=True)
+          f"≤{PRIX_MAX // 1000}k, est du Rhône) et « {SOUS_SET_NAME} » "
+          f"({len(PREFERENCES_LEO)} surcharges).", flush=True)
 
 
 def _seuils(texte: str | None) -> dict:
@@ -261,6 +273,16 @@ def main() -> int:
     ap.add_argument("--from-dump", default="", dest="from_dump",
                     help="repart d'un dump au lieu de recollecter (entonnoir + "
                          "enrichissement seuls).")
+    ap.add_argument("--departements", default="",
+                    help="n'enrichir que ces départements (ex. « 38,74,05 »). L'entonnoir "
+                         "classe par note d'annonce, qui favorise le rapport qualité/prix "
+                         "donc les secteurs bon marché : sans ce filtre, une zone chère "
+                         "n'est jamais enrichie même quand elle est collectée.")
+    ap.add_argument("--est-du-rhone", action="store_true", dest="est_du_rhone",
+                    help="n'enrichir que les annonces à l'EST de l'axe Lyon-Valence. "
+                         "L'entonnoir classe par note d'annonce, qui favorise le rapport "
+                         "qualité/prix donc les secteurs bon marché : sans ce filtre, un "
+                         "dump mêlant les deux rives n'enrichit presque que l'ouest.")
     ap.add_argument("--pepites", default="",
                     help="resserrage à l'export : « 1:78.5,4:80 ». La base garde tout le "
                          "catalogue de chaque set ; sans ce filtre, l'export republie "
@@ -364,6 +386,21 @@ def _traiter(db, args, collected: dict, pepites: dict) -> int:
     from app.models import Listing
     from app.services.entonnoir import appliquer as entonnoir
 
+    if args.departements:
+        vises = {d.strip().zfill(2) for d in args.departements.split(",") if d.strip()}
+        avant = len(collected)
+        collected = {k: v for k, v in collected.items()
+                     if str(getattr(v, "departement", "") or "").zfill(2) in vises}
+        print(f"\nFiltre départements {sorted(vises)} : {len(collected)}/{avant} annonces", flush=True)
+
+    if args.est_du_rhone:
+        from app.services.geo import est_a_lest_du_rhone
+        avant = len(collected)
+        collected = {k: v for k, v in collected.items()
+                     if est_a_lest_du_rhone(getattr(v, "latitude", None),
+                                            getattr(v, "longitude", None)) is not False}
+        print(f"\nÀ l'est de l'axe Lyon-Valence : {len(collected)}/{avant} annonces", flush=True)
+
     print(f"\nEntonnoir sur {len(collected)} annonces :", flush=True)
     todo = entonnoir(list(collected.values()), profil="montagne",
                      min_altitude=args.min_altitude or None, prix_max=PRIX_MAX,
@@ -385,7 +422,7 @@ def _traiter(db, args, collected: dict, pepites: dict) -> int:
 
     for it in enriched:
         row = upsert_listing(db, it)
-        row.set_ids = [SET_ID, SOUS_SET_ID]
+        row.set_ids = [SET_ID]
     db.commit()
     print(f"\nEn base : {db.query(Listing).count()} biens.", flush=True)
 

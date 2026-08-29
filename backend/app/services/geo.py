@@ -180,3 +180,30 @@ def porte_a_porte_min(lat: float, lon: float, hubs: dict | None = None) -> int |
         if best is None or total < best:
             best = total
     return round(best) if best is not None else None
+
+
+# Axe Lyon – Valence : la vallée du Rhône, frontière ouest du set têtard. Le groupe a
+# demandé de resserrer à l'EST après un premier jeu de pépites posé autour de
+# Saint-Étienne. L'axe est quasi méridien, donc on interpole simplement sa longitude à la
+# latitude du point : une droite entre les deux villes, prolongée au nord et au sud.
+_LYON = (45.764, 4.835)
+_VALENCE = (44.933, 4.892)
+
+
+def longitude_axe_rhone(lat: float) -> float:
+    """Longitude de l'axe Lyon-Valence à cette latitude."""
+    (lat_n, lon_n), (lat_s, lon_s) = _LYON, _VALENCE
+    pente = (lon_n - lon_s) / (lat_n - lat_s)
+    return lon_s + (lat - lat_s) * pente
+
+
+def est_a_lest_du_rhone(lat: float | None, lon: float | None) -> bool | None:
+    """Le point est-il à l'est de l'axe Lyon-Valence ? None si la géoloc manque.
+
+    Un filtre par DÉPARTEMENT ne conviendrait pas : la Drôme est coupée en deux par
+    l'axe — le Diois et le Vercors drômois sont à l'est, la vallée du Rhône à l'ouest —
+    et l'Ain aussi. La ligne tranche là où la géographie tranche.
+    """
+    if lat is None or lon is None:
+        return None
+    return lon > longitude_axe_rhone(lat)

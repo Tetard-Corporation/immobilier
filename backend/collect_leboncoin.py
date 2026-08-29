@@ -24,14 +24,26 @@ from app.sources.leboncoin import LeboncoinSource, _APP_TO_RET
 
 # --- Zones -> (zips, set_ids, types, prix_max) --------------------------------
 PAULINE_ZIPS = ["29600", "29250", "29252", "29660", "29630", "29241", "29670", "29610"]
-TETARD_ZIPS = ["26110", "01200", "07270", "26150", "73340", "73630", "73100", "07200",
-    "26300", "73410", "07140", "07110", "26230", "26320", "26340", "26750", "43430",
-    "43520", "73000", "73240", "73460", "07410", "07600", "26130", "26170", "73220",
-    "73250", "73390", "07120", "07240", "07260", "07380", "07320", "07460", "01630",
-    "07400", "26140", "26200", "26390", "26400", "26460", "26500", "26510", "26740",
-    "42560", "42750", "43190", "43200", "48800", "73130", "73420", "73520", "73800",
-    "07190", "07170", "07800", "07150", "07210", "07230", "01260", "07430", "07530",
-    "07440", "01550", "07360", "07160", "07330"]
+TETARD_ZIPS = [
+    # À l'EST de l'axe Lyon-Valence uniquement (cf. collect_tetard.PIVOTS). L'Ardèche, la
+    # Loire et la Haute-Loire sont sorties du set : le groupe a resserré sur les Alpes
+    # après un premier jeu de pépites entièrement posé autour de Saint-Étienne.
+    # Isère : Vercors, Chartreuse, Trièves, Matheysine, Oisans, Belledonne, Grésivaudan
+    "38250", "38112", "38880", "38650", "38450", "38220", "38520", "38860", "38142",
+    "38580", "38830", "38190", "38570", "38660", "38380", "38134", "38700", "38410",
+    "38160", "38470", "38350", "38119", "38930", "38710",
+    # Savoie : Bauges, Maurienne, avant-pays
+    "73340", "73630", "73100", "73410", "73000", "73240", "73460", "73220", "73250",
+    "73390", "73130", "73420", "73520", "73800", "73110", "73300", "73140",
+    # Haute-Savoie : Aravis, Bornes
+    "74230", "74450", "74220", "74210", "74430", "74440", "74260", "74340",
+    # Hautes-Alpes : Dévoluy, Gap, Champsaur
+    "05000", "05400", "05500", "05250", "05800", "05260",
+    # Ain : Bugey
+    "01200", "01630", "01260", "01550", "01110", "01300",
+    # Drôme EST : Diois, Vercors drômois, Baronnies
+    "26150", "26110", "26310", "26410", "26420", "26340", "26400", "26460", "26510",
+    "26170", "26130", "26230", "26220"]
 
 # Zone « Ploemeur » (set 4) : Ploemeur + littoral morbihannais / finistérien sud.
 # Codes postaux déduits des biens bienici déjà collectés sur ce set, complétés par

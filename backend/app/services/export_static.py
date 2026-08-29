@@ -614,6 +614,29 @@ def _biens_publies(chemin: str) -> set:
     return {(b.get("source"), b.get("external_id")) for b in data.get("biens", [])}
 
 
+def _dans_la_zone(row, zone: dict | None) -> bool:
+    """Le bien tombe-t-il dans la zone géographique déclarée par le set ?
+
+    La zone appartient au SET, pas aux biens. Le réflexe inverse — retirer le set des
+    biens hors zone — se retourne contre soi : `set_ids` vide signifie « noté pour TOUS
+    les sets » (rétro-compatibilité des agences), si bien que retirer un bien du set
+    têtard le faisait noter pour têtard, Pauline ET la Bretagne. Vécu sur 2 579 biens.
+
+    Déclarée ici, la zone se réapplique d'elle-même à chaque collecte, sans qu'il faille
+    repasser sur la base.
+    """
+    if not zone:
+        return True
+    if zone.get("est_axe_lyon_valence"):
+        from .geo import est_a_lest_du_rhone
+
+        cote = est_a_lest_du_rhone(row.latitude, row.longitude)
+        # Géoloc manquante : on ne retire pas un bien sur une mesure absente.
+        if cote is False:
+            return False
+    return True
+
+
 def _passes_pepites_gate(scores_by_set: dict, member: set, seuils: dict,
                          conserver: dict | None = None, cle: tuple | None = None) -> bool:
     """Filtre « pépites » : un bien n'est gardé que s'il tient le seuil de CHAQUE set
@@ -748,6 +771,12 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
         .all()
     )
     seuils = _seuils_pepites(min_match_score, primary_set_id, pepites)
+    set_zones: dict[int, dict] = {}
+    # Sous-sets par parent : un bien du set parent appartient à ses sous-sets, qui n'en
+    # changent que la pondération. Exiger qu'il les liste explicitement dans `set_ids`
+    # laissait 1 708 biens invisibles pour le sous-set « Léo » — donc un sous-set vide
+    # sur le site, alors que le bien concerne les deux.
+    enfants: dict[int, set] = {}
     set_prefs: dict[int, list] = {}
     set_exigences: dict[int, list] = {}
     sets_out = []
@@ -758,6 +787,9 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
         prefs = resolved.get("preferences") or []
         set_prefs[fs.id] = prefs
         set_exigences[fs.id] = resolved.get("exigences") or []
+        set_zones[fs.id] = resolved.get("zone") or {}
+        if fs.parent_id:
+            enfants.setdefault(fs.parent_id, set()).add(fs.id)
         # property_types persisté pour le round-trip seed->export (sinon un set terrain
         # redeviendrait maison par défaut au ré-export).
         ptypes = resolved.get("property_types") or (fs.criteria or {}).get("property_types")
@@ -839,12 +871,16 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
         except Exception:
             row_score, row_score_details = row.score, row.score_details
         member = set(row.set_ids or [])  # sets d'appartenance ; vide -> tous (rétro-compat)
+        for parent in list(member):
+            member |= enfants.get(parent, set())
         scores_by_set = {}
         for fs_id, prefs in set_prefs.items():
             if not prefs:
                 continue
             if member and fs_id not in member:
                 continue  # bien hors de ce set (ex. montagne vs Pauline) -> pas de score
+            if not _dans_la_zone(row, set_zones.get(fs_id)):
+                continue  # hors de la zone géographique déclarée par le set
             match, details = evaluate(item, prefs, set_exigences.get(fs_id))
             if penalty and match is not None:
                 # Pénalité forte : ce type plafonne très bas quelles que soient ses qualités.
