@@ -181,6 +181,10 @@ _EQUIP_PATTERNS = {
     "terrasse": r"terrasse",
     "garage": r"garage",
     "piscine": r"piscine",
+    # Extérieur privatif : sert de repli au critère `jardin` quand l'annonce ne donne pas
+    # de surface de terrain (14 % des maisons du set) mais décrit bien un dehors.
+    # « cour » est borné (\b) pour ne pas attraper « courant », « parcours », « cuisine ».
+    "jardin": r"\bjardins?\b|\bverger\b|\bpotager\b|parc\s+arbor|terrain\s+(de|d[' ]environ|attenant|clos|arbor)|parcelle\s+(de|d[' ]environ)|\bcour\b|espace\s+ext[ée]rieur",
     "vue": r"vue\s+(mer|d[ée]gag|panoram|impren|sur\s+(la\s+)?(mer|vall|campagne|montagne|oc[ée]an))|panorama|sans\s+vis-?\s?[àa]-?\s?vis\s+avec\s+vue",
     # Front de mer / première ligne : la signature « posé sur les rochers, pieds dans l'eau ».
     "bord_de_mer": r"bord\s+de\s+mer|front\s+de\s+mer|pieds?\s+dans\s+l[' ]eau|premi[èe]re\s+ligne|face\s+[àa]\s+la\s+mer|acc[èe]s\s+(direct\s+)?((?:[àa]\s+la\s+)?(mer|plage|gr[èe]ve))|surplombe\s+(la\s+mer|l[' ]oc[ée]an)|vue\s+impren\w*\s+sur\s+(la\s+)?(mer|oc[ée]an)|en\s+bord\s+d[' ]oc[ée]an",
@@ -498,6 +502,87 @@ def _sea_distance(lat: float, lon: float, cache: dict, *, live: bool = False) ->
             pass
         return res
     return {}
+
+
+# --- Ensoleillement : ce que le relief laisse passer de la course du soleil -----------
+# En vallée alpine c'est LE critère que l'annonce ne donne pas : deux maisons distantes
+# d'un kilomètre ne passent pas le même hiver selon qu'elles sont à l'adret ou à l'ubac,
+# et l'altitude — identique sur les deux versants — n'en dit rien. Le calcul vit dans
+# `services/soleil.py` (pur, testable hors ligne) ; ici on ne fait que l'échantillonnage
+# IGN et le cache, comme pour la proéminence et la distance à la mer.
+#
+# 87 points par bien, soit 4 requêtes groupées : trop cher pour l'export d'un gros
+# catalogue, d'où le même contrat que la mer — cache-only à l'export, réchauffé à part
+# (`scripts/warm_ensoleillement.py`).
+_SOLEIL_CACHE = os.path.join(os.path.dirname(__file__), "..", "..", "data", "soleil_cache.json")
+
+
+def _load_soleil_cache() -> dict:
+    try:
+        with open(_SOLEIL_CACHE, encoding="utf-8") as fh:
+            return json.load(fh)
+    except Exception:
+        return {}
+
+
+def _query_altitudes(points: list[tuple[float, float]]) -> list | None:
+    """Altitudes IGN d'une liste de points, par lots de 24. None si un lot échoue.
+
+    Un lot manquant décalerait tous les points suivants (la mesure est positionnelle) :
+    mieux vaut abandonner le point et le redemander au prochain réchauffage.
+    """
+    out: list = []
+    for i in range(0, len(points), 24):
+        lot = points[i:i + 24]
+        lats = "|".join(str(round(a, 6)) for a, _ in lot)
+        lons = "|".join(str(round(b, 6)) for _, b in lot)
+        elevs = None
+        for k in range(3):
+            try:
+                req = urllib.request.Request(
+                    f"{_IGN_ALTI_URL}?{urllib.parse.urlencode({'lat': lats, 'lon': lons, 'resource': 'ign_rge_alti_wld', 'delimiter': '|', 'zonly': 'true'})}",
+                    headers={"User-Agent": _UA})
+                with urllib.request.urlopen(req, timeout=25) as resp:
+                    elevs = json.loads(resp.read()).get("elevations", [])
+                break
+            except Exception:
+                time.sleep(1.5 * (k + 1))
+        if not elevs or len(elevs) != len(lot):
+            return None
+        out.extend(elevs)
+    return out
+
+
+def _query_soleil(lat: float, lon: float) -> dict | None:
+    from .soleil import mesurer, points_a_mesurer
+
+    altitudes = _query_altitudes(points_a_mesurer(lat, lon))
+    if altitudes is None:
+        return None  # échec réseau -> on ne cache pas (à réessayer)
+    return mesurer(lat, altitudes)
+
+
+def _soleil(lat: float, lon: float, cache: dict, *, live: bool = False) -> dict:
+    """Cache-only par défaut (lecture rapide à l'export) ; live=True pour le réchauffage."""
+    if lat is None or lon is None:
+        return {}
+    key = f"{round(lat, 4)},{round(lon, 4)}"
+    if key in cache:
+        return cache[key]
+    if not live:
+        return {}
+    res = _query_soleil(lat, lon)
+    if res is not None:
+        cache[key] = res
+        try:
+            with open(_SOLEIL_CACHE, "w", encoding="utf-8") as fh:
+                json.dump(cache, fh)
+        except Exception:
+            pass
+        return res
+    return {}
+
+
 # Optimisation : galerie web -> 1280 px max suffit ; JPEG progressif qualité 78.
 _MAX_DIM = 1280
 _JPEG_QUALITY = 78
@@ -816,6 +901,7 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
     poi_cache = _load_poi_cache()
     relief_cache = _load_relief_cache()
     sea_cache = _load_sea_cache()
+    soleil_cache = _load_soleil_cache()
     fibre_lut = _load_fibre_lut()
     tension_lut = _load_tension_lut()
     rows = (
@@ -849,11 +935,13 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
         poi = _poi_distances(row.latitude, row.longitude, poi_cache)
         relief = _relief_prominence(row.latitude, row.longitude, relief_cache)
         sea = _sea_distance(row.latitude, row.longitude, sea_cache)  # cache-only (réchauffé à part)
+        soleil = _soleil(row.latitude, row.longitude, soleil_cache)  # idem : réchauffé à part
         feats = list(row.features or [])
         for e in _detect_equipements(row.description):
             if e not in feats:
                 feats.append(e)
-        extra = {**infra, **poi, **relief, **sea, **_fibre_flags(row.code_commune, fibre_lut),
+        extra = {**infra, **poi, **relief, **sea, **soleil,
+                 **_fibre_flags(row.code_commune, fibre_lut),
                  **_tension_flags(row.commune, tension_lut),
                  "features": feats, "pavillon_neuf": _detect_pavillon_neuf(row.description)}
         item = _RowItem(row, extra_flags=extra)

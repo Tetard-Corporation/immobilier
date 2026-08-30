@@ -546,3 +546,55 @@ def test_bruit_compte_les_routes_passantes():
     # Le bruit d'une nationale porte moins loin que celui d'une autoroute : à distance
     # égale, elle pénalise moins.
     assert sub({"dist_route_m": 400})[0] > sub({"dist_autoroute_m": 400})[0]
+
+
+def test_ensoleillement_separe_l_adret_de_l_ubac():
+    """Le critère que l'annonce ne donne pas : deux biens de même altitude, l'un au
+    soleil tout l'hiver, l'autre à l'ombre du versant d'en face."""
+    adret = _listing(type_bien="maison", flags={
+        "soleil_hiver_h": 7.2, "exposition_deg": 180, "exposition": "sud",
+        "pente_deg": 18, "masque_sud_deg": 5.0})
+    ubac = _listing(type_bien="maison", flags={
+        "soleil_hiver_h": 0.0, "exposition_deg": 0, "exposition": "nord",
+        "pente_deg": 18, "masque_sud_deg": 28.0})
+    p = [Preference(kind="ensoleillement", params={"heures_faibles": 1.5, "heures_bonnes": 6.0})]
+    note_adret, det_adret = evaluate(adret, p)
+    assert note_adret > evaluate(ubac, p)[0]
+    assert "21 décembre" in det_adret[0]["detail"]
+
+
+def test_ensoleillement_repli_sur_l_annonce_puis_pending():
+    """Tant que le relief n'est pas échantillonné (cache réchauffé à part), le critère
+    reste `pending` — sauf si l'annonce revendique l'exposition, ce qui vaut moins qu'une
+    mesure et doit le rester."""
+    non_mesure = _listing(flags={"features": []})
+    assert evaluate(non_mesure, [Preference(kind="ensoleillement")])[1][0]["status"] == "pending"
+
+    revendique = _listing(flags={"features": ["ensoleille"]})
+    sub = evaluate(revendique, [Preference(kind="ensoleillement")])[1][0]["subscore"]
+    mesure = _listing(flags={"soleil_hiver_h": 7.5, "pente_deg": 15, "exposition_deg": 180})
+    assert sub < evaluate(mesure, [Preference(kind="ensoleillement")])[1][0]["subscore"]
+
+
+def test_jardin_exige_l_exterieur_sans_punir_l_annonce_muette():
+    """« Jardin requis » : la surface prime, la mention du texte dépanne, et l'absence
+    des deux vaut `n/a` — donc un palier non rempli, pas une note inventée."""
+    mesure = _listing(type_bien="maison", surface_terrain=800)
+    petit = _listing(type_bien="maison", surface_terrain=60)
+    mention = _listing(type_bien="maison", flags={"features": ["jardin"]})
+    muet = _listing(type_bien="maison", flags={"features": []})
+    p = [Preference(kind="jardin", params={"min_surface": 300})]
+    assert evaluate(mesure, p)[0] == 100.0
+    assert evaluate(petit, p)[0] < evaluate(mention, p)[0] < evaluate(mesure, p)[0]
+    assert evaluate(muet, p)[1][0]["status"] == "n/a"
+
+
+def test_palier_jardin_plafonne_le_bien_sans_exterieur():
+    exigences = [{"above": 70, "label": "Jardin requis", "requires": ["jardin"],
+                  "mode": "all", "min_subscore": 0.5}]
+    prefs = [Preference(kind="jardin", weight=4, params={"min_surface": 300}),
+             Preference(kind="budget", weight=4, params={"budget_max": 250000})]
+    avec = _listing(type_bien="maison", prix=150000, surface_terrain=900, flags={})
+    sans = _listing(type_bien="maison", prix=150000, flags={"features": []})
+    assert evaluate(avec, prefs, exigences)[0] > 70
+    assert evaluate(sans, prefs, exigences)[0] <= 70

@@ -37,8 +37,9 @@ from collect_leboncoin import PLOEMEUR_ZIPS, TETARD_ZIPS
 
 # Mêmes zones que la collecte Leboncoin, pour que les sets restent comparables.
 ZONES = {
+    # Plafond aligné sur collect_tetard.PRIX_MAX (250 k€ depuis le 30 août).
     "tetard": {"zips": TETARD_ZIPS, "set_ids": [1, 2], "types": ["maison"],
-               "prix_max": 300000, "target": 300, "pages": 8},
+               "prix_max": 250000, "target": 300, "pages": 8},
     # Terrains ≤400k ET maisons ≤400k AVEC terrain (longères/pépites à rénover).
     "ploemeur": {"zips": PLOEMEUR_ZIPS, "set_ids": [4], "types": ["terrain", "maison"],
                  "prix_max": 400000, "target": 110, "pages": 4, "min_terrain_maison": 300},

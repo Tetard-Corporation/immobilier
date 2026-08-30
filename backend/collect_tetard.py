@@ -14,6 +14,25 @@ breton. Ce que le groupe a tranché, et ce que le score en fait :
   « authentique / cachet » sort (il ne servait que de bonus : 1,00 quand cité, n/a sinon).
 - budget ramené de 600 k€ à 450 k€.
 
+Dernier tour de table (30 août), et ce qu'il change ici :
+
+- « l'exposition / la durée d'ensoleillement » -> nouveau critère `ensoleillement`, MESURÉ
+  sur le relief (heures de soleil direct au 21 décembre, orientation et pente du versant,
+  cf. `app/services/soleil.py`). En vallée alpine c'est le critère que l'annonce ne donne
+  pas : mesuré sur les pivots, le fond des gorges de l'Arly reçoit 0 h de soleil le 21
+  décembre quand l'adret de Maurienne en reçoit 6 — même altitude, même prix au m².
+- « 3/4 chambres MAX, pas des maisons immenses » -> le critère de capacité n'avait qu'un
+  plancher, pas de plafond. Les quatorze pépites publiées vont jusqu'à 7 chambres pour
+  268 m² (Ambérieu, 299 k€), et la mieux classée (Anneyron, 85,4) fait 222 m² pour six
+  pièces. `logement_compact` ajoute le plafond, un palier le rend ferme au-dessus de 78.
+- « budget max 250 k » -> plafond ramené de 300 k€ à 250 k€ (collecte ET critère).
+- « jardin requis » -> critère `jardin` + palier : un bien qui ne prouve pas d'extérieur
+  ne dépasse plus 70, là où `has_terrain` (≥ 1 000 m²) restait un simple souhait.
+- « un peu de travaux possible mais pas rénovation complète » -> le palier travaux
+  s'ouvre à « à rénover » (0,85) et se ferme sur les gros travaux et les ruines.
+- « la zone autour d'Albertville, le Beaufortain » -> trois pivots de plus, et le critère
+  de temps d'accès passe à 4h30 (voir PIVOTS).
+
 Usage :
     python collect_tetard.py --rescore-only     # met à jour les sets, re-score, ré-exporte
     python collect_tetard.py                    # collecte bienici autour des pivots + tout ça
@@ -40,25 +59,48 @@ from app.sources.bienici import BienIciSource
 SET_ID = 1
 SET_NAME = "têtard"
 SET_DESC = ("Maison de retrait entre copains — Alpes et Préalpes, à l'EST de l'axe "
-            "Lyon-Valence (Isère, Savoie, Haute-Savoie, Hautes-Alpes, Bugey, Diois et "
-            "Vercors), à moins de 4h porte-à-porte de Paris. Pépite : bon rapport "
-            "qualité/prix, 3 chambres ou plus, habitable ou à rafraîchir, la montagne à "
-            "la porte — mais un village vivant autour. ≤ 300 k€.")
+            "Lyon-Valence (Isère, Savoie dont Albertville et le Beaufortain, "
+            "Haute-Savoie, Hautes-Alpes, Bugey, Diois et Vercors), à moins de 4h30 "
+            "porte-à-porte de Paris. Pépite : bon rapport qualité/prix, 3 à 4 chambres "
+            "(pas une maison immense), jardin, un peu de travaux possible mais pas une "
+            "rénovation complète, bien exposée (soleil d'hiver mesuré), la montagne à la "
+            "porte — mais un village vivant autour. ≤ 250 k€.")
 
 SOUS_SET_ID = 2
 SOUS_SET_NAME = "Léo"
 SOUS_SET_DESC = "Préférences perso de Léo : isolement assumé, grand terrain, vue panoramique."
 
-PRIX_MAX = 300_000
+PRIX_MAX = 250_000
 
 # Pondérations 1-5. Deux critères mènent le classement : ce que le bien vaut pour son prix,
 # et ce qu'on a devant la porte.
 PREFERENCES = [
     {"kind": "rapport_qualite_prix", "weight": 5, "label": "Rapport qualité/prix (vs prix du secteur)",
      "params": {"bon": 0.75, "cher": 1.7}},
-    {"kind": "budget", "weight": 4, "label": "Budget ≤ 300 000 €", "params": {"budget_max": PRIX_MAX}},
+    {"kind": "budget", "weight": 4, "label": "Budget ≤ 250 000 €", "params": {"budget_max": PRIX_MAX}},
     {"kind": "chambres_min", "weight": 4, "label": "3 chambres minimum", "params": {"min": 3}},
-    {"kind": "light_works", "weight": 4, "label": "Peu de travaux", "params": {}},
+    # Le pendant du précédent : « 3/4 chambres MAX ». Le set n'avait qu'un plancher, et
+    # les pépites publiées en ont profité — 7 chambres et 268 m² pour l'une (Ambérieu),
+    # 222 m² et six pièces pour la mieux classée (Anneyron, 85,4). Une maison immense se
+    # chauffe, s'entretient et se rénove à proportion : ce n'est pas la maison de retrait
+    # décrite.
+    {"kind": "logement_compact", "weight": 4, "label": "3-4 chambres max (pas une maison immense)",
+     "params": {"ideal": 3, "max": 4, "m2_ok": 140, "m2_max": 260}},
+    # « Un peu de travaux possible, mais pas une rénovation complète » : le critère garde
+    # sa forme (habitable 1,0 · à rafraîchir 1,0 · à rénover 0,85 · gros travaux 0,4 ·
+    # ruine 0,1), c'est le PALIER qui s'ouvre d'un cran, à 0,85.
+    {"kind": "light_works", "weight": 4, "label": "Peu de travaux (rafraîchir oui, rénovation complète non)", "params": {}},
+    # Exposition et durée d'ensoleillement, MESURÉES sur le relief (pas lues dans
+    # l'annonce, qui écrit « plein sud » sans jamais l'avoir vérifié) : heures de soleil
+    # direct au solstice d'hiver, orientation et pente du versant. Poids 4 : en montagne,
+    # l'écart entre deux biens du même village est un hiver entier — 0 h au fond des
+    # gorges de l'Arly contre 6 h sur l'adret de Maurienne, à altitude égale.
+    {"kind": "ensoleillement", "weight": 4, "label": "Exposition / soleil d'hiver",
+     "params": {"heures_faibles": 1.5, "heures_bonnes": 6.0}},
+    # « Jardin requis » : un PLANCHER, distinct du souhait de grand terrain ci-dessous.
+    # Seuil bas (300 m²), et une annonce qui décrit un extérieur sans en donner la surface
+    # note 0,7 — assez pour passer le palier, pas assez pour valoir un jardin mesuré.
+    {"kind": "jardin", "weight": 4, "label": "Jardin (requis)", "params": {"min_surface": 300}},
     {"kind": "coin_nature", "weight": 4, "label": "Coin de nature (eau, bois, vue dégagée)",
      "params": {"alt_min": 400, "alt_ref": 900}},
     # Relief monté à 5 : le groupe a demandé les Alpes après un premier jeu entièrement
@@ -68,16 +110,23 @@ PREFERENCES = [
     # Charme remonté à 4 : « pas de charme » revient trois fois en reproche (1★),
     # « charme de la bâtisse » une fois en éloge (4★).
     {"kind": "cachet", "weight": 4, "label": "Cachet (caractère, pas de pavillon)", "params": {}},
-    # Terrain monté à 4 : « pas de terrain » (1★) deux fois, « peu de terrain »,
-    # « le terrain est petit ».
-    {"kind": "has_terrain", "weight": 4, "label": "Terrain ≥ 1 000 m²", "params": {"min_surface": 1000}},
+    # Le terrain était monté à 4 sur « pas de terrain » (1★, deux fois), « peu de
+    # terrain », « le terrain est petit ». Ce reproche est désormais porté par `jardin`,
+    # qui l'exige au lieu de le souhaiter ; il ne reste ici que la préférence pour le
+    # GRAND terrain, à 3 — sinon le même reproche pèserait deux fois.
+    {"kind": "has_terrain", "weight": 3, "label": "Grand terrain (≥ 1 000 m²)", "params": {"min_surface": 1000}},
     # `village_vivant` remplace `commerces`, qui saturait : deux biens notés 1★ « trop en
     # ville » marquaient pourtant le maximum sur ce critère.
     {"kind": "village_vivant", "weight": 3, "label": "Village vivant (ni désert, ni ville)",
      "params": {"vivant": 8, "ideal": 25, "ville": 120}},
     {"kind": "hiking", "weight": 3, "label": "Randonnées au départ", "params": {}},
-    {"kind": "temps_acces", "weight": 3, "label": "≤ 4h porte-à-porte depuis Paris",
-     "params": {"max_minutes": 240}},
+    # 4h30 et non 4h : le groupe a demandé le Beaufortain, mesuré à 4h10 porte-à-porte
+    # (Val d'Arly 4h06 ; Albertville, elle, passe à 3h57). Laisser le plafond à 4h aurait
+    # donné 0 sur ce critère à la moitié de la zone qu'on vient d'ajouter — collecter une
+    # zone puis la noter zéro n'a pas de sens. Le barème reste décroissant et continue de
+    # préférer le proche : 0,60 à 3h, 0,22 à 3h57, 0,13 à 4h10.
+    {"kind": "temps_acces", "weight": 3, "label": "≤ 4h30 porte-à-porte depuis Paris",
+     "params": {"max_minutes": 270}},
     # Isolement neutralisé : le groupe veut le calme, pas le bout du monde.
     {"kind": "tranquillite", "weight": 3, "label": "Calme, sans vis-à-vis, hors lotissement",
      "params": {"poids_isolement": 0, "poids_densite": 0}},
@@ -103,10 +152,11 @@ PREFERENCES = [
 # deuxième d'un classement qui demandait quatre chambres.
 EXIGENCES = [
     {
-        # « Grand max 300 k€ » est un PLAFOND, pas une préférence. Le critère budget, lui,
+        # « Grand max 250 k€ » est un PLAFOND, pas une préférence. Le critère budget, lui,
         # est pondéré : il pénalise le dépassement sans l'exclure, et un bien excellent
         # partout ailleurs le compense sans peine. Mesuré : à 450 k€ de plafond, sept des
-        # treize pépites étaient au-dessus de 300 k€, jusqu'à 417 k€.
+        # treize pépites étaient au-dessus de 300 k€, jusqu'à 417 k€ ; au plafond de
+        # 300 k€, six des quatorze pépites publiées dépassaient encore 250 k€.
         # Le palier est bas (70) pour que le hors-budget sorte franchement du panier.
         "above": 70,
         "label": "Dans le budget (requis au-dessus de 70)",
@@ -117,19 +167,36 @@ EXIGENCES = [
     {
         # « Pas de gros travaux » est un PLANCHER, au même titre que le budget. Le critère
         # `light_works` étant pondéré, une ruine bien placée et bon marché se rattrapait
-        # ailleurs. Seuil 0,95 sur le barème de `light_works` : seuls habitable (1,0) et
-        # à rafraîchir (1,0) passent. « À rénover » (0,85) est écarté — le groupe l'a
-        # tranché après avoir vu les pépites : rénover est synonyme de gros travaux, donc
-        # ce n'est pas une pépite.
+        # ailleurs.
         #
-        # L'état non renseigné ne valide pas non plus — c'est 45 % des annonces, donc le
-        # palier coûte cher. C'est assumé : sur un site fait pour voter, un bien dont on
-        # ignore l'état ne se juge pas, exactement comme un bien sans photo.
+        # Le seuil s'ouvre d'un cran, de 0,95 à 0,85 : « un peu de travaux possible, mais
+        # pas une rénovation complète ». Passent donc habitable (1,0), à rafraîchir (1,0)
+        # et à rénover (0,85) ; restent écartés les gros travaux (0,4) et la ruine (0,1).
+        # Le tour précédent avait rangé « à rénover » du côté des gros travaux ; le groupe
+        # est revenu dessus. La distinction tient : `classify` réserve gros_travaux aux
+        # formules « rénovation complète / totale / lourde », « gros œuvre », « tout à
+        # refaire », « travaux importants » — c'est-à-dire exactement la rénovation
+        # complète que le groupe refuse, et non le chantier de second œuvre qu'il accepte.
+        #
+        # L'état non renseigné ne valide pas — c'est 45 % des annonces, donc le palier
+        # coûte cher. C'est assumé : sur un site fait pour voter, un bien dont on ignore
+        # l'état ne se juge pas, exactement comme un bien sans photo.
         "above": 70,
-        "label": "Habitable ou à rafraîchir (requis au-dessus de 70)",
+        "label": "Habitable, à rafraîchir ou à rénover (requis au-dessus de 70)",
         "requires": ["light_works"],
         "mode": "all",
-        "min_subscore": 0.95,
+        "min_subscore": 0.85,
+    },
+    {
+        # « Jardin requis ». Sans palier, un bien sans extérieur restait éligible : le
+        # critère terrain était pondéré, donc rattrapable. Seuil 0,5 = environ 110 m²
+        # mesurés, ou un extérieur décrit dans l'annonce sans surface (0,7). Ne rien
+        # prouver du tout vaut `n/a`, et `n/a` ne remplit pas une exigence.
+        "above": 70,
+        "label": "Jardin (requis au-dessus de 70)",
+        "requires": ["jardin"],
+        "mode": "all",
+        "min_subscore": 0.5,
     },
     {
         "above": 75,
@@ -137,6 +204,18 @@ EXIGENCES = [
         "requires": ["chambres_min"],
         "mode": "all",
         "min_subscore": 0.99,  # = le minimum de chambres atteint, estimation comprise
+    },
+    {
+        # Le plafond de capacité, pendant du palier précédent : « 3/4 chambres MAX ».
+        # 0,7 sur le barème de `logement_compact` = 4 chambres (0,75) ou moins ; 5
+        # chambres tombent à 0,375. Quand les chambres manquent, le barème bascule sur la
+        # surface habitable et 0,7 vaut ~175 m² — au-delà, c'est une maison immense
+        # quoi qu'en dise le nombre de pièces.
+        "above": 78,
+        "label": "3-4 chambres maximum (requis au-dessus de 78)",
+        "requires": ["logement_compact"],
+        "mode": "all",
+        "min_subscore": 0.7,
     },
     {
         # Une pépite est une bonne affaire PROUVÉE. Sans surface bâtie il n'y a pas de prix
@@ -158,13 +237,13 @@ EXIGENCES = [
 ]
 
 # Pivots de collecte : les parties MONTAGNE des départements déjà couverts par le set
-# (26, 07, 73, 01, 43, 42), toutes à moins de 4h porte-à-porte de Paris. La zone ne
-# change pas ; ce sont les points de départ qui quittent la vallée du Rhône, d'où venait
-# la majorité du haut de classement précédent (Châteauneuf-sur-Isère, 154 m).
-# Le porte-à-porte depuis Paris est mesuré, pas supposé : chacun de ces pivots est sous
-# les 4h (Vercors 3h04, Trièves 3h21, Chartreuse 3h29, Oisans 3h39, Aravis 3h53, Gap 3h54,
-# Maurienne 3h59). Tarentaise, Beaufortain, Chablais et Briançonnais dépassent (4h07 à
-# 4h23) et sont donc écartés — ils seraient notés bas par le critère de toute façon.
+# (26, 07, 73, 01, 43, 42). La zone ne change pas ; ce sont les points de départ qui
+# quittent la vallée du Rhône, d'où venait la majorité du haut de classement précédent
+# (Châteauneuf-sur-Isère, 154 m).
+# Le porte-à-porte depuis Paris est mesuré, pas supposé (Vercors 3h04, Trièves 3h21,
+# Chartreuse 3h29, Oisans 3h39, Aravis 3h53, Gap 3h54, Maurienne 3h59). Le Beaufortain,
+# à 4h10, était écarté à ce titre : le groupe l'a redemandé, il entre, et le critère de
+# temps d'accès passe à 4h30 pour ne pas le noter zéro d'office.
 # Sous-set « Léo » : seules les DIFFÉRENCES avec le parent (fusion par `kind`).
 PREFERENCES_LEO = [
     {"kind": "relief_mountain", "weight": 5, "label": "Montagne / relief", "params": {"ref_altitude": 800}},
@@ -180,10 +259,12 @@ PREFERENCES_LEO = [
 # secteurs les moins chers, et l'Ardèche, la Loire et la Haute-Loire le sont. Le groupe a
 # donc resserré sur les Alpes et leurs avant-pays.
 #
-# Le porte-à-porte depuis Paris est mesuré, pas supposé : chacun de ces pivots est sous
-# les 4h (Vercors 3h04, Trièves 3h21, Chartreuse 3h29, Oisans 3h39, Aravis 3h53, Gap 3h54,
-# Maurienne 3h59). Tarentaise, Beaufortain, Chablais et Briançonnais dépassent (4h07 à
-# 4h23) et sont donc écartés.
+# Le porte-à-porte depuis Paris est mesuré, pas supposé : la plupart de ces pivots sont
+# sous les 4h (Vercors 3h04, Trièves 3h21, Chartreuse 3h29, Oisans 3h39, Aravis 3h53,
+# Gap 3h54, Maurienne 3h59, Albertville 3h57). Beaufortain (4h10) et Val d'Arly (4h06)
+# dépassent les 4h de la consigne initiale : le groupe les a demandés explicitement, ils
+# sont donc collectés, et `temps_acces` les note en conséquence (0,13 à 4h10) sans les
+# exclure. Chablais, haute Tarentaise et Briançonnais restent dehors, faute de demande.
 PIVOTS = [
     # Préalpes drômoises (à l'est du Rhône)
     ("Diois / Die", 44.754, 5.370, ["26"]),
@@ -200,6 +281,13 @@ PIVOTS = [
     ("Aravis-Bornes / Thônes", 45.881, 6.325, ["74"]),
     ("Dévoluy / Gap", 44.620, 5.995, ["05"]),
     ("Bugey / Hauteville-Lompnes", 45.980, 5.600, ["01"]),
+    # Demandés par le groupe (30 août) : « la zone autour d'Albertville, dans le
+    # Beaufortain par exemple ». Trois pivots plutôt qu'un, parce que les rayons de
+    # collecte (8/16/25 km) autour d'Albertville seul s'arrêteraient au seuil du
+    # Beaufortain — la vallée du Doron est à 20 km de la ville, le Val d'Arly à 25.
+    ("Albertville / Combe de Savoie", 45.676, 6.393, ["73"]),
+    ("Beaufortain / Beaufort", 45.721, 6.575, ["73"]),
+    ("Val d'Arly / Flumet", 45.816, 6.517, ["73", "74"]),
 ]
 
 
