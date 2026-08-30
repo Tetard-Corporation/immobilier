@@ -598,3 +598,51 @@ def test_palier_jardin_plafonne_le_bien_sans_exterieur():
     sans = _listing(type_bien="maison", prix=150000, flags={"features": []})
     assert evaluate(avec, prefs, exigences)[0] > 70
     assert evaluate(sans, prefs, exigences)[0] <= 70
+
+
+def _tetard():
+    """Le set têtard réel (critères + paliers), pour vérifier des arbitrages de groupe
+    sur la définition publiée plutôt que sur une copie qui vieillirait à côté."""
+    import sys
+    from pathlib import Path
+
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+    import collect_tetard
+
+    return collect_tetard.PREFERENCES, collect_tetard.EXIGENCES
+
+
+def test_tetard_prefere_le_petit_bien_place_au_grand_mal_place():
+    """« Un bien plus petit avec 3 chambres bien placé, c'est mieux qu'un bien grand mal
+    placé » — et « 5 chambres ça reste ok » : le grand n'est pas exclu, il est départagé
+    par le placement (soleil, nature, relief, calme), pas par sa taille."""
+    prefs, exigences = _tetard()
+    # Les deux biens sont au MÊME prix au m² que leur secteur : sans ça, le grand gagne
+    # sur `rapport_qualite_prix` (poids 5) par sa seule surface, et le test ne parlerait
+    # plus de placement mais d'affaire. Ne restent en jeu que la taille et le cadre.
+    commun = dict(type_bien="maison", surface_terrain=900,
+                  flags={"condition": "habitable", "prix_m2_secteur": 1000})
+
+    petit_bien_place = _listing(**{**commun, "nb_chambres": 3, "surface_bati": 95,
+                                   "prix": 95_000})
+    petit_bien_place.flags |= {"soleil_hiver_h": 7.5, "exposition_deg": 180, "pente_deg": 20,
+                               "exposition": "sud", "altitude": 850,
+                               "features": ["eau", "vue_panoramique"]}
+    grand_mal_place = _listing(**{**commun, "nb_chambres": 5, "surface_bati": 190,
+                                  "prix": 190_000})
+    grand_mal_place.flags |= {"soleil_hiver_h": 0.5, "exposition_deg": 0, "pente_deg": 20,
+                              "exposition": "nord", "altitude": 300, "features": []}
+
+    petit = evaluate(petit_bien_place, prefs, exigences)[0]
+    grand = evaluate(grand_mal_place, prefs, exigences)[0]
+    assert petit > grand
+
+    # …et le grand n'est pas écarté pour sa taille : à placement égal, cinq chambres
+    # restent recevables (aucun palier ne le plafonne).
+    grand_bien_place = _listing(**{**commun, "nb_chambres": 5, "surface_bati": 190,
+                                   "prix": 190_000})
+    grand_bien_place.flags |= dict(petit_bien_place.flags)
+    note, details = evaluate(grand_bien_place, prefs, exigences)
+    plafonne = [d for d in details if d.get("status") == "ko"
+                and "Format maison de retrait" in (d.get("label") or "")]
+    assert not plafonne

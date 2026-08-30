@@ -189,7 +189,7 @@ _MONTAGNE_TRAVAUX = {"habitable": 2.0, "rafraichir": 1.5, "renover": 0.5,
 
 
 def note_annonce_montagne(item, *, prix_max: float = 250_000, chambres_min: int = 3,
-                          chambres_max: int = 4, reference_m2: float | None = None) -> float:
+                          chambres_max: int = 5, reference_m2: float | None = None) -> float:
     """Note d'annonce du profil montagne. Négative = ne mérite pas l'enrichissement.
 
     `reference_m2` : prix au m² du secteur (DVF). Sans lui, le terme prix est NEUTRE.
@@ -219,17 +219,19 @@ def note_annonce_montagne(item, *, prix_max: float = 250_000, chambres_min: int 
         ch = max(1, int(pieces) - 1)
     if ch is not None:
         note += 3.0 if ch >= chambres_min else -4.0 * (chambres_min - ch)
-        # Le plafond compte autant que le plancher depuis que le groupe a tranché
-        # « 3/4 chambres MAX » : une maison de sept chambres n'est pas une maison de
-        # retrait, et il y en avait une parmi les pépites publiées.
+        # Un plafond, mais haut : « 5 chambres ça reste ok ». Ce qu'on écarte ici, c'est
+        # l'immense — une maison de sept chambres n'est pas une maison de retrait, et il
+        # y en avait une parmi les pépites publiées.
         if ch > chambres_max:
             note -= 2.0 * (ch - chambres_max)
 
     bati = getattr(item, "surface_bati", None)
     if bati:
-        # Bande, et non « plus c'est grand mieux c'est » : au-delà de 230 m² on chauffe,
-        # on entretient et on rénove une maison qui n'a pas été demandée.
-        note += (-2.0 if bati < 90 else 2.0 if bati <= 180 else 0.5 if bati <= 230 else -2.0)
+        # Bande, et non « plus c'est grand mieux c'est ». Le petit logement n'est plus
+        # qu'un léger moins (« un bien plus petit avec 3 chambres, bien placé, c'est
+        # mieux ») ; c'est l'immense qui coûte, parce qu'il se chauffe, s'entretient et
+        # se rénove à proportion.
+        note += (-1.0 if bati < 90 else 1.5 if bati <= 200 else 0.5 if bati <= 250 else -2.0)
         if prix and reference_m2:
             # Rapport qualité/prix : le RATIO au marché local, comme le fait le critère
             # `rapport_qualite_prix` du set. Bornes calées sur la distribution mesurée

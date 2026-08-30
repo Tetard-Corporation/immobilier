@@ -21,10 +21,14 @@ Dernier tour de table (30 août), et ce qu'il change ici :
   cf. `app/services/soleil.py`). En vallée alpine c'est le critère que l'annonce ne donne
   pas : mesuré sur les pivots, le fond des gorges de l'Arly reçoit 0 h de soleil le 21
   décembre quand l'adret de Maurienne en reçoit 6 — même altitude, même prix au m².
-- « 3/4 chambres MAX, pas des maisons immenses » -> le critère de capacité n'avait qu'un
-  plancher, pas de plafond. Les quatorze pépites publiées vont jusqu'à 7 chambres pour
-  268 m² (Ambérieu, 299 k€), et la mieux classée (Anneyron, 85,4) fait 222 m² pour six
-  pièces. `logement_compact` ajoute le plafond, un palier le rend ferme au-dessus de 78.
+- « pas des maisons immenses », précisé ensuite en « 5 chambres ça reste ok, mais qu'on ne
+  survalorise pas les biens grands : un petit 3 chambres bien placé vaut mieux qu'un grand
+  mal placé ». Le critère de capacité n'avait qu'un plancher — les quatorze pépites
+  publiées vont jusqu'à 7 chambres pour 268 m² (Ambérieu, 299 k€). `logement_compact`
+  ajoute un plafond qui ne récompense jamais le grand et ne décote que l'immense (3 et 5
+  chambres à égalité, la pente commence à 6), un palier le rend ferme en tête de
+  classement, et `surface_habitable` — dernier endroit où la taille payait pour elle-même
+  — retombe au poids 1.
 - « budget max 250 k » -> plafond ramené de 300 k€ à 250 k€ (collecte ET critère).
 - « jardin requis » -> critère `jardin` + palier : un bien qui ne prouve pas d'extérieur
   ne dépasse plus 70, là où `has_terrain` (≥ 1 000 m²) restait un simple souhait.
@@ -79,13 +83,19 @@ PREFERENCES = [
      "params": {"bon": 0.75, "cher": 1.7}},
     {"kind": "budget", "weight": 4, "label": "Budget ≤ 250 000 €", "params": {"budget_max": PRIX_MAX}},
     {"kind": "chambres_min", "weight": 4, "label": "3 chambres minimum", "params": {"min": 3}},
-    # Le pendant du précédent : « 3/4 chambres MAX ». Le set n'avait qu'un plancher, et
-    # les pépites publiées en ont profité — 7 chambres et 268 m² pour l'une (Ambérieu),
-    # 222 m² et six pièces pour la mieux classée (Anneyron, 85,4). Une maison immense se
-    # chauffe, s'entretient et se rénove à proportion : ce n'est pas la maison de retrait
-    # décrite.
-    {"kind": "logement_compact", "weight": 4, "label": "3-4 chambres max (pas une maison immense)",
-     "params": {"ideal": 3, "max": 4, "m2_ok": 140, "m2_max": 260}},
+    # Le pendant du plancher de chambres. Ce que le groupe a précisé le 30 août : « 5
+    # chambres ça reste ok, mais je ne veux pas qu'on survalorise les biens grands — un
+    # bien plus petit avec 3 chambres, bien placé, vaut mieux qu'un grand mal placé. »
+    #
+    # D'où la forme du critère : il ne récompense JAMAIS le grand, il décote seulement
+    # l'immense. 3 et 4 chambres se valent (1,0), 5 décote à peine (0,75), et la pente ne
+    # mord qu'ensuite — 6 chambres 0,375, 7 chambres 0,19. Un 95 m² de 3 chambres part
+    # donc à égalité avec un 150 m² de 4, et ce sont l'exposition, la nature et le prix
+    # au m² qui les départagent : c'est exactement ce qui a été demandé.
+    # (`m2_ok`/`m2_max` : le repli quand l'annonce ne donne pas les chambres. Calé pour
+    # dire la même chose que le barème par chambres — 170 m² pleins, 190 m² à 0,85.)
+    {"kind": "logement_compact", "weight": 4, "label": "Format maison de retrait (3 à 5 chambres, pas immense)",
+     "params": {"ideal": 4, "max": 5, "m2_ok": 170, "m2_max": 300}},
     # « Un peu de travaux possible, mais pas une rénovation complète » : le critère garde
     # sa forme (habitable 1,0 · à rafraîchir 1,0 · à rénover 0,85 · gros travaux 0,4 ·
     # ruine 0,1), c'est le PALIER qui s'ouvre d'un cran, à 0,85.
@@ -134,7 +144,12 @@ PREFERENCES = [
     # « le long d'une route nationale », que le critère ne voyait pas.
     {"kind": "nuisance_sonore", "weight": 3, "label": "Loin d'une route passante / autoroute / rail",
      "params": {"min_m": 200, "ref_m": 1000, "poids_route": 0.45}},
-    {"kind": "surface_habitable", "weight": 2, "label": "≥ 100 m² habitables", "params": {"min": 100}},
+    # Descendu de 2 à 1, et le seuil de 100 à 90 m² : c'était le dernier endroit où la
+    # taille était récompensée pour elle-même, alors que la capacité d'accueil est déjà
+    # mesurée par `chambres_min`. « Un bien plus petit avec 3 chambres, bien placé, vaut
+    # mieux qu'un grand mal placé » — à poids 2 sur un seuil de 100 m², un 95 m² de trois
+    # chambres perdait des points qu'aucun critère de placement ne lui rendait.
+    {"kind": "surface_habitable", "weight": 1, "label": "≥ 90 m² habitables", "params": {"min": 90}},
     {"kind": "near_gare", "weight": 2, "label": "Proche d'une gare", "params": {"max_km": 15}},
     {"kind": "fiber", "weight": 2, "label": "Fibre (télétravail)", "params": {}},
     {"kind": "ski", "weight": 2, "label": "Station de ski à proximité", "params": {"max_km": 30}},
@@ -206,13 +221,17 @@ EXIGENCES = [
         "min_subscore": 0.99,  # = le minimum de chambres atteint, estimation comprise
     },
     {
-        # Le plafond de capacité, pendant du palier précédent : « 3/4 chambres MAX ».
-        # 0,7 sur le barème de `logement_compact` = 4 chambres (0,75) ou moins ; 5
-        # chambres tombent à 0,375. Quand les chambres manquent, le barème bascule sur la
-        # surface habitable et 0,7 vaut ~175 m² — au-delà, c'est une maison immense
-        # quoi qu'en dise le nombre de pièces.
-        "above": 78,
-        "label": "3-4 chambres maximum (requis au-dessus de 78)",
+        # Le plafond de capacité, pendant du palier précédent. Il ne ferme la porte qu'aux
+        # maisons vraiment immenses : 0,7 sur le barème de `logement_compact` laisse
+        # passer jusqu'à 5 chambres (0,75) et arrête à 6 (0,375). Quand les chambres
+        # manquent, le barème bascule sur la surface habitable et 0,7 vaut ~210 m².
+        #
+        # Le palier est haut (85) et non 78 : « 5 chambres ça reste ok » veut dire qu'un
+        # grand bien excellent partout ailleurs a le droit de bien figurer. Ce n'est
+        # qu'en tête de classement — là où on désigne LA maison de retrait — que le
+        # format cesse d'être négociable.
+        "above": 85,
+        "label": "Format maison de retrait (requis au-dessus de 85)",
         "requires": ["logement_compact"],
         "mode": "all",
         "min_subscore": 0.7,

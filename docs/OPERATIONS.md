@@ -317,7 +317,7 @@ Repères mesurés (jeu du 24 août 2026, 1 152 biens, caches Overpass chauds) :
 | 1 — têtard | 81,5 | 15 |
 
 ⚠️ **Le seuil du set 1 est à recalibrer** depuis le tour du 30 août : plafond ramené à
-250 k€, chambres plafonnées à 4, jardin exigé, critère `ensoleillement` ajouté (7 paliers
+250 k€, format plafonné (5 chambres max), jardin exigé, critère `ensoleillement` ajouté (7 paliers
 au lieu de 5). Sur les 14 biens publiés, six sortent du budget et sont plafonnés à 70 : à
 82 le panier serait vide. Recalibrer avec la distribution (commande ci-dessus) après la
 première collecte complète, plutôt que de reconduire l'ancien seuil.
@@ -522,9 +522,13 @@ vaut pour son prix, et ce qu'on a devant la porte :
 - **`chambres_min` (min 3)** — « 3/4 chambres ». Le critère se replie sur les pièces puis
   sur la surface : sans ce repli il était `n/a` sur la moitié des annonces, donc neutre,
   et une maison d'**une seule pièce** est arrivée deuxième du classement.
-- **`logement_compact` (idéal 3, max 4)** — « 3/4 chambres **max**, pas des maisons
-  immenses ». Le pendant du précédent : le set n'avait qu'un plancher, et les pépites
-  publiées allaient jusqu'à 7 chambres pour 268 m².
+- **`logement_compact` (idéal 4, max 5)** — « pas des maisons immenses », précisé en
+  « 5 chambres ça reste ok, mais qu'on ne survalorise pas les biens grands : un petit
+  3 chambres bien placé vaut mieux qu'un grand mal placé ». Le critère ne récompense
+  **jamais** la taille, il décote l'immense : 3 et 4 chambres à 1,0, 5 à 0,75, 6 à 0,375.
+  Le set n'avait qu'un plancher, et les pépites publiées allaient jusqu'à 7 chambres pour
+  268 m². `surface_habitable` est retombé au poids 1 (seuil 90 m²) pour la même raison :
+  c'était le dernier endroit où la taille payait pour elle-même.
 - **`ensoleillement`** (poids 4) — exposition et **durée** de soleil, mesurées sur le
   relief IGN et non lues dans l'annonce (« plein sud » y est un argument de vente).
   Heures de soleil direct au 21 décembre, orientation et pente du versant : mesuré sur
@@ -544,7 +548,7 @@ ou hors sujet — monte au classement :
 | 70 | pas de gros travaux | Même raison : `light_works` étant pondéré, une ruine bien placée et bon marché se rattrapait ailleurs. Seuil 0,85 sur le barème du critère — habitable, à rafraîchir et à rénover passent ; gros travaux (0,4) et ruine (0,1) non. **L'état non renseigné ne valide pas non plus**, et c'est 45 % des annonces : le palier coûte cher, c'est assumé. Sur un site fait pour voter, un bien dont on ignore l'état ne se juge pas — comme un bien sans photo. |
 | 70 | un jardin | `has_terrain` était pondéré, donc rattrapable : un bien sans extérieur restait éligible. Seuil 0,5 = ~110 m² mesurés, ou un extérieur décrit sans surface. |
 | 75 | trois chambres avérées | Sinon une maison d'une seule pièce finit deuxième. |
-| 78 | quatre chambres au plus | Le plafond que le set n'avait pas : 0,7 sur `logement_compact` = 4 chambres ou moins (5 chambres tombent à 0,375), ou ~175 m² quand les chambres manquent. |
+| 85 | un format de maison de retrait | Le plafond que le set n'avait pas, et il ne ferme la porte qu'à l'immense : 0,7 sur `logement_compact` laisse passer 5 chambres (0,75) et arrête à 6 (0,375), ou ~210 m² quand les chambres manquent. Palier haut (85, pas 78) parce que « 5 chambres ça reste ok » : ce n'est qu'en tête de classement que le format cesse d'être négociable. |
 | 78 | un rapport qualité/prix mesuré | Sans surface bâtie il n'y a rien à comparer, et le bien montait précisément parce qu'il était peu mesuré. |
 | 85 | une nature ou un relief avérés | Un critère jamais mesuré ne prouve rien. |
 
