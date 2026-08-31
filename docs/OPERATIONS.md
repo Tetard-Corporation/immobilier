@@ -428,6 +428,8 @@ repli silencieux.
 | leboncoin/seloger ne ramènent rien, sans erreur | garde-fou `available` : ni proxy ni cookie | étape 2, et vérifier `available` |
 | Critères commerces/calme/rando en « pending » | export fait avec `EXPORT_NO_LIVE_OVERPASS=1` et cache froid | étape 4 puis ré-export (étape 5) |
 | Scores incohérents avec le code | `data.json` exporté avant un recalibrage du scoring | ré-exporter après tout changement de `scoring.py`/`preferences.py` |
+| Une correction de `classify.py` ne change rien sur le site | `condition`/`niveau_travaux` sont des **colonnes**, écrites une fois à la collecte ; l'export les relit sans reclasser | `python scripts/reclasser.py --dry-run` puis sans `--dry-run`, avant de ré-exporter |
+| Un critère au poids fort à `pending` sur la moitié du lot | `pending` est **exclu** du score, pas compté zéro : un bien non mesuré monte au lieu de descendre | réchauffer (§4) ; et poser un palier « critère mesuré » comme le fait le set 1 pour le rapport qualité/prix et l'attractivité |
 
 ---
 

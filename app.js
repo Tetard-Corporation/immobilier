@@ -35,8 +35,12 @@ async function boot() {
   }).join("");
   setSel.value = currentSetId;
 
+  // Les témoins de zone sont comptés à part : ce sont des biens publiés pour comparer
+  // les massifs, pas des pépites, et les mélanger au total prêterait à confusion.
+  const nTemoins = DATA.stats.n_temoins_zone || 0;
   $("#meta").textContent =
-    `${DATA.stats.n_biens} biens · ${DATA.stats.n_searches} recherches · snapshot ${new Date(DATA.generated_at).toLocaleString("fr-FR")}`;
+    `${DATA.stats.n_biens} biens${nTemoins ? ` (dont ${nTemoins} témoins de massif)` : ""}`
+    + ` · ${DATA.stats.n_searches} recherches · snapshot ${new Date(DATA.generated_at).toLocaleString("fr-FR")}`;
 
   remplirMassifs();
   setSel.addEventListener("change", (e) => {
