@@ -45,9 +45,10 @@ def test_normalisation_flags():
     item = BienIciSource._normalize(_AD)
     assert item.flags["price_decreased"] is True
     annotate(item)
-    # "grange à rénover" => niveau "renover" (2), distinct d'une ruine.
-    assert item.flags["condition"] == "renover"
-    assert item.flags["niveau_travaux"] == 2
+    # « Ancienne grange à rénover » => gros_travaux (3), pas « renover » (2) : ce qui est
+    # vendu n'est pas un logement mais une enveloppe à convertir (cf. test_classify).
+    assert item.flags["condition"] == "gros_travaux"
+    assert item.flags["niveau_travaux"] == 3
     assert item.flags["price_decreased"] is True  # préservé
 
 
