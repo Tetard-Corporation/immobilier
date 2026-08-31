@@ -107,6 +107,23 @@ PREFERENCES = [
     # Seuil bas (300 m²), et une annonce qui décrit un extérieur sans en donner la surface
     # note 0,7 — assez pour passer le palier, pas assez pour valoir un jardin mesuré.
     {"kind": "jardin", "weight": 4, "label": "Jardin (requis)", "params": {"min_surface": 300}},
+    # « L'attractivité Airbnb comme un critère important » (31 août). Poids 4 : le rang
+    # des critères qui décident sans dominer — budget, travaux, jardin, ensoleillement —
+    # et non 5, réservé au rapport qualité/prix et au relief. Une maison de retrait entre
+    # copains passe l'essentiel de l'année vide ; ce qu'elle peut se louer les semaines
+    # où personne n'y va change son coût réel, et c'est le seul critère du set qui parle
+    # d'argent qui rentre plutôt que d'argent qui sort.
+    #
+    # MESURÉE (`services/tourisme.py`), et non lue dans l'annonce : remontée mécanique
+    # (l'hiver), lac et sites (l'été), hébergement touristique déjà installé (le marché
+    # existe), restaurants (ce qu'il faut sur place). Mesuré sur les pivots :
+    # Chamonix 1,00 · Aix-les-Bains 1,00 · Beaufort 0,92 · Barcelonnette 0,80 ·
+    # Jarrier 0,78 · Die 0,71 · Hauteville-Lompnes 0,23.
+    #
+    # Demande le cache réchauffé (`scripts/warm_tourisme.py`), sans quoi le critère sort
+    # en `pending` — donc EXCLU du score au lieu de le baisser, et rien ne le dit.
+    {"kind": "attractivite_airbnb", "weight": 4, "label": "Attractivité locative saisonnière (Airbnb)",
+     "params": {}},
     {"kind": "coin_nature", "weight": 4, "label": "Coin de nature (eau, bois, vue dégagée)",
      "params": {"alt_min": 400, "alt_ref": 900}},
     # Relief monté à 5 : le groupe a demandé les Alpes après un premier jeu entièrement
@@ -243,6 +260,24 @@ EXIGENCES = [
         "min_subscore": 0.5,
     },
     {
+        # Le pendant du palier « rapport qualité/prix mesuré », pour la même raison et
+        # avec la même forme : `evaluate` renormalise sur les seuls critères mesurés, si
+        # bien qu'un bien dont l'attractivité locative n'a jamais été relevée n'est pas
+        # pénalisé — il est jugé sans elle, donc sur un critère de poids 4 en moins, et
+        # il monte. Le réchauffage Overpass coûte ~5 s par point : on ne mesure pas les
+        # 5 300 biens du set, on mesure les candidats (cf. scripts/warm_tourisme.py).
+        # Ce palier ferme la porte que ce choix ouvrirait.
+        #
+        # Seuil à 0 : on exige la MESURE, pas une bonne note. Une maison de retrait dans
+        # un coin sans tourisme reste une maison de retrait valable ; ce qu'on refuse,
+        # c'est qu'elle passe devant une autre parce qu'on ne l'a pas regardée.
+        "above": 78,
+        "label": "Attractivité locative mesurée (requise au-dessus de 78)",
+        "requires": ["attractivite_airbnb"],
+        "mode": "all",
+        "min_subscore": 0.0,
+    },
+    {
         "above": 85,
         "label": "Nature ou montagne avérée (requis au-dessus de 85)",
         "requires": ["coin_nature", "relief_mountain", "hiking"],
@@ -271,10 +306,11 @@ EXIGENCES = [
 # sont donc collectés, et `temps_acces` les note en conséquence (0,13 à 4h10) sans les
 # exclure. Chablais, haute Tarentaise et Briançonnais restent dehors, faute de demande.
 PIVOTS = [
+    # --- Le cœur du set : ce qui tient sous les 4h30 porte-à-porte -------------------
     # Préalpes drômoises (à l'est du Rhône)
     ("Diois / Die", 44.754, 5.370, ["26"]),
     ("Vercors drômois / La Chapelle-en-Vercors", 44.968, 5.415, ["26"]),
-    # Alpes
+    # Alpes du Nord
     ("Chartreuse / Saint-Pierre", 45.335, 5.820, ["38", "73"]),
     ("Vercors isérois / Villard-de-Lans", 45.070, 5.553, ["38"]),
     ("Trièves / Mens", 44.815, 5.750, ["38"]),
@@ -284,7 +320,7 @@ PIVOTS = [
     ("Bauges / Le Châtelard", 45.700, 6.110, ["73"]),
     ("Maurienne / Saint-Jean", 45.276, 6.352, ["73"]),
     ("Aravis-Bornes / Thônes", 45.881, 6.325, ["74"]),
-    ("Dévoluy / Gap", 44.620, 5.995, ["05"]),
+    ("Dévoluy-Gapençais / Gap", 44.620, 5.995, ["05"]),
     ("Bugey / Hauteville-Lompnes", 45.980, 5.600, ["01"]),
     # Demandés par le groupe (30 août) : « la zone autour d'Albertville, dans le
     # Beaufortain par exemple ». Trois pivots plutôt qu'un, parce que les rayons de
@@ -293,12 +329,66 @@ PIVOTS = [
     ("Albertville / Combe de Savoie", 45.676, 6.393, ["73"]),
     ("Beaufortain / Beaufort", 45.721, 6.575, ["73"]),
     ("Val d'Arly / Flumet", 45.816, 6.517, ["73", "74"]),
+
+    # --- Le reste des Alpes, pour la comparaison (31 août) ---------------------------
+    # « Essaye de couvrir toutes les Alpes, au moins avec le meilleur bien de chaque
+    # zone, même si son score est bas : ça permettra de voir la différence entre les
+    # régions. » Ces foyers-là ne sont pas là pour produire des pépites — la plupart
+    # sortent des 4h30 et le critère de temps d'accès les note en conséquence. Ils sont
+    # là pour répondre à une question que le classement seul ne pose jamais : à budget
+    # égal (250 k€), qu'est-ce qu'on a en Tarentaise, dans le Queyras, dans l'Ubaye ou
+    # dans le Mercantour ? L'export publie le meilleur bien de chacun (cf. `ZONES`).
+    #
+    # Savoie / Haute-Savoie
+    ("Lac du Bourget / Aix-les-Bains", 45.720, 5.880, ["73"]),
+    ("Avant-pays savoyard / Yenne-Novalaise", 45.630, 5.750, ["73", "01"]),
+    ("Tarentaise / Moûtiers", 45.484, 6.532, ["73"]),
+    ("Haute-Tarentaise / Bourg-Saint-Maurice", 45.618, 6.769, ["73"]),
+    ("Vanoise / Pralognan-Champagny", 45.390, 6.720, ["73"]),
+    ("Annecy-Semnoz / Annecy", 45.870, 6.140, ["74"]),
+    ("Faucigny-Grand Massif / Taninges", 46.090, 6.610, ["74"]),
+    ("Chablais / Morzine-Abondance", 46.230, 6.680, ["74"]),
+    ("Léman / Évian-Thonon", 46.390, 6.560, ["74"]),
+    ("Mont-Blanc / Sallanches-Passy", 45.930, 6.640, ["74"]),
+    ("Chamonix / Vallée de l'Arve", 45.923, 6.869, ["74"]),
+    # Hautes-Alpes
+    ("Briançonnais-Écrins / L'Argentière", 44.850, 6.600, ["05"]),
+    ("Queyras / Guillestre", 44.700, 6.740, ["05"]),
+    ("Champsaur-Valgaudemar / Orcières", 44.680, 6.190, ["05"]),
+    ("Embrunais-Serre-Ponçon / Embrun", 44.565, 6.495, ["05"]),
+    ("Laragne-Serres / Buëch", 44.320, 5.800, ["05"]),
+    # Drôme provençale
+    ("Baronnies / Nyons-Buis", 44.280, 5.270, ["26"]),
+    # Alpes du Sud
+    ("Ubaye / Barcelonnette", 44.388, 6.652, ["04"]),
+    ("Haute-Provence / Digne", 44.092, 6.236, ["04"]),
+    ("Verdon / Castellane-Moustiers", 43.847, 6.510, ["04"]),
+    ("Lure-Forcalquier / Forcalquier", 43.960, 5.780, ["04"]),
+    ("Mercantour-Vésubie / Saint-Martin", 44.070, 7.250, ["06"]),
+    ("Alpes d'Azur / Guillaumes-Puget", 44.000, 6.900, ["06"]),
 ]
+
+# Les zones de comparaison, dérivées des pivots : chaque bien est rattaché au pivot le
+# plus proche (partition de Voronoï, bornée par le rayon). Le nom de la zone est ce qui
+# précède le « / » — le massif, pas la ville qui a servi de point de collecte.
+#
+# L'export publie le MEILLEUR bien de chaque zone même s'il est sous le seuil des
+# pépites. Sans ça, le site ne montre que les Préalpes et la Maurienne — les secteurs où
+# 250 k€ achètent quelque chose — et le groupe n'a aucun moyen de voir ce que le même
+# budget donne (ou ne donne pas) en Tarentaise ou au bord du Léman. Un panier vide dans
+# une zone est une information ; un panier absent n'en est pas une.
+ZONE_RAYON_KM = 30.0
+ZONES = [{"nom": nom.split(" / ")[0], "lat": lat, "lon": lon, "rayon_km": ZONE_RAYON_KM}
+         for nom, lat, lon, _ in PIVOTS]
+
 
 
 def ensure_sets(db) -> None:
     criteria = {"property_types": ["maison"], "preferences": PREFERENCES,
                 "exigences": EXIGENCES,
+                # Zones de comparaison : l'export publie le meilleur bien de chacune,
+                # même sous le seuil des pépites (cf. ZONES).
+                "zones": ZONES,
                 # La zone appartient au set : elle se réapplique à chaque export sans
                 # qu'il faille repasser sur la base, et un bien collecté à l'ouest par
                 # une future recherche est écarté tout seul.
@@ -310,7 +400,7 @@ def ensure_sets(db) -> None:
         fs.name, fs.description, fs.criteria = SET_NAME, SET_DESC, criteria
     db.commit()
     print(f"Set prêt : « {SET_NAME} » ({len(PREFERENCES)} critères, {len(EXIGENCES)} paliers, "
-          f"≤{PRIX_MAX // 1000}k, est du Rhône).", flush=True)
+          f"{len(ZONES)} zones, ≤{PRIX_MAX // 1000}k, est du Rhône).", flush=True)
 
 
 def _seuils(texte: str | None) -> dict:
@@ -323,15 +413,20 @@ def _seuils(texte: str | None) -> dict:
     return out
 
 
-def _exporter(db, quoi: str, pepites: dict | None = None) -> None:
+def _exporter(db, quoi: str, pepites: dict | None = None,
+              meilleur_zone: dict | None = None) -> None:
     from app.services.export_static import export_to_dir
 
     data_dir = os.path.join(os.path.dirname(__file__), "..", "data")
     print(f"\n{quoi} vers {os.path.abspath(data_dir)}...", flush=True)
     if pepites:
         print(f"  resserrage : {', '.join(f'set {k} ≥ {v:g}' for k, v in pepites.items())}", flush=True)
+    if meilleur_zone:
+        print(f"  témoins de zone : {', '.join(f'set {k} plancher {v:g}' for k, v in meilleur_zone.items())}",
+              flush=True)
     t = time.time()
-    stats = export_to_dir(db, data_dir, download_photos=True, pepites=pepites or None)
+    stats = export_to_dir(db, data_dir, download_photos=True, pepites=pepites or None,
+                          meilleur_par_zone=meilleur_zone or None)
     print(f"  export OK en {time.time() - t:.0f}s : {stats}", flush=True)
 
 
@@ -369,6 +464,11 @@ def main() -> int:
                     help="resserrage à l'export : « 1:78.5,4:80 ». La base garde tout le "
                          "catalogue de chaque set ; sans ce filtre, l'export republie "
                          "aussi celui des AUTRES sets et annule leur resserrage.")
+    ap.add_argument("--meilleur-zone", default="", dest="meilleur_zone",
+                    help="publie EN PLUS le meilleur bien de chaque zone, même sous le "
+                         "seuil des pépites : « 1:70 » (set:plancher). Sert à comparer "
+                         "les massifs entre eux — sans ça le site ne montre que les "
+                         "secteurs où le budget achète quelque chose.")
     ap.add_argument("--no-export", action="store_true",
                     help="ne pas exporter (le seuil des pépites se calibre après coup). "
                          "À n'utiliser que si un export suit dans la foulée : un bien "
@@ -395,9 +495,10 @@ def main() -> int:
     ensure_sets(db)
 
     pepites = _seuils(args.pepites)
+    meilleur_zone = _seuils(args.meilleur_zone)
 
     if args.rescore_only:
-        _exporter(db, "Re-score seul : ré-export", pepites)
+        _exporter(db, "Re-score seul : ré-export", pepites, meilleur_zone)
         db.close()
         print("TERMINÉ.", flush=True)
         return 0
@@ -418,7 +519,7 @@ def main() -> int:
                 collected[it.external_id] = it
         print(f"Dump relu : {len(collected)} annonces neuves sur {len(brut)} "
               f"({os.path.abspath(args.from_dump)})", flush=True)
-        return _traiter(db, args, collected, pepites)
+        return _traiter(db, args, collected, pepites, meilleur_zone)
 
     src = BienIciSource()
     pivots = PIVOTS
@@ -457,10 +558,10 @@ def main() -> int:
         print("Collecte seule (--collect-only) : rien d'enrichi, rien d'exporté.", flush=True)
         return 0
 
-    return _traiter(db, args, collected, pepites)
+    return _traiter(db, args, collected, pepites, meilleur_zone)
 
 
-def _traiter(db, args, collected: dict, pepites: dict) -> int:
+def _traiter(db, args, collected: dict, pepites: dict, meilleur_zone: dict | None = None) -> int:
     """Entonnoir, enrichissement, mise en base, export. Séparé de la collecte pour être
     rejouable depuis un dump : la collecte dure ~20 min et ne survit pas à une coupure."""
     from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -511,7 +612,7 @@ def _traiter(db, args, collected: dict, pepites: dict) -> int:
     if args.no_export:
         print("\nExport sauté (--no-export) : les biens ne sont QUE dans la base.", flush=True)
     else:
-        _exporter(db, "Export", pepites)
+        _exporter(db, "Export", pepites, meilleur_zone)
     db.close()
     print("TERMINÉ.", flush=True)
     return 0

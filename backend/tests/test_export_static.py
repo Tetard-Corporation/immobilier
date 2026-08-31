@@ -202,3 +202,119 @@ def test_zone_du_set_filtre_sans_toucher_aux_biens():
     assert _dans_la_zone(sans_geo, zone) is True
     # Set sans zone déclarée : tout passe.
     assert _dans_la_zone(ouest, None) is True and _dans_la_zone(ouest, {}) is True
+
+
+# --- Témoins de zone : le meilleur bien de chaque massif, même sous le seuil ----------
+#
+# Publier le seul haut du panier ne montre qu'une chose : les secteurs où le budget
+# achète quelque chose. Le groupe n'a alors aucun moyen de comparer ce que 250 k€
+# donnent en Tarentaise, au bord du Léman ou dans le Queyras.
+
+_ZONES = [
+    {"nom": "Beaufortain", "lat": 45.721, "lon": 6.575, "rayon_km": 30},
+    {"nom": "Queyras", "lat": 44.700, "lon": 6.740, "rayon_km": 30},
+    {"nom": "Diois", "lat": 44.754, "lon": 5.370, "rayon_km": 30},
+]
+
+
+def test_zone_de_rattache_au_massif_le_plus_proche():
+    from app.services.export_static import _zone_de
+
+    beaufort = _row_factice(latitude=45.72, longitude=6.57)
+    die = _row_factice(latitude=44.75, longitude=5.37)
+    # Entre deux massifs et hors de tous les rayons : pas de zone, donc pas de témoin.
+    perdu = _row_factice(latitude=46.90, longitude=4.10)
+    sans_geo = _row_factice(latitude=None, longitude=None)
+
+    assert _zone_de(beaufort, _ZONES) == "Beaufortain"
+    assert _zone_de(die, _ZONES) == "Diois"
+    assert _zone_de(perdu, _ZONES) is None
+    assert _zone_de(sans_geo, _ZONES) is None
+    assert _zone_de(beaufort, None) is None
+
+
+def _prep(cle, zone, score, member=frozenset({1})):
+    return {"cle": cle, "member": set(member), "zones": {1: zone},
+            "scores_by_set": {"1": {"match_score": score}}}
+
+
+def test_un_seul_temoin_par_zone_le_mieux_note():
+    from app.services.export_static import _meilleurs_par_zone
+
+    prepares = [
+        _prep(("bienici", "a"), "Beaufortain", 76.0),
+        _prep(("bienici", "b"), "Beaufortain", 81.0),   # le meilleur du Beaufortain
+        _prep(("bienici", "c"), "Queyras", 72.0),       # seul du Queyras
+    ]
+    assert _meilleurs_par_zone(prepares, {1: 70.0}) == {("bienici", "b"), ("bienici", "c")}
+
+
+def test_une_zone_sans_rien_au_dessus_du_plancher_n_a_pas_de_temoin():
+    """« Même si son score est bas » n'est pas « n'importe quoi » : sous 70, le bien a
+    raté un palier — hors budget, rénovation complète, ou pas de jardin. Une zone qui
+    n'a rien au-dessus reste vide, et cette absence est elle-même la réponse."""
+    from app.services.export_static import _meilleurs_par_zone
+
+    lignes = []
+    prepares = [_prep(("bienici", "a"), "Queyras", 61.0),
+                _prep(("bienici", "b"), "Diois", 88.0)]
+    retenus = _meilleurs_par_zone(prepares, {1: 70.0}, log=lignes.append)
+
+    assert retenus == {("bienici", "b")}
+    assert "Queyras" in lignes[0] and "1 zones publiées" in lignes[0]
+
+
+def test_temoin_ignore_les_biens_hors_du_set():
+    from app.services.export_static import _meilleurs_par_zone
+
+    prepares = [_prep(("bienici", "a"), "Diois", 95.0, member={3}),   # set Pauline
+                _prep(("bienici", "b"), "Diois", 71.0)]
+    assert _meilleurs_par_zone(prepares, {1: 70.0}) == {("bienici", "b")}
+
+
+def test_export_publie_les_temoins_en_plus_des_pepites(client, tmp_path):
+    """Bout en bout : un seuil que personne n'atteint, plus un témoin par zone."""
+    from app.db import SessionLocal
+    from app.models import FilterSet, Listing
+    from app.services.export_static import build_dataset
+
+    db = SessionLocal()
+    fs = FilterSet(name="zones-test", criteria={
+        # Deux critères, sinon un seul suffisant sature à 100 et aucun seuil ne trie.
+        "preferences": [{"kind": "budget", "weight": 2, "label": "Budget",
+                         "params": {"budget_max": 300000}},
+                        {"kind": "surface_habitable", "weight": 3, "label": "Surface",
+                         "params": {"min": 200}}],
+        # Deux massifs : l'un a deux biens, l'autre un seul.
+        "zones": [{"nom": "Beaufortain", "lat": 45.721, "lon": 6.575, "rayon_km": 25},
+                  {"nom": "Queyras", "lat": 44.700, "lon": 6.740, "rayon_km": 25}],
+    })
+    db.add(fs)
+    db.flush()
+    for ext, lat, lon, prix, bati in (("beau-1", 45.72, 6.57, 240000.0, 100.0),
+                                      ("beau-2", 45.73, 6.58, 120000.0, 140.0),
+                                      ("quey-1", 44.70, 6.74, 235000.0, 90.0)):
+        db.add(Listing(source="bienici", external_id=ext, type_bien="maison", prix=prix,
+                       surface_bati=bati, latitude=lat, longitude=lon, commune=ext,
+                       code_commune=ext, set_ids=[fs.id], raw={}))
+    db.commit()
+
+    strict = build_dataset(db, download_photos=False, pepites={fs.id: 95.0})
+    avec_temoin = build_dataset(db, download_photos=False, pepites={fs.id: 95.0},
+                                meilleur_par_zone={fs.id: 0.0})
+
+    # (On ne compte pas le total : la base de test porte d'autres sets, que le
+    # resserrage d'un set ne doit justement pas toucher.)
+    def _miens(data):
+        return {b["external_id"]: b for b in data["biens"]
+                if b["external_id"] in ("beau-1", "beau-2", "quey-1")}
+
+    assert _miens(strict) == {}
+    assert avec_temoin["stats"]["n_temoins_zone"] == 2
+    publies = _miens(avec_temoin)
+    # Un témoin par massif, pas un par bien : le Beaufortain n'en donne qu'un, et c'est
+    # le mieux noté (120 k€ pour 140 m² bat 240 k€ pour 100 m²).
+    assert set(publies) == {"beau-2", "quey-1"}
+    assert publies["beau-2"]["zone"] == "Beaufortain"
+    assert publies["quey-1"]["zone"] == "Queyras"
+    assert all(b["zone_temoin"] for b in publies.values())
