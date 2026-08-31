@@ -70,10 +70,6 @@ SET_DESC = ("Maison de retrait entre copains — Alpes et Préalpes, à l'EST de
             "rénovation complète, bien exposée (soleil d'hiver mesuré), la montagne à la "
             "porte — mais un village vivant autour. ≤ 250 k€.")
 
-SOUS_SET_ID = 2
-SOUS_SET_NAME = "Léo"
-SOUS_SET_DESC = "Préférences perso de Léo : isolement assumé, grand terrain, vue panoramique."
-
 PRIX_MAX = 250_000
 
 # Pondérations 1-5. Deux critères mènent le classement : ce que le bien vaut pour son prix,
@@ -263,16 +259,6 @@ EXIGENCES = [
 # Chartreuse 3h29, Oisans 3h39, Aravis 3h53, Gap 3h54, Maurienne 3h59). Le Beaufortain,
 # à 4h10, était écarté à ce titre : le groupe l'a redemandé, il entre, et le critère de
 # temps d'accès passe à 4h30 pour ne pas le noter zéro d'office.
-# Sous-set « Léo » : seules les DIFFÉRENCES avec le parent (fusion par `kind`).
-PREFERENCES_LEO = [
-    {"kind": "relief_mountain", "weight": 5, "label": "Montagne / relief", "params": {"ref_altitude": 800}},
-    {"kind": "has_terrain", "weight": 4, "label": "Grand terrain (≥ 1 500 m²)", "params": {"min_surface": 1500}},
-    # Léo, lui, veut l'isolement : poids par défaut du critère.
-    {"kind": "tranquillite", "weight": 4, "label": "Isolé, au calme, sans vis-à-vis", "params": {}},
-    {"kind": "feature", "weight": 3, "label": "Vue panoramique", "params": {"name": "vue_panoramique"}},
-]
-
-
 # À l'EST de l'axe Lyon-Valence, uniquement. Le premier jeu de pépites était posé autour
 # de Saint-Étienne : le rapport qualité/prix, critère de tête, favorise mécaniquement les
 # secteurs les moins chers, et l'Ardèche, la Loire et la Haute-Loire le sont. Le groupe a
@@ -322,20 +308,9 @@ def ensure_sets(db) -> None:
         db.add(FilterSet(id=SET_ID, name=SET_NAME, description=SET_DESC, criteria=criteria))
     else:
         fs.name, fs.description, fs.criteria = SET_NAME, SET_DESC, criteria
-    # Le sous-set ne porte que ses différences : le reste (dont la zone et les paliers)
-    # est hérité par `resolve_criteria`.
-    sous = db.get(FilterSet, SOUS_SET_ID)
-    criteria_leo = {"preferences": PREFERENCES_LEO}
-    if sous is None:
-        db.add(FilterSet(id=SOUS_SET_ID, name=SOUS_SET_NAME, description=SOUS_SET_DESC,
-                         criteria=criteria_leo, parent_id=SET_ID))
-    else:
-        sous.name, sous.description, sous.criteria, sous.parent_id = (
-            SOUS_SET_NAME, SOUS_SET_DESC, criteria_leo, SET_ID)
     db.commit()
-    print(f"Sets prêts : « {SET_NAME} » ({len(PREFERENCES)} critères, {len(EXIGENCES)} paliers, "
-          f"≤{PRIX_MAX // 1000}k, est du Rhône) et « {SOUS_SET_NAME} » "
-          f"({len(PREFERENCES_LEO)} surcharges).", flush=True)
+    print(f"Set prêt : « {SET_NAME} » ({len(PREFERENCES)} critères, {len(EXIGENCES)} paliers, "
+          f"≤{PRIX_MAX // 1000}k, est du Rhône).", flush=True)
 
 
 def _seuils(texte: str | None) -> dict:

@@ -5,7 +5,7 @@ from app.services.filtersets import merge_criteria
 
 def test_merge_surcharge_champs_simples():
     parent = {"property_types": ["maison", "immeuble"], "prix_max": 600000}
-    child = {"property_types": ["maison"]}  # Léo : jardin -> maison seule
+    child = {"property_types": ["maison"]}  # le sous-set restreint aux maisons
     merged = merge_criteria(parent, child)
     assert merged["property_types"] == ["maison"]
     assert merged["prix_max"] == 600000  # hérité
@@ -39,7 +39,7 @@ def test_subset_resolved_via_api(client):
         "name": "têtard", "criteria": {"property_types": ["maison"],
         "preferences": [{"kind": "has_terrain", "weight": 1}]}}).json()
     child = client.post("/api/filter-sets", json={
-        "name": "Léo", "parent_id": parent["id"],
+        "name": "sous-set", "parent_id": parent["id"],
         "criteria": {"preferences": [
             {"kind": "has_terrain", "weight": 3, "params": {"min_surface": 1500}},
             {"kind": "feature", "weight": 2, "params": {"name": "vue"}}]}}).json()
@@ -86,3 +86,20 @@ def test_un_bien_du_parent_appartient_a_ses_sous_sets():
     for parent in list(autre):
         autre |= enfants.get(parent, set())
     assert autre == {3}
+
+
+def test_collect_tetard_ne_cree_plus_de_sous_set():
+    """Le sous-set « Léo » a été retiré à la demande de Léo, puis RÉINTRODUIT par une
+    session parallèle qui travaillait sur le même fichier — collect_tetard.py mêlait les
+    deux travaux, et sa version a écrasé le retrait. La collecte suivante l'a recréé en
+    base et dans data.json.
+
+    Ce test est le garde-fou : le mécanisme de sous-set reste disponible (les tests
+    ci-dessus le vérifient), mais têtard n'en déclare plus.
+    """
+    import collect_tetard
+
+    assert not hasattr(collect_tetard, "SOUS_SET_ID")
+    assert not hasattr(collect_tetard, "PREFERENCES_LEO")
+    source = __import__("pathlib").Path(collect_tetard.__file__).read_text()
+    assert "Léo" not in source
