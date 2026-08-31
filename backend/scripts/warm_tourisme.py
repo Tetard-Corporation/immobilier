@@ -26,7 +26,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import math
 import os
 import sys
 import time
@@ -50,17 +49,11 @@ def _cle(lat: float, lon: float) -> str:
     return f"{round(lat, 4)},{round(lon, 4)}"
 
 
-def _km(lat1, lon1, lat2, lon2) -> float:
-    r, p = 6371.0, math.radians
-    return 2 * r * math.asin(math.sqrt(
-        math.sin((p(lat2) - p(lat1)) / 2) ** 2
-        + math.cos(p(lat1)) * math.cos(p(lat2)) * math.sin((p(lon2) - p(lon1)) / 2) ** 2))
-
-
 def _candidats(set_id: int, par_zone: int, score_min: float, tout: bool) -> list[tuple[float, float]]:
     """Les points à mesurer, lus dans la BASE (data.json n'a plus que les pépites)."""
     from app.db import SessionLocal
     from app.models import FilterSet, Listing
+    from app.services.entonnoir import candidats_par_zone
 
     db = SessionLocal()
     try:
@@ -75,32 +68,8 @@ def _candidats(set_id: int, par_zone: int, score_min: float, tout: bool) -> list
 
     if tout or not zones:
         return [(r.latitude, r.longitude) for r in rows]
-
-    # Le score stocké (`Listing.score`, score d'investissement) sert d'ordre de passage :
-    # il ne dépend d'aucun critère qu'on est en train de mesurer, donc il ne tourne pas
-    # en rond, et il classe assez bien pour que le haut de chaque zone soit couvert
-    # d'abord. Le `match_score` du set serait circulaire — il dépend du critère absent.
-    par_zone_rows: dict[str, list] = {}
-    hors_zone = []
-    for r in rows:
-        proche, dmin = None, None
-        for z in zones:
-            d = _km(r.latitude, r.longitude, z["lat"], z["lon"])
-            if d <= z.get("rayon_km", 30) and (dmin is None or d < dmin):
-                proche, dmin = z["nom"], d
-        (par_zone_rows.setdefault(proche, []) if proche else hors_zone).append(r)
-
-    retenus: list = []
-    for nom, lot in sorted(par_zone_rows.items()):
-        lot.sort(key=lambda r: (r.score is None, -(r.score or 0)))
-        garde = lot[:par_zone]
-        # Tout ce qui dépasse le plancher est gardé en plus, même au-delà du quota :
-        # une zone qui concentre les bonnes affaires ne doit pas être tronquée.
-        garde += [r for r in lot[par_zone:] if (r.score or 0) >= score_min]
-        retenus.extend(garde)
-        print(f"  {nom:28s} {len(lot):5d} biens -> {len(garde)} mesurés", flush=True)
-    if hors_zone:
-        print(f"  {'(hors zone)':28s} {len(hors_zone):5d} biens -> 0 mesurés", flush=True)
+    retenus = candidats_par_zone(rows, zones, par_zone=par_zone, score_min=score_min,
+                                log=lambda m: print(m, flush=True))
     return [(r.latitude, r.longitude) for r in retenus]
 
 

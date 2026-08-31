@@ -28,7 +28,7 @@ sys.path.insert(0, os.path.join(ROOT, "backend"))
 from app.services.export_static import _load_soleil_cache, _soleil  # noqa: E402
 
 
-def _biens_du_set(set_id: int) -> list[dict]:
+def _biens_du_set(set_id: int, par_zone: int = 0, score_min: float = 70.0) -> list[dict]:
     """Points à réchauffer, lus dans la BASE et non dans data.json.
 
     Après un export « pépites », data.json ne contient plus que le haut du panier : s'y
@@ -39,15 +39,28 @@ def _biens_du_set(set_id: int) -> list[dict]:
         from app.db import SessionLocal
         from app.models import Listing
 
+        from app.models import FilterSet
+        from app.services.entonnoir import candidats_par_zone
+
         db = SessionLocal()
         try:
             rows = [r for r in db.query(Listing).all()
                     if set_id in (r.set_ids or []) and r.latitude is not None
                     and r.longitude is not None]
+            fs = db.get(FilterSet, set_id)
+            zones = ((fs.criteria or {}).get("zones") or []) if fs else []
         finally:
             db.close()
         if rows:
             print(f"Source : base SQLite ({len(rows)} biens du set {set_id}).", flush=True)
+            # 87 altitudes IGN par bien : mesurer tout le set prend des heures pour un
+            # panier d'une quinzaine de pépites. `--par-zone` applique l'entonnoir au
+            # réchauffage, exactement comme scripts/warm_tourisme.py.
+            if par_zone and zones:
+                rows = candidats_par_zone(rows, zones, par_zone=par_zone,
+                                          score_min=score_min,
+                                          log=lambda m: print(m, flush=True))
+                print(f"  -> {len(rows)} candidats retenus.", flush=True)
             return [{"latitude": r.latitude, "longitude": r.longitude} for r in rows]
     except Exception as e:  # noqa: BLE001
         print(f"Base illisible ({type(e).__name__}) -> repli sur data.json.", flush=True)
@@ -64,9 +77,14 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--set", type=int, default=1, help="id du set à réchauffer")
     ap.add_argument("--limit", type=int, default=1000)
+    ap.add_argument("--par-zone", type=int, default=0, dest="par_zone",
+                    help="entonnoir : nb de biens mesurés par zone du set, les mieux "
+                         "notés d'abord (0 = pas d'entonnoir)")
+    ap.add_argument("--score-min", type=float, default=70.0, dest="score_min",
+                    help="au-dessus de ce score d'investissement, mesuré quoi qu'il arrive")
     args = ap.parse_args()
 
-    biens = _biens_du_set(args.set)[: args.limit]
+    biens = _biens_du_set(args.set, args.par_zone, args.score_min)[: args.limit]
     cache = _load_soleil_cache()
     print(f"{len(biens)} biens du set {args.set} ; {len(cache)} points déjà en cache.", flush=True)
 

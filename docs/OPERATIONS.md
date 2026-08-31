@@ -237,9 +237,10 @@ python scripts/warm_sea_distance.py     # distance_mer  -> data/sea_cache.json
 ```
 (`en_hauteur_geo` lit `data/relief_cache.json`, rempli à l'enrichissement.)
 
-Le set 1 (« têtard ») en a un aussi, pour le critère `ensoleillement` :
+Le set 1 (« têtard ») en a **deux**, pour `ensoleillement` et `attractivite_airbnb` :
 ```bash
 python scripts/warm_ensoleillement.py   # -> data/soleil_cache.json
+python scripts/warm_tourisme.py         # -> data/tourisme_cache.json
 ```
 87 points d'altitude IGN par bien (4 requêtes groupées, ~5 s) : c'est ce qui donne les
 heures de soleil direct au 21 décembre, l'orientation et la pente du versant. Trop cher
@@ -252,6 +253,36 @@ gorges reçoit 0 h de soleil, l'adret 6 à 8 :
 python -c "import json; c=json.load(open('data/soleil_cache.json')); \
 h=sorted(v['soleil_hiver_h'] for v in c.values()); \
 print(len(h), 'points ; min', h[0], 'médiane', h[len(h)//2], 'max', h[-1])"
+```
+
+`warm_tourisme.py` relève, autour de chaque point, la remontée mécanique la plus proche
+(25 km), le lac (12 km), les hébergements touristiques (5 km), les restaurants (3 km) et
+les sites (10 km) — c'est-à-dire les quatre choses qui font qu'un logement se loue à la
+semaine. Une requête Overpass par point, ~5 s.
+
+**Il réchauffe les CANDIDATS, pas le catalogue.** 5 300 biens du set × 5 s font sept
+heures, pour un panier d'une quinzaine de pépites et d'un témoin par massif. Le script
+applique donc le même raisonnement que `services/entonnoir.py` — filtrer avant de payer
+la mesure chère : les N mieux notés de chaque zone, plus tout ce qui dépasse un plancher.
+
+```bash
+python scripts/warm_tourisme.py                          # défaut : 25 par zone, ≥ 70
+python scripts/warm_tourisme.py --par-zone 40 --score-min 65
+python scripts/warm_tourisme.py --tout                   # sans entonnoir (des heures)
+```
+
+Ce choix a une conséquence, et elle est fermée côté scoring plutôt qu'ici : un bien non
+mesuré verrait le critère sortir en `pending`, donc **exclu du score au lieu de le
+baisser**, et il monterait. Le huitième palier du set exige la mesure au-dessus de 78
+(seuil 0 : on demande le relevé, pas une bonne note). Un bien non mesuré plafonne donc
+à 78 et ne peut pas déloger un bien mesuré.
+
+Contrôle — la note doit s'étaler, pas se tasser :
+```bash
+python -c "import json; from app.services.tourisme import noter; \
+c=json.load(open('data/tourisme_cache.json')); \
+n=sorted(noter(v)['note'] for v in c.values()); \
+print(len(n), 'points ; min', n[0], 'médiane', n[len(n)//2], 'max', n[-1])"
 ```
 
 **Contrôle obligatoire** — le nombre d'entrées doit avoir augmenté :
@@ -290,6 +321,26 @@ scores. C'est le bon outil quand une réparation profite à un set qu'on n'est p
 de retravailler : après la correction Overpass, la règle « ≥ 80 » du set breton
 sélectionnait 32 biens au lieu de 12. Recouper le set de quelqu'un d'autre au passage
 n'est pas une décision qui se prend à l'export.
+
+**Publier le meilleur bien de chaque massif**, en plus des pépites :
+```bash
+EXPORT_PEPITES="1:80,4:80" EXPORT_MEILLEUR_ZONE="1:70" python -m app.services.export_static ../data
+# ou, depuis le collecteur :
+python collect_tetard.py --rescore-only --pepites "1:80,4:80" --meilleur-zone 1:70
+```
+Le haut du panier, seul, ne montre qu'une chose : les secteurs où le budget achète
+quelque chose. Rien ne dit alors ce que 250 k€ donnent en Tarentaise, au bord du Léman ou
+dans le Queyras. `EXPORT_MEILLEUR_ZONE="1:70"` ajoute le meilleur bien de chacune des
+39 zones du set, **même sous le seuil des pépites**, à condition qu'il tienne le plancher
+(70 = les paliers budget, travaux et jardin sont passés). Une zone qui n'a rien au-dessus
+n'a pas de témoin, et l'export le dit :
+
+```
+témoins de zone (set 1) : 21 zones publiées · 18 sans rien au-dessus de 70 : Chamonix, …
+```
+
+Sur le site, ces biens portent un badge « ⛰ témoin » et un sélecteur « Massif » permet de
+les comparer entre eux. Ils comptent dans `stats.n_temoins_zone`.
 
 L'ancienne écriture pour un seul set reste acceptée :
 ```bash
@@ -495,12 +546,28 @@ python backend/collect_tetard.py --pivot diois   # un seul foyer de collecte
 python backend/collect_tetard.py --rescore-only  # pas de collecte : re-note et ré-exporte
 ```
 
-Seize foyers de collecte (`PIVOTS`), tous sur la partie **montagne** des départements
-couverts : Diois, Vercors (drômois et isérois), Chartreuse, Trièves, Matheysine, Oisans,
+**Trente-neuf foyers de collecte** (`PIVOTS`), en deux groupes.
+
+*Le cœur du set* (16), sur la partie montagne des départements couverts et sous les
+4h30 : Diois, Vercors (drômois et isérois), Chartreuse, Trièves, Matheysine, Oisans,
 Belledonne, Bauges, Maurienne, Aravis, Dévoluy, Bugey — et, depuis le 30 août,
-**Albertville, le Beaufortain et le Val d'Arly**, demandés par le groupe. Les points de
+Albertville, le Beaufortain et le Val d'Arly, demandés par le groupe. Les points de
 départ ont quitté la vallée du Rhône, d'où venait l'essentiel de l'ancien haut de
 classement (Châteauneuf-sur-Isère, 154 m d'altitude, était premier).
+
+*Le reste des Alpes* (23, ajoutés le 31 août) : lac du Bourget, avant-pays savoyard,
+Tarentaise, Haute-Tarentaise, Vanoise, Annecy, Faucigny, Chablais, Léman, Mont-Blanc,
+Chamonix, Briançonnais, Queyras, Champsaur, Embrunais, Buëch, Baronnies, Ubaye,
+Haute-Provence, Verdon, Lure-Forcalquier, Mercantour, Alpes d'Azur. Ces foyers-là ne sont
+pas là pour produire des pépites — la plupart sortent des 4h30 et `temps_acces` les note
+en conséquence. Ils répondent à une question que le classement seul ne pose jamais : à
+250 k€, qu'est-ce qu'on a en Tarentaise, dans le Queyras, dans l'Ubaye ? L'export en
+publie le meilleur bien (§5, `EXPORT_MEILLEUR_ZONE`).
+
+Chaque pivot est aussi une **zone de comparaison** (`ZONES`) : un bien est rattaché au
+pivot le plus proche dans un rayon de 30 km, ce qui partitionne les Alpes en massifs
+disjoints. Le rattachement est déclaré dans les critères du set, donc il se réapplique à
+chaque export sans repasser sur la base.
 
 Le Beaufortain (4h10 porte-à-porte) et le Val d'Arly (4h06) dépassent la consigne
 initiale des 4h ; c'est pourquoi `temps_acces` est passé à 4h30. Collecter une zone puis
@@ -534,12 +601,21 @@ vaut pour son prix, et ce qu'on a devant la porte :
   Heures de soleil direct au 21 décembre, orientation et pente du versant : mesuré sur
   les pivots, le fond des gorges de l'Arly reçoit **0 h**, l'adret de Maurienne **6 h**,
   à altitude et prix au m² comparables. Demande le cache réchauffé (§4).
+- **`attractivite_airbnb`** (poids 4) — ce que le bien peut se louer à la semaine, mesuré
+  et non lu dans l'annonce (« idéal investissement locatif » y est un argument de vente).
+  Quatre relevés OSM : remontée mécanique (l'hiver), lac et sites (l'été), hébergement
+  touristique déjà installé (le marché existe), restaurants (ce qu'il faut sur place), plus
+  une prime pour les endroits qui ont les deux saisons. Relevé sur les pivots : Chamonix
+  1,00 · Aix-les-Bains 1,00 · Beaufort 0,92 · Barcelonnette 0,80 · Jarrier 0,78 · Die 0,71 ·
+  Hauteville-Lompnes 0,23. Demande le cache réchauffé (§4). **La densité d'hébergements
+  mesure l'offre, pas la demande** : c'est le compromis assumé du critère, aucune source
+  ouverte ne donne le taux d'occupation d'une commune.
 - **`jardin` (≥ 300 m²)** + palier — « jardin requis ». Distinct de `has_terrain`, qui
   reste le souhait de GRAND terrain : ici c'est un plancher. Une annonce qui décrit un
   extérieur sans en donner la surface note 0,7 (assez pour le palier) ; une qui n'en dit
   rien vaut `n/a`, et `n/a` ne remplit pas une exigence.
 
-**Sept paliers** (`EXIGENCES`) ferment les portes par lesquelles un bien mal mesuré —
+**Huit paliers** (`EXIGENCES`) ferment les portes par lesquelles un bien mal mesuré —
 ou hors sujet — monte au classement :
 
 | Au-dessus de | Il faut | Pourquoi |
@@ -550,6 +626,7 @@ ou hors sujet — monte au classement :
 | 75 | trois chambres avérées | Sinon une maison d'une seule pièce finit deuxième. |
 | 85 | un format de maison de retrait | Le plafond que le set n'avait pas, et il ne ferme la porte qu'à l'immense : 0,7 sur `logement_compact` laisse passer 5 chambres (0,75) et arrête à 6 (0,375), ou ~210 m² quand les chambres manquent. Palier haut (85, pas 78) parce que « 5 chambres ça reste ok » : ce n'est qu'en tête de classement que le format cesse d'être négociable. |
 | 78 | un rapport qualité/prix mesuré | Sans surface bâtie il n'y a rien à comparer, et le bien montait précisément parce qu'il était peu mesuré. |
+| 78 | une attractivité locative mesurée | Même raison, pour le critère le plus cher à relever (~5 s Overpass par point, donc réchauffé sur les seuls candidats). Seuil 0 : on exige le relevé, pas une bonne note. Un bien dans un coin sans tourisme reste recevable ; ce qu'on refuse, c'est qu'il passe devant un autre parce qu'on ne l'a pas regardé. |
 | 85 | une nature ou un relief avérés | Un critère jamais mesuré ne prouve rien. |
 
 **Les agences de la zone** (`set_ids: [1]`) : Agence Cévenole, Bauges Immobilier,

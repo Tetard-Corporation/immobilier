@@ -49,7 +49,37 @@ TETARD_ZIPS = [
     "01200", "01630", "01260", "01550", "01110", "01300",
     # Drôme EST : Diois, Vercors drômois, Baronnies
     "26150", "26110", "26310", "26410", "26420", "26340", "26400", "26460", "26510",
-    "26170", "26130", "26230", "26220"]
+    "26170", "26130", "26230", "26220",
+    # --- Le reste des Alpes (31 août) : les codes postaux où la collecte bienici a
+    # effectivement trouvé des annonces sous 250 k€ dans les 23 nouvelles zones. Relevés
+    # sur le lot plutôt que devinés — un code postal inventé ne renvoie rien, en silence.
+    # Ain : Bugey élargi
+    "01150", "01160", "01230", "01250", "01350", "01420", "01430", "01450", "01460",
+    "01470", "01500", "01510", "01640", "01680"
+    # Alpes-de-Haute-Provence : Ubaye, Digne, Verdon, Lure
+    "04000", "04100", "04110", "04120", "04130", "04140", "04150", "04160", "04170",
+    "04180", "04190", "04200", "04210", "04220", "04230", "04240", "04260", "04270",
+    "04280", "04290", "04300", "04310", "04330", "04340", "04350", "04370", "04380",
+    "04400", "04420", "04510", "04530", "04600", "04660", "04700", "04800", "04850",
+    "04860", "04870"
+    # Hautes-Alpes : Briançonnais, Queyras, Embrunais, Buëch
+    "05100", "05120", "05130", "05140", "05150", "05160", "05170", "05190", "05200",
+    "05230", "05300", "05310", "05350", "05380", "05600", "05700"
+    # Alpes-Maritimes : Mercantour, Vésubie, haut Var
+    "06260", "06390", "06420", "06430", "06440", "06450", "06470", "06510", "06540",
+    "06670", "06710", "06830", "06850", "06910"
+    # Drôme est : Baronnies
+    "26120", "26300", "26560", "26570", "26770"
+    # Isère : Vercors, Oisans, Matheysine, Belledonne
+    "38000", "38100", "38120", "38140", "38144", "38210", "38320", "38330", "38340",
+    "38360", "38420", "38430", "38480", "38500", "38530", "38560", "38610", "38620",
+    "38680", "38740", "38770", "38800", "38840", "38950", "38970"
+    # Savoie : Tarentaise, Vanoise, lac du Bourget, avant-pays
+    "73160", "73170", "73210", "73260", "73290", "73310", "73330", "73350", "73470",
+    "73600", "73610", "73700", "73730"
+    # Haute-Savoie : Chablais, Faucigny, Léman, Mont-Blanc, Annecy
+    "74140", "74150", "74200", "74270", "74300", "74330", "74350", "74360", "74490",
+    "74500", "74540", "74550", "74890", "74970"]
 
 # Zone « Ploemeur » (set 4) : Ploemeur + littoral morbihannais / finistérien sud.
 # Codes postaux déduits des biens bienici déjà collectés sur ce set, complétés par
@@ -76,8 +106,23 @@ ZONES = {
 }
 
 
+# Lots de codes postaux. Leboncoin les prend tous dans une seule requête, mais la zone
+# têtard est passée de 82 à 221 codes le 31 août : envoyer une liste de cette taille et
+# supposer qu'elle passe entière n'est pas une hypothèse qu'on peut vérifier après coup —
+# une troncature côté serveur ressemble trait pour trait à « il n'y a rien à vendre ».
+_LOT_ZIPS = 60
+
+
 def search_zips(source, zips, types, prix_max, pages, limit=100):
-    """Recherche Leboncoin sur plusieurs CP en une requête paginée (tri par récence)."""
+    """Recherche Leboncoin sur plusieurs CP, par lots, paginée (tri par récence)."""
+    if len(zips) > _LOT_ZIPS:
+        vus, out = set(), []
+        for i in range(0, len(zips), _LOT_ZIPS):
+            for it in search_zips(source, zips[i:i + _LOT_ZIPS], types, prix_max, pages, limit):
+                if it.external_id not in vus:
+                    vus.add(it.external_id)
+                    out.append(it)
+        return out
     ret = sorted({_APP_TO_RET[t] for t in types if t in _APP_TO_RET})
     out = []
     for page in range(1, pages + 1):
