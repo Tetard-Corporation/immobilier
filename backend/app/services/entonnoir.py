@@ -483,6 +483,14 @@ def candidats_par_zone(rows: list, zones: list[dict], *, par_zone: int = 25,
         garde += [r for r in lot[par_zone:] if (getattr(r, "score", None) or 0) >= score_min]
         retenus.extend(garde)
         log(f"  {nom:28s} {len(lot):5d} biens -> {len(garde)} mesurés")
+    # Un bien qui ne tombe dans aucune zone n'est pas pour autant hors sujet : les zones
+    # sont des foyers de 30 km, et deux des quinze pépites publiées (Anneyron, Hauterives)
+    # tombent entre deux massifs. Sans cette reprise, elles ne seraient jamais mesurées,
+    # donc plafonnées par le palier — écartées faute d'avoir été regardées, ce qui est
+    # exactement ce que le palier est censé empêcher.
+    perces = [r for r in hors_zone if (getattr(r, "score", None) or 0) >= score_min]
+    retenus.extend(perces)
     if hors_zone:
-        log(f"  {'(hors zone)':28s} {len(hors_zone):5d} biens -> 0 mesurés")
+        log(f"  {'(hors zone)':28s} {len(hors_zone):5d} biens -> {len(perces)} mesurés "
+            f"(ceux qui dépassent {score_min:g})")
     return retenus
