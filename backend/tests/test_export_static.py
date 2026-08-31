@@ -249,6 +249,19 @@ def test_un_seul_temoin_par_zone_le_mieux_note():
     assert _meilleurs_par_zone(prepares, {1: 70.0}) == {("bienici", "b"), ("bienici", "c")}
 
 
+def test_un_bien_plafonne_pile_au_plancher_ne_peut_pas_etre_temoin():
+    """`appliquer_exigences` ramène un bien recalé au palier EXACT : une ruine hors
+    budget et sans jardin sort à 70,0 tout rond. Choisir le témoin avec « >= 70 »
+    désignerait donc, dans les zones pauvres, le bien que les paliers viennent
+    d'écarter — un cas vu sur les Aravis (grange en gros travaux, 70,0)."""
+    from app.services.export_static import _meilleurs_par_zone
+
+    plafonne = _prep(("bienici", "ruine"), "Aravis", 70.0)
+    juste_au_dessus = _prep(("bienici", "ok"), "Verdon", 70.3)
+    retenus = _meilleurs_par_zone([plafonne, juste_au_dessus], {1: 70.0})
+    assert retenus == {("bienici", "ok")}
+
+
 def test_une_zone_sans_rien_au_dessus_du_plancher_n_a_pas_de_temoin():
     """« Même si son score est bas » n'est pas « n'importe quoi » : sous 70, le bien a
     raté un palier — hors budget, rénovation complète, ou pas de jardin. Une zone qui

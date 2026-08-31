@@ -967,10 +967,10 @@ def _meilleurs_par_zone(prepares: list, planchers: dict, log=None) -> set:
     témoin par zone rend la comparaison possible ; c'est ce qui a été demandé le
     31 août, « même si son score est bas ».
 
-    « Bas » n'est pas « n'importe quoi » : le témoin doit tenir le PLANCHER du set, à
+    « Bas » n'est pas « n'importe quoi » : le témoin doit DÉPASSER le plancher du set,
     70 par défaut — c'est-à-dire avoir passé les trois paliers qui s'appliquent là
-    (dans le budget, pas de rénovation complète, un jardin). Une zone dont rien n'atteint
-    ce plancher n'a pas de témoin, et cette absence est elle-même la réponse.
+    (dans le budget, pas de rénovation complète, un jardin). Une zone dont rien ne
+    dépasse ce plancher n'a pas de témoin, et cette absence est elle-même la réponse.
     """
     meilleurs: dict = {}
     zones_vues: dict = {}
@@ -983,7 +983,13 @@ def _meilleurs_par_zone(prepares: list, planchers: dict, log=None) -> set:
                 continue
             zones_vues.setdefault(set_id, set()).add(zone)
             sc = (prep["scores_by_set"].get(str(set_id)) or {}).get("match_score")
-            if not isinstance(sc, (int, float)) or sc < plancher:
+            # DÉPASSER le plancher, pas l'atteindre — et la nuance décide.
+            # `appliquer_exigences` ramène un bien recalé au palier EXACT : une ruine
+            # hors budget et sans jardin sort à 70,0 tout rond. Un témoin choisi avec
+            # « >= 70 » serait donc, dans les zones pauvres, précisément le bien que les
+            # paliers viennent d'écarter. Avec « > 70 », le témoin a forcément passé les
+            # trois paliers de 70 : dans le budget, pas de rénovation complète, un jardin.
+            if not isinstance(sc, (int, float)) or sc <= plancher:
                 continue
             cle = (set_id, zone)
             if cle not in meilleurs or sc > meilleurs[cle][0]:
