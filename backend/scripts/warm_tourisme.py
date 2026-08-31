@@ -54,14 +54,20 @@ def _candidats(set_id: int, par_zone: int, score_min: float, tout: bool) -> list
     from app.db import SessionLocal
     from app.models import FilterSet, Listing
     from app.services.entonnoir import candidats_par_zone
+    from app.services.export_static import _dans_la_zone
 
     db = SessionLocal()
     try:
+        fs = db.get(FilterSet, set_id)
+        crit = (fs.criteria or {}) if fs else {}
+        zones = crit.get("zones") or []
         rows = [r for r in db.query(Listing).all()
                 if (not r.set_ids or set_id in (r.set_ids or []))
-                and r.latitude is not None and r.longitude is not None]
-        fs = db.get(FilterSet, set_id)
-        zones = ((fs.criteria or {}).get("zones") or []) if fs else []
+                and r.latitude is not None and r.longitude is not None
+                # Le set déclare aussi un PÉRIMÈTRE (ici : à l'est de l'axe
+                # Lyon-Valence). Un bien hors périmètre n'est jamais noté pour ce set :
+                # le mesurer, c'est payer cinq secondes pour un score qui n'existera pas.
+                and _dans_la_zone(r, crit.get("zone"))]
     finally:
         db.close()
     print(f"{len(rows)} biens du set {set_id} en base, {len(zones)} zones déclarées.", flush=True)

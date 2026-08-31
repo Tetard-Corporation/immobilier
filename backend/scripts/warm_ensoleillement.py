@@ -41,14 +41,22 @@ def _biens_du_set(set_id: int, par_zone: int = 0, score_min: float = 70.0) -> li
 
         from app.models import FilterSet
         from app.services.entonnoir import candidats_par_zone
+        from app.services.export_static import _dans_la_zone
 
         db = SessionLocal()
         try:
+            fs = db.get(FilterSet, set_id)
+            crit = (fs.criteria or {}) if fs else {}
+            zones = crit.get("zones") or []
             rows = [r for r in db.query(Listing).all()
                     if set_id in (r.set_ids or []) and r.latitude is not None
-                    and r.longitude is not None]
-            fs = db.get(FilterSet, set_id)
-            zones = ((fs.criteria or {}).get("zones") or []) if fs else []
+                    and r.longitude is not None
+                    # Le set déclare aussi un PÉRIMÈTRE (ici : à l'est de l'axe
+                    # Lyon-Valence). Un bien hors périmètre n'est jamais noté pour ce
+                    # set : le mesurer, c'est payer une seconde chacun pour un score qui
+                    # n'existera pas. Vécu : 900 points ardéchois et bretons en tête de
+                    # file d'un réchauffage alpin.
+                    and _dans_la_zone(r, crit.get("zone"))]
         finally:
             db.close()
         if rows:
