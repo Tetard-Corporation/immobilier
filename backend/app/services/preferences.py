@@ -8,6 +8,8 @@ relief, rando) renvoient un statut `pending` tant que la donnée n'est pas dispo
 
 from __future__ import annotations
 
+import math
+
 from .gares import nearest_gare
 from .geo import distance_to_corridor_km, haversine_km, resolve_city
 
@@ -16,6 +18,8 @@ PREFERENCE_KINDS = [
     "budget",
     "chambres_min",
     "has_terrain",
+    "jardin",
+    "ensoleillement",
     "constructible",
     "prix_m2_terrain",
     "rapport_qualite_prix",
@@ -76,6 +80,14 @@ _NATURE_SIGNAUX = [
     ("foret", 0.20, "bois / forêt"),
     ("vue", 0.15, "vue"),
 ]
+# Ensoleillement : part de la note qui vient de la DURÉE mesurée, le reste venant de
+# l'exposition du versant. La durée pèse plus parce qu'elle décide : un adret plein sud
+# au fond d'une combe fermée ne voit pas le soleil de l'hiver, et son orientation n'y
+# change rien.
+_POIDS_DUREE = 0.7
+# Pente à partir de laquelle l'orientation du versant compte pleinement. En dessous, le
+# terrain est trop plat pour que « exposé sud » veuille dire quelque chose.
+_PENTE_PLEINE = 20.0
 _LIGHT_OK = {"habitable": 1.0, "rafraichir": 1.0, "renover": 0.85, "gros_travaux": 0.4, "ruine": 0.1}
 _COND_LABELS = {
     "habitable": "habitable de suite", "rafraichir": "à rafraîchir", "renover": "à rénover",
@@ -191,6 +203,26 @@ def _eval_one(item, kind: str, params: dict):
         mn = params.get("min_surface", 1)
         seuil = f" (souhait ≥ {int(mn)} m²)" if mn and mn > 1 else ""
         return (1.0 if item.surface_terrain >= mn else _clamp(item.surface_terrain / mn)), "ok", f"{int(item.surface_terrain)} m²{seuil}"
+
+    if kind == "jardin":
+        # « Jardin requis » : un PLANCHER, pas un souhait de grand terrain (c'est le rôle
+        # de `has_terrain`). D'où deux différences avec lui : le seuil est bas, et le
+        # silence de l'annonce ne vaut pas absence de jardin — 14 % des maisons du set ne
+        # donnent aucune surface de terrain, souvent avec « jardin » en toutes lettres
+        # dans le texte. Les compter comme sans extérieur les écarterait à tort ; leur
+        # donner la note pleine ferait passer un plancher pour une formalité, donc on les
+        # note au-dessous de la mesure.
+        mn = params.get("min_surface", 300)
+        st = item.surface_terrain
+        if st:
+            if st >= mn:
+                return 1.0, "ok", f"jardin de {int(st)} m² (requis ≥ {int(mn)} m²)"
+            return _clamp(0.35 + 0.65 * st / mn), "ok", f"{int(st)} m² d'extérieur (petit, requis ≥ {int(mn)} m²)"
+        if "jardin" in (flags.get("features") or []):
+            return params.get("note_mention", 0.7), "ok", "jardin mentionné (surface non précisée)"
+        # Ni surface ni mention : `n/a` -> exclu du score ET du palier « jardin requis »,
+        # qui plafonne alors le bien. Ne pas prouver l'extérieur, c'est ne pas l'avoir.
+        return None, "n/a", "aucun extérieur mentionné, surface terrain inconnue"
 
     if kind == "constructible":
         # Terrain à bâtir (ex. poser une tiny house) : s'appuie sur le zonage PLU (GPU).
@@ -368,6 +400,44 @@ def _eval_one(item, kind: str, params: dict):
             acquis += 0.25 * part
             motifs.append(f"en hauteur ({round(alt)} m)")
         return _clamp(acquis / params.get("saturation", _NATURE_SATURATION)), "ok", " · ".join(motifs) or "aucun élément naturel cité"
+
+    if kind == "ensoleillement":
+        # Exposition et DURÉE de soleil, mesurées sur le relief (cf. services/soleil.py) :
+        # heures de soleil direct au solstice d'hiver, orientation et pente du versant.
+        # C'est le critère que l'annonce ne peut pas donner — « plein sud » y est un
+        # argument de vente, et deux maisons du même village, l'une à l'adret, l'autre à
+        # l'ubac, ont la même altitude et pas le même hiver.
+        h = flags.get("soleil_hiver_h")
+        if h is None:
+            if "ensoleille" in (flags.get("features") or []):
+                # Repli texte : l'annonce le revendique, personne ne l'a mesuré. Note
+                # plafonnée sous la note d'un versant réellement mesuré comme bon.
+                return params.get("note_annonce", 0.7), "ok", "« plein sud / très ensoleillé » (annonce, non mesuré)"
+            return None, "pending", "ensoleillement non mesuré (relief non échantillonné)"
+
+        from .soleil import formater_heures
+
+        faibles = params.get("heures_faibles", 1.5)
+        bonnes = params.get("heures_bonnes", 6.0)
+        part_duree = _clamp((h - faibles) / (bonnes - faibles)) if bonnes > faibles else 0.0
+
+        # Exposition : plein sud = 1, plein nord = 0, et l'écart se resserre vers le neutre
+        # quand la pente s'aplatit — sur un replat, l'orientation ne veut plus rien dire.
+        expo = flags.get("exposition_deg")
+        pente = flags.get("pente_deg") or 0.0
+        if expo is None:
+            part_expo, mot_expo = 0.5, "terrain plat"
+        else:
+            sud = (1 + math.cos(math.radians(expo - 180))) / 2
+            part_expo = 0.5 + (sud - 0.5) * _clamp(pente / _PENTE_PLEINE)
+            mot_expo = f"versant {flags.get('exposition') or ''} à {pente:.0f}°".strip()
+
+        sub = _clamp(_POIDS_DUREE * part_duree + (1 - _POIDS_DUREE) * part_expo)
+        masque = flags.get("masque_sud_deg")
+        detail = f"{formater_heures(h)} de soleil le 21 décembre · {mot_expo}"
+        if masque is not None:
+            detail += f" · horizon sud barré à {masque:.0f}°"
+        return sub, "ok", detail
 
     if kind == "logement_compact":
         # « De la tiny house jusqu'à 3/4 chambres » : on pénalise le TROP grand, jamais

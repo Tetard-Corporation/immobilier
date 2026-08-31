@@ -444,6 +444,7 @@ const FEATURE_LABELS = {
   isole: "Isolé", vue: "Vue dégagée", vue_panoramique: "Vue panoramique",
   authentique: "Authentique / cachet", sans_vis_a_vis: "Sans vis-à-vis",
   cheminee: "Cheminée / poêle", terrasse: "Terrasse", garage: "Garage", piscine: "Piscine",
+  jardin: "Jardin", ensoleille: "Exposé / ensoleillé",
 };
 const RISK_LABELS = {
   inondation: "Inondation", remonteeNappe: "Remontée de nappe", seisme: "Séisme",

@@ -176,13 +176,20 @@ def filtrer_par_commune(items: list, max_km: float = 10.0,
 # Ses critères de tête — budget, capacité d'accueil, prix au m² — sont des champs bruts de
 # l'annonce, disponibles avant le moindre appel réseau. L'étage 0 y fait donc le gros du
 # tri, et l'étage 1 ne sert qu'à écarter la plaine.
-_MONTAGNE_SIGNAUX = {"vue_panoramique": 2.5, "eau": 2.5, "vue": 1.5, "foret": 1.5, "arbore": 1.0}
-_MONTAGNE_TRAVAUX = {"habitable": 2.0, "rafraichir": 1.0, "renover": -0.5,
+# « ensoleille » (plein sud, exposition sud, très lumineux) rejoint les signaux : la
+# mesure réelle du soleil d'hiver coûte 4 requêtes IGN et n'arrive qu'au réchauffage,
+# bien après cet étage. Ce que l'annonce en dit vaut donc mieux que rien pour décider
+# QUI mérite d'être mesuré — sans jamais valoir la mesure elle-même (poids modeste).
+_MONTAGNE_SIGNAUX = {"vue_panoramique": 2.5, "eau": 2.5, "vue": 1.5, "foret": 1.5,
+                     "arbore": 1.0, "ensoleille": 1.5}
+# « À rénover » n'est plus un défaut : le groupe accepte un peu de travaux, et ne refuse
+# que la rénovation complète (gros_travaux) et la ruine.
+_MONTAGNE_TRAVAUX = {"habitable": 2.0, "rafraichir": 1.5, "renover": 0.5,
                      "gros_travaux": -3.0, "ruine": -4.0}
 
 
-def note_annonce_montagne(item, *, prix_max: float = 450_000, chambres_min: int = 3,
-                          reference_m2: float | None = None) -> float:
+def note_annonce_montagne(item, *, prix_max: float = 250_000, chambres_min: int = 3,
+                          chambres_max: int = 5, reference_m2: float | None = None) -> float:
     """Note d'annonce du profil montagne. Négative = ne mérite pas l'enrichissement.
 
     `reference_m2` : prix au m² du secteur (DVF). Sans lui, le terme prix est NEUTRE.
@@ -212,10 +219,19 @@ def note_annonce_montagne(item, *, prix_max: float = 450_000, chambres_min: int 
         ch = max(1, int(pieces) - 1)
     if ch is not None:
         note += 3.0 if ch >= chambres_min else -4.0 * (chambres_min - ch)
+        # Un plafond, mais haut : « 5 chambres ça reste ok ». Ce qu'on écarte ici, c'est
+        # l'immense — une maison de sept chambres n'est pas une maison de retrait, et il
+        # y en avait une parmi les pépites publiées.
+        if ch > chambres_max:
+            note -= 2.0 * (ch - chambres_max)
 
     bati = getattr(item, "surface_bati", None)
     if bati:
-        note += 2.0 if bati >= 120 else (1.0 if bati >= 90 else -2.0)
+        # Bande, et non « plus c'est grand mieux c'est ». Le petit logement n'est plus
+        # qu'un léger moins (« un bien plus petit avec 3 chambres, bien placé, c'est
+        # mieux ») ; c'est l'immense qui coûte, parce qu'il se chauffe, s'entretient et
+        # se rénove à proportion.
+        note += (-1.0 if bati < 90 else 1.5 if bati <= 200 else 0.5 if bati <= 250 else -2.0)
         if prix and reference_m2:
             # Rapport qualité/prix : le RATIO au marché local, comme le fait le critère
             # `rapport_qualite_prix` du set. Bornes calées sur la distribution mesurée

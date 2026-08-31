@@ -147,12 +147,14 @@ def test_prix_au_m2_juge_par_rapport_au_marche_local():
     à 3 700 et que le score en fait une pépite."""
     from app.services.entonnoir import note_annonce_montagne
 
+    # `prix_max` explicite : le plafond du set est descendu à 250 k€, et un bien hors
+    # budget est écarté avant même qu'on parle de prix au m². Ce n'est pas ce qu'on teste ici.
     bien = _maison(prix=299_000, bati=111, pieces=5)
-    cher_ailleurs = note_annonce_montagne(bien, reference_m2=1500)
-    bonne_affaire = note_annonce_montagne(bien, reference_m2=3700)
+    cher_ailleurs = note_annonce_montagne(bien, prix_max=300_000, reference_m2=1500)
+    bonne_affaire = note_annonce_montagne(bien, prix_max=300_000, reference_m2=3700)
     assert bonne_affaire > cher_ailleurs
     # Sans référence, on ne tranche pas : le terme prix est neutre, pas pénalisant.
-    sans = note_annonce_montagne(bien)
+    sans = note_annonce_montagne(bien, prix_max=300_000)
     assert cher_ailleurs < sans < bonne_affaire
 
 
@@ -168,3 +170,24 @@ def test_communes_non_mesurees_signalees(monkeypatch):
     retenus, ecartes, _, non_mesurees = filtrer_par_altitude(biens, min_altitude=250)
     assert len(retenus) == 3 and not ecartes
     assert non_mesurees == 2
+
+
+def test_montagne_ecarte_la_maison_immense():
+    """« 3/4 chambres max, pas des maisons immenses » : le plancher de capacité avait un
+    pendant manquant. Sept chambres et 268 m² figuraient parmi les pépites publiées."""
+    from app.services.entonnoir import note_annonce_montagne
+
+    juste = note_annonce_montagne(_maison(chambres=4, bati=130, prix=200_000))
+    immense = note_annonce_montagne(_maison(chambres=7, bati=268, prix=200_000))
+    assert immense < juste
+
+
+def test_montagne_accepte_un_peu_de_travaux():
+    """« Un peu de travaux possible mais pas rénovation complète » : « à rénover » ne
+    doit plus coûter comme un chantier lourd."""
+    from app.services.entonnoir import note_annonce_montagne
+
+    a_renover = note_annonce_montagne(_maison(description="Maison à rénover, beau volume"))
+    complete = note_annonce_montagne(_maison(description="Rénovation complète à prévoir"))
+    assert a_renover > complete
+    assert a_renover > 0

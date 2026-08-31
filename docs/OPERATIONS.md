@@ -237,6 +237,23 @@ python scripts/warm_sea_distance.py     # distance_mer  -> data/sea_cache.json
 ```
 (`en_hauteur_geo` lit `data/relief_cache.json`, rempli à l'enrichissement.)
 
+Le set 1 (« têtard ») en a un aussi, pour le critère `ensoleillement` :
+```bash
+python scripts/warm_ensoleillement.py   # -> data/soleil_cache.json
+```
+87 points d'altitude IGN par bien (4 requêtes groupées, ~5 s) : c'est ce qui donne les
+heures de soleil direct au 21 décembre, l'orientation et la pente du versant. Trop cher
+pour l'export d'un catalogue entier, donc **l'export lit le cache et ne mesure jamais en
+direct** — exactement comme la distance à la mer. Le piège est le même que partout
+ailleurs ici : sans réchauffage le critère sort en `pending`, il est alors *exclu* du score
+au lieu de le baisser, et rien ne le dit. Le contrôle tient en une ligne — le fond des
+gorges reçoit 0 h de soleil, l'adret 6 à 8 :
+```bash
+python -c "import json; c=json.load(open('data/soleil_cache.json')); \
+h=sorted(v['soleil_hiver_h'] for v in c.values()); \
+print(len(h), 'points ; min', h[0], 'médiane', h[len(h)//2], 'max', h[-1])"
+```
+
 **Contrôle obligatoire** — le nombre d'entrées doit avoir augmenté :
 ```bash
 python -c "import json; print(len(json.load(open('data/poi_cache.json'))), \
@@ -298,6 +315,12 @@ Repères mesurés (jeu du 24 août 2026, 1 152 biens, caches Overpass chauds) :
 | 1 — têtard | 82,5 | 12 (jeu du 28 août, 3 310 biens, plafond 300 k€, 5 paliers) |
 | 1 — têtard | **82** | **13** ← publié, cible 12-15 |
 | 1 — têtard | 81,5 | 15 |
+
+⚠️ **Le seuil du set 1 est à recalibrer** depuis le tour du 30 août : plafond ramené à
+250 k€, format plafonné (5 chambres max), jardin exigé, critère `ensoleillement` ajouté (7 paliers
+au lieu de 5). Sur les 14 biens publiés, six sortent du budget et sont plafonnés à 70 : à
+82 le panier serait vide. Recalibrer avec la distribution (commande ci-dessus) après la
+première collecte complète, plutôt que de reconduire l'ancien seuil.
 
 ⚠️ Les seuils ne sont pas transposables d'un jeu à l'autre : après la correction Overpass,
 le même seuil de 80 est passé de 12 à 32 pépites côté breton. **Recalibrer sur la
@@ -459,8 +482,9 @@ SCRAPER_RATE_LIMIT_MS=3000 python collect_seloger.py                            
 ```
 
 ### Zone « têtard » (set 1)
-Maison de retrait entre copains — Drôme / Ardèche / Savoie / Ain / Loire / Haute-Loire,
-à moins de 4h porte-à-porte de Paris, **budget ≤ 300 k€** (600 k€ puis 450 k€ en août 2026).
+Maison de retrait entre copains — Alpes et Préalpes à l'est de l'axe Lyon-Valence (Drôme
+est, Isère, Savoie, Haute-Savoie, Hautes-Alpes, Ain), à moins de **4h30** porte-à-porte de
+Paris, **budget ≤ 250 k€** (600 k€, puis 450 k€, puis 300 k€ en août 2026).
 
 Quatre sources : **bienici** (pivots montagne, sans cookie), **leboncoin** et **seloger**
 (cookie Datadome, §2), et six **agences** de la zone (`agences.yaml`).
@@ -471,11 +495,17 @@ python backend/collect_tetard.py --pivot diois   # un seul foyer de collecte
 python backend/collect_tetard.py --rescore-only  # pas de collecte : re-note et ré-exporte
 ```
 
-Huit foyers de collecte (`PIVOTS`), tous dans les départements déjà couverts mais sur
-leur partie **montagne** : Diois, Vercors drômois, Haut-Vivarais, Cévennes ardéchoises,
-Bauges, Bugey, Mézenc, Pilat. La zone n'a pas changé ; ce sont les points de départ qui
-ont quitté la vallée du Rhône, d'où venait l'essentiel de l'ancien haut de classement
-(Châteauneuf-sur-Isère, 154 m d'altitude, était premier).
+Seize foyers de collecte (`PIVOTS`), tous sur la partie **montagne** des départements
+couverts : Diois, Vercors (drômois et isérois), Chartreuse, Trièves, Matheysine, Oisans,
+Belledonne, Bauges, Maurienne, Aravis, Dévoluy, Bugey — et, depuis le 30 août,
+**Albertville, le Beaufortain et le Val d'Arly**, demandés par le groupe. Les points de
+départ ont quitté la vallée du Rhône, d'où venait l'essentiel de l'ancien haut de
+classement (Châteauneuf-sur-Isère, 154 m d'altitude, était premier).
+
+Le Beaufortain (4h10 porte-à-porte) et le Val d'Arly (4h06) dépassent la consigne
+initiale des 4h ; c'est pourquoi `temps_acces` est passé à 4h30. Collecter une zone puis
+la noter zéro sur un critère de poids 3 n'aurait servi à rien — le barème reste
+décroissant et continue de préférer le proche (0,60 à 3h, 0,13 à 4h10).
 
 Les codes postaux leboncoin restent dans `backend/collect_leboncoin.py` (`TETARD_ZIPS`).
 
@@ -492,15 +522,33 @@ vaut pour son prix, et ce qu'on a devant la porte :
 - **`chambres_min` (min 3)** — « 3/4 chambres ». Le critère se replie sur les pièces puis
   sur la surface : sans ce repli il était `n/a` sur la moitié des annonces, donc neutre,
   et une maison d'**une seule pièce** est arrivée deuxième du classement.
+- **`logement_compact` (idéal 4, max 5)** — « pas des maisons immenses », précisé en
+  « 5 chambres ça reste ok, mais qu'on ne survalorise pas les biens grands : un petit
+  3 chambres bien placé vaut mieux qu'un grand mal placé ». Le critère ne récompense
+  **jamais** la taille, il décote l'immense : 3 et 4 chambres à 1,0, 5 à 0,75, 6 à 0,375.
+  Le set n'avait qu'un plancher, et les pépites publiées allaient jusqu'à 7 chambres pour
+  268 m². `surface_habitable` est retombé au poids 1 (seuil 90 m²) pour la même raison :
+  c'était le dernier endroit où la taille payait pour elle-même.
+- **`ensoleillement`** (poids 4) — exposition et **durée** de soleil, mesurées sur le
+  relief IGN et non lues dans l'annonce (« plein sud » y est un argument de vente).
+  Heures de soleil direct au 21 décembre, orientation et pente du versant : mesuré sur
+  les pivots, le fond des gorges de l'Arly reçoit **0 h**, l'adret de Maurienne **6 h**,
+  à altitude et prix au m² comparables. Demande le cache réchauffé (§4).
+- **`jardin` (≥ 300 m²)** + palier — « jardin requis ». Distinct de `has_terrain`, qui
+  reste le souhait de GRAND terrain : ici c'est un plancher. Une annonce qui décrit un
+  extérieur sans en donner la surface note 0,7 (assez pour le palier) ; une qui n'en dit
+  rien vaut `n/a`, et `n/a` ne remplit pas une exigence.
 
-**Cinq paliers** (`EXIGENCES`) ferment les portes par lesquelles un bien mal mesuré —
+**Sept paliers** (`EXIGENCES`) ferment les portes par lesquelles un bien mal mesuré —
 ou hors sujet — monte au classement :
 
 | Au-dessus de | Il faut | Pourquoi |
 |---|---|---|
 | 70 | être dans le budget | Le critère budget est **pondéré** : il pénalise le dépassement sans l'exclure, et un bien excellent partout ailleurs le compense sans peine. Mesuré : sept des treize premières pépites dépassaient le plafond, jusqu'à +39 %. Un plafond doit être un palier, pas un poids. |
 | 70 | pas de gros travaux | Même raison : `light_works` étant pondéré, une ruine bien placée et bon marché se rattrapait ailleurs. Seuil 0,85 sur le barème du critère — habitable, à rafraîchir et à rénover passent ; gros travaux (0,4) et ruine (0,1) non. **L'état non renseigné ne valide pas non plus**, et c'est 45 % des annonces : le palier coûte cher, c'est assumé. Sur un site fait pour voter, un bien dont on ignore l'état ne se juge pas — comme un bien sans photo. |
+| 70 | un jardin | `has_terrain` était pondéré, donc rattrapable : un bien sans extérieur restait éligible. Seuil 0,5 = ~110 m² mesurés, ou un extérieur décrit sans surface. |
 | 75 | trois chambres avérées | Sinon une maison d'une seule pièce finit deuxième. |
+| 85 | un format de maison de retrait | Le plafond que le set n'avait pas, et il ne ferme la porte qu'à l'immense : 0,7 sur `logement_compact` laisse passer 5 chambres (0,75) et arrête à 6 (0,375), ou ~210 m² quand les chambres manquent. Palier haut (85, pas 78) parce que « 5 chambres ça reste ok » : ce n'est qu'en tête de classement que le format cesse d'être négociable. |
 | 78 | un rapport qualité/prix mesuré | Sans surface bâtie il n'y a rien à comparer, et le bien montait précisément parce qu'il était peu mesuré. |
 | 85 | une nature ou un relief avérés | Un critère jamais mesuré ne prouve rien. |
 
@@ -508,7 +556,7 @@ ou hors sujet — monte au classement :
 Christine Miranda, Espaces Atypiques Drôme-Ardèche, Diois Immobilier, Orpi Ain Agences.
 
 Sondées et **écartées**, pour mémoire : Groupe Mercure démarre à 1,2 M€ (un réseau de
-prestige n'apporte rien sous 300 k€) ; API Pélussin publie des loyers ; Nestenn Yssingeaux
+prestige n'apporte rien sous 250 k€) ; API Pélussin publie des loyers ; Nestenn Yssingeaux
 et GTI ne donnent pas la commune ; Le Rouge et le Noir est rendu en JavaScript.
 
 ### Zone « Littoral breton » (set 4)

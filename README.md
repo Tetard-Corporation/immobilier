@@ -22,12 +22,17 @@ mais avec des **filtres avancés**, des **jeux de filtres réutilisables**, des
   type de bien, DPE, état : ruine / à rénover / baisse de prix).
 - **Filtre avancé par préférences pondérées (ranking)** : aucune exclusion, un
   `match_score` classe les biens. Préférences géo (corridor entre villes, proximité
-  gare via open data, autour d'une ville), budget/SCI, chambres, terrain, travaux
-  légers, sans vis-à-vis, nature d'exception, authentique. Critères `pending` prêts à
+  gare via open data, autour d'une ville), budget/SCI, chambres (plancher **et**
+  plafond), jardin, terrain, travaux légers, **exposition / durée d'ensoleillement**,
+  sans vis-à-vis, nature d'exception, authentique. Critères `pending` prêts à
   s'activer (trajet train, fibre, relief, randonnées). **Parseur de brief en langage
   naturel** (`POST /api/brief/parse`, IA Claude + repli heuristique).
 - **Enrichissement open data** (`?enrich=true`) : zonage PLU/constructibilité + zones AU
-  (GPU/IGN), risques (Géorisques), altitude/relief (IGN) — sans clé ; temps de trajet
+  (GPU/IGN), risques (Géorisques), altitude/relief (IGN) — sans clé ;
+  **exposition et durée d'ensoleillement** (heures de soleil direct au 21 décembre,
+  orientation et pente du versant, calculées sur le modèle d'altitude IGN — le critère qui
+  sépare l'adret de l'ubac et qu'aucune annonce ne donne ; voir
+  `backend/app/services/soleil.py` et `scripts/warm_ensoleillement.py`) ; temps de trajet
   train (estimation **sans clé** ; clé Navitia/SNCF optionnelle pour les horaires réels), **qualité de l'eau/pollution** (Hub'Eau : pesticides,
   nitrates, PFAS), **profil socio** (âge médian, orientation politique → préférences
   `population_jeune`/`orientation_gauche`). Alimente filtres, préférences et score.

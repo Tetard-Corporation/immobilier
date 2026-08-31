@@ -35,6 +35,12 @@ TETARD_ZIPS = [
     # Savoie : Bauges, Maurienne, avant-pays
     "73340", "73630", "73100", "73410", "73000", "73240", "73460", "73220", "73250",
     "73390", "73130", "73420", "73520", "73800", "73110", "73300", "73140",
+    # Savoie : Albertville, Beaufortain et Val d'Arly, demandés par le groupe le 30 août
+    # (cf. collect_tetard.PIVOTS). Codes vérifiés contre la BAN : 73200 Albertville et sa
+    # couronne, 73270 Beaufort/Villard-sur-Doron, 73620 Hauteluce, 73720 Queige,
+    # 73590 Flumet/Crest-Voland/Notre-Dame-de-Bellecombe, 73400 Ugine, 73540 La Bâthie,
+    # 73790 Tours-en-Savoie.
+    "73200", "73270", "73620", "73720", "73590", "73400", "73540", "73790",
     # Haute-Savoie : Aravis, Bornes
     "74230", "74450", "74220", "74210", "74430", "74440", "74260", "74340",
     # Hautes-Alpes : Dévoluy, Gap, Champsaur
@@ -55,11 +61,14 @@ PLOEMEUR_ZIPS = ["56270", "56100", "56600", "56260", "56530", "56850", "56620", 
 ZONES = {
     "pauline": {"zips": PAULINE_ZIPS, "set_ids": [3], "types": ["maison", "appartement"],
                 "prix_max": 170000, "target": 60},
-    # 12 pages = 1 200 annonces balayées : à 300 k€ le vivier est large, et le tri se
-    # fait au scoring, pas à la collecte. `target` borne ce qu'un run enrichit ; les
-    # suivants reprennent où celui-ci s'arrête (les biens déjà en base sont sautés).
+    # 12 pages = 1 200 annonces balayées : le vivier reste large et le tri se fait au
+    # scoring, pas à la collecte. `target` borne ce qu'un run enrichit ; les suivants
+    # reprennent où celui-ci s'arrête (les biens déjà en base sont sautés).
+    # Plafond aligné sur collect_tetard.PRIX_MAX (250 k€ depuis le 30 août) : une source
+    # qui collecte plus haut que le set ne fait que remplir la base de biens que le
+    # palier budgétaire plafonnera à 70.
     "tetard": {"zips": TETARD_ZIPS, "set_ids": [1, 2], "types": ["maison"],
-               "prix_max": 300000, "target": 300, "pages": 12},
+               "prix_max": 250000, "target": 300, "pages": 12},
     # Terrains ≤400k ET maisons ≤400k AVEC terrain (longères/pépites à rénover) :
     # une maison sans terrain n'a pas d'intérêt pour ce set, d'où min_terrain_maison.
     "ploemeur": {"zips": PLOEMEUR_ZIPS, "set_ids": [4], "types": ["terrain", "maison"],
