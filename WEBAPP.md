@@ -68,6 +68,45 @@ noter chaque critère** du set : le tableau « Critères » place côte à côte
 > ci-dessus sont permissives : quiconque connaît l'URL du site peut voter — risque
 > assumé (usage entre amis, URL non diffusée).
 
+## Poids des critères : chacun les siens (⚖️)
+
+Le groupe n'a qu'un classement pour sept personnes. Le bouton **⚖️ Mes poids** en donne
+un par personne, **sans toucher à la collecte ni aux mesures** : les sous-scores par
+critère sont déjà calculés bien par bien à l'export, seule leur **pondération** change,
+et elle se rejoue dans le navigateur.
+
+- **Échelle à 5 niveaux** — 1 accessoire, 2 utile, 3 important, 4 très important,
+  5 essentiel — plus **∅ ignorer**, qui sort le critère du calcul. Un critère jamais
+  réglé garde le poids du set.
+- **Seuils personnels** : sur les critères dont la donnée est exportée bien par bien
+  (budget, chambres, format, surface, terrain, jardin, altitude, DPE), on règle aussi le
+  **seuil** — « 5 chambres minimum » quand le set en demande 3. Le poids dit combien un
+  critère compte, le seuil dit ce qu'on veut : deux personnes peuvent mettre 5 aux
+  chambres sans chercher la même maison. Un champ vide = le seuil du set.
+- **Lentille de classement** (menu « Poids » dans la barre du haut) : classer le feed et
+  la carte avec les poids du set (défaut), les miens, la **moyenne du groupe**, ou ceux
+  de quelqu'un d'autre — voir le catalogue avec ses yeux.
+- **Convergence** : le panneau dit sur quoi le groupe est d'accord, ce qu'il laisse
+  tomber ensemble, et où ça coince (avec les deux extrêmes nommés), plus la proximité
+  deux à deux. C'est la matière première de la skill `converge-filters`.
+- **Couverture de mesure** : chaque critère indique sur quelle part du catalogue il est
+  réellement mesuré quand c'est sous 80 %. Mettre 5 à l'exposition (mesurée sur 48 % des
+  biens), c'est classer l'autre moitié sans elle.
+- Les poids se règlent aussi **critère par critère** depuis la fiche d'un bien : cliquer
+  une ligne du tableau « Match » ouvre la note, le commentaire **et** le poids.
+
+Le calcul rejoue `services/preferences.evaluate` à l'identique (moyenne pondérée des
+critères mesurés, mêmes ancres de contraste, paliers d'exigences, pénalité des biens
+déclassés) : vérifié sur les 3 792 scores de l'instantané, écart maximum 0,10.
+
+> **Stockage** : la table `votes` existante, sous un bien fictif `__poids__:<set>` —
+> `criterion` = l'id du critère, `stars` = le poids (`null` = ignorer), `comment` = les
+> seuils personnels en JSON. Aucune migration SQL à faire. Un script qui analyse les votes doit **exclure `bien_id like
+> '__poids__%'`**.
+
+Voir [`docs/criteres.md`](docs/criteres.md) pour le registre des critères, ce que chacun
+mesure, et le diagnostic chiffré du set actuel.
+
 ## Activer GitHub Pages
 1. Repo → **Settings → Pages**.
 2. **Source : Deploy from a branch**.

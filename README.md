@@ -50,8 +50,16 @@ mais avec des **filtres avancés**, des **jeux de filtres réutilisables**, des
   l'annonce ; voir `backend/app/services/tourisme.py` et `scripts/warm_tourisme.py`).
   Alimente filtres, préférences et score. État via `GET /api/enrichment/status`.
 - **Jeux de filtres** (`FilterSet`) réutilisables.
+- **Registre des critères** (`services/criteres.py`) : un identifiant stable, une famille
+  et un nom canonique par critère — le libellé encode les paramètres et change, l'id non.
+  Exporté dans `data.json`, il sert au regroupement et à la **pondération personnelle**
+  du front (chacun ses poids, cf. [`docs/criteres.md`](docs/criteres.md)).
 - **Recherches fréquentes** (`SavedSearch`) + scheduler + **détection des nouveautés**
   (badge in-app, marquage « tout vu », historique des runs).
+- **Critères de santé du bien et du lieu** : `dpe` (performance énergétique — une maison
+  habitable classée G est habitable *et* une passoire), `risques_naturels` (aléas
+  Géorisques pondérés par leur gravité) et `qualite_eau` (Hub'Eau). Les deux derniers
+  réutilisent la mesure du score d'investissement plutôt qu'un second barème.
 - **Aide à la décision** : **score d'investissement** explicable (filtre `score_min`,
   tri `sort=score`), classification ruines/à rénover, dédoublonnage inter-sources,
   suivi des baisses de prix.

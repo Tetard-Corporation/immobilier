@@ -20,6 +20,7 @@ let urlEntreeModale = false;   // l'ouverture de la fiche a-t-elle empilé une e
 const LS_LENS = "tetard_lens";
 let lens = localStorage.getItem(LS_LENS) || "set";
 let lensPoids = null;      // poids effectifs de la lentille (null = ceux du set)
+let lensParams = null;     // seuils personnels de la lentille (null = ceux du set)
 let poidsOuvert = false;   // panneau ⚖️ ouvert
 
 const $ = (s) => document.querySelector(s);
@@ -185,11 +186,17 @@ function lensNom() {
 function majLens() {
   const set = setCourant();
   lensPoids = null;
+  lensParams = null;
   if (set && lens !== "set") {
-    if (lens === "groupe") lensPoids = Poids.groupe(set, Votes.users);
-    else {
+    if (lens === "groupe") {
+      lensPoids = Poids.groupe(set, Votes.users);
+      lensParams = Poids.paramsGroupe(set, Votes.users);
+    } else {
       const qui = lens === "moi" ? Votes.voter : lens.slice(2);
-      if (qui) lensPoids = Poids.pour(set, qui);
+      if (qui) {
+        lensPoids = Poids.pour(set, qui);
+        lensParams = Poids.paramsPour(set, qui);
+      }
     }
   }
   Poids.invalider();
@@ -221,7 +228,7 @@ function matchOf(bien, setId) {
   // Lentille active : mêmes sous-scores mesurés, autres poids -> autre match. Un bien
   // dont aucun critère pesé n'est mesuré redevient non classé (même règle qu'au backend).
   if (lensPoids && String(setId) === String(currentSetId)) {
-    return Poids.matchMemo(bien, SET_BY_ID[String(setId)], lensPoids, lensId());
+    return Poids.matchMemo(bien, SET_BY_ID[String(setId)], lensPoids, lensParams, lensId());
   }
   return s.match_score;
 }
@@ -686,13 +693,29 @@ function sectionData(bien, section) {
     const rows = (set.preferences || []).map((p) => {
       const label = p.label || p.kind;
       const d = algoBy[label];
-      const w = poids[Poids.cle(p)];
+      const id = Poids.cle(p);
+      const w = poids[id];
+      // Seuil personnel posé sur ce critère : la barre montre la mesure REFAITE, sinon la
+      // fiche expliquerait le classement avec un chiffre qui n'est pas celui du calcul.
+      let sub = d && d.subscore != null ? d.subscore : null;
+      let seuil = "";
+      const perso = lensParams && lensParams[id];
+      if (perso && d && d.status === "ok") {
+        const v = Mesures.subscore(id, bien, perso);
+        if (v != null) {
+          sub = v;
+          const dits = Mesures.champs(id)
+            .filter((ch) => perso[ch.cle] !== undefined && String(perso[ch.cle]) !== String((p.params || {})[ch.cle]))
+            .map((ch) => `${ch.label} ${perso[ch.cle]}${ch.unite ? " " + ch.unite : ""}`);
+          if (dits.length) seuil = `<div class="detailtxt">Seuil ${lensNom()} : ${escHtml(dits.join(", "))}</div>`;
+        }
+      }
       return {
         key: label, label,
-        tag: `<span class="weighttag" title="Poids dans le classement (${lensNom()}) — défaut du set : ${p.weight}">`
+        tag: `<span class="weighttag" title="Poids dans le classement (${lensNom()}) — poids par défaut : ${p.weight}">`
           + `${w > 0 ? "×" + fix1(w).replace(".0", "") : "∅"}</span>`,
-        algoVal: d && d.subscore != null ? to5(d.subscore * 5) : null,
-        algoDetail: d ? (d.detail ? escHtml(d.detail) : `<span class="detailtxt">${d.status}</span>`) : "",
+        algoVal: sub != null ? to5(sub * 5) : null,
+        algoDetail: (d ? (d.detail ? escHtml(d.detail) : `<span class="detailtxt">${d.status}</span>`) : "") + seuil,
       };
     });
     const match = matchOf(bien, currentSetId);
@@ -794,7 +817,8 @@ function renderCritPopup() {
     ? (set.preferences || []).find((p) => (p.label || p.kind) === key) : null;
   const poidsBloc = pref && Votes.voter
     ? `<div class="myvote pw"><span>Ton poids</span>${echellePoids(Poids.cle(pref), Poids.pour(set, Votes.voter)[Poids.cle(pref)])}</div>
-       <div class="detailtxt">∅ ignorer · 1 accessoire · 5 essentiel — poids du set : ${pref.weight}.</div>`
+       <div class="detailtxt">∅ ignorer · 1 accessoire · 5 essentiel — poids par défaut : ${pref.weight}.</div>
+       ${champsSeuil(pref, Poids.paramsPour(set, Votes.voter))}`
     : "";
   const pending = document.getElementById("critComment") ? document.getElementById("critComment").value : null;
   const editor = Votes.voter
@@ -814,6 +838,7 @@ function renderCritPopup() {
   if (pending != null) { const ta = document.getElementById("critComment"); if (ta) ta.value = pending; }
   card.querySelector("#critClose").addEventListener("click", closeCritPopup);
   bindEchelles(card);
+  bindSeuils(card);
   card.querySelectorAll(".star").forEach((st) => st.addEventListener("click", () => handleStar(st)));
   const cs = document.getElementById("critSave");
   if (cs) cs.addEventListener("click", () => {
@@ -1014,6 +1039,46 @@ function echellePoids(key, w) {
     `<button class="plvl${n === w ? " on" : ""}${n === 0 ? " zero" : ""}" data-w="${n}" `
     + `title="${escAttr(Poids.LIBELLES[n])}">${n === 0 ? "∅" : n}</button>`).join("") + `</div>`;
 }
+// Seuil personnel d'un critère : « 4 chambres minimum » plutôt que « 3 ». N'existe que
+// pour les critères dont l'entrée est exportée bien par bien (cf. mesures.js) — ailleurs,
+// le sous-score ne se recalcule pas dans le navigateur et le seuil reste celui du set.
+function champsSeuil(pref, mesPar) {
+  const id = Poids.cle(pref);
+  const champs = Mesures.champs(id);
+  if (!champs.length || !Votes.voter) return "";
+  const perso = mesPar[id] || {};
+  const html = champs.map((ch) => {
+    const defaut = (pref.params || {})[ch.cle];
+    const val = perso[ch.cle];
+    const pose = val !== undefined && String(val) !== String(defaut);
+    const attrs = `data-key="${escAttr(id)}" data-champ="${escAttr(ch.cle)}" data-defaut="${escAttr(defaut ?? "")}"`;
+    const champ = ch.choix
+      ? `<select class="pseuil${pose ? " pose" : ""}" ${attrs}>`
+        + `<option value="">${defaut ?? "—"}</option>`
+        + ch.choix.map((c) => `<option value="${c}"${String(val) === c ? " selected" : ""}>${c}</option>`).join("")
+        + `</select>`
+      : `<input type="number" class="pseuil${pose ? " pose" : ""}" ${attrs}`
+        + ` value="${val !== undefined ? escAttr(val) : ""}" placeholder="${defaut ?? ""}"`
+        + ` min="${ch.min}" max="${ch.max}" step="${ch.pas}" inputmode="numeric" />`;
+    return `<label class="pseuil-l" title="Défaut du set : ${defaut ?? "—"} — vide = défaut">`
+      + `${escHtml(ch.label)} ${champ}${ch.unite ? `<span class="unite">${ch.unite}</span>` : ""}</label>`;
+  }).join("");
+  return `<div class="pparams">${html}</div>`;
+}
+function bindSeuils(root) {
+  root.querySelectorAll(".pseuil").forEach((el) => el.addEventListener("change", (e) => {
+    e.stopPropagation();
+    if (!Votes.voter) { openIdentity(); return; }
+    const set = setCourant();
+    if (!set) return;
+    const brut = el.value.trim();
+    // Vide = « je reprends le seuil du set » : on efface le réglage au lieu d'inscrire
+    // la valeur par défaut, pour qu'un changement du set continue de s'appliquer.
+    const val = brut === "" ? null : (el.tagName === "SELECT" ? brut : Number(brut));
+    Poids.definirParam(set, el.dataset.key, el.dataset.champ, val);
+  }));
+}
+
 function bindEchelles(root) {
   root.querySelectorAll(".pscale").forEach((sc) => {
     sc.querySelectorAll(".plvl").forEach((btn) => btn.addEventListener("click", (e) => {
@@ -1064,11 +1129,12 @@ function renderPoidsPanel() {
   // --- 1. mes poids, rangés par famille ---
   const reg = (DATA && DATA.criteres) || null;
   const couv = Poids.couverture(DATA.biens || [], set);
+  const mesSeuils = Poids.paramsPour(set, Votes.voter);
   const ligne = (p) => {
     const key = Poids.cle(p);
     const w = mesPoids[key];
     const c = convBy[key] || {};
-    const infos = [`set ${p.weight}`];
+    const infos = [`défaut ${p.weight}`];
     if (c.n) infos.push(`groupe ${fix1(c.moyenne)} sur ${c.n} avis`);
     // La couverture n'est pas un détail technique : un critère mesuré sur la moitié du
     // catalogue classe l'autre moitié sans lui. Signalée dès qu'elle passe sous 80 %.
@@ -1076,6 +1142,7 @@ function renderPoidsPanel() {
     const alerte = cv != null && cv < 0.8 ? ` <span class="couv">mesuré sur ${Math.round(cv * 100)} % des biens</span>` : "";
     return `<div class="prow${w !== Number(p.weight) ? " modif" : ""}">
       <div class="pname" title="${escAttr(Poids.quoi(p, reg))}">${escHtml(p.label || p.kind)}<span class="detailtxt"> — ${infos.join(" · ")}</span>${alerte}</div>
+      ${champsSeuil(p, mesSeuils)}
       ${echellePoids(key, w)}</div>`;
   };
   const editeur = Poids.groupes(set, reg).map((g) =>
@@ -1084,7 +1151,7 @@ function renderPoidsPanel() {
     ? `${editeur}
        <div class="comment-actions">
          <span class="detailtxt">∅ ignorer · 1 accessoire · 2 utile · 3 important · 4 très important · 5 essentiel</span>
-         <button class="btn ghost" id="poidsReset">Remettre les poids du set</button>
+         <button class="btn ghost" id="poidsReset">Remettre les réglages du set</button>
          <button class="btn" id="poidsAppliquer">Classer avec mes poids</button>
        </div>`
     : `<p class="detailtxt">Choisis ton identité (en haut) pour régler tes poids.</p>`;
@@ -1131,9 +1198,25 @@ function renderPoidsPanel() {
       <td class="num">${fix1(c.moyenne)}</td>
       <td class="st-${c.statut}">${PUCE[c.statut]} ${MOT[c.statut]}${c.statut === "desaccord" ? ` <span class="detailtxt">(${c.etendue} d'écart)</span>` : ""}</td>
       <td>${chips(c)}</td></tr>`).join("");
+  // Les seuils se lisent à part : deux personnes peuvent mettre 5 aux chambres et ne pas
+  // vouloir la même maison. C'est le désaccord que le poids ne sait pas dire.
+  const seuils = Poids.convergenceParams(set, Votes.users).filter((x) => x.distinctes > 0);
+  const blocSeuils = seuils.length
+    ? `<div class="section-title">Ce que chacun demande</div>
+       <div class="tablewrap"><table class="scores conv">
+       <tr><th>Critère</th><th>Seuil</th><th class="num" title="Valeur du set">Défaut</th><th>Qui demande quoi</th></tr>
+       ${seuils.map((x) => `<tr>
+         <td title="${escAttr(x.label)}">${escHtml(parId[x.key] ? Poids.court(parId[x.key], reg) : x.label)}</td>
+         <td class="detailtxt">${escHtml(x.champ.label)}</td>
+         <td class="num">${x.defaut ?? "—"}</td>
+         <td>${Object.keys(x.par).sort((a, b) => (Number(x.par[b]) || 0) - (Number(x.par[a]) || 0))
+            .map((u) => `<span class="wchip${u === Votes.voter ? " me" : ""}">${escHtml(u.slice(0, 3))}&nbsp;${escHtml(x.par[u])}</span>`).join("")}
+           ${x.distinctes > 1 ? `<span class="st-desaccord">🔴</span>` : ""}</td></tr>`).join("")}
+       </table></div>`
+    : "";
   const tableConv = lignesConv
     ? `<div class="tablewrap"><table class="scores conv">
-        <tr><th>Critère</th><th class="num">Set</th><th class="num">Groupe</th><th>Statut</th><th>Qui a dit quoi</th></tr>
+        <tr><th>Critère</th><th class="num" title="Poids par défaut du set">Défaut</th><th class="num">Groupe</th><th>Statut</th><th>Qui a dit quoi</th></tr>
         ${lignesConv}</table></div>`
     : `<p class="detailtxt">Aucun critère réglé sur ce set pour l'instant.</p>`;
   // Proximité deux à deux : qui cherche la même maison que qui.
@@ -1157,10 +1240,12 @@ function renderPoidsPanel() {
     <div class="section-title">Convergence du groupe</div>
     ${resume}
     ${tableConv}
-    ${blocProx}`;
+    ${blocProx}
+    ${blocSeuils}`;
 
   card.querySelector("#poidsClose").addEventListener("click", fermerPoids);
   bindEchelles(card);
+  bindSeuils(card);
   const rst = card.querySelector("#poidsReset");
   if (rst) rst.addEventListener("click", () => Poids.remettreDefauts(set));
   const app = card.querySelector("#poidsAppliquer");

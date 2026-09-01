@@ -10,6 +10,12 @@
 // Échelle à 5 niveaux (1 à 5, comme les poids du set), plus « ignorer » (0) pour sortir
 // un critère du calcul. Un critère jamais réglé garde le poids du set.
 //
+// Le poids ne dit pas tout : il dit COMBIEN un critère compte, pas CE QU'ON VEUT.
+// « 2 chambres minimum » et « 4 chambres minimum » sont deux exigences différentes, et
+// deux personnes qui mettent 5 aux chambres ne cherchent pas forcément la même maison.
+// Sur les critères dont l'entrée est exportée bien par bien, chacun peut donc aussi
+// régler le SEUIL (voir mesures.js) — et là, le sous-score est recalculé.
+//
 // Stockage : la table `votes` existante, sous un bien fictif `__poids__:<set>` — un
 // « vote » par (set, personne, critère). Aucune migration SQL à faire, et les poids sont
 // partagés par le même canal que les notes. La contrainte SQL interdisant stars=0,
@@ -75,6 +81,81 @@ const Poids = (() => {
     return out;
   }
 
+  // --- paramètres personnels ------------------------------------------------
+  // Rangés dans le `comment` de la ligne du poids (JSON) : une ligne par (set, personne,
+  // critère) porte les deux, sans colonne ni table supplémentaire.
+  function parametres(set) {
+    const out = {};
+    const rows = Votes.entriesFor(bienId(set.id));
+    for (const crit of Object.keys(rows)) {
+      for (const u of Object.keys(rows[crit])) {
+        const brut = rows[crit][u] && rows[crit][u].comment;
+        if (!brut) continue;
+        try {
+          const p = JSON.parse(brut);
+          if (p && typeof p === "object" && !Array.isArray(p)) (out[crit] ||= {})[u] = p;
+        } catch { /* un commentaire qui n'est pas du JSON n'est pas un réglage */ }
+      }
+    }
+    return out;
+  }
+
+  function definirParam(set, key, champ, valeur) {
+    const actuel = { ...((parametres(set)[key] || {})[Votes.voter] || {}) };
+    if (valeur === null || valeur === undefined || valeur === "") delete actuel[champ];
+    else actuel[champ] = valeur;
+    const reste = Object.keys(actuel).length ? JSON.stringify(actuel) : null;
+    // Poser un seuil ne répond pas à la question du poids. Si la personne n'a pas encore
+    // réglé ce critère, on réinscrit le poids du set : sans ça la ligne s'écrirait avec
+    // `stars = null`, qui veut dire « ignoré » — dire « je veux 5 chambres » sortirait
+    // les chambres du calcul.
+    const dejaRegle = (explicites(set)[key] || {})[Votes.voter];
+    const pref = (set.preferences || []).find((p) => cle(p) === key);
+    const w = dejaRegle !== undefined ? dejaRegle
+      : Math.max(0, Math.min(5, Math.round(Number((pref && pref.weight) ?? 1))));
+    return Votes.setMine(bienId(set.id), w === 0 ? null : w, key, reste);
+  }
+
+  // Seuils effectifs d'une personne. Ne contient QUE les critères qu'elle a
+  // personnalisés : partout ailleurs, c'est le sous-score du backend qui fait foi.
+  function paramsPour(set, user) {
+    const out = {};
+    if (!user) return out;
+    const ex = parametres(set);
+    for (const p of (set.preferences || [])) {
+      const id = cle(p);
+      const perso = (ex[id] || {})[user];
+      if (perso && Object.keys(perso).length) out[id] = { ...(p.params || {}), ...perso };
+    }
+    return out;
+  }
+
+  // Seuils du groupe : la MÉDIANE des seuils réglés (une moyenne ferait « 3,5 chambres »,
+  // et un seul budget très haut déplacerait celui de tout le monde).
+  function paramsGroupe(set, users) {
+    const out = {};
+    const ex = parametres(set);
+    const part = participants(set, users);
+    for (const p of (set.preferences || [])) {
+      const id = cle(p);
+      const dits = part.map((u) => (ex[id] || {})[u]).filter(Boolean);
+      if (!dits.length) continue;
+      const fusion = { ...(p.params || {}) };
+      const champs = new Set(dits.flatMap((d) => Object.keys(d)));
+      for (const c of champs) {
+        const vals = dits.map((d) => d[c]).filter((v) => v !== undefined);
+        const nums = vals.filter((v) => typeof v === "number").sort((a, b) => a - b);
+        if (nums.length === vals.length && nums.length) {
+          fusion[c] = nums[Math.floor((nums.length - 1) / 2)];
+        } else if (vals.length) {
+          fusion[c] = vals[0];
+        }
+      }
+      out[id] = fusion;
+    }
+    return out;
+  }
+
   // Poids du set : ce que tout le monde a par défaut.
   function defauts(set) {
     const out = {};
@@ -119,38 +200,56 @@ const Poids = (() => {
     return Votes.setMine(bienId(set.id), w === 0 ? null : w, key);
   }
 
-  // « Remettre les poids du set » : on RÉÉCRIT les valeurs du set au lieu d'effacer les
-  // lignes — la policy Supabase n'autorise pas le DELETE, et un poids remis à sa valeur
-  // par défaut reste une position assumée, pas un silence.
+  // « Remettre les réglages du set » : on RÉÉCRIT les valeurs du set au lieu d'effacer
+  // les lignes — la policy Supabase n'autorise pas le DELETE, et un poids remis à sa
+  // valeur par défaut reste une position assumée, pas un silence. Les seuils personnels,
+  // eux, sont bel et bien effacés (comment = null) : on revient à ceux du set.
   function remettreDefauts(set) {
-    return Promise.all((set.preferences || []).map((p) => definir(set, cle(p), p.weight ?? 1)));
+    return Promise.all((set.preferences || []).map((p) => {
+      const w = Math.max(0, Math.min(5, Math.round(Number(p.weight ?? 1))));
+      return Votes.setMine(bienId(set.id), w === 0 ? null : w, cle(p), null);
+    }));
   }
 
   // --- recalcul du match ---------------------------------------------------
   // Reproduit `services/preferences.evaluate` : moyenne des sous-scores MESURÉS pondérée
   // par les poids, étirée entre les deux ancres, puis plafonnée par les exigences du set.
-  function agrege(details, set, poids) {
+  function agrege(bien, details, set, poids, params) {
     let acc = 0, tot = 0;
     const ix = index(set);
+    // Sous-scores refaits avec les seuils personnels : ils servent AUSSI aux paliers du
+    // set. Dire « mon budget est 150 k€ » doit vraiment plafonner un bien à 250 k€ —
+    // sinon le seuil ne pèserait que dans la moyenne, où il se rattrape ailleurs.
+    const remesures = {};
     for (const d of details) {
       if (HORS_CRITERES.has(d.kind)) continue;
       if (d.status !== "ok" || d.subscore == null) continue;
       const k = idDeDetail(d, ix);
       const w = poids && poids[k] !== undefined ? Number(poids[k]) : Number(d.weight || 0);
       if (!(w > 0)) continue;   // poids 0 = critère ignoré : il sort de la moyenne
-      acc += w * d.subscore;
+      // Seuil personnel : on re-mesure. Sinon — et c'est le cas par défaut — on garde
+      // le sous-score du backend, qui reste la seule autorité.
+      let sub = d.subscore;
+      if (params && params[k]) {
+        const remesure = Mesures.subscore(k, bien, params[k]);
+        if (remesure != null) { sub = remesure; remesures[d.kind] = sub; }
+      }
+      acc += w * sub;
       tot += w;
     }
     if (tot <= 0) return null;
-    return exigences(arrondi1(contraste(acc / tot) * 100), details, set.exigences);
+    return exigences(arrondi1(contraste(acc / tot) * 100), details, set.exigences, remesures);
   }
 
   // Paliers du set : au-delà d'un certain score, certains critères ne sont plus
   // optionnels (cf. `appliquer_exigences`). Le score est ramené au palier, jamais annulé.
-  function exigences(score, details, exigs) {
+  function exigences(score, details, exigs, remesures) {
     if (score == null || !exigs || !exigs.length) return score;
     const parKind = {};
     for (const d of details) parKind[d.kind] = d;   // le dernier gagne, comme côté Python
+    for (const k of Object.keys(remesures || {})) {
+      if (parKind[k]) parKind[k] = { ...parKind[k], subscore: remesures[k] };
+    }
     for (const e of [...exigs].sort((a, b) => Number(a.above || 0) - Number(b.above || 0))) {
       const palier = Number(e.above || 0);
       if (score <= palier || remplie(e, parKind)) continue;
@@ -172,32 +271,32 @@ const Poids = (() => {
   // Pénalité des biens déclassés (viager, sous compromis, mobil-home…) : le facteur
   // n'est pas exporté, on le retrouve comme le rapport entre le match publié et le match
   // recalculé aux poids du set — puis on l'applique au match personnalisé.
-  function penalite(sb, set) {
+  function penalite(bien, sb, set) {
     if (!sb.details.some((d) => d.kind === "disqualifiant")) return 1;
-    const ref = agrege(sb.details, set, null);
+    const ref = agrege(bien, sb.details, set, null, null);
     if (!ref) return 1;
     return Math.min(1, sb.match_score / ref);
   }
 
   // Match d'un bien recalculé avec des poids donnés. null = non évaluable (aucun des
   // critères pesés n'est mesuré sur ce bien) — même convention que le backend.
-  function match(bien, set, poids) {
+  function match(bien, set, poids, params) {
     const sb = (bien.scores_by_set || {})[String(set.id)];
     if (!sb || sb.match_score == null) return null;
-    const brut = agrege(sb.details, set, poids);
+    const brut = agrege(bien, sb.details, set, poids, params);
     if (brut == null) return null;
-    return arrondi1(brut * penalite(sb, set));
+    return arrondi1(brut * penalite(bien, sb, set));
   }
 
   // Mémo par lentille : le feed rappelle matchOf() sur des milliers de biens à chaque
   // tri/filtre. `invalider()` à chaque changement de poids.
   const memo = new Map();
-  function matchMemo(bien, set, poids, lentille) {
+  function matchMemo(bien, set, poids, params, lentille) {
     let m = memo.get(lentille);
     if (!m) { m = new Map(); memo.set(lentille, m); }
     const k = `${bien.source}__${bien.external_id}`;
     if (m.has(k)) return m.get(k);
-    const v = match(bien, set, poids);
+    const v = match(bien, set, poids, params);
     m.set(k, v);
     return v;
   }
@@ -227,6 +326,36 @@ const Poids = (() => {
         statut: n < 2 ? "peu" : ecart <= 0.5 ? "accord" : ecart <= 1.2 ? "nuance" : "desaccord",
       };
     });
+  }
+
+  // Convergence des SEUILS (et non des poids) : qui demande quoi. C'est là que se lit
+  // « Max veut 4 chambres, Léo en veut 2 » — un désaccord que le poids ne peut pas dire.
+  function convergenceParams(set, users) {
+    const ex = parametres(set);
+    const part = participants(set, users);
+    const out = [];
+    for (const p of (set.preferences || [])) {
+      const id = cle(p);
+      const champs = Mesures.champs(id);
+      if (!champs.length) continue;
+      for (const ch of champs) {
+        const par = {};
+        for (const u of part) {
+          const v = (ex[id] || {})[u];
+          if (v && v[ch.cle] !== undefined) par[u] = v[ch.cle];
+        }
+        const vals = Object.values(par);
+        if (!vals.length) continue;
+        const distinctes = new Set(vals.map(String));
+        out.push({
+          key: id, label: p.label || p.kind, champ: ch, par,
+          defaut: (p.params || {})[ch.cle],
+          accord: distinctes.size === 1 && (vals.length === part.length),
+          distinctes: distinctes.size,
+        });
+      }
+    }
+    return out;
   }
 
   // Proximité deux à deux : 100 % = mêmes poids partout, 0 % = opposés sur toute
@@ -310,6 +439,7 @@ const Poids = (() => {
   return {
     NIVEAUX, LIBELLES, cle, bienId, couverture, groupes, court, quoi,
     explicites, defauts, participants, pour, groupe, definir, remettreDefauts,
+    parametres, definirParam, paramsPour, paramsGroupe, convergenceParams,
     match, matchMemo, invalider, convergence, proximites,
   };
 })();
