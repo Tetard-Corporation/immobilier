@@ -184,6 +184,7 @@ biens d'exception, où le budget ne serait plus un critère éliminatoire.
 SCRAPER_RATE_LIMIT_MS=3000 EXPORT_NO_LIVE_OVERPASS=1 python collect_leboncoin.py
 SCRAPER_RATE_LIMIT_MS=3000 EXPORT_NO_LIVE_OVERPASS=1 python collect_seloger.py
 EXPORT_NO_LIVE_OVERPASS=1 python collect_littoral.py
+EXPORT_NO_LIVE_OVERPASS=1 python collect_tetard.py     # bienici + notaires + paruvendu
 ```
 
 Trois réglages qui ne sont pas décoratifs :
@@ -564,8 +565,30 @@ Maison de retrait entre copains — Alpes et Préalpes à l'est de l'axe Lyon-Va
 est, Isère, Savoie, Haute-Savoie, Hautes-Alpes, Ain), à moins de **4h30** porte-à-porte de
 Paris, **budget ≤ 250 k€** (600 k€, puis 450 k€, puis 300 k€ en août 2026).
 
-Quatre sources : **bienici** (pivots montagne, sans cookie), **leboncoin** et **seloger**
-(cookie Datadome, §2), et six **agences** de la zone (`agences.yaml`).
+Sources : **bienici** (pivots montagne, sans cookie), **notaires** et **paruvendu**
+(sans clé ni cookie, collectés par département — voir plus bas), **leboncoin** et
+**seloger** (cookie Datadome, §2), et douze **agences** de la zone (`agences.yaml`).
+
+**Notaires et Paruvendu sont dans `collect_tetard.py` depuis le 1er septembre.** Mesuré
+sur la zone : 386 maisons ≤ 250 k€, dont **185 absentes de la base** — l'inventaire
+notarial (successions, adjudications, biens ruraux) ne passe pas par les portails. Ils
+se collectent par département (`DEPARTEMENTS`, dérivé des `PIVOTS`), pas par pivot :
+aucune des deux API ne cherche autour d'un point. `--sans-portails-publics` les coupe.
+
+⚠️ **Ni l'un ni l'autre ne donne de coordonnées**, et c'est ce qui les rendait
+inexploitables. Sans point, `est_a_lest_du_rhone` renvoie `None` et l'étage altitude de
+l'entonnoir n'a rien à mesurer : les 182 biens d'un premier essai sont **tous** passés
+par garde-fou, et le classement « montagne » remontait Pierrelatte, Valence et Donzère —
+la vallée du Rhône, à 100 m et du mauvais côté de l'axe. `services.enrich.annotate` pose
+désormais le **centroïde communal** (`geo_communes.coords_for_commune`, cache disque,
+zéro appel réseau) et marque le bien `position_commune` : le massif est juste, le point
+ne l'est pas. Après correctif : 180 biens géocodés sur 185, 31 écartés à l'ouest de
+l'axe, 7 sous 250 m — l'entonnoir tranche.
+
+Un piège de nommage au passage : **Notaires publie les communes sans leur article**
+(« Échelles » pour Les Échelles, « Voulte-sur-Rhône » pour La Voulte-sur-Rhône). Neuf
+pour cent des communes alpines commencent par un article ; l'index les enregistre sous
+les deux formes, un vrai nom primant toujours sur un alias.
 
 ```bash
 python backend/collect_tetard.py                 # collecte + enrichissement + export

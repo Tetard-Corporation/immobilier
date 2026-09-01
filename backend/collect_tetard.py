@@ -420,6 +420,60 @@ ZONES = [{"nom": nom.split(" / ")[0], "lat": lat, "lon": lon, "rayon_km": ZONE_R
 
 
 
+# Les sources qui alimentent le set. Bien'ici se collecte autour des pivots (géo fine) ;
+# Notaires et Paruvendu ne savent chercher que par département, d'où la liste dérivée
+# des pivots — elle suit automatiquement tout ajout ou retrait de massif.
+SOURCES_ANNONCES = ("bienici", "notaires", "paruvendu")
+DEPARTEMENTS = sorted({d.zfill(2) for _n, _la, _lo, deps in PIVOTS for d in deps})
+
+
+def _collecter_portails_publics(collected: dict, existing: set,
+                                departements: list[str] | None = None) -> None:
+    """Notaires et Paruvendu : deux portails sans clé, sans cookie et sans anti-bot.
+
+    Ils ne recoupent presque pas Bien'ici — mesuré sur la zone : 42 % des maisons
+    notariales et 58 % des paruvendu étaient absentes de la base. L'inventaire notarial
+    (successions, ventes sur adjudication, biens ruraux) ne passe pas par les portails.
+
+    Aucun des deux ne donne de coordonnées : c'est `services.enrich.annotate` qui pose le
+    centroïde communal, sans quoi le filtre « à l'est de l'axe » et l'étage altitude de
+    l'entonnoir seraient inertes sur ces biens (mesuré : 182 sur 182 passaient sans être
+    filtrés, et le classement montagne remontait Pierrelatte et Valence).
+    """
+    from app.sources.notaires import NotairesSource
+    from app.sources.paruvendu import ParuvenduSource
+
+    deps = departements or DEPARTEMENTS
+    for src, nom, pages in ((NotairesSource(), "notaires", 6), (ParuvenduSource(), "paruvendu", 4)):
+        neufs = vus = 0
+        for dep in deps:
+            for page in range(1, pages + 1):
+                crit = SearchCriteria(departement=dep, property_types=["maison"],
+                                      prix_max=PRIX_MAX, par_page=100, page=page)
+                try:
+                    items = src.search(crit).items
+                except Exception as e:  # noqa: BLE001
+                    # L'API notaires répond 400 au-delà de la dernière page : c'est la
+                    # fin du département, pas une panne. On passe au suivant.
+                    if "400" not in str(e):
+                        print(f"  [{nom} {dep}] KO: {type(e).__name__}: {str(e)[:60]}", flush=True)
+                    break
+                if not items:
+                    break
+                for it in items:
+                    vus += 1
+                    cle = (it.source, it.external_id)
+                    if not it.external_id or cle in existing or cle in collected:
+                        continue
+                    if it.prix is None or it.prix > PRIX_MAX or not it.commune:
+                        continue
+                    collected[cle] = it
+                    neufs += 1
+                time.sleep(0.4)
+        print(f"  [{nom}] {neufs} neufs (sur {vus} annonces, "
+              f"départements {', '.join(deps)})", flush=True)
+
+
 def ensure_sets(db) -> None:
     criteria = {"property_types": ["maison"], "preferences": PREFERENCES,
                 "exigences": EXIGENCES,
@@ -506,6 +560,9 @@ def main() -> int:
                          "seuil des pépites : « 1:70 » (set:plancher). Sert à comparer "
                          "les massifs entre eux — sans ça le site ne montre que les "
                          "secteurs où le budget achète quelque chose.")
+    ap.add_argument("--sans-portails-publics", action="store_true",
+                    dest="sans_portails_publics",
+                    help="ne collecter que Bien'ici, sans Notaires ni Paruvendu")
     ap.add_argument("--no-export", action="store_true",
                     help="ne pas exporter (le seuil des pépites se calibre après coup). "
                          "À n'utiliser que si un export suit dans la foulée : un bien "
@@ -544,16 +601,22 @@ def main() -> int:
 
     from app.sources.base import NormalizedListing
 
-    existing = {e for (e,) in db.query(Listing.external_id).filter(Listing.source == "bienici").all()}
-    collected: dict[str, object] = {}
+    # Clé (source, id) et non id seul : trois sources alimentent maintenant `collected`
+    # et rien ne garantit que leurs identifiants ne se croisent pas — un id notaires est
+    # un entier court, un id bienici aussi.
+    existing = {(s_, e) for (s_, e) in
+                db.query(Listing.source, Listing.external_id)
+                .filter(Listing.source.in_(SOURCES_ANNONCES)).all()}
+    collected: dict[tuple, object] = {}
 
     if args.from_dump:
         with open(args.from_dump, encoding="utf-8") as fh:
             brut = json.load(fh)
         for d in brut:
             it = NormalizedListing(**d)
-            if it.external_id and it.external_id not in existing:
-                collected[it.external_id] = it
+            cle = (it.source, it.external_id)
+            if it.external_id and cle not in existing:
+                collected[cle] = it
         print(f"Dump relu : {len(collected)} annonces neuves sur {len(brut)} "
               f"({os.path.abspath(args.from_dump)})", flush=True)
         return _traiter(db, args, collected, pepites, meilleur_zone)
@@ -577,13 +640,20 @@ def main() -> int:
             continue
         neufs = 0
         for it in items:
-            if not it.external_id or it.external_id in existing or it.external_id in collected:
+            cle = (it.source, it.external_id)
+            if not it.external_id or cle in existing or cle in collected:
                 continue
             if it.prix is not None and it.prix > PRIX_MAX:
                 continue
-            collected[it.external_id] = it
+            collected[cle] = it
             neufs += 1
         print(f"  [{nom}] {neufs} neufs (sur {len(items)} annonces)", flush=True)
+
+    if not args.sans_portails_publics:
+        # Les départements des pivots RETENUS : sinon `--pivot maurienne` limiterait
+        # Bien'ici à un massif pendant que les portails ratisseraient les huit.
+        deps = sorted({d.zfill(2) for _n, _la, _lo, dd in pivots for d in dd})
+        _collecter_portails_publics(collected, existing, deps)
 
     if args.dump:
         with open(args.dump, "w", encoding="utf-8") as fh:

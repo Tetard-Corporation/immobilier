@@ -149,3 +149,101 @@ def code_insee(commune: str | None, code_postal: str | None) -> str | None:
         if _sans_accents(c.get("nom")) == cible:
             return c.get("code")
     return candidates[0].get("code") if cible else None
+
+
+# --- Coordonnées d'un bien dont la source n'en donne pas ---------------------- #
+# Notaires et Paruvendu publient la commune mais jamais de latitude/longitude. Sans
+# coordonnées, les deux filtres qui DÉFINISSENT le set têtard sont inertes : le test
+# « à l'est de l'axe Lyon-Valence » renvoie None (donc le bien est retenu par
+# garde-fou) et l'étage altitude de l'entonnoir ne peut rien mesurer. Mesuré sur une
+# collecte des deux sources : 182 biens sur 182 passaient sans être filtrés, et le haut
+# du classement montagne était occupé par Pierrelatte, Valence et Donzère — la vallée
+# du Rhône, à 100 m d'altitude et à l'ouest de l'axe.
+#
+# Le centroïde communal suffit à ces deux filtres (ils tranchent à l'échelle du massif,
+# pas de la parcelle), et il est déjà en cache disque : aucun appel réseau.
+_COMMUNE_INDEX: dict[str, dict] = {}
+
+
+# `_sans_accents` garde l'apostrophe : « L'Argentière » se normalise en
+# « l'argentiere », d'où la forme élidée dans la liste.
+_ARTICLES = ("le ", "la ", "les ", "l'", "l ")
+
+
+def _sans_article(nom: str) -> str:
+    """« les echelles » -> « echelles ». Voir _index_departement."""
+    for a in _ARTICLES:
+        if nom.startswith(a):
+            return nom[len(a):]
+    return nom
+
+
+def _index_departement(dep: str) -> dict:
+    """{nom normalisé -> commune, code INSEE -> commune} pour un département.
+
+    Le nom est indexé AVEC et SANS son article : Notaires publie « Échelles » et
+    « Voulte-sur-Rhône » là où la commune s'appelle « Les Échelles » et « La
+    Voulte-sur-Rhône ». Neuf pour cent des communes des Alpes commencent par un article
+    (224 sur 2 340) — sans cette variante, elles ne se géocodent que par leur code INSEE,
+    dont Paruvendu ne dispose pas.
+
+    La forme sans article ne surcharge jamais une commune qui porte déjà ce nom nu :
+    entre « Les Adrets » et « Adrets », c'est la commune réellement nommée qui gagne.
+    """
+    dep = str(dep).strip().zfill(2)
+    if dep not in _COMMUNE_INDEX:
+        idx: dict = {}
+        alias: dict = {}
+        for c in load_departement(dep):
+            if c.get("lat") is None:
+                continue
+            nom = _sans_accents(c.get("nom"))
+            idx[nom] = c
+            if (nu := _sans_article(nom)) != nom:
+                alias.setdefault(nu, c)
+            if c.get("code"):
+                idx[str(c["code"])] = c
+        _COMMUNE_INDEX[dep] = {**alias, **idx}
+    return _COMMUNE_INDEX[dep]
+
+
+def coords_for_commune(commune: str | None, departement: str | None,
+                       code_commune: str | None = None,
+                       code_postal: str | None = None) -> tuple[float, float] | None:
+    """Centroïde de la commune, du plus fiable au moins fiable.
+
+    1. code INSEE — sans ambiguïté ;
+    2. nom + département — le nom seul ne suffit pas (des dizaines de Saint-Martin) ;
+    3. code postal — dernier recours, on prend la plus peuplée du CP (cf.
+       `main_commune_for_postcode`), ce qui peut désigner le chef-lieu plutôt que le
+       village voisin. Assez juste pour un filtre de massif, pas pour un score au point.
+
+    Renvoie None plutôt qu'une approximation quand rien ne correspond : un bien sans
+    coordonnées reste retenu par les garde-fous de l'entonnoir, alors qu'une fausse
+    coordonnée le placerait dans le mauvais massif.
+
+    **Pas de repli sur la BAN**, et ce n'est pas un oubli. Ce qui ne se résout pas ici,
+    ce sont les *communes nouvelles* : les annonces gardent le nom d'avant la fusion (« La
+    Rochette » pour Valgelon-La Rochette depuis 2019, « Randens » pour Val-d'Arc). Or la
+    BAN répond à ces noms — mais à côté. Mesuré : « La Rochette 73 » lui rend La Rochette
+    de Seine-et-Marne (code 77389, 48,5° de latitude, 400 km trop au nord), et « Randens
+    Savoie » lui rend Porte-de-Savoie, qui est une autre fusion. Un géocodeur qui répond
+    faux avec assurance est pire que pas de géocodeur : le premier range le bien dans le
+    mauvais massif, le second le laisse aux garde-fous. Sur la collecte témoin de Savoie,
+    3 biens sur 40 sont dans ce cas.
+    """
+    if departement:
+        idx = _index_departement(departement)
+        if code_commune and (c := idx.get(str(code_commune))):
+            return c["lat"], c["lon"]
+        if commune and (c := idx.get(_sans_accents(commune))):
+            return c["lat"], c["lon"]
+    if code_postal:
+        cible = _sans_accents(commune or "")
+        candidats = communes_for_postcode(code_postal)
+        for c in candidats:
+            if c.get("lat") is not None and _sans_accents(c.get("nom")) == cible:
+                return c["lat"], c["lon"]
+        if candidats and candidats[0].get("lat") is not None:
+            return candidats[0]["lat"], candidats[0]["lon"]
+    return None

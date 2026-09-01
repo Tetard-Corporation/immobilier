@@ -15,8 +15,17 @@ mais avec des **filtres avancés**, des **jeux de filtres réutilisables**, des
   - `bienici` — annonces Bien'ici (API JSON). Aucune clé ; géo fine filtrée côté client.
   - `bienici` / `leboncoin` / `pap` / `seloger` — annonces de portails (scraping ;
     Leboncoin/PAP/SeLoger nécessitent un proxy + navigateur headless en live).
+  - `notaires` — API JSON publique d'immobilier.notaires.fr. Ni clé, ni cookie, ni
+    anti-bot. **Inventaire distinct** : successions, adjudications, biens ruraux, que
+    les portails n'ont pas (mesuré sur la zone têtard : 42 % des maisons absentes de la
+    base). Recherche par département uniquement.
+  - `paruvendu` — annonces Paruvendu (HTML rendu côté serveur, aucune protection).
   - `agences` — **newsletters d'agences (IMAP) + sites d'agences** : ingestion inbound,
     extraction par l'API Claude (Haiku) avec repli heuristique. Zéro risque ToS.
+
+  Notaires et Paruvendu ne publient pas de coordonnées : `services.enrich.annotate` leur
+  pose le **centroïde communal** (flag `position_commune`), sans quoi les filtres
+  géographiques des sets restent inertes sur elles.
   - `mock` — jeu de données de démo (dev/tests, hors-ligne).
 - **Recherche multi-critères** normalisée (localisation, prix, surfaces terrain/bâti,
   type de bien, DPE, état : ruine / à rénover / baisse de prix).
