@@ -12,6 +12,11 @@ import math
 
 from .gares import nearest_gare
 from .geo import distance_to_corridor_km, haversine_km, resolve_city
+# Risques et qualité de l'eau sont DÉJÀ mesurés, pour le score d'investissement. On
+# importe la mesure au lieu d'en écrire une seconde : deux barèmes pour un même aléa
+# finiraient par diverger, et c'est le genre d'écart que personne ne va voir.
+from .scoring import _pollution_eau as _mesure_eau
+from .scoring import _risques_naturels as _mesure_risques
 
 # Préférences évaluables dès maintenant (annonce + géo) ; le reste = pending.
 PREFERENCE_KINDS = [
@@ -43,6 +48,9 @@ PREFERENCE_KINDS = [
     "commerces",
     "village_vivant",
     "cachet",
+    "dpe",
+    "risques_naturels",
+    "qualite_eau",
     "tension_locative",
     "ski",
     "attractivite_airbnb",
@@ -56,6 +64,11 @@ PREFERENCE_KINDS = [
 ]
 
 _PENDING_KINDS = {"rail_time_from", "fiber", "relief_mountain", "hiking"}
+# DPE : la classe énergie, renseignée par 81 % des annonces du set têtard. Le barème n'est
+# pas linéaire, parce que le coût ne l'est pas : F et G sont des passoires — interdites à
+# la location (G depuis 2025, F en 2028) et donc porteuses d'un chantier que le prix
+# affiché ne contient pas. A à C se valent presque ; la marche est entre E et F.
+_DPE_ECHELLE = {"A": 1.0, "B": 0.95, "C": 0.85, "D": 0.70, "E": 0.50, "F": 0.25, "G": 0.10}
 # Budget : part du budget en dessous de laquelle on est pleinement dans la « bonne
 # affaire » (1.0), et note obtenue en consommant exactement 100 % du budget.
 _BUDGET_CONFORT = 0.70
@@ -357,6 +370,26 @@ def _eval_one(item, kind: str, params: dict):
         if cond is None:
             return None, "n/a", "état inconnu"
         return _LIGHT_OK.get(cond, 0.6), "ok", f"état : {_COND_LABELS.get(cond, cond)}"
+
+    if kind == "dpe":
+        classe = (getattr(item, "dpe_classe", None) or flags.get("dpe_classe") or "")
+        classe = classe.strip().upper()[:1]
+        if classe not in _DPE_ECHELLE:
+            return None, "n/a", "DPE non renseigné"
+        sub = _DPE_ECHELLE[classe]
+        quoi = ("passoire thermique" if classe in ("F", "G")
+                else "performant" if classe in ("A", "B") else "correct")
+        return sub, "ok", f"DPE {classe} — {quoi}"
+
+    if kind == "risques_naturels":
+        # Même mesure que le pilier « Risques » du score d'investissement (aléas
+        # Géorisques pondérés par leur gravité pour un logement) — mais PONDÉRABLE ici :
+        # le score d'investissement dit ce que le bien vaut, le set dit ce que le groupe
+        # accepte de vivre. Les deux n'ont pas à donner le même poids à l'inondation.
+        return _mesure_risques(flags, {})
+
+    if kind == "qualite_eau":
+        return _mesure_eau(flags, {})
 
     if kind == "no_vis_a_vis":
         if "sans_vis_a_vis" in (flags.get("features") or []):

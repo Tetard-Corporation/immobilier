@@ -322,6 +322,10 @@ table.votegrid tr.global-row td { background: rgba(56,189,248,.07); }
 .votewrap .myvote { margin: 6px 0 10px; display: flex; align-items: center; gap: 10px; }
 table.votes-tbl td, table.votes-tbl th { padding: 6px 9px; }
 .vcomment { color: var(--muted); font-size: 12px; font-style: italic; margin-top: 2px; }
+/* Note globale posée à côté du commentaire général, dans la fiche */
+.noteglobale { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; margin: 2px 0 6px; }
+.noteglobale .ng-lab { color: var(--muted); font-size: 13px; }
+
 .comment-edit { margin: 4px 0 12px; }
 .comment-edit textarea {
   width: 100%; background: var(--card2); color: var(--txt); border: 1px solid var(--line);
@@ -347,7 +351,63 @@ table.votes-tbl td, table.votes-tbl th { padding: 6px 9px; }
 .idbtn:hover { border-color: var(--fav); }
 .idbtn.cur { border-color: var(--fav); color: var(--fav); font-weight: 600; }
 
+/* ---------- Poids des critères (pondération perso + convergence) ---------- */
+/* z-index sous l'overlay d'identité (3000) : un clic sur une échelle sans être
+   identifié doit faire remonter « Qui es-tu ? » PAR-DESSUS le panneau. */
+#poidsPanel { position: fixed; inset: 0; z-index: 2500; display: grid; place-items: center; }
+#poidsPanel .poids-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,.74); }
+.poids-card {
+  position: relative; background: var(--card); border: 1px solid var(--line);
+  border-radius: 16px; width: min(880px, 94vw); max-height: 92vh; overflow: auto; padding: 18px 20px;
+}
+.poids-card h2 { margin: 0 0 4px; font-size: 20px; }
+.poids-card .sub { margin: 0 0 8px; }
+.poids-card .comment-actions { flex-wrap: wrap; justify-content: space-between; margin-top: 12px; }
+
+.prow {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap;
+  padding: 7px 0; border-bottom: 1px solid var(--line);
+}
+.prow.modif .pname { color: var(--accent); }
+.pname { font-size: 13px; min-width: 0; flex: 1 1 220px; }
+.pscale { display: inline-flex; gap: 3px; flex: 0 0 auto; }
+.plvl {
+  background: var(--card2); color: var(--muted); border: 1px solid var(--line);
+  border-radius: 8px; width: 32px; height: 32px; font-size: 13px; cursor: pointer;
+  touch-action: manipulation; padding: 0;
+}
+.plvl:hover { border-color: var(--accent2); }
+.plvl.on { background: var(--accent); color: #04210f; border-color: var(--accent); font-weight: 700; }
+.plvl.zero.on { background: var(--muted); color: #04210f; border-color: var(--muted); }
+.myvote.pw { flex-wrap: wrap; }
+
+.convsum { margin: 4px 0 10px; padding-left: 18px; font-size: 13px; }
+.convsum li { margin: 4px 0; }
+table.conv td, table.conv th { font-size: 12px; }
+.wchip {
+  display: inline-block; background: var(--card2); border: 1px solid var(--line);
+  border-radius: 999px; padding: 1px 7px; font-size: 11px; margin: 1px 3px 1px 0; white-space: nowrap;
+}
+.wchip.me { border-color: var(--accent); color: var(--accent); }
+.st-accord { color: var(--accent); }
+.st-nuance { color: var(--warn); }
+.st-desaccord { color: var(--bad); }
+.st-peu { color: var(--muted); }
+.proxlist { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 2px; }
+.proxpair {
+  background: var(--card2); border: 1px solid var(--line); border-radius: 999px;
+  padding: 3px 10px; font-size: 12px;
+}
+
+.colhead { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .04em; margin-bottom: 5px; }
+.pgroupe { margin: 14px 0 4px; }
+.pgroupe .colhead { border-bottom: 1px solid var(--line); padding-bottom: 4px; }
+/* Couverture de mesure : un critère mesuré sur la moitié du catalogue classe l'autre
+   moitié sans lui. L'ambre le dit sans le crier. */
+.couv { color: var(--warn); font-size: 11px; white-space: nowrap; }
+.lenson { color: var(--accent); }
 @media (max-width: 560px) {
   .controls { gap: 10px; }
   .topbar { gap: 10px; }
+  .plvl { width: 30px; height: 30px; }
 }

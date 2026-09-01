@@ -12,11 +12,42 @@ let openBien = null;   // bien actuellement ouvert dans la modale (pour rafraîc
 let modalMapInstance = null;   // carte Leaflet interactive de la fiche
 let openCrit = null;           // critère ouvert dans le popup (vote/commentaire par critère)
 let feedDirty = false, modalDirty = false;   // re-rendus différés (perf : pas de rebuild lourd à chaque vote)
+let urlEntreeModale = false;   // l'ouverture de la fiche a-t-elle empilé une entrée d'historique ?
+// Lentille de pondération : AVEC QUELS POIDS le classement est calculé. "set" = ceux du
+// set (défaut publié), "moi" = les miens, "groupe" = la moyenne du groupe, "u:Prénom" =
+// ceux de quelqu'un d'autre. Elle ne touche ni la collecte ni les sous-scores mesurés,
+// seulement leur pondération -> le classement, pas les données.
+const LS_LENS = "tetard_lens";
+let lens = localStorage.getItem(LS_LENS) || "set";
+let lensPoids = null;      // poids effectifs de la lentille (null = ceux du set)
+let poidsOuvert = false;   // panneau ⚖️ ouvert
 
 const $ = (s) => document.querySelector(s);
 const euros = (n) => (n == null ? "—" : Number(n).toLocaleString("fr-FR") + " €");
 const fix1 = (n) => (n == null ? "—" : Number(n).toFixed(1));
 const voteKey = (b) => `${b.source}__${b.external_id}`;
+// Lien partageable d'un bien : la clé de vote (source + id de l'annonce) est stable
+// d'un export à l'autre, contrairement à l'id interne — un lien envoyé au groupe
+// survit donc au ré-export du snapshot.
+const HASH_BIEN = "#bien=";
+const lienBien = (b) => location.pathname + location.search + HASH_BIEN + encodeURIComponent(voteKey(b));
+function bienDuHash() {
+  if (!location.hash.startsWith(HASH_BIEN)) return null;
+  const cle = decodeURIComponent(location.hash.slice(HASH_BIEN.length));
+  return ((DATA && DATA.biens) || []).find((b) => voteKey(b) === cle) || null;
+}
+// Reflète la fiche ouverte dans la barre d'adresse. Première ouverture : on EMPILE une
+// entrée (le retour arrière referme la fiche, réflexe mobile) ; les suivantes la
+// remplacent, pour ne pas laisser une pile d'entrées derrière soi.
+function majUrlBien(bien, opts) {
+  if (opts && opts.viaHistorique) return;
+  const st = { bien: voteKey(bien) };
+  if (urlEntreeModale) history.replaceState(st, "", lienBien(bien));
+  else { history.pushState(st, "", lienBien(bien)); urlEntreeModale = true; }
+}
+function effacerUrlBien() {
+  if (location.hash.startsWith(HASH_BIEN)) history.replaceState(null, "", location.pathname + location.search);
+}
 const showLoader = () => { const l = $("#loader"); if (l) l.classList.remove("hidden"); };
 const hideLoader = () => { const l = $("#loader"); if (l) l.classList.add("hidden"); };
 // Affiche le loader, laisse-le peindre (double rAF), puis exécute le rendu et le masque.
@@ -38,16 +69,25 @@ async function boot() {
   // Les témoins de zone sont comptés à part : ce sont des biens publiés pour comparer
   // les massifs, pas des pépites, et les mélanger au total prêterait à confusion.
   const nTemoins = DATA.stats.n_temoins_zone || 0;
-  $("#meta").textContent =
+  $("#meta").innerHTML =
     `${DATA.stats.n_biens} biens${nTemoins ? ` (dont ${nTemoins} témoins de massif)` : ""}`
-    + ` · ${DATA.stats.n_searches} recherches · snapshot ${new Date(DATA.generated_at).toLocaleString("fr-FR")}`;
+    + ` · ${DATA.stats.n_searches} recherches · snapshot ${new Date(DATA.generated_at).toLocaleString("fr-FR")}`
+    + `<span id="lensInfo"></span>`;
 
   remplirMassifs();
   setSel.addEventListener("change", (e) => {
     currentSetId = e.target.value;
     remplirMassifs();
+    remplirPoidsSelect();   // les poids sont propres à un set : la lentille se recharge
     withLoader(render);
   });
+  $("#poidsSelect").addEventListener("change", (e) => {
+    lens = e.target.value;
+    localStorage.setItem(LS_LENS, lens);
+    majLens();
+    withLoader(render);
+  });
+  $("#poidsBtn").addEventListener("click", ouvrirPoids);
   $("#zoneSelect").addEventListener("change", render);
   $("#sortSelect").addEventListener("change", render);
   $("#favOnly").addEventListener("change", render);
@@ -62,14 +102,22 @@ async function boot() {
     if (e.key !== "Escape") return;
     if (document.getElementById("mapPopup")) closeMapPopup();
     else if (openCrit) closeCritPopup();
+    else if (poidsOuvert) fermerPoids();
     else { closeModal(); closeIdentityIfAllowed(); }
   });
 
   // Votes (étoiles) : init backend + identité de session.
   await Votes.init(window.APP_CONFIG || {});
+  // Après le chargement des votes seulement : les poids du groupe arrivent par le même
+  // canal, et le menu des lentilles ne se remplit qu'une fois qu'on les a lus.
+  remplirPoidsSelect();
   // Sur un vote : ne re-rendre QUE l'overlay actif ; différer le feed/modale (sinon
   // triple rebuild lourd à chaque clic -> clics perdus sur mobile).
   Votes.onChange(() => {
+    // Un poids qui change (le mien ou celui d'un autre, au chargement) invalide le
+    // classement AVANT tout re-rendu.
+    remplirPoidsSelect();
+    if (poidsOuvert) renderPoidsPanel();
     if (openCrit) { renderCritPopup(); modalDirty = true; feedDirty = true; }
     else if (openBien) { refreshModal(); feedDirty = true; }
     else if (skipNextFeedRender) { skipNextFeedRender = false; }  // favori mis à jour en place
@@ -80,8 +128,35 @@ async function boot() {
   renderWhoami();
   if (!Votes.voter) openIdentity();
 
+  // Lien partagé (#bien=...) : ouvrir la fiche visée, et le retour arrière la referme.
+  window.addEventListener("popstate", () => {
+    urlEntreeModale = false;
+    const b = bienDuHash();
+    if (b) ouvrirDepuisLien(b);
+    else if (openBien) closeModal({ viaHistorique: true });
+  });
+
   render();
+  const cible = bienDuHash();
+  if (cible) ouvrirDepuisLien(cible);
   hideLoader();
+}
+
+// Un lien reçu peut viser un bien absent du set affiché (le set breton ne contient pas
+// les biens montagne) : on bascule sur un set qui le contient, sinon la fiche s'ouvrirait
+// sans son tableau de match.
+function ouvrirDepuisLien(bien) {
+  if (matchOf(bien, currentSetId) == null) {
+    const s = SETS.find((x) => matchOf(bien, String(x.id)) != null);
+    if (s) {
+      currentSetId = String(s.id);
+      $("#setSelect").value = currentSetId;
+      remplirMassifs();
+      remplirPoidsSelect();
+      render();
+    }
+  }
+  openModal(bien, { viaHistorique: true });
 }
 
 // Le sélecteur de massif est reconstruit à chaque changement de set : les zones sont
@@ -97,10 +172,58 @@ function remplirMassifs() {
   sel.closest(".ctl").classList.toggle("hidden", zones.length === 0);
 }
 
+// --- lentille de pondération --------------------------------------------
+const setCourant = () => SET_BY_ID[String(currentSetId)] || null;
+const lensId = () => `${lens}|${currentSetId}|${Votes.voter || ""}`;
+function lensNom() {
+  if (lens === "moi") return "tes poids";
+  if (lens === "groupe") return "les poids du groupe";
+  if (lens.startsWith("u:")) return `les poids de ${lens.slice(2)}`;
+  return "les poids du set";
+}
+// Recalcule les poids effectifs de la lentille et jette le classement mémorisé.
+function majLens() {
+  const set = setCourant();
+  lensPoids = null;
+  if (set && lens !== "set") {
+    if (lens === "groupe") lensPoids = Poids.groupe(set, Votes.users);
+    else {
+      const qui = lens === "moi" ? Votes.voter : lens.slice(2);
+      if (qui) lensPoids = Poids.pour(set, qui);
+    }
+  }
+  Poids.invalider();
+}
+// Le menu ne propose que des lentilles qui existent : « groupe » et « poids de X »
+// n'apparaissent qu'une fois que quelqu'un a réglé ses poids sur ce set.
+function remplirPoidsSelect() {
+  const sel = $("#poidsSelect");
+  if (!sel) return;
+  const set = setCourant();
+  const regles = set ? Poids.participants(set, Votes.users) : [];
+  const opts = [`<option value="set">Set (défaut)</option>`, `<option value="moi">Mes poids</option>`];
+  if (regles.length) opts.push(`<option value="groupe">Groupe (moyenne)</option>`);
+  for (const u of regles) {
+    if (u === Votes.voter) continue;
+    opts.push(`<option value="u:${escAttr(u)}">Poids de ${escHtml(u)}</option>`);
+  }
+  const html = opts.join("");
+  if (sel.innerHTML !== html) sel.innerHTML = html;
+  if (![...sel.options].some((o) => o.value === lens)) lens = "set";
+  sel.value = lens;
+  majLens();
+}
+
 // --- score helpers ------------------------------------------------------
 function matchOf(bien, setId) {
   const s = (bien.scores_by_set || {})[String(setId)];
-  return s && s.match_score != null ? s.match_score : null;
+  if (!s || s.match_score == null) return null;
+  // Lentille active : mêmes sous-scores mesurés, autres poids -> autre match. Un bien
+  // dont aucun critère pesé n'est mesuré redevient non classé (même règle qu'au backend).
+  if (lensPoids && String(setId) === String(currentSetId)) {
+    return Poids.matchMemo(bien, SET_BY_ID[String(setId)], lensPoids, lensId());
+  }
+  return s.match_score;
 }
 // Score financier = pilier « Prix & opportunité » du score d'investissement (niveau de
 // prix au m², écart au marché local, baisse constatée). null tant qu'aucun de ses
@@ -164,6 +287,9 @@ function render() {
   renderScroll(list);
   if (!$("#mapView").classList.contains("hidden")) renderMap(list);
   updateZoneBtn();   // garde le libellé/compteur du bouton zone à jour
+  // Un classement recalculé doit se voir : sinon on croit lire le set commun.
+  const li = $("#lensInfo");
+  if (li) li.innerHTML = lensPoids ? ` · classé avec <b class="lenson">${lensNom()}</b>` : "";
 }
 
 function gallery(bien, _full = false) {
@@ -199,6 +325,15 @@ function favBtn(b) {
   const n = Votes.favCount ? Votes.favCount(id) : 0;
   return `<button class="fav-btn${mine ? " on" : ""}" data-bien="${escAttr(id)}" title="Favori" aria-label="Favori">`
     + `${mine ? "♥" : "♡"}${n > 0 ? `<span class="fav-n">${n}</span>` : ""}</button>`;
+}
+// Le cœur est mis à jour EN PLACE (feed comme fiche) : il vit dans une partie qui n'est
+// pas re-rendue au vote, et un rebuild complet ferait sauter le scroll.
+function majFavBtn(btn) {
+  const id = btn.dataset.bien;
+  const mine = Votes.isFavori(id);
+  const n = Votes.favCount ? Votes.favCount(id) : 0;
+  btn.classList.toggle("on", mine);
+  btn.innerHTML = `${mine ? "♥" : "♡"}${n > 0 ? `<span class="fav-n">${n}</span>` : ""}`;
 }
 
 // Rendu incrémental : on n'injecte qu'un lot de cartes, puis on étend au scroll.
@@ -263,12 +398,7 @@ function bindCard(card, b) {
     const inPlace = !$("#favOnly").checked;
     if (inPlace) skipNextFeedRender = true;
     Votes.toggleFavori(fb.dataset.bien);   // emit synchrone -> onChange
-    if (inPlace) {
-      const mine = Votes.isFavori(fb.dataset.bien);
-      const n = Votes.favCount ? Votes.favCount(fb.dataset.bien) : 0;
-      fb.classList.toggle("on", mine);
-      fb.innerHTML = `${mine ? "♥" : "♡"}${n > 0 ? `<span class="fav-n">${n}</span>` : ""}`;
-    }
+    if (inPlace) majFavBtn(fb);
   });
   card.addEventListener("click", (e) => {
     if (e.target.closest(".voterow") || e.target.closest(".minimap") || e.target.closest(".fav-btn")) return;
@@ -549,16 +679,30 @@ function sectionData(bien, section) {
     const sb = (bien.scores_by_set || {})[String(currentSetId)] || {};
     const algoBy = {};
     for (const d of (sb.details || [])) algoBy[d.label || d.kind] = d;
+    // Poids réellement utilisés pour le classement affiché : ceux de la lentille si
+    // elle est active, ceux du set sinon. Sans ça, la fiche expliquerait un classement
+    // avec les poids d'un autre calcul.
+    const poids = lensPoids || Poids.defauts(set);
     const rows = (set.preferences || []).map((p) => {
       const label = p.label || p.kind;
       const d = algoBy[label];
+      const w = poids[Poids.cle(p)];
       return {
         key: label, label,
+        tag: `<span class="weighttag" title="Poids dans le classement (${lensNom()}) — défaut du set : ${p.weight}">`
+          + `${w > 0 ? "×" + fix1(w).replace(".0", "") : "∅"}</span>`,
         algoVal: d && d.subscore != null ? to5(d.subscore * 5) : null,
         algoDetail: d ? (d.detail ? escHtml(d.detail) : `<span class="detailtxt">${d.status}</span>`) : "",
       };
     });
-    return { global: { key: Votes.OVERALL, label: `Score global (set ${set.name || "—"})`, algoVal: to5(sb.match_score / 20), algoDetail: "" }, rows };
+    const match = matchOf(bien, currentSetId);
+    return {
+      global: {
+        key: Votes.OVERALL,
+        label: `Score global (set ${set.name || "—"}${lensPoids ? `, ${lensNom()}` : ""})`,
+        algoVal: match != null ? to5(match / 20) : null, algoDetail: "",
+      }, rows,
+    };
   }
   if (section === "invest") {
     const rows = (bien.score_details || []).map((p) => {
@@ -596,7 +740,7 @@ function voteTable(bien, section) {
       const v = (e && typeof e.stars === "number") ? e.stars : null;
       return `<td class="num">${bar5(v, u === Votes.voter ? "me" : "user")}</td>`;
     }).join("");
-    const lab = isGlobal ? `<b>${r.label}</b>` : r.label;
+    const lab = (isGlobal ? `<b>${r.label}</b>` : r.label) + (r.tag || "");
     return `<tr class="critrow${isGlobal ? " global-row" : ""}" data-section="${section}" data-key="${escAttr(r.key)}">
       <td>${lab} <span class="critmore">›</span></td>
       <td class="num">${bar5(r.algoVal, section === "risk" ? "risk" : "algo")}</td>${cells}</tr>`;
@@ -643,6 +787,15 @@ function renderCritPopup() {
     const st = typeof e.stars === "number" ? `<span class="ministars">${"★".repeat(e.stars)}</span>` : "";
     return `<div class="acomment"><b>${u}</b> ${st}<div class="vcomment">“${escHtml(e.comment)}”</div></div>`;
   }).filter(Boolean).join("") || `<p class="detailtxt">Aucun commentaire sur ce critère.</p>`;
+  // Sur un critère du set, on règle son poids là où on le juge : la note dit « ce bien
+  // coche ce critère », le poids dit « ce critère compte pour moi ».
+  const set = setCourant();
+  const pref = section === "match" && set
+    ? (set.preferences || []).find((p) => (p.label || p.kind) === key) : null;
+  const poidsBloc = pref && Votes.voter
+    ? `<div class="myvote pw"><span>Ton poids</span>${echellePoids(Poids.cle(pref), Poids.pour(set, Votes.voter)[Poids.cle(pref)])}</div>
+       <div class="detailtxt">∅ ignorer · 1 accessoire · 5 essentiel — poids du set : ${pref.weight}.</div>`
+    : "";
   const pending = document.getElementById("critComment") ? document.getElementById("critComment").value : null;
   const editor = Votes.voter
     ? `<div class="comment-edit"><textarea id="critComment" rows="2" placeholder="Ton commentaire sur ce critère (optionnel)">${escHtml(info.mineComment || "")}</textarea>
@@ -654,11 +807,13 @@ function renderCritPopup() {
     <div class="myvote"><span>Algo</span> ${bar5(row.algoVal, section === "risk" ? "risk" : "algo")}
       <span class="detailtxt">${row.algoVal != null ? row.algoVal.toFixed(1) + "/5" : "—"}</span></div>
     ${row.algoDetail ? `<div class="algo-detail">${row.algoDetail}</div>` : ""}
+    ${poidsBloc}
     <div class="myvote"><span>Ta note</span> ${starsWidget(id, "big", key)}</div>
     ${editor}
     <div class="section-title">Commentaires du critère</div>${comments}`;
   if (pending != null) { const ta = document.getElementById("critComment"); if (ta) ta.value = pending; }
   card.querySelector("#critClose").addEventListener("click", closeCritPopup);
+  bindEchelles(card);
   card.querySelectorAll(".star").forEach((st) => st.addEventListener("click", () => handleStar(st)));
   const cs = document.getElementById("critSave");
   if (cs) cs.addEventListener("click", () => {
@@ -673,9 +828,10 @@ function closeCritPopup() {
   else if (feedDirty) { render(); feedDirty = false; }                         // votes faits depuis le feed
 }
 
-function openModal(bien) {
+function openModal(bien, opts = {}) {
   if (!bien) return;
   openBien = bien;
+  majUrlBien(bien, opts);   // le lien de la barre d'adresse désigne la fiche ouverte
   const card = $("#modalCard");
   // Partie statique (en-tête + photos + description) construite une fois.
   card.innerHTML = `
@@ -684,7 +840,7 @@ function openModal(bien) {
     <div class="price" style="color:var(--accent);font-weight:700;font-size:18px">${euros(bien.prix)}</div>
     <div class="sub">${bien.type_bien || "bien"} · ${faits(bien, { pieces: true })}${
       bien.altitude != null ? ` · ${Math.round(bien.altitude)} m alt.` : ""}</div>
-    <div class="modal-gallery galwrap${(bien.photos || []).length ? " has-photos" : ""}" style="position:relative">${gallery(bien, true)}</div>
+    <div class="modal-gallery galwrap${(bien.photos || []).length ? " has-photos" : ""}" style="position:relative">${gallery(bien, true)}${favBtn(bien)}</div>
     ${bien.description ? `<p class="descr">${escHtml(htmlToText(bien.description))}</p>` : ""}
 
     ${infoGrid(bien)}
@@ -697,11 +853,28 @@ function openModal(bien) {
 
     <div class="modal-actions">
       ${bien.url ? `<a class="btn" href="${bien.url}" target="_blank" rel="noopener">Voir l'annonce ↗</a>` : ""}
+      <button class="btn ghost" id="mshare" title="Copier le lien de cette fiche">🔗 Copier le lien</button>
       <button class="btn ghost" id="mclose2">Fermer</button>
     </div>`;
   $("#modal").classList.remove("hidden");
   $("#mclose").addEventListener("click", closeModal);
   $("#mclose2").addEventListener("click", closeModal);
+  // Favori depuis la fiche : même geste que dans le feed, même bouton.
+  const mfb = card.querySelector(".fav-btn");
+  if (mfb) mfb.addEventListener("click", (e) => {
+    e.stopPropagation();
+    if (!Votes.voter) { openIdentity(); return; }
+    Votes.toggleFavori(mfb.dataset.bien);   // emit synchrone -> onChange (feed différé)
+    majFavBtn(mfb);
+  });
+  // Partage : sur mobile, recopier la barre d'adresse est pénible.
+  const sh = $("#mshare");
+  if (sh) sh.addEventListener("click", async () => {
+    const lien = location.origin + lienBien(bien);
+    try { await navigator.clipboard.writeText(lien); sh.textContent = "✓ Lien copié"; }
+    catch { window.prompt("Copie le lien de ce bien :", lien); }
+    setTimeout(() => { if (sh.isConnected) sh.textContent = "🔗 Copier le lien"; }, 1800);
+  });
   // Galerie photo (flèches + points)
   const gal = card.querySelector(".gallery");
   card.querySelectorAll(".gnav").forEach((btn) =>
@@ -745,6 +918,15 @@ function renderModalDynamic(bien) {
   const host = $("#modalDynamic");
   const id = voteKey(bien);
   const pending = $("#globalComment") ? $("#globalComment").value : null;   // préserve la saisie en cours
+  // Note globale : le même vote /5 que dans le feed, posé ici à côté du commentaire —
+  // on juge le bien et on dit pourquoi au même endroit.
+  const infoG = Votes.forBien(id);
+  const moyG = infoG.count
+    ? `<span class="vavg">moyenne ${infoG.avg.toFixed(1)}/5 · ${infoG.count} vote${infoG.count > 1 ? "s" : ""}</span>`
+    : `<span class="vavg">personne n'a encore noté</span>`;
+  const noteG = Votes.voter
+    ? `<div class="noteglobale"><span class="ng-lab">Ta note</span>${starsWidget(id, "big", Votes.OVERALL)}${moyG}</div>`
+    : `<div class="noteglobale">${moyG}</div>`;
   const editor = Votes.voter
     ? `<div class="comment-edit">
         <textarea id="globalComment" rows="2" placeholder="Un commentaire général sur ce bien (optionnel)">${escHtml(Votes.forBien(id).mineComment || "")}</textarea>
@@ -757,11 +939,14 @@ function renderModalDynamic(bien) {
     ${voteTable(bien, "invest")}
     <div class="section-title">Risques</div>
     ${voteTable(bien, "risk")}
-    <div class="section-title">Commentaire global</div>
+    <div class="section-title">Ta note &amp; ton commentaire</div>
+    ${noteG}
     ${editor}
     <div class="section-title">Tous les commentaires</div>
     ${allCommentsSection(bien)}`;
   if (pending != null && $("#globalComment")) $("#globalComment").value = pending;
+  host.querySelectorAll(".noteglobale .star").forEach((st) =>
+    st.addEventListener("click", () => handleStar(st)));
   host.querySelectorAll(".critrow").forEach((tr) =>
     tr.addEventListener("click", () => openCritPopup(bien, tr.dataset.section, tr.dataset.key)));
   const sg = $("#saveGlobal");
@@ -771,9 +956,14 @@ function renderModalDynamic(bien) {
     });
   });
 }
-function closeModal() {
+function closeModal(opts = {}) {
   $("#modal").classList.add("hidden"); openBien = null;
   if (modalMapInstance) { modalMapInstance.remove(); modalMapInstance = null; }
+  // L'URL redevient celle de la liste. Si l'ouverture avait empilé une entrée, on la
+  // dépile (sinon le retour arrière rouvrirait la fiche qu'on vient de fermer).
+  if (opts && opts.viaHistorique) urlEntreeModale = false;
+  else if (urlEntreeModale) { urlEntreeModale = false; history.back(); }
+  else effacerUrlBien();
   if (feedDirty) { render(); feedDirty = false; }   // applique les votes faits dans la fiche
 }
 function refreshModal() { if (openBien && !$("#modal").classList.contains("hidden")) renderModalDynamic(openBien); }
@@ -809,6 +999,178 @@ function handleStar(st) {
   // Feedback visuel IMMÉDIAT (avant tout re-rendu) -> le clic ne semble jamais "raté".
   wrap.querySelectorAll(".star").forEach((s, i) => s.classList.toggle("on", i < v));
   Votes.setMine(wrap.dataset.bien, v, wrap.dataset.crit);
+}
+
+// ---------- Poids des critères : réglage perso + convergence du groupe ----------
+// Un seul panneau, trois questions : ce que JE veux (l'éditeur), ce sur quoi le GROUPE
+// s'accorde ou se déchire (critère par critère), et ce que ça CHANGE concrètement (les
+// biens qui montent, ceux qui tombent, ceux que le groupe ne voit pas pareil).
+// Rien ici ne touche la collecte : les sous-scores sont mesurés une fois par le backend,
+// on ne rejoue que leur pondération.
+
+// Échelle à 5 niveaux (1 à 5) + « ignorer » (∅), le même barème que les poids du set.
+function echellePoids(key, w) {
+  return `<div class="pscale" data-key="${escAttr(key)}">` + Poids.NIVEAUX.map((n) =>
+    `<button class="plvl${n === w ? " on" : ""}${n === 0 ? " zero" : ""}" data-w="${n}" `
+    + `title="${escAttr(Poids.LIBELLES[n])}">${n === 0 ? "∅" : n}</button>`).join("") + `</div>`;
+}
+function bindEchelles(root) {
+  root.querySelectorAll(".pscale").forEach((sc) => {
+    sc.querySelectorAll(".plvl").forEach((btn) => btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      if (!Votes.voter) { openIdentity(); return; }
+      const set = setCourant();
+      if (!set) return;
+      // Retour visuel immédiat : sur mobile, un clic qui attend le re-rendu semble perdu.
+      sc.querySelectorAll(".plvl").forEach((b) => b.classList.toggle("on", b === btn));
+      Poids.definir(set, sc.dataset.key, Number(btn.dataset.w));
+    }));
+  });
+}
+
+function ouvrirPoids() {
+  poidsOuvert = true;
+  let el = document.getElementById("poidsPanel");
+  if (!el) {
+    el = document.createElement("div");
+    el.id = "poidsPanel";
+    el.innerHTML = `<div class="poids-backdrop"></div><div class="poids-card" id="poidsCard"></div>`;
+    document.body.appendChild(el);
+    el.querySelector(".poids-backdrop").addEventListener("click", fermerPoids);
+  }
+  renderPoidsPanel();
+}
+function fermerPoids() {
+  poidsOuvert = false;
+  const el = document.getElementById("poidsPanel");
+  if (el) el.remove();
+  render();
+}
+
+const PUCE = { accord: "🟢", nuance: "🟡", desaccord: "🔴", peu: "⚪" };
+const MOT = { accord: "accord", nuance: "nuance", desaccord: "désaccord", peu: "1 seul avis" };
+const ORDRE = { desaccord: 0, nuance: 1, accord: 2, peu: 3 };
+
+function renderPoidsPanel() {
+  const card = document.getElementById("poidsCard");
+  if (!card) return;
+  const set = setCourant();
+  if (!set) { card.innerHTML = `<p>Aucun set sélectionné.</p>`; return; }
+  const mesPoids = Poids.pour(set, Votes.voter);
+  const conv = Poids.convergence(set, Votes.users);
+  const convBy = Object.fromEntries(conv.map((c) => [c.key, c]));
+  const part = Poids.participants(set, Votes.users);
+
+  // --- 1. mes poids, rangés par famille ---
+  const reg = (DATA && DATA.criteres) || null;
+  const couv = Poids.couverture(DATA.biens || [], set);
+  const ligne = (p) => {
+    const key = Poids.cle(p);
+    const w = mesPoids[key];
+    const c = convBy[key] || {};
+    const infos = [`set ${p.weight}`];
+    if (c.n) infos.push(`groupe ${fix1(c.moyenne)} sur ${c.n} avis`);
+    // La couverture n'est pas un détail technique : un critère mesuré sur la moitié du
+    // catalogue classe l'autre moitié sans lui. Signalée dès qu'elle passe sous 80 %.
+    const cv = couv[key];
+    const alerte = cv != null && cv < 0.8 ? ` <span class="couv">mesuré sur ${Math.round(cv * 100)} % des biens</span>` : "";
+    return `<div class="prow${w !== Number(p.weight) ? " modif" : ""}">
+      <div class="pname" title="${escAttr(Poids.quoi(p, reg))}">${escHtml(p.label || p.kind)}<span class="detailtxt"> — ${infos.join(" · ")}</span>${alerte}</div>
+      ${echellePoids(key, w)}</div>`;
+  };
+  const editeur = Poids.groupes(set, reg).map((g) =>
+    `<div class="pgroupe"><div class="colhead">${escHtml(g.label)}</div>${g.prefs.map(ligne).join("")}</div>`).join("");
+  const bloc1 = Votes.voter
+    ? `${editeur}
+       <div class="comment-actions">
+         <span class="detailtxt">∅ ignorer · 1 accessoire · 2 utile · 3 important · 4 très important · 5 essentiel</span>
+         <button class="btn ghost" id="poidsReset">Remettre les poids du set</button>
+         <button class="btn" id="poidsAppliquer">Classer avec mes poids</button>
+       </div>`
+    : `<p class="detailtxt">Choisis ton identité (en haut) pour régler tes poids.</p>`;
+
+  // --- 2. convergence ---
+  // Dans cette section on nomme les critères par leur nom canonique (registre) et non
+  // par le libellé du set : « Bruit (route, rail) » plutôt que « Loin d'une route
+  // passante / autoroute / rail », et c'est le même mot d'un set à l'autre.
+  const parId = Object.fromEntries((set.preferences || []).map((p) => [Poids.cle(p), p]));
+  const nomCourt = (c) => (parId[c.key] ? Poids.court(parId[c.key], reg) : c.label);
+  const chips = (c) => Object.keys(c.par)
+    .sort((a, b) => c.par[b] - c.par[a])
+    .map((u) => `<span class="wchip${u === Votes.voter ? " me" : ""}" title="${escAttr(u)} : ${escAttr(Poids.LIBELLES[c.par[u]])}">`
+      + `${escHtml(u.slice(0, 3))}&nbsp;${c.par[u] === 0 ? "∅" : c.par[u]}</span>`).join("");
+  const extremes = (c) => {
+    const us = Object.keys(c.par).sort((a, b) => c.par[b] - c.par[a]);
+    const h = us[0], b = us[us.length - 1];
+    return `${escHtml(h)} ${c.par[h]} contre ${escHtml(b)} ${c.par[b]}`;
+  };
+  const nomme = (list, n) => list.slice(0, n).map((c) => escHtml(nomCourt(c))).join(", ");
+  const accords = conv.filter((c) => c.statut === "accord" && c.moyenne >= 3.5).sort((a, b) => b.moyenne - a.moyenne);
+  const laisses = conv.filter((c) => c.statut !== "peu" && c.moyenne != null && c.moyenne <= 1.5).sort((a, b) => a.moyenne - b.moyenne);
+  const clivants = conv.filter((c) => c.statut === "desaccord").sort((a, b) => b.ecart - a.ecart);
+  let resume;
+  if (part.length < 2) {
+    resume = `<p class="detailtxt">${part.length ? "Un seul réglage pour l'instant" : "Personne n'a encore réglé ses poids"} — `
+      + `la convergence apparaît dès que vous êtes deux.</p>`;
+  } else {
+    const l = [];
+    if (accords.length) l.push(`<li>🟢 <b>Vous voulez tous</b> ${nomme(accords, 4)}.</li>`);
+    if (laisses.length) l.push(`<li>⚪ <b>Vous laissez tomber ensemble</b> ${nomme(laisses, 4)}.</li>`);
+    if (clivants.length) l.push(`<li>🔴 <b>Ça coince sur</b> ${clivants.slice(0, 3).map((c) =>
+      `${escHtml(nomCourt(c))} <span class="detailtxt">(${extremes(c)})</span>`).join(", ")}.</li>`);
+    if (!l.length) l.push(`<li>Aucun accord ni désaccord net : vos poids se ressemblent.</li>`);
+    resume = `<ul class="convsum">${l.join("")}</ul>`;
+  }
+  const lignesConv = [...conv]
+    .sort((a, b) => (ORDRE[a.statut] - ORDRE[b.statut]) || ((b.ecart ?? -1) - (a.ecart ?? -1))
+      || ((b.moyenne ?? -1) - (a.moyenne ?? -1)))
+    .filter((c) => c.n > 0)
+    .map((c) => `<tr>
+      <td title="${escAttr(c.label)}">${escHtml(nomCourt(c))}</td>
+      <td class="num">${c.defaut}</td>
+      <td class="num">${fix1(c.moyenne)}</td>
+      <td class="st-${c.statut}">${PUCE[c.statut]} ${MOT[c.statut]}${c.statut === "desaccord" ? ` <span class="detailtxt">(${c.etendue} d'écart)</span>` : ""}</td>
+      <td>${chips(c)}</td></tr>`).join("");
+  const tableConv = lignesConv
+    ? `<div class="tablewrap"><table class="scores conv">
+        <tr><th>Critère</th><th class="num">Set</th><th class="num">Groupe</th><th>Statut</th><th>Qui a dit quoi</th></tr>
+        ${lignesConv}</table></div>`
+    : `<p class="detailtxt">Aucun critère réglé sur ce set pour l'instant.</p>`;
+  // Proximité deux à deux : qui cherche la même maison que qui.
+  const prox = Poids.proximites(set, Votes.users).filter((x) => x.n >= 3);
+  const blocProx = prox.length
+    ? `<div class="proxlist">${prox.map((x) => `<span class="proxpair" title="${x.n} critères réglés par les deux">`
+      + `${escHtml(x.a)} ↔ ${escHtml(x.b)} <b>${Math.round(x.proximite * 100)} %</b></span>`).join("")}</div>`
+    : "";
+
+  const alerteLocale = Votes.backend === "local"
+    ? `<p class="detailtxt">⚠ Supabase n'est pas configuré : tes poids restent sur ce navigateur, le groupe ne les voit pas.</p>`
+    : "";
+  card.innerHTML = `
+    <button class="modal-close" id="poidsClose">×</button>
+    <h2>⚖️ Poids des critères</h2>
+    <p class="sub detailtxt">Set « ${escHtml(set.name)} » · ${(set.preferences || []).length} critères.
+      Les poids ne changent ni la collecte ni les mesures : ils reclassent les biens déjà là.</p>
+    ${alerteLocale}
+    <div class="section-title">Tes poids</div>
+    ${bloc1}
+    <div class="section-title">Convergence du groupe</div>
+    ${resume}
+    ${tableConv}
+    ${blocProx}`;
+
+  card.querySelector("#poidsClose").addEventListener("click", fermerPoids);
+  bindEchelles(card);
+  const rst = card.querySelector("#poidsReset");
+  if (rst) rst.addEventListener("click", () => Poids.remettreDefauts(set));
+  const app = card.querySelector("#poidsAppliquer");
+  if (app) app.addEventListener("click", () => {
+    lens = "moi";
+    localStorage.setItem(LS_LENS, lens);
+    remplirPoidsSelect();
+    fermerPoids();
+    withLoader(render);
+  });
 }
 
 // ---------- Identité de session ----------

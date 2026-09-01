@@ -114,6 +114,24 @@ PREFERENCES = [
     # sa forme (habitable 1,0 · à rafraîchir 1,0 · à rénover 0,85 · gros travaux 0,4 ·
     # ruine 0,1), c'est le PALIER qui s'ouvre d'un cran, à 0,85.
     {"kind": "light_works", "weight": 4, "label": "Peu de travaux (rafraîchir oui, rénovation complète non)", "params": {}},
+    # Le DPE dit ce que `light_works` ne dit pas : `light_works` lit l'état du bâti dans
+    # l'annonce (habitable / à rafraîchir / à rénover), le DPE lit ce que le bien coûtera
+    # à chauffer. Une maison « habitable » classée G est habitable ET une passoire : deux
+    # informations, et une seule était lue. Renseigné par 81 % des annonces du set, soit
+    # mieux que l'état du bâti (59 %). Poids 3 : cher à corriger, mais corrigeable — et
+    # en montagne un G se chauffe au bois depuis toujours.
+    {"kind": "dpe", "weight": 3, "label": "Performance énergétique (DPE)", "params": {}},
+    # Les aléas de la commune (Géorisques), pondérés par leur gravité pour un logement.
+    # C'était déjà mesuré — mais seulement dans le score d'INVESTISSEMENT, que le groupe
+    # ne regarde pas pour choisir : le match du set ne disait rien d'une maison en zone
+    # inondable ou en mouvement de terrain. En montagne, avalanche et mouvement de
+    # terrain ne sont pas des cases administratives.
+    {"kind": "risques_naturels", "weight": 3, "label": "Risques naturels (inondation, mouvement de terrain…)", "params": {}},
+    # L'eau du robinet (Hub'Eau : pesticides, nitrates, PFAS, conformité). Même histoire :
+    # mesurée sur 82 % des biens, non conforme sur 27 % d'entre eux, et invisible dans le
+    # classement. Poids 2 : ça se corrige avec un filtre, ça ne se corrige pas avec un
+    # filtre quand c'est la nappe.
+    {"kind": "qualite_eau", "weight": 2, "label": "Qualité de l'eau (réseau)", "params": {}},
     # Exposition et durée d'ensoleillement, MESURÉES sur le relief (pas lues dans
     # l'annonce, qui écrit « plein sud » sans jamais l'avoir vérifié) : heures de soleil
     # direct au solstice d'hiver, orientation et pente du versant. Poids 4 : en montagne,

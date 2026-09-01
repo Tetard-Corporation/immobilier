@@ -54,6 +54,10 @@ const Votes = (() => {
     emit();
   }
 
+  // Toutes les entrées d'un « bien » (tous critères, tous votants) : { critère: { votant: {stars, comment} } }.
+  // Utilisé par la pondération personnelle, qui range ses poids sous un bien fictif.
+  function entriesFor(id) { return cache[id] || {}; }
+
   function forBien(id, criterion) {
     const by = ((cache[id] || {})[criterion || OVERALL]) || {};   // { votant: {stars, comment} }
     const vals = Object.values(by).map((e) => e.stars).filter((s) => typeof s === "number");
@@ -126,7 +130,7 @@ const Votes = (() => {
   function onChange(f) { listeners.push(f); }
 
   return {
-    init, reload, forBien, setMine, setComment, setVoter, onChange, allComments,
+    init, reload, forBien, entriesFor, setMine, setComment, setVoter, onChange, allComments,
     isFavori, favCount, toggleFavori, hasRated, OVERALL,
     get voter() { return voter; },
     get users() { return users; },

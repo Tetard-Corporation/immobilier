@@ -51,6 +51,15 @@ PREFERENCES = [
     {"kind": "no_vis_a_vis", "weight": 3, "label": "Sans vis-à-vis", "params": {}},
     {"kind": "has_terrain", "weight": 3, "label": "Avec terrain", "params": {}},
     {"kind": "authentic", "weight": 3, "label": "Charme / cachet", "params": {}},
+    # Sur le littoral, l'aléa EST le sujet : submersion marine et recul du trait de côte
+    # décident de ce qu'on pourra encore construire (et assurer) dans vingt ans. Mesuré
+    # depuis toujours pour le score d'investissement, jamais dans le match du set — donc
+    # jamais dans ce que le groupe regarde. Poids 4, le plus haut des trois sets.
+    {"kind": "risques_naturels", "weight": 4, "label": "Risques littoraux (submersion, recul du trait de côte…)", "params": {}},
+    {"kind": "qualite_eau", "weight": 2, "label": "Qualité de l'eau (réseau)", "params": {}},
+    # Le set mêle terrains et maisons : sur un terrain le DPE n'existe pas, le critère y
+    # est simplement `n/a` — donc neutre, et non pénalisant.
+    {"kind": "dpe", "weight": 2, "label": "Performance énergétique (DPE)", "params": {}},
     {"kind": "hiking", "weight": 2, "label": "Sentiers côtiers / randonnées", "params": {}},
     {"kind": "nuisance_sonore", "weight": 2, "label": "Calme (loin autoroute/rail)", "params": {"min_m": 150, "ref_m": 800}},
     {"kind": "fiber", "weight": 2, "label": "Fibre (télétravail)", "params": {}},

@@ -26,6 +26,7 @@ except ImportError:  # pragma: no cover
     Image = None
 
 from ..models import FilterSet, Listing, SavedListing, SearchHistory
+from .criteres import identifiant, registre
 from .filtersets import resolve_criteria
 from .geo import haversine_km
 from .preferences import evaluate
@@ -759,6 +760,7 @@ class _RowItem:
         self.nb_pieces = row.nb_pieces
         self.surface_terrain = row.surface_terrain
         self.surface_bati = row.surface_bati
+        self.dpe_classe = row.dpe_classe   # lu par le critère `dpe`
         self.latitude = row.latitude
         self.longitude = row.longitude
         self.flags = {c: getattr(row, c) for c in _FLAG_COLS}
@@ -767,11 +769,19 @@ class _RowItem:
 
 
 def _pref_dump(pref) -> dict:
+    """Sérialise une préférence, `id` compris : le libellé change avec les paramètres et
+    d'un set à l'autre, l'id non — c'est lui qui porte les poids personnels (cf.
+    services/criteres.py)."""
     if isinstance(pref, dict):
-        return {"kind": pref.get("kind"), "label": pref.get("label") or pref.get("kind"),
-                "weight": pref.get("weight", 1.0), "params": pref.get("params") or {}}
-    return {"kind": getattr(pref, "kind", None), "label": getattr(pref, "label", None),
-            "weight": getattr(pref, "weight", 1.0), "params": getattr(pref, "params", {}) or {}}
+        kind, params = pref.get("kind"), pref.get("params") or {}
+        out = {"kind": kind, "label": pref.get("label") or kind,
+               "weight": pref.get("weight", 1.0), "params": params}
+    else:
+        kind, params = getattr(pref, "kind", None), getattr(pref, "params", {}) or {}
+        out = {"kind": kind, "label": getattr(pref, "label", None),
+               "weight": getattr(pref, "weight", 1.0), "params": params}
+    out["id"] = identifiant(kind, params)
+    return out
 
 
 def _photo_urls(row: Listing) -> list[str]:
@@ -1282,6 +1292,7 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
 
     return {
         "generated_at": datetime.now(timezone.utc).isoformat(),
+        "criteres": registre(),
         "sets": sets_out,
         "biens": biens_out,
         "searches": searches_out,

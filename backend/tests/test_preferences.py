@@ -713,3 +713,39 @@ def test_les_pieces_annoncees_sont_recoupees_par_la_surface():
     assert _eval_one(vraie, "chambres_min", params)[0] == 1.0
     # Ni celle qui donne ses chambres directement.
     assert _eval_one(_Bien(nb_chambres=3, surface_bati=60.0), "chambres_min", params)[0] == 1.0
+
+
+def test_dpe_passoire_note_moins_quun_bien_performant():
+    # Le DPE dit ce que l'état du bâti ne dit pas : deux maisons habitables, l'une G.
+    p = [Preference(kind="dpe")]
+    passoire = _listing(type_bien="maison", dpe_classe="G", flags={})
+    correcte = _listing(type_bien="maison", dpe_classe="C", flags={})
+    assert evaluate(passoire, p)[0] < evaluate(correcte, p)[0]
+    assert "passoire" in evaluate(passoire, p)[1][0]["detail"]
+
+
+def test_dpe_absent_est_neutre():
+    # 19 % des annonces ne le donnent pas : le critère sort du calcul, il ne pénalise pas.
+    score, det = evaluate(_listing(type_bien="maison", flags={}), [Preference(kind="dpe")])
+    assert det[0]["status"] == "n/a"
+    assert score is None
+
+
+def test_risques_et_eau_reprennent_la_mesure_du_score_investissement():
+    # Même barème que le pilier « Risques » : une inondation pèse plus qu'un radon.
+    p = [Preference(kind="risques_naturels")]
+    sous = lambda item: evaluate(item, p)[1][0]["subscore"]   # noqa: E731 — le score agrégé
+    # est étiré entre deux ancres et sature : c'est le sous-score qui porte la mesure.
+    inonde = _listing(flags={"risques": ["inondation", "mouvementTerrain"]})
+    radon = _listing(flags={"risques": ["radon"]})
+    sain = _listing(flags={"risques": []})
+    assert sous(inonde) < sous(radon) < sous(sain)
+    # Sans relevé Géorisques, le critère est `pending` (mesure à faire), pas zéro.
+    assert evaluate(_listing(flags={}), p)[1][0]["status"] == "pending"
+
+    q = [Preference(kind="qualite_eau")]
+    sale = _listing(flags={"pollution_eau_score": 0.2, "eau_potable_conforme": False,
+                           "pollutions": ["nitrates"]})
+    propre = _listing(flags={"pollution_eau_score": 1.0, "eau_potable_conforme": True})
+    assert evaluate(sale, q)[1][0]["subscore"] < evaluate(propre, q)[1][0]["subscore"]
+    assert "NON conforme" in evaluate(sale, q)[1][0]["detail"]
