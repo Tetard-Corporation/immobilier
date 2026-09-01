@@ -265,6 +265,24 @@ def _detect_residence_tourisme(*texts: str | None) -> bool:
     return any(t and _RESID_TOURISME_RE.search(t) for t in texts)
 
 
+# Déjà sous compromis / sous offre : le bien n'est plus à vendre. Montrer au groupe une
+# maison qu'il ne peut pas acheter est pire qu'un viager — il n'y a même pas de décision
+# à prendre. Vécu : la maison d'Ugine, 180 000 €, publiée comme pépite à 83,7, dont
+# l'annonce commence par « SOUS COMPROMIS ».
+#
+# Motif volontairement étroit. « vendu » seul attrape « vendu meublé », « vendu avec
+# locataire en place », « vendu par notre partenaire foncier » — 260 faux positifs contre
+# 75 vraies annonces retirées du marché.
+_SOUS_COMPROMIS_RE = re.compile(
+    r"sous\s+(?:un\s+)?(?:compromis|offre|promesse)|compromis\s+sign|promesse\s+sign|"
+    r"offre\s+accept[ée]|bien\s+vendu\b|d[ée]j[àa]\s+vendu", re.I)
+_COMPROMIS_MATCH_FACTOR = 0.1  # un match de 80 tombe à 8
+
+
+def _detect_sous_compromis(*texts: str | None) -> bool:
+    return any(t and _SOUS_COMPROMIS_RE.search(t) for t in texts)
+
+
 # Mobil-home, chalet de camping, habitation légère de loisirs : même problème
 # économique que le viager et la résidence de tourisme, et c'est pourquoi c'est traité
 # au même endroit — on n'achète pas le sol, l'occupation est saisonnière et réglementée,
@@ -1095,6 +1113,7 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
     prepares: list[dict] = []
     n_viager = 0
     n_mobil = 0
+    n_compromis = 0
     n_temoins = 0
     n_resid = 0
     infra_cache = _load_infra_cache()
@@ -1121,13 +1140,20 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
         is_viager = _detect_viager(row.description, row.adresse)
         is_resid = _detect_residence_tourisme(row.description, row.adresse)
         is_mobil = _detect_mobilhome(row.description, row.adresse)
+        is_compromis = _detect_sous_compromis(row.description, row.adresse)
         if is_viager:
             n_viager += 1
         if is_resid:
             n_resid += 1
         if is_mobil:
             n_mobil += 1
-        if is_viager:
+        if is_compromis:
+            n_compromis += 1
+        if is_compromis:
+            # En tête, parce qu'un bien retiré du marché n'a plus de qualités à discuter.
+            penalty = (_COMPROMIS_MATCH_FACTOR, "Déjà sous compromis / sous offre",
+                       "le bien n'est plus à vendre — retiré du classement")
+        elif is_viager:
             penalty = (_VIAGER_MATCH_FACTOR, "Viager / nue-propriété",
                        "viager (prix = bouquet, bien occupé) — fortement déclassé")
         elif is_resid:
@@ -1233,6 +1259,7 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
             "scores_by_set": scores_by_set,
             "viager": is_viager,
             "residence_tourisme": is_resid,
+            "sous_compromis": is_compromis,
             # Zone de comparaison (massif) et statut de témoin : publié parce qu'il est
             # le meilleur de sa région, pas parce qu'il tient le seuil des pépites.
             "zone": zone,
@@ -1261,6 +1288,7 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
         "stats": {"n_biens": len(biens_out), "n_sets": len(sets_out),
                   "n_searches": len(searches_out), "n_viager": n_viager,
                   "n_residence_tourisme": n_resid, "n_mobilhome": n_mobil,
+                  "n_sous_compromis": n_compromis,
                   "n_temoins_zone": n_temoins},
     }
 

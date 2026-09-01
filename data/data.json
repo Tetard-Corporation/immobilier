@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-09-01T07:55:32.449906+00:00",
+ "generated_at": "2026-09-01T09:41:23.679584+00:00",
  "sets": [
   {
    "id": 1,
@@ -531,6 +531,496 @@
    "nuisances": [],
    "nature_score": 4,
    "nature_exception": true,
+   "constructible": null,
+   "est_zone_au": null,
+   "zone_urba": null,
+   "altitude": null,
+   "rail_time_min": 210,
+   "risques": [],
+   "prix_m2_secteur": null,
+   "ecart_prix_pct": null,
+   "pollution_eau_score": null,
+   "eau_potable_conforme": null,
+   "pollutions": [],
+   "age_median": null,
+   "part_gauche": null,
+   "population_commune": null,
+   "isolement_score": null,
+   "price_decreased": false,
+   "id": 4463,
+   "source": "bienici",
+   "external_id": "hektor-cifGresivaudan-94178",
+   "type_bien": "maison",
+   "prix": 229000.0,
+   "nb_chambres": 3,
+   "nb_pieces": 4,
+   "surface_terrain": 1132.0,
+   "surface_bati": 178.0,
+   "commune": "Saint-Sulpice-des-Rivoires",
+   "code_postal": "38620",
+   "code_commune": "38460",
+   "departement": "38",
+   "latitude": 45.470499977,
+   "longitude": 5.609610011,
+   "url": "https://www.bienici.com/annonce/hektor-cifGresivaudan-94178",
+   "description": "Vous Rêvez d'espace, de tranquillité et du charme authentique d'un village ? Ne cherchez plus !<br> Votre agence du bord du lac à Paladru vous propose entre Grenoble Lyon et Chambéry, à 15 minutes de Voiron et des entrées d'autoroute, une vaste maison de village située à Saint sulpice des Rivoires, un véritable havre de paix où calme et sérénité sont les maîtres mots.<br>Imaginez-vous :<br>* Profiter de volumes généreux pour toute votre famille et vos projets. Vaste séjour et 3 grandes chambres.<br>* Vous détendre dans un environnement paisible, loin de l'agitation de la ville.<br>* Savourer l'atmosphère conviviale d'un village authentique.<br>* Bénéficier d'un cadre de vie privilégié, tout en restant connecté aux commodités essentielles.<br>Cette maison, c'est aussi l'opportunité de :<br>* Créer un intérieur à votre image en effectuant quelques travaux de rénovation autour du bois de la pierre et du pisé de cette batisse.<br>* Vous ressourcer dans l'environnement calme et verdoyant de votre vaste jardin<br>N'attendez plus pour découvrir votre futur cocon !<br>Contactez-nous dès aujourd'hui pour une visite :<br> Frédérik BIZEL -EI- NoRSAC 524408481 enregistré au Greffe du tribunal de commerce de VIENNE , Comptoir Immobilier de France. O6 59 88 83 23<br> Les informations sur les risques auxquels ce bien est exposé sont disponibles sur le site Géorisques : www.georisques.gouv.fr.<br>Cette annonce vous est proposée par BIZEL Frédérik - EI -  NoRSAC: 524 408 481, Enregistré au Greffe du tribunal de commerce de VIENNE   COMPTOIR IMMOBILIER DE FRANCE - Plus d'informations sur <span class=\"importDescriptionDecorator\" data-url=\"cif-immo.com\" data-type=\"basicUrl\">cif-immo.com</span> - « Les informations sur les risques auxquels ce bien est exposé sont disponibles sur le site Géorisques : www.georisques.gouv.fr »",
+   "dpe_classe": "C",
+   "features": [
+    "arbore",
+    "authentique",
+    "calme",
+    "eau",
+    "jardin"
+   ],
+   "score": 88.0,
+   "score_details": [
+    {
+     "key": "prix",
+     "label": "Prix & opportunité",
+     "score": 97.2,
+     "status": "ok",
+     "subpillars": [
+      {
+       "key": "niveau_prix",
+       "label": "Niveau de prix (€/m²)",
+       "status": "ok",
+       "detail": "1287 €/m² habitable (repère : 1200–3500)",
+       "subscore": 0.972,
+       "weight": 1.0,
+       "contribution": 97.2
+      },
+      {
+       "key": "affaire",
+       "label": "Affaire vs marché",
+       "status": "pending",
+       "detail": "comparables DVF indisponibles",
+       "subscore": null,
+       "weight": 0.0,
+       "contribution": 0.0
+      },
+      {
+       "key": "baisse_prix",
+       "label": "Négociation (baisse)",
+       "status": "n/a",
+       "detail": "pas de baisse constatée",
+       "subscore": null,
+       "weight": 0.0,
+       "contribution": 0.0
+      }
+     ],
+     "weight": 0.3,
+     "contribution": 29.2
+    },
+    {
+     "key": "cadre",
+     "label": "Cadre & nature",
+     "score": 99.0,
+     "status": "ok",
+     "subpillars": [
+      {
+       "key": "nature",
+       "label": "Qualité nature",
+       "status": "ok",
+       "detail": "score nature 4",
+       "subscore": 0.98,
+       "weight": 0.5,
+       "contribution": 49.0
+      },
+      {
+       "key": "exception",
+       "label": "Caractère d'exception",
+       "status": "ok",
+       "detail": "exception",
+       "subscore": 1.0,
+       "weight": 0.3,
+       "contribution": 30.0
+      },
+      {
+       "key": "authenticite",
+       "label": "Authenticité / cachet",
+       "status": "ok",
+       "detail": "cachet/authentique",
+       "subscore": 1.0,
+       "weight": 0.2,
+       "contribution": 20.0
+      }
+     ],
+     "weight": 0.2,
+     "contribution": 19.8
+    },
+    {
+     "key": "risques",
+     "label": "Risques & nuisances",
+     "score": 100.0,
+     "status": "ok",
+     "subpillars": [
+      {
+       "key": "risques_naturels",
+       "label": "Risques naturels/techno",
+       "status": "ok",
+       "detail": "aucun risque recensé",
+       "subscore": 1.0,
+       "weight": 0.545,
+       "contribution": 54.5
+      },
+      {
+       "key": "pollution_eau",
+       "label": "Pollution / qualité de l'eau",
+       "status": "pending",
+       "detail": "qualité eau Hub'Eau (enrich)",
+       "subscore": null,
+       "weight": 0.0,
+       "contribution": 0.0
+      },
+      {
+       "key": "nuisances_proximite",
+       "label": "Nuisances de proximité",
+       "status": "ok",
+       "detail": "aucune nuisance signalée",
+       "subscore": 1.0,
+       "weight": 0.455,
+       "contribution": 45.5
+      },
+      {
+       "key": "aerien",
+       "label": "Nuisances aériennes (PEB)",
+       "status": "pending",
+       "detail": "PEB / servitudes aéro",
+       "subscore": null,
+       "weight": 0.0,
+       "contribution": 0.0
+      }
+     ],
+     "weight": 0.15,
+     "contribution": 15.0
+    },
+    {
+     "key": "foncier",
+     "label": "Foncier & constructibilité",
+     "score": 74.0,
+     "status": "ok",
+     "subpillars": [
+      {
+       "key": "zonage",
+       "label": "Zonage / constructibilité",
+       "status": "pending",
+       "detail": "zonage GPU (enrich)",
+       "subscore": null,
+       "weight": 0.0,
+       "contribution": 0.0
+      },
+      {
+       "key": "terrain",
+       "label": "Présence de terrain",
+       "status": "ok",
+       "detail": "1132 m²",
+       "subscore": 0.74,
+       "weight": 1.0,
+       "contribution": 74.0
+      }
+     ],
+     "weight": 0.2,
+     "contribution": 14.8
+    },
+    {
+     "key": "etat",
+     "label": "État & travaux",
+     "score": 70.0,
+     "status": "ok",
+     "subpillars": [
+      {
+       "key": "travaux",
+       "label": "Niveau de travaux",
+       "status": "ok",
+       "detail": "renover",
+       "subscore": 0.7,
+       "weight": 1.0,
+       "contribution": 70.0
+      }
+     ],
+     "weight": 0.07,
+     "contribution": 4.9
+    },
+    {
+     "key": "accessibilite",
+     "label": "Accessibilité & services",
+     "score": 54.2,
+     "status": "ok",
+     "subpillars": [
+      {
+       "key": "train",
+       "label": "Trajet train",
+       "status": "ok",
+       "detail": "~3h09 porte-à-porte (Paris)",
+       "subscore": 0.529,
+       "weight": 0.5,
+       "contribution": 26.5
+      },
+      {
+       "key": "gare",
+       "label": "Proximité gare",
+       "status": "ok",
+       "detail": "gare de Chambery Challes à 26.7 km",
+       "subscore": 0.11,
+       "weight": 0.25,
+       "contribution": 2.8
+      },
+      {
+       "key": "fibre",
+       "label": "Fibre",
+       "status": "ok",
+       "detail": "fibre",
+       "subscore": 1.0,
+       "weight": 0.25,
+       "contribution": 25.0
+      }
+     ],
+     "weight": 0.08,
+     "contribution": 4.3
+    }
+   ],
+   "scores_by_set": {
+    "1": {
+     "match_score": 75.9,
+     "details": [
+      {
+       "kind": "chambres_min",
+       "label": "3 chambres minimum",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "3 ch. (min 3)",
+       "subscore": 1.0,
+       "contribution": 4.0
+      },
+      {
+       "kind": "logement_compact",
+       "label": "Format maison de retrait (3 à 5 chambres, pas immense)",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "3 chambres (≤ 4, format recherché)",
+       "subscore": 1.0,
+       "contribution": 4.0
+      },
+      {
+       "kind": "jardin",
+       "label": "Jardin (requis)",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "jardin de 1132 m² (requis ≥ 300 m²)",
+       "subscore": 1.0,
+       "contribution": 4.0
+      },
+      {
+       "kind": "coin_nature",
+       "label": "Coin de nature (eau, bois, vue dégagée)",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "eau (rivière, ruisseau, étang) · terrain arboré",
+       "subscore": 0.933,
+       "contribution": 3.733
+      },
+      {
+       "kind": "ensoleillement",
+       "label": "Exposition / soleil d'hiver",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "8h00 de soleil le 21 décembre · versant sud-ouest à 9° · horizon sud barré à 5°",
+       "subscore": 0.885,
+       "contribution": 3.541
+      },
+      {
+       "kind": "budget",
+       "label": "Prix entre 180 000 € et 250 000 €",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "229000€ — 92% du budget 250000€ (haut de fourchette)",
+       "subscore": 0.856,
+       "contribution": 3.424
+      },
+      {
+       "kind": "light_works",
+       "label": "Peu de travaux (rafraîchir oui, rénovation complète non)",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "état : à rénover",
+       "subscore": 0.85,
+       "contribution": 3.4
+      },
+      {
+       "kind": "cachet",
+       "label": "Cachet (caractère, pas de pavillon)",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "caractère / pierre",
+       "subscore": 0.85,
+       "contribution": 3.4
+      },
+      {
+       "kind": "has_terrain",
+       "label": "Grand terrain (≥ 1 000 m²)",
+       "weight": 3.0,
+       "status": "ok",
+       "detail": "1132 m² (souhait ≥ 1000 m²)",
+       "subscore": 1.0,
+       "contribution": 3.0
+      },
+      {
+       "kind": "village_vivant",
+       "label": "Village vivant (ni désert, ni ville)",
+       "weight": 3.0,
+       "status": "ok",
+       "detail": "23 commerces/services (bourg vivant)",
+       "subscore": 1.0,
+       "contribution": 3.0
+      },
+      {
+       "kind": "hiking",
+       "label": "Randonnées au départ",
+       "weight": 3.0,
+       "status": "ok",
+       "detail": "26 sentiers/itinéraires à proximité",
+       "subscore": 1.0,
+       "contribution": 3.0
+      },
+      {
+       "kind": "nuisance_sonore",
+       "label": "Loin d'une route passante / autoroute / rail",
+       "weight": 3.0,
+       "status": "ok",
+       "detail": "aucune route passante, autoroute ni voie ferrée à proximité",
+       "subscore": 1.0,
+       "contribution": 3.0
+      },
+      {
+       "kind": "fiber",
+       "label": "Fibre (télétravail)",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "95% des locaux de la commune éligibles (à vérifier pour ce bien)",
+       "subscore": 0.95,
+       "contribution": 1.9
+      },
+      {
+       "kind": "tranquillite",
+       "label": "Calme, sans vis-à-vis, hors lotissement",
+       "weight": 3.0,
+       "status": "ok",
+       "detail": "calme",
+       "subscore": 0.6,
+       "contribution": 1.8
+      },
+      {
+       "kind": "attractivite_airbnb",
+       "label": "Attractivité locative saisonnière (Airbnb)",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "ski à 21.1 km · lac à 4.0 km · 7 hébergements touristiques (5 km) · 11 restaurants/cafés (3 km) · 20 sites (10 km) — surtout l'été",
+       "subscore": 0.425,
+       "contribution": 1.7
+      },
+      {
+       "kind": "temps_acces",
+       "label": "≤ 4h30 porte-à-porte depuis Paris",
+       "weight": 3.0,
+       "status": "ok",
+       "detail": "~3h09 porte-à-porte depuis Paris (max 4h)",
+       "subscore": 0.54,
+       "contribution": 1.62
+      },
+      {
+       "kind": "surface_habitable",
+       "label": "≥ 90 m² habitables",
+       "weight": 1.0,
+       "status": "ok",
+       "detail": "178 m² habitables (souhait ≥ 90 m²)",
+       "subscore": 1.0,
+       "contribution": 1.0
+      },
+      {
+       "kind": "ski",
+       "label": "Station de ski à proximité",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "remontée de ski à 21.6 km",
+       "subscore": 0.28,
+       "contribution": 0.56
+      },
+      {
+       "kind": "near_city",
+       "label": "Accessible depuis Marseille",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "242 km de Marseille",
+       "subscore": 0.192,
+       "contribution": 0.383
+      },
+      {
+       "kind": "relief_mountain",
+       "label": "Montagne / relief",
+       "weight": 5.0,
+       "status": "ok",
+       "detail": "altitude None m (réf montagne 800 m)",
+       "subscore": 0.0,
+       "contribution": 0.0
+      },
+      {
+       "kind": "near_gare",
+       "label": "Proche d'une gare",
+       "weight": 2.0,
+       "status": "ok",
+       "detail": "gare de Chambery Challes à 26.7 km",
+       "subscore": 0.0,
+       "contribution": 0.0
+      },
+      {
+       "kind": "near_corridor",
+       "label": "Axe Paris-Marseille",
+       "weight": 1.0,
+       "status": "ok",
+       "detail": "59 km de l'axe Paris – Marseille",
+       "subscore": 0.0,
+       "contribution": 0.0
+      },
+      {
+       "kind": "rapport_qualite_prix",
+       "label": "Rapport qualité/prix (vs prix du secteur)",
+       "weight": 5.0,
+       "status": "n/a",
+       "detail": "prix, surface bâtie ou référence de secteur manquante",
+       "subscore": null
+      }
+     ]
+    }
+   },
+   "viager": false,
+   "residence_tourisme": false,
+   "sous_compromis": false,
+   "zone": "Avant-pays savoyard",
+   "zone_temoin": true,
+   "is_favori": false,
+   "favori_note": null,
+   "n_photos_source": 12,
+   "photos": [
+    "photos/bienici_hektor-cifGresivaudan-94178/0.jpg",
+    "photos/bienici_hektor-cifGresivaudan-94178/1.jpg",
+    "photos/bienici_hektor-cifGresivaudan-94178/2.jpg",
+    "photos/bienici_hektor-cifGresivaudan-94178/3.jpg",
+    "photos/bienici_hektor-cifGresivaudan-94178/4.jpg",
+    "photos/bienici_hektor-cifGresivaudan-94178/5.jpg",
+    "photos/bienici_hektor-cifGresivaudan-94178/6.jpg",
+    "photos/bienici_hektor-cifGresivaudan-94178/7.jpg",
+    "photos/bienici_hektor-cifGresivaudan-94178/8.jpg",
+    "photos/bienici_hektor-cifGresivaudan-94178/9.jpg",
+    "photos/bienici_hektor-cifGresivaudan-94178/10.jpg",
+    "photos/bienici_hektor-cifGresivaudan-94178/11.jpg"
+   ]
+  },
+  {
+   "condition": "renover",
+   "niveau_travaux": 2,
+   "nuisances": [],
+   "nature_score": 4,
+   "nature_exception": true,
    "constructible": true,
    "est_zone_au": false,
    "zone_urba": "U",
@@ -872,6 +1362,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -1364,6 +1855,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": "Matheysine",
    "zone_temoin": false,
    "is_favori": false,
@@ -1373,486 +1865,6 @@
     "photos/leboncoin_3249441984/0.jpg",
     "photos/leboncoin_3249441984/1.jpg",
     "photos/leboncoin_3249441984/2.jpg"
-   ]
-  },
-  {
-   "condition": "renover",
-   "niveau_travaux": 2,
-   "nuisances": [],
-   "nature_score": 3,
-   "nature_exception": true,
-   "constructible": true,
-   "est_zone_au": false,
-   "zone_urba": "U",
-   "altitude": 325.4,
-   "rail_time_min": 210,
-   "risques": [],
-   "prix_m2_secteur": 2135.9,
-   "ecart_prix_pct": -12.4,
-   "pollution_eau_score": 1.0,
-   "eau_potable_conforme": true,
-   "pollutions": [],
-   "age_median": null,
-   "part_gauche": null,
-   "population_commune": 1904,
-   "isolement_score": 0.424,
-   "price_decreased": false,
-   "id": 4122,
-   "source": "seloger",
-   "external_id": "26AHL3ZWTHAE",
-   "type_bien": "maison",
-   "prix": 180000.0,
-   "nb_chambres": 3,
-   "nb_pieces": 4,
-   "surface_terrain": 15000.0,
-   "surface_bati": 96.22,
-   "commune": "Hauterives",
-   "code_postal": "26390",
-   "code_commune": "26148",
-   "departement": "26",
-   "latitude": 45.251,
-   "longitude": 5.0341,
-   "url": "https://www.seloger.com/annonces/achat/maison/hauterives-26/260735047.htm",
-   "description": "EXCLUSIVITE ORPI BEAUREPAIRE -Ferme à rénover – Cadre champêtre au calme – Fort potentiel Située dans un environnement paisible et verdoyant, à proximité d'une rivière, cette ferme à rénover offre un...",
-   "dpe_classe": "e",
-   "features": [
-    "arbore",
-    "calme",
-    "eau"
-   ],
-   "score": 82.8,
-   "score_details": [
-    {
-     "key": "prix",
-     "label": "Prix & opportunité",
-     "score": 71.2,
-     "status": "ok",
-     "subpillars": [
-      {
-       "key": "niveau_prix",
-       "label": "Niveau de prix (€/m²)",
-       "status": "ok",
-       "detail": "1871 €/m² habitable (repère : 1200–3500)",
-       "subscore": 0.781,
-       "weight": 0.562,
-       "contribution": 43.9
-      },
-      {
-       "key": "affaire",
-       "label": "Affaire vs marché",
-       "status": "ok",
-       "detail": "-12% vs marché local",
-       "subscore": 0.624,
-       "weight": 0.437,
-       "contribution": 27.3
-      },
-      {
-       "key": "baisse_prix",
-       "label": "Négociation (baisse)",
-       "status": "n/a",
-       "detail": "pas de baisse constatée",
-       "subscore": null,
-       "weight": 0.0,
-       "contribution": 0.0
-      }
-     ],
-     "weight": 0.3,
-     "contribution": 21.4
-    },
-    {
-     "key": "foncier",
-     "label": "Foncier & constructibilité",
-     "score": 100.0,
-     "status": "ok",
-     "subpillars": [
-      {
-       "key": "zonage",
-       "label": "Zonage / constructibilité",
-       "status": "ok",
-       "detail": "zone U",
-       "subscore": 1.0,
-       "weight": 0.6,
-       "contribution": 60.0
-      },
-      {
-       "key": "terrain",
-       "label": "Présence de terrain",
-       "status": "ok",
-       "detail": "15000 m²",
-       "subscore": 1.0,
-       "weight": 0.4,
-       "contribution": 40.0
-      }
-     ],
-     "weight": 0.2,
-     "contribution": 20.0
-    },
-    {
-     "key": "cadre",
-     "label": "Cadre & nature",
-     "score": 81.0,
-     "status": "ok",
-     "subpillars": [
-      {
-       "key": "nature",
-       "label": "Qualité nature",
-       "status": "ok",
-       "detail": "score nature 3",
-       "subscore": 0.86,
-       "weight": 0.5,
-       "contribution": 43.0
-      },
-      {
-       "key": "exception",
-       "label": "Caractère d'exception",
-       "status": "ok",
-       "detail": "exception",
-       "subscore": 1.0,
-       "weight": 0.3,
-       "contribution": 30.0
-      },
-      {
-       "key": "authenticite",
-       "label": "Authenticité / cachet",
-       "status": "ok",
-       "detail": "non précisé",
-       "subscore": 0.4,
-       "weight": 0.2,
-       "contribution": 8.0
-      }
-     ],
-     "weight": 0.2,
-     "contribution": 16.2
-    },
-    {
-     "key": "risques",
-     "label": "Risques & nuisances",
-     "score": 100.0,
-     "status": "ok",
-     "subpillars": [
-      {
-       "key": "risques_naturels",
-       "label": "Risques naturels/techno",
-       "status": "ok",
-       "detail": "aucun risque recensé",
-       "subscore": 1.0,
-       "weight": 0.353,
-       "contribution": 35.3
-      },
-      {
-       "key": "pollution_eau",
-       "label": "Pollution / qualité de l'eau",
-       "status": "ok",
-       "detail": "eau conforme",
-       "subscore": 1.0,
-       "weight": 0.353,
-       "contribution": 35.3
-      },
-      {
-       "key": "nuisances_proximite",
-       "label": "Nuisances de proximité",
-       "status": "ok",
-       "detail": "aucune nuisance signalée",
-       "subscore": 1.0,
-       "weight": 0.294,
-       "contribution": 29.4
-      },
-      {
-       "key": "aerien",
-       "label": "Nuisances aériennes (PEB)",
-       "status": "pending",
-       "detail": "PEB / servitudes aéro",
-       "subscore": null,
-       "weight": 0.0,
-       "contribution": 0.0
-      }
-     ],
-     "weight": 0.15,
-     "contribution": 15.0
-    },
-    {
-     "key": "accessibilite",
-     "label": "Accessibilité & services",
-     "score": 66.4,
-     "status": "ok",
-     "subpillars": [
-      {
-       "key": "train",
-       "label": "Trajet train",
-       "status": "ok",
-       "detail": "~2h49 porte-à-porte (Paris)",
-       "subscore": 0.624,
-       "weight": 0.5,
-       "contribution": 31.2
-      },
-      {
-       "key": "gare",
-       "label": "Proximité gare",
-       "status": "ok",
-       "detail": "gare de Saint-Rambert-d'Albon à 17.7 km",
-       "subscore": 0.41,
-       "weight": 0.25,
-       "contribution": 10.2
-      },
-      {
-       "key": "fibre",
-       "label": "Fibre",
-       "status": "ok",
-       "detail": "fibre",
-       "subscore": 1.0,
-       "weight": 0.25,
-       "contribution": 25.0
-      }
-     ],
-     "weight": 0.08,
-     "contribution": 5.3
-    },
-    {
-     "key": "etat",
-     "label": "État & travaux",
-     "score": 70.0,
-     "status": "ok",
-     "subpillars": [
-      {
-       "key": "travaux",
-       "label": "Niveau de travaux",
-       "status": "ok",
-       "detail": "renover",
-       "subscore": 0.7,
-       "weight": 1.0,
-       "contribution": 70.0
-      }
-     ],
-     "weight": 0.07,
-     "contribution": 4.9
-    }
-   ],
-   "scores_by_set": {
-    "1": {
-     "match_score": 79.5,
-     "details": [
-      {
-       "kind": "rapport_qualite_prix",
-       "label": "Rapport qualité/prix (vs prix du secteur)",
-       "weight": 5.0,
-       "status": "ok",
-       "detail": "1871 €/m² — -12 % du secteur (2136 €/m²)",
-       "subscore": 0.901,
-       "contribution": 4.503
-      },
-      {
-       "kind": "chambres_min",
-       "label": "3 chambres minimum",
-       "weight": 4.0,
-       "status": "ok",
-       "detail": "3 ch. (min 3)",
-       "subscore": 1.0,
-       "contribution": 4.0
-      },
-      {
-       "kind": "logement_compact",
-       "label": "Format maison de retrait (3 à 5 chambres, pas immense)",
-       "weight": 4.0,
-       "status": "ok",
-       "detail": "3 chambres (≤ 4, format recherché)",
-       "subscore": 1.0,
-       "contribution": 4.0
-      },
-      {
-       "kind": "jardin",
-       "label": "Jardin (requis)",
-       "weight": 4.0,
-       "status": "ok",
-       "detail": "jardin de 15000 m² (requis ≥ 300 m²)",
-       "subscore": 1.0,
-       "contribution": 4.0
-      },
-      {
-       "kind": "budget",
-       "label": "Prix entre 180 000 € et 250 000 €",
-       "weight": 4.0,
-       "status": "ok",
-       "detail": "180000€ — 72% du budget 250000€ (haut de fourchette)",
-       "subscore": 0.987,
-       "contribution": 3.947
-      },
-      {
-       "kind": "coin_nature",
-       "label": "Coin de nature (eau, bois, vue dégagée)",
-       "weight": 4.0,
-       "status": "ok",
-       "detail": "eau (rivière, ruisseau, étang) · terrain arboré",
-       "subscore": 0.933,
-       "contribution": 3.733
-      },
-      {
-       "kind": "light_works",
-       "label": "Peu de travaux (rafraîchir oui, rénovation complète non)",
-       "weight": 4.0,
-       "status": "ok",
-       "detail": "état : à rénover",
-       "subscore": 0.85,
-       "contribution": 3.4
-      },
-      {
-       "kind": "ensoleillement",
-       "label": "Exposition / soleil d'hiver",
-       "weight": 4.0,
-       "status": "ok",
-       "detail": "8h04 de soleil le 21 décembre · versant nord-ouest à 5° · horizon sud barré à 2°",
-       "subscore": 0.827,
-       "contribution": 3.309
-      },
-      {
-       "kind": "has_terrain",
-       "label": "Grand terrain (≥ 1 000 m²)",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "15000 m² (souhait ≥ 1000 m²)",
-       "subscore": 1.0,
-       "contribution": 3.0
-      },
-      {
-       "kind": "village_vivant",
-       "label": "Village vivant (ni désert, ni ville)",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "12 commerces/services (bourg vivant)",
-       "subscore": 1.0,
-       "contribution": 3.0
-      },
-      {
-       "kind": "hiking",
-       "label": "Randonnées au départ",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "66 sentiers/itinéraires à proximité",
-       "subscore": 1.0,
-       "contribution": 3.0
-      },
-      {
-       "kind": "nuisance_sonore",
-       "label": "Loin d'une route passante / autoroute / rail",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "route passante 467 m",
-       "subscore": 1.0,
-       "contribution": 3.0
-      },
-      {
-       "kind": "relief_mountain",
-       "label": "Montagne / relief",
-       "weight": 5.0,
-       "status": "ok",
-       "detail": "altitude 325.4 m (réf montagne 800 m)",
-       "subscore": 0.407,
-       "contribution": 2.034
-      },
-      {
-       "kind": "temps_acces",
-       "label": "≤ 4h30 porte-à-porte depuis Paris",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "~2h49 porte-à-porte depuis Paris (max 4h)",
-       "subscore": 0.673,
-       "contribution": 2.02
-      },
-      {
-       "kind": "cachet",
-       "label": "Cachet (caractère, pas de pavillon)",
-       "weight": 4.0,
-       "status": "ok",
-       "detail": "rien de signalé",
-       "subscore": 0.5,
-       "contribution": 2.0
-      },
-      {
-       "kind": "tranquillite",
-       "label": "Calme, sans vis-à-vis, hors lotissement",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "calme",
-       "subscore": 0.6,
-       "contribution": 1.8
-      },
-      {
-       "kind": "fiber",
-       "label": "Fibre (télétravail)",
-       "weight": 2.0,
-       "status": "ok",
-       "detail": "83% des locaux de la commune éligibles (à vérifier pour ce bien)",
-       "subscore": 0.83,
-       "contribution": 1.66
-      },
-      {
-       "kind": "attractivite_airbnb",
-       "label": "Attractivité locative saisonnière (Airbnb)",
-       "weight": 4.0,
-       "status": "ok",
-       "detail": "ski à — · lac à 10.5 km · 10 hébergements touristiques (5 km) · 9 restaurants/cafés (3 km) · 19 sites (10 km) — surtout l'été",
-       "subscore": 0.261,
-       "contribution": 1.044
-      },
-      {
-       "kind": "surface_habitable",
-       "label": "≥ 90 m² habitables",
-       "weight": 1.0,
-       "status": "ok",
-       "detail": "96 m² habitables (souhait ≥ 90 m²)",
-       "subscore": 1.0,
-       "contribution": 1.0
-      },
-      {
-       "kind": "near_corridor",
-       "label": "Axe Paris-Marseille",
-       "weight": 1.0,
-       "status": "ok",
-       "detail": "13 km de l'axe Paris – Marseille",
-       "subscore": 0.681,
-       "contribution": 0.681
-      },
-      {
-       "kind": "near_city",
-       "label": "Accessible depuis Marseille",
-       "weight": 2.0,
-       "status": "ok",
-       "detail": "219 km de Marseille",
-       "subscore": 0.27,
-       "contribution": 0.54
-      },
-      {
-       "kind": "ski",
-       "label": "Station de ski à proximité",
-       "weight": 2.0,
-       "status": "ok",
-       "detail": "pas de remontée de ski à proximité",
-       "subscore": 0.15,
-       "contribution": 0.3
-      },
-      {
-       "kind": "near_gare",
-       "label": "Proche d'une gare",
-       "weight": 2.0,
-       "status": "ok",
-       "detail": "gare de Saint-Rambert-d'Albon à 17.7 km",
-       "subscore": 0.0,
-       "contribution": 0.0
-      }
-     ]
-    }
-   },
-   "viager": false,
-   "residence_tourisme": false,
-   "zone": null,
-   "zone_temoin": false,
-   "is_favori": false,
-   "favori_note": null,
-   "n_photos_source": 4,
-   "photos": [
-    "photos/seloger_26AHL3ZWTHAE/0.jpg",
-    "photos/seloger_26AHL3ZWTHAE/1.jpg",
-    "photos/seloger_26AHL3ZWTHAE/2.jpg",
-    "photos/seloger_26AHL3ZWTHAE/3.jpg"
    ]
   },
   {
@@ -2206,6 +2218,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -2569,6 +2582,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -2929,6 +2943,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -3291,6 +3306,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -3653,6 +3669,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -4014,6 +4031,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -4367,6 +4385,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -4726,6 +4745,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -5088,6 +5108,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -5575,6 +5596,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": "Bauges",
    "zone_temoin": false,
    "is_favori": false,
@@ -6062,6 +6084,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -6421,6 +6444,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -6900,6 +6924,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": "Tarentaise",
    "zone_temoin": true,
    "is_favori": false,
@@ -7267,6 +7292,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -7632,6 +7658,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -8123,6 +8150,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": "Embrunais-Serre-Ponçon",
    "zone_temoin": false,
    "is_favori": false,
@@ -8491,6 +8519,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -8853,6 +8882,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -9218,6 +9248,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -9576,6 +9607,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -9938,6 +9970,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -10301,6 +10334,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -10652,6 +10686,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -11017,6 +11052,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -11027,8 +11063,8 @@
    ]
   },
   {
-   "condition": "rafraichir",
-   "niveau_travaux": 1,
+   "condition": "habitable",
+   "niveau_travaux": 0,
    "nuisances": [],
    "nature_score": 1,
    "nature_exception": false,
@@ -11075,7 +11111,7 @@
     "garage",
     "jardin"
    ],
-   "score": 80.4,
+   "score": 81.4,
    "score_details": [
     {
      "key": "prix",
@@ -11228,21 +11264,21 @@
     {
      "key": "etat",
      "label": "État & travaux",
-     "score": 85.0,
+     "score": 100.0,
      "status": "ok",
      "subpillars": [
       {
        "key": "travaux",
        "label": "Niveau de travaux",
        "status": "ok",
-       "detail": "rafraichir",
-       "subscore": 0.85,
+       "detail": "habitable",
+       "subscore": 1.0,
        "weight": 1.0,
-       "contribution": 85.0
+       "contribution": 100.0
       }
      ],
      "weight": 0.07,
-     "contribution": 6.0
+     "contribution": 7.0
     },
     {
      "key": "accessibilite",
@@ -11318,7 +11354,7 @@
        "label": "Peu de travaux (rafraîchir oui, rénovation complète non)",
        "weight": 4.0,
        "status": "ok",
-       "detail": "état : à rafraîchir",
+       "detail": "état : habitable de suite",
        "subscore": 1.0,
        "contribution": 4.0
       },
@@ -11497,6 +11533,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": "Vercors drômois",
    "zone_temoin": false,
    "is_favori": false,
@@ -11998,6 +12035,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": "Haute-Provence",
    "zone_temoin": false,
    "is_favori": false,
@@ -12362,6 +12400,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -12714,6 +12753,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -13072,6 +13112,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -13428,6 +13469,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -13925,6 +13967,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": "Lure-Forcalquier",
    "zone_temoin": false,
    "is_favori": false,
@@ -14294,6 +14337,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -14663,6 +14707,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -15030,6 +15075,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -15396,6 +15442,7 @@
    },
    "viager": false,
    "residence_tourisme": true,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -15759,6 +15806,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -16114,6 +16162,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -16475,6 +16524,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -16842,6 +16892,7 @@
    },
    "viager": false,
    "residence_tourisme": true,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -17214,6 +17265,7 @@
    },
    "viager": false,
    "residence_tourisme": true,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -17575,6 +17627,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -17947,6 +18000,7 @@
    },
    "viager": false,
    "residence_tourisme": true,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -18305,6 +18359,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -18668,6 +18723,7 @@
    },
    "viager": false,
    "residence_tourisme": true,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -19105,6 +19161,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -19586,6 +19643,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": "Laragne-Serres",
    "zone_temoin": true,
    "is_favori": false,
@@ -19607,8 +19665,8 @@
    ]
   },
   {
-   "condition": "habitable",
-   "niveau_travaux": 0,
+   "condition": null,
+   "niveau_travaux": null,
    "nuisances": [],
    "nature_score": 3,
    "nature_exception": false,
@@ -19657,7 +19715,7 @@
     "garage",
     "jardin"
    ],
-   "score": 78.1,
+   "score": 76.4,
    "score_details": [
     {
      "key": "prix",
@@ -19693,8 +19751,8 @@
        "contribution": 0.0
       }
      ],
-     "weight": 0.3,
-     "contribution": 21.4
+     "weight": 0.323,
+     "contribution": 23.1
     },
     {
      "key": "foncier",
@@ -19721,8 +19779,8 @@
        "contribution": 26.5
       }
      ],
-     "weight": 0.2,
-     "contribution": 17.3
+     "weight": 0.215,
+     "contribution": 18.6
     },
     {
      "key": "cadre",
@@ -19758,8 +19816,8 @@
        "contribution": 20.0
       }
      ],
-     "weight": 0.2,
-     "contribution": 15.0
+     "weight": 0.215,
+     "contribution": 16.1
     },
     {
      "key": "risques",
@@ -19804,27 +19862,8 @@
        "contribution": 0.0
       }
      ],
-     "weight": 0.15,
-     "contribution": 14.7
-    },
-    {
-     "key": "etat",
-     "label": "État & travaux",
-     "score": 100.0,
-     "status": "ok",
-     "subpillars": [
-      {
-       "key": "travaux",
-       "label": "Niveau de travaux",
-       "status": "ok",
-       "detail": "habitable",
-       "subscore": 1.0,
-       "weight": 1.0,
-       "contribution": 100.0
-      }
-     ],
-     "weight": 0.07,
-     "contribution": 7.0
+     "weight": 0.161,
+     "contribution": 15.8
     },
     {
      "key": "accessibilite",
@@ -19860,8 +19899,27 @@
        "contribution": 25.0
       }
      ],
-     "weight": 0.08,
-     "contribution": 2.7
+     "weight": 0.086,
+     "contribution": 2.9
+    },
+    {
+     "key": "etat",
+     "label": "État & travaux",
+     "score": null,
+     "status": "pending",
+     "subpillars": [
+      {
+       "key": "travaux",
+       "label": "Niveau de travaux",
+       "status": "n/a",
+       "detail": "état inconnu",
+       "subscore": null,
+       "weight": 0.0,
+       "contribution": 0.0
+      }
+     ],
+     "weight": 0.0,
+     "contribution": 0.0
     }
    ],
    "scores_by_set": {
@@ -20031,6 +20089,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -20400,6 +20459,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -20771,6 +20831,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -21136,6 +21197,7 @@
    },
    "viager": false,
    "residence_tourisme": true,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -21494,6 +21556,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -21853,6 +21916,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -22218,6 +22282,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -22570,6 +22635,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -22937,6 +23003,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -23293,6 +23360,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -23650,6 +23718,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -24096,6 +24165,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -24461,6 +24531,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -24953,6 +25024,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": "Albertville",
    "zone_temoin": false,
    "is_favori": false,
@@ -25312,6 +25384,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -25684,6 +25757,7 @@
    },
    "viager": true,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -26055,6 +26129,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -26554,6 +26629,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": "Beaufortain",
    "zone_temoin": true,
    "is_favori": false,
@@ -26911,6 +26987,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -27274,6 +27351,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -27632,6 +27710,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -27989,6 +28068,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -28350,6 +28430,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -28708,6 +28789,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -29075,6 +29157,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -29526,6 +29609,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -29881,6 +29965,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -30248,6 +30333,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -30733,6 +30819,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": "Dévoluy-Gapençais",
    "zone_temoin": true,
    "is_favori": false,
@@ -31219,6 +31306,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": "Annecy-Semnoz",
    "zone_temoin": false,
    "is_favori": false,
@@ -31579,6 +31667,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -31946,6 +32035,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -32433,6 +32523,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": "Vercors drômois",
    "zone_temoin": false,
    "is_favori": false,
@@ -32806,6 +32897,7 @@
    },
    "viager": true,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -33173,6 +33265,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -33668,6 +33761,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": "Bugey",
    "zone_temoin": true,
    "is_favori": false,
@@ -34161,6 +34255,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": "Grésivaudan-Belledonne",
    "zone_temoin": true,
    "is_favori": false,
@@ -34592,6 +34687,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -34956,6 +35052,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -35319,6 +35416,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -35813,6 +35911,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": "Ubaye",
    "zone_temoin": false,
    "is_favori": false,
@@ -36176,6 +36275,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -36192,509 +36292,6 @@
     "photos/bienici_ag440414-531008660/7.jpg",
     "photos/bienici_ag440414-531008660/8.jpg",
     "photos/bienici_ag440414-531008660/9.jpg"
-   ]
-  },
-  {
-   "condition": "habitable",
-   "niveau_travaux": 0,
-   "nuisances": [
-    "mitoyen"
-   ],
-   "nature_score": 6,
-   "nature_exception": true,
-   "constructible": null,
-   "est_zone_au": null,
-   "zone_urba": null,
-   "altitude": 687.7,
-   "rail_time_min": 229,
-   "risques": [
-    "inondation",
-    "seisme",
-    "mouvementTerrain",
-    "retraitGonflementArgile",
-    "avalanche",
-    "radon"
-   ],
-   "prix_m2_secteur": 1647.2,
-   "ecart_prix_pct": -33.3,
-   "pollution_eau_score": 0.0,
-   "eau_potable_conforme": false,
-   "pollutions": [],
-   "age_median": null,
-   "part_gauche": null,
-   "population_commune": 1253,
-   "isolement_score": 0.531,
-   "price_decreased": false,
-   "id": 4385,
-   "source": "bienici",
-   "external_id": "iad-france-2041212",
-   "type_bien": "maison",
-   "prix": 222000.0,
-   "nb_chambres": 4,
-   "nb_pieces": 8,
-   "surface_terrain": 145.0,
-   "surface_bati": 202.0,
-   "commune": "Livet-et-Gavet",
-   "code_postal": "38220",
-   "code_commune": "38212",
-   "departement": "38",
-   "latitude": 45.089998293157464,
-   "longitude": 5.909140743238045,
-   "url": "https://www.bienici.com/annonce/iad-france-2041212",
-   "description": "iad France - Christelle Bonnenfant vous propose:  Maison familiale au calme – Hameau des Clots, Livet-et-Gavet<br>Le charmant hameau des Clos bénéficie d’une position dominante sur la vallée, offrant un cadre paisible, très ensoleillé et des vues dégagées sur les massifs environnants. Encore discret et peu connu, il gagne à être découvert pour la qualité de son environnement. Idéalement situé à 15 minutes de Le Bourg-d’Oisans et d’Allemond, il combine tranquillité, accessibilité et qualité de vie rare dans le secteur.<br>Nombreuses places de stationnement communal disponibles à proximité immédiate de la maison, un véritable atout au quotidien.<br>Un ensoleillement exceptionnel : En été : de 8h à 19h, En hiver (février) : de 11h à 17h<br>Un vrai confort de vie au grand air, bien au-dessus de celui de la vallée.<br>Le hameau offre une atmosphère paisible avec une jolie placette conviviale, un four à pain traditionnel et un bassin alimenté par une eau de source naturelle non traitée (Taillefer), également utilisée dans la maison.<br>Les atouts principaux :<br>À moins de 15 minutes de l’ascenseur valléen d’Allemond et de Bourg d’Oisans<br>Exposition idéale avec ensoleillement prolongé toute l’année<br>Stationnement facile à proximité immédiate<br>Terrasse Ouest de 15 m² sans vis-à-vis, avec vue dégagée<br>Maison très bien construite, avec double mur (mitoyenneté non directe)<br>Environ 200 m² habitables et 3 caves<br>Agencement : Rez-de-chaussée : Entrée, WC indépendant, Grande cuisine, Spacieuse pièce de vie lumineuse ouverte sur la terrasse, 2 Caves<br>1er étage : Trois chambres, 1 Salle de bain, 1 WC séparé, 1 Cave supplémentaire<br>Combles aménagées déjà chauffées : Une grande pièce (chambre ou bureau ou salle de sport), deux pièces supplémentaires plus petites, éclairées par deux VELUX neufs, apportant une belle luminosité.<br>Confort & équipements : Double système de chauffage : chaudière fioul à condensation<br>ET fourneau bouilleur (chauffage bois) donc Bi-énergie au choix<br>Toiture récente en bac acier avec pare-pluie, construction solide et saine.<br>Assainissement collectif conforme (eaux usées et pluviales séparées)<br>Un bien rare, idéal pour une famille en quête de tranquillité et de soleil, avec un rapport qualité/prix remarquable à proximité immédiate d’Allemond et de Bourg-d’Oisans et de leurs accès aux stations.<br>Honoraires d'agence à la charge du vendeur.<br>La présentation d'une pièce d'identité en cours de validité sera demandée à la visite, conformément à l'article L.561-5 du Code monétaire et financier. Les informations sur les risques auxquels ce bien est exposé, y compris l'obligation légale de débroussaillement, sont disponibles sur le site Géorisques : http://www.georisques.gouv.fr.<br>La présente annonce immobilière a été rédigée sous la responsabilité éditoriale de Mme Christelle Bonnenfant mandataire indépendant en immobilier (sans détention de fonds), agent commercial de la SAS I@D France immatriculé au RSAC de GRENOBLE sous le numéro 381616390, titulaire de la carte de démarchage immobilier pour le compte de la société I@D France SAS.",
-   "dpe_classe": "E",
-   "features": [
-    "authentique",
-    "calme",
-    "eau",
-    "ensoleille",
-    "sans_vis_a_vis",
-    "vue",
-    "vue_panoramique",
-    "terrasse",
-    "en_hauteur"
-   ],
-   "score": 73.4,
-   "score_details": [
-    {
-     "key": "prix",
-     "label": "Prix & opportunité",
-     "score": 92.7,
-     "status": "ok",
-     "subpillars": [
-      {
-       "key": "niveau_prix",
-       "label": "Niveau de prix (€/m²)",
-       "status": "ok",
-       "detail": "1099 €/m² habitable (repère : 1200–3500)",
-       "subscore": 1.0,
-       "weight": 0.562,
-       "contribution": 56.2
-      },
-      {
-       "key": "affaire",
-       "label": "Affaire vs marché",
-       "status": "ok",
-       "detail": "-33% vs marché local",
-       "subscore": 0.833,
-       "weight": 0.437,
-       "contribution": 36.4
-      },
-      {
-       "key": "baisse_prix",
-       "label": "Négociation (baisse)",
-       "status": "n/a",
-       "detail": "pas de baisse constatée",
-       "subscore": null,
-       "weight": 0.0,
-       "contribution": 0.0
-      }
-     ],
-     "weight": 0.3,
-     "contribution": 27.8
-    },
-    {
-     "key": "cadre",
-     "label": "Cadre & nature",
-     "score": 100.0,
-     "status": "ok",
-     "subpillars": [
-      {
-       "key": "nature",
-       "label": "Qualité nature",
-       "status": "ok",
-       "detail": "score nature 6",
-       "subscore": 1.0,
-       "weight": 0.5,
-       "contribution": 50.0
-      },
-      {
-       "key": "exception",
-       "label": "Caractère d'exception",
-       "status": "ok",
-       "detail": "exception",
-       "subscore": 1.0,
-       "weight": 0.3,
-       "contribution": 30.0
-      },
-      {
-       "key": "authenticite",
-       "label": "Authenticité / cachet",
-       "status": "ok",
-       "detail": "cachet/authentique",
-       "subscore": 1.0,
-       "weight": 0.2,
-       "contribution": 20.0
-      }
-     ],
-     "weight": 0.2,
-     "contribution": 20.0
-    },
-    {
-     "key": "foncier",
-     "label": "Foncier & constructibilité",
-     "score": 44.4,
-     "status": "ok",
-     "subpillars": [
-      {
-       "key": "zonage",
-       "label": "Zonage / constructibilité",
-       "status": "pending",
-       "detail": "zonage GPU (enrich)",
-       "subscore": null,
-       "weight": 0.0,
-       "contribution": 0.0
-      },
-      {
-       "key": "terrain",
-       "label": "Présence de terrain",
-       "status": "ok",
-       "detail": "145 m²",
-       "subscore": 0.444,
-       "weight": 1.0,
-       "contribution": 44.4
-      }
-     ],
-     "weight": 0.2,
-     "contribution": 8.9
-    },
-    {
-     "key": "etat",
-     "label": "État & travaux",
-     "score": 100.0,
-     "status": "ok",
-     "subpillars": [
-      {
-       "key": "travaux",
-       "label": "Niveau de travaux",
-       "status": "ok",
-       "detail": "habitable",
-       "subscore": 1.0,
-       "weight": 1.0,
-       "contribution": 100.0
-      }
-     ],
-     "weight": 0.07,
-     "contribution": 7.0
-    },
-    {
-     "key": "risques",
-     "label": "Risques & nuisances",
-     "score": 35.1,
-     "status": "ok",
-     "subpillars": [
-      {
-       "key": "risques_naturels",
-       "label": "Risques naturels/techno",
-       "status": "ok",
-       "detail": "inondation, mouvementTerrain, avalanche, retraitGonflementArgile (+2)",
-       "subscore": 0.37,
-       "weight": 0.353,
-       "contribution": 13.1
-      },
-      {
-       "key": "pollution_eau",
-       "label": "Pollution / qualité de l'eau",
-       "status": "ok",
-       "detail": "eau NON conforme",
-       "subscore": 0.0,
-       "weight": 0.353,
-       "contribution": 0.0
-      },
-      {
-       "key": "nuisances_proximite",
-       "label": "Nuisances de proximité",
-       "status": "ok",
-       "detail": "mitoyen",
-       "subscore": 0.75,
-       "weight": 0.294,
-       "contribution": 22.0
-      },
-      {
-       "key": "aerien",
-       "label": "Nuisances aériennes (PEB)",
-       "status": "pending",
-       "detail": "PEB / servitudes aéro",
-       "subscore": null,
-       "weight": 0.0,
-       "contribution": 0.0
-      }
-     ],
-     "weight": 0.15,
-     "contribution": 5.3
-    },
-    {
-     "key": "accessibilite",
-     "label": "Accessibilité & services",
-     "score": 55.6,
-     "status": "ok",
-     "subpillars": [
-      {
-       "key": "train",
-       "label": "Trajet train",
-       "status": "ok",
-       "detail": "~3h30 porte-à-porte (Paris)",
-       "subscore": 0.429,
-       "weight": 0.5,
-       "contribution": 21.4
-      },
-      {
-       "key": "gare",
-       "label": "Proximité gare",
-       "status": "ok",
-       "detail": "gare de Grenoble à 19.0 km",
-       "subscore": 0.367,
-       "weight": 0.25,
-       "contribution": 9.2
-      },
-      {
-       "key": "fibre",
-       "label": "Fibre",
-       "status": "ok",
-       "detail": "fibre",
-       "subscore": 1.0,
-       "weight": 0.25,
-       "contribution": 25.0
-      }
-     ],
-     "weight": 0.08,
-     "contribution": 4.4
-    }
-   ],
-   "scores_by_set": {
-    "1": {
-     "match_score": 85.5,
-     "details": [
-      {
-       "kind": "rapport_qualite_prix",
-       "label": "Rapport qualité/prix (vs prix du secteur)",
-       "weight": 5.0,
-       "status": "ok",
-       "detail": "1099 €/m² — -33 % du secteur (1647 €/m²)",
-       "subscore": 1.0,
-       "contribution": 5.0
-      },
-      {
-       "kind": "relief_mountain",
-       "label": "Montagne / relief",
-       "weight": 5.0,
-       "status": "ok",
-       "detail": "altitude 687.7 m (réf montagne 800 m)",
-       "subscore": 0.86,
-       "contribution": 4.298
-      },
-      {
-       "kind": "chambres_min",
-       "label": "3 chambres minimum",
-       "weight": 4.0,
-       "status": "ok",
-       "detail": "4 ch. (min 3)",
-       "subscore": 1.0,
-       "contribution": 4.0
-      },
-      {
-       "kind": "logement_compact",
-       "label": "Format maison de retrait (3 à 5 chambres, pas immense)",
-       "weight": 4.0,
-       "status": "ok",
-       "detail": "4 chambres (≤ 4, format recherché)",
-       "subscore": 1.0,
-       "contribution": 4.0
-      },
-      {
-       "kind": "light_works",
-       "label": "Peu de travaux (rafraîchir oui, rénovation complète non)",
-       "weight": 4.0,
-       "status": "ok",
-       "detail": "état : habitable de suite",
-       "subscore": 1.0,
-       "contribution": 4.0
-      },
-      {
-       "kind": "coin_nature",
-       "label": "Coin de nature (eau, bois, vue dégagée)",
-       "weight": 4.0,
-       "status": "ok",
-       "detail": "eau (rivière, ruisseau, étang) · vue dégagée · vue · en hauteur (688 m)",
-       "subscore": 1.0,
-       "contribution": 4.0
-      },
-      {
-       "kind": "attractivite_airbnb",
-       "label": "Attractivité locative saisonnière (Airbnb)",
-       "weight": 4.0,
-       "status": "ok",
-       "detail": "ski à 2.2 km · lac à 3.7 km · 67 hébergements touristiques (5 km) · 5 restaurants/cafés (3 km) · 94 sites (10 km) — quatre saisons",
-       "subscore": 0.996,
-       "contribution": 3.984
-      },
-      {
-       "kind": "budget",
-       "label": "Prix entre 180 000 € et 250 000 €",
-       "weight": 4.0,
-       "status": "ok",
-       "detail": "222000€ — 89% du budget 250000€ (haut de fourchette)",
-       "subscore": 0.875,
-       "contribution": 3.499
-      },
-      {
-       "kind": "cachet",
-       "label": "Cachet (caractère, pas de pavillon)",
-       "weight": 4.0,
-       "status": "ok",
-       "detail": "caractère / pierre",
-       "subscore": 0.85,
-       "contribution": 3.4
-      },
-      {
-       "kind": "hiking",
-       "label": "Randonnées au départ",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "89 sentiers/itinéraires à proximité",
-       "subscore": 1.0,
-       "contribution": 3.0
-      },
-      {
-       "kind": "nuisance_sonore",
-       "label": "Loin d'une route passante / autoroute / rail",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "route passante 499 m",
-       "subscore": 1.0,
-       "contribution": 3.0
-      },
-      {
-       "kind": "tranquillite",
-       "label": "Calme, sans vis-à-vis, hors lotissement",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "sans vis-à-vis · calme",
-       "subscore": 0.9,
-       "contribution": 2.7
-      },
-      {
-       "kind": "jardin",
-       "label": "Jardin (requis)",
-       "weight": 4.0,
-       "status": "ok",
-       "detail": "145 m² d'extérieur (petit, requis ≥ 300 m²)",
-       "subscore": 0.664,
-       "contribution": 2.657
-      },
-      {
-       "kind": "village_vivant",
-       "label": "Village vivant (ni désert, ni ville)",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "6 commerces/services (peu, 81%)",
-       "subscore": 0.812,
-       "contribution": 2.438
-      },
-      {
-       "kind": "ensoleillement",
-       "label": "Exposition / soleil d'hiver",
-       "weight": 4.0,
-       "status": "ok",
-       "detail": "4h48 de soleil le 21 décembre · versant nord-ouest à 18° · horizon sud barré à 17°",
-       "subscore": 0.606,
-       "contribution": 2.423
-      },
-      {
-       "kind": "ski",
-       "label": "Station de ski à proximité",
-       "weight": 2.0,
-       "status": "ok",
-       "detail": "remontée de ski à 2.9 km",
-       "subscore": 0.903,
-       "contribution": 1.807
-      },
-      {
-       "kind": "fiber",
-       "label": "Fibre (télétravail)",
-       "weight": 2.0,
-       "status": "ok",
-       "detail": "81% des locaux de la commune éligibles (à vérifier pour ce bien)",
-       "subscore": 0.81,
-       "contribution": 1.62
-      },
-      {
-       "kind": "temps_acces",
-       "label": "≤ 4h30 porte-à-porte depuis Paris",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "~3h30 porte-à-porte depuis Paris (max 4h)",
-       "subscore": 0.4,
-       "contribution": 1.2
-      },
-      {
-       "kind": "surface_habitable",
-       "label": "≥ 90 m² habitables",
-       "weight": 1.0,
-       "status": "ok",
-       "detail": "202 m² habitables (souhait ≥ 90 m²)",
-       "subscore": 1.0,
-       "contribution": 1.0
-      },
-      {
-       "kind": "near_city",
-       "label": "Accessible depuis Marseille",
-       "weight": 2.0,
-       "status": "ok",
-       "detail": "204 km de Marseille",
-       "subscore": 0.32,
-       "contribution": 0.64
-      },
-      {
-       "kind": "has_terrain",
-       "label": "Grand terrain (≥ 1 000 m²)",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "145 m² (souhait ≥ 1000 m²)",
-       "subscore": 0.145,
-       "contribution": 0.435
-      },
-      {
-       "kind": "near_gare",
-       "label": "Proche d'une gare",
-       "weight": 2.0,
-       "status": "ok",
-       "detail": "gare de Grenoble à 19.0 km",
-       "subscore": 0.0,
-       "contribution": 0.0
-      },
-      {
-       "kind": "near_corridor",
-       "label": "Axe Paris-Marseille",
-       "weight": 1.0,
-       "status": "ok",
-       "detail": "81 km de l'axe Paris – Marseille",
-       "subscore": 0.0,
-       "contribution": 0.0
-      }
-     ]
-    }
-   },
-   "viager": false,
-   "residence_tourisme": false,
-   "zone": "Oisans",
-   "zone_temoin": false,
-   "is_favori": false,
-   "favori_note": null,
-   "n_photos_source": 12,
-   "photos": [
-    "photos/bienici_iad-france-2041212/0.jpg",
-    "photos/bienici_iad-france-2041212/1.jpg",
-    "photos/bienici_iad-france-2041212/2.jpg",
-    "photos/bienici_iad-france-2041212/3.jpg",
-    "photos/bienici_iad-france-2041212/4.jpg",
-    "photos/bienici_iad-france-2041212/5.jpg",
-    "photos/bienici_iad-france-2041212/6.jpg",
-    "photos/bienici_iad-france-2041212/7.jpg",
-    "photos/bienici_iad-france-2041212/8.jpg",
-    "photos/bienici_iad-france-2041212/9.jpg",
-    "photos/bienici_iad-france-2041212/10.jpg",
-    "photos/bienici_iad-france-2041212/11.jpg"
    ]
   },
   {
@@ -37045,6 +36642,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -37401,6 +36999,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -37886,6 +37485,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": "Matheysine",
    "zone_temoin": false,
    "is_favori": false,
@@ -38239,6 +37839,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -38607,6 +38208,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -38976,6 +38578,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -39411,6 +39014,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -39901,6 +39505,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": "Chartreuse",
    "zone_temoin": true,
    "is_favori": false,
@@ -40261,6 +39866,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -40630,6 +40236,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -40993,6 +40600,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -41355,6 +40963,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -41714,6 +41323,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -42080,6 +41690,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -42513,6 +42124,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -42868,6 +42480,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -43306,6 +42919,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -43665,6 +43279,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -44031,6 +43646,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -44538,6 +44154,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": "Mont-Blanc",
    "zone_temoin": true,
    "is_favori": false,
@@ -45029,6 +44646,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": "Diois",
    "zone_temoin": false,
    "is_favori": false,
@@ -45395,6 +45013,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -45765,6 +45384,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -46261,6 +45881,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": "Trièves",
    "zone_temoin": true,
    "is_favori": false,
@@ -46750,6 +46371,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": "Oisans",
    "zone_temoin": false,
    "is_favori": false,
@@ -46768,509 +46390,6 @@
     "photos/leboncoin_2928377168/9.jpg",
     "photos/leboncoin_2928377168/10.jpg",
     "photos/leboncoin_2928377168/11.jpg"
-   ]
-  },
-  {
-   "condition": "renover",
-   "niveau_travaux": 2,
-   "nuisances": [],
-   "nature_score": 4,
-   "nature_exception": true,
-   "constructible": false,
-   "est_zone_au": false,
-   "zone_urba": "N",
-   "altitude": 203.4,
-   "rail_time_min": 199,
-   "risques": [
-    "inondation",
-    "seisme",
-    "mouvementTerrain",
-    "retraitGonflementArgile",
-    "radon"
-   ],
-   "prix_m2_secteur": null,
-   "ecart_prix_pct": null,
-   "pollution_eau_score": null,
-   "eau_potable_conforme": null,
-   "pollutions": [],
-   "age_median": null,
-   "part_gauche": null,
-   "population_commune": null,
-   "isolement_score": null,
-   "price_decreased": false,
-   "id": 6428,
-   "source": "bienici",
-   "external_id": "netty-company53557rig-house-25012",
-   "type_bien": "maison",
-   "prix": 220000.0,
-   "nb_chambres": 3,
-   "nb_pieces": 5,
-   "surface_terrain": 5028.0,
-   "surface_bati": 99.0,
-   "commune": "Lhuis",
-   "code_postal": "01680",
-   "code_commune": "01216",
-   "departement": "01",
-   "latitude": 45.72585609039842,
-   "longitude": 5.522123481983072,
-   "url": "https://www.bienici.com/annonce/netty-company53557rig-house-25012",
-   "description": "Sous compromis : Exclusif - Lhuis - Maison en Pierres authentique et lumineuse - 99 m² habitables + Dépendance de 38 m² & 1 Terrain de 5028 m² - 220 000 €.<br>Maison très bien entretenue et prête à emménager, composée d'une Entrée, d'une Cuisine équipée, d'un Séjour lumineux, d'une Salle de Bains & d'un WC. A l'étage, vous disposez de 3 Chambres (11, 11 & 16 m²), un Bureau de 8 m² & un WC. Au second, un Potentiel supplémentaire avec des Combles à finir d'aménager sous la toiture.<br>Vue dégagée sur les espaces verts & le Rhône depuis 2 Chambres et le Séjour ! Son Exposition est parfaite Est-Sud-Ouest.<br>Cette demeure vous offre l'opportunité rare de façonner un intérieur à votre image, tout en profitant d'un cadre de vie préservé & avec de Grands Espaces Verts de 5028 m² faciles à entretenir. La Terrasse de 12 m² & la seconde de 35 m² sont idéales pour les repas en plein air ou les apéritifs entre amis, les 2 avec vue dégagée sur le Rhône.<br>Au Sous-Sol, 2 caves voutées & saines de 18 m² chacune. Pour compléter ce Bien, une Dépendance de 38 m² à rénover selon vos besoins ou projet divers. Il existe également 4 Places de Parkings sans compter à l'intérieur du Terrain.<br>Que vous soyez à la recherche d'une résidence principale, d'une résidence secondaire ou d'un investissement locatif, cette propriété saura vous séduire par son charme et son potentiel.<br>Chauffage avec Chaudière Gaz révisée tous les ans & 1 Cheminée dans le Séjour. Menuiseries PVC.<br>Idéalement situé car proche des Commodités, 10' d'Intermarché, 5' de l'Ecole Primaire, 10' du Collège, 15' du Point Vert Plage, 20' du Parc Aquatique Walibi, 1 h du Lac du Bourget & 50' de St-Exupéry. Ramassage Scolaire à 2' à pied.<br>Mentions Légales : DPE : E : 296 KWh/m2/an, GES E : 65 KgCO2/m2/an. Montant estimé des dépenses annuelles d'énergie entre 3370 € et 4610 €, Prix moyens des énergies indexés (abonnement compris) à la date du 01/01/2023. Les informations sur les risques auxquels les biens sont exposés sont disponibles sur le site Géorisques : www.georisques.gouv.fr.<br>Honoraires à la charge du vendeur. Barème consultable sur notre site ' Parlez-Moi d'Immo ' <span class=\"importDescriptionDecorator\" data-url=\"http://www.parlezmoidimmo.fr/honoraires.html\" data-type=\"agencyFeeUrl\">http://www.parlezmoidimmo.fr/honoraires.html</span>. . Contactez votre agent commercial indépendant Jean-Louis Oeuf (RSAC 78862329600027 Bourg-en-Bresse) spécialiste du secteur au O6 O3 11 O7 64 ou <span class=\"importDescriptionDecorator\" data-type=\"phone\">04 78 61 66 56</span>.<br>Classe énergie E, Classe climat E Montant moyen estimé des dépenses annuelles d'énergie pour un usage standard, établi à partir des prix de l'énergie de l'année 2023 : entre 2570.00 et 3520.00 €. Les informations sur les risques auxquels ce bien est exposé sont disponibles sur le site Géorisques : georisques.gouv.fr. <br>Votre conseiller PARLEZ-MOI D'IMMO Lyon : Jean-Louis OEUF<br>Agent commercial (Entreprise individuelle)  <br>  RSAC 788 623 296  <br>  RCP ASSERIS ACI11312",
-   "dpe_classe": "E",
-   "features": [
-    "authentique",
-    "eau",
-    "vue",
-    "vue_panoramique",
-    "cheminee",
-    "terrasse",
-    "jardin"
-   ],
-   "score": 69.8,
-   "score_details": [
-    {
-     "key": "prix",
-     "label": "Prix & opportunité",
-     "score": 66.7,
-     "status": "ok",
-     "subpillars": [
-      {
-       "key": "niveau_prix",
-       "label": "Niveau de prix (€/m²)",
-       "status": "ok",
-       "detail": "2222 €/m² habitable (repère : 1200–3500)",
-       "subscore": 0.667,
-       "weight": 1.0,
-       "contribution": 66.7
-      },
-      {
-       "key": "affaire",
-       "label": "Affaire vs marché",
-       "status": "pending",
-       "detail": "comparables DVF indisponibles",
-       "subscore": null,
-       "weight": 0.0,
-       "contribution": 0.0
-      },
-      {
-       "key": "baisse_prix",
-       "label": "Négociation (baisse)",
-       "status": "n/a",
-       "detail": "pas de baisse constatée",
-       "subscore": null,
-       "weight": 0.0,
-       "contribution": 0.0
-      }
-     ],
-     "weight": 0.3,
-     "contribution": 20.0
-    },
-    {
-     "key": "cadre",
-     "label": "Cadre & nature",
-     "score": 99.0,
-     "status": "ok",
-     "subpillars": [
-      {
-       "key": "nature",
-       "label": "Qualité nature",
-       "status": "ok",
-       "detail": "score nature 4",
-       "subscore": 0.98,
-       "weight": 0.5,
-       "contribution": 49.0
-      },
-      {
-       "key": "exception",
-       "label": "Caractère d'exception",
-       "status": "ok",
-       "detail": "exception",
-       "subscore": 1.0,
-       "weight": 0.3,
-       "contribution": 30.0
-      },
-      {
-       "key": "authenticite",
-       "label": "Authenticité / cachet",
-       "status": "ok",
-       "detail": "cachet/authentique",
-       "subscore": 1.0,
-       "weight": 0.2,
-       "contribution": 20.0
-      }
-     ],
-     "weight": 0.2,
-     "contribution": 19.8
-    },
-    {
-     "key": "risques",
-     "label": "Risques & nuisances",
-     "score": 73.9,
-     "status": "ok",
-     "subpillars": [
-      {
-       "key": "risques_naturels",
-       "label": "Risques naturels/techno",
-       "status": "ok",
-       "detail": "inondation, mouvementTerrain, retraitGonflementArgile, seisme (+1)",
-       "subscore": 0.521,
-       "weight": 0.545,
-       "contribution": 28.4
-      },
-      {
-       "key": "pollution_eau",
-       "label": "Pollution / qualité de l'eau",
-       "status": "pending",
-       "detail": "qualité eau Hub'Eau (enrich)",
-       "subscore": null,
-       "weight": 0.0,
-       "contribution": 0.0
-      },
-      {
-       "key": "nuisances_proximite",
-       "label": "Nuisances de proximité",
-       "status": "ok",
-       "detail": "aucune nuisance signalée",
-       "subscore": 1.0,
-       "weight": 0.455,
-       "contribution": 45.5
-      },
-      {
-       "key": "aerien",
-       "label": "Nuisances aériennes (PEB)",
-       "status": "pending",
-       "detail": "PEB / servitudes aéro",
-       "subscore": null,
-       "weight": 0.0,
-       "contribution": 0.0
-      }
-     ],
-     "weight": 0.15,
-     "contribution": 11.1
-    },
-    {
-     "key": "foncier",
-     "label": "Foncier & constructibilité",
-     "score": 46.0,
-     "status": "ok",
-     "subpillars": [
-      {
-       "key": "zonage",
-       "label": "Zonage / constructibilité",
-       "status": "ok",
-       "detail": "zone N",
-       "subscore": 0.1,
-       "weight": 0.6,
-       "contribution": 6.0
-      },
-      {
-       "key": "terrain",
-       "label": "Présence de terrain",
-       "status": "ok",
-       "detail": "5028 m²",
-       "subscore": 1.0,
-       "weight": 0.4,
-       "contribution": 40.0
-      }
-     ],
-     "weight": 0.2,
-     "contribution": 9.2
-    },
-    {
-     "key": "etat",
-     "label": "État & travaux",
-     "score": 70.0,
-     "status": "ok",
-     "subpillars": [
-      {
-       "key": "travaux",
-       "label": "Niveau de travaux",
-       "status": "ok",
-       "detail": "renover",
-       "subscore": 0.7,
-       "weight": 1.0,
-       "contribution": 70.0
-      }
-     ],
-     "weight": 0.07,
-     "contribution": 4.9
-    },
-    {
-     "key": "accessibilite",
-     "label": "Accessibilité & services",
-     "score": 59.5,
-     "status": "ok",
-     "subpillars": [
-      {
-       "key": "train",
-       "label": "Trajet train",
-       "status": "ok",
-       "detail": "~2h55 porte-à-porte (Paris)",
-       "subscore": 0.595,
-       "weight": 0.5,
-       "contribution": 29.8
-      },
-      {
-       "key": "gare",
-       "label": "Proximité gare",
-       "status": "ok",
-       "detail": "gare de Culoz à 24.3 km",
-       "subscore": 0.19,
-       "weight": 0.25,
-       "contribution": 4.8
-      },
-      {
-       "key": "fibre",
-       "label": "Fibre",
-       "status": "ok",
-       "detail": "fibre",
-       "subscore": 1.0,
-       "weight": 0.25,
-       "contribution": 25.0
-      }
-     ],
-     "weight": 0.08,
-     "contribution": 4.8
-    }
-   ],
-   "scores_by_set": {
-    "1": {
-     "match_score": 78.0,
-     "details": [
-      {
-       "kind": "chambres_min",
-       "label": "3 chambres minimum",
-       "weight": 4.0,
-       "status": "ok",
-       "detail": "3 ch. (min 3)",
-       "subscore": 1.0,
-       "contribution": 4.0
-      },
-      {
-       "kind": "logement_compact",
-       "label": "Format maison de retrait (3 à 5 chambres, pas immense)",
-       "weight": 4.0,
-       "status": "ok",
-       "detail": "3 chambres (≤ 4, format recherché)",
-       "subscore": 1.0,
-       "contribution": 4.0
-      },
-      {
-       "kind": "jardin",
-       "label": "Jardin (requis)",
-       "weight": 4.0,
-       "status": "ok",
-       "detail": "jardin de 5028 m² (requis ≥ 300 m²)",
-       "subscore": 1.0,
-       "contribution": 4.0
-      },
-      {
-       "kind": "coin_nature",
-       "label": "Coin de nature (eau, bois, vue dégagée)",
-       "weight": 4.0,
-       "status": "ok",
-       "detail": "eau (rivière, ruisseau, étang) · vue dégagée · vue",
-       "subscore": 1.0,
-       "contribution": 4.0
-      },
-      {
-       "kind": "budget",
-       "label": "Prix entre 180 000 € et 250 000 €",
-       "weight": 4.0,
-       "status": "ok",
-       "detail": "220000€ — 88% du budget 250000€ (haut de fourchette)",
-       "subscore": 0.88,
-       "contribution": 3.52
-      },
-      {
-       "kind": "light_works",
-       "label": "Peu de travaux (rafraîchir oui, rénovation complète non)",
-       "weight": 4.0,
-       "status": "ok",
-       "detail": "état : à rénover",
-       "subscore": 0.85,
-       "contribution": 3.4
-      },
-      {
-       "kind": "cachet",
-       "label": "Cachet (caractère, pas de pavillon)",
-       "weight": 4.0,
-       "status": "ok",
-       "detail": "caractère / pierre",
-       "subscore": 0.85,
-       "contribution": 3.4
-      },
-      {
-       "kind": "has_terrain",
-       "label": "Grand terrain (≥ 1 000 m²)",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "5028 m² (souhait ≥ 1000 m²)",
-       "subscore": 1.0,
-       "contribution": 3.0
-      },
-      {
-       "kind": "hiking",
-       "label": "Randonnées au départ",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "8 sentiers/itinéraires à proximité",
-       "subscore": 1.0,
-       "contribution": 3.0
-      },
-      {
-       "kind": "nuisance_sonore",
-       "label": "Loin d'une route passante / autoroute / rail",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "route passante 605 m",
-       "subscore": 1.0,
-       "contribution": 3.0
-      },
-      {
-       "kind": "village_vivant",
-       "label": "Village vivant (ni désert, ni ville)",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "7 commerces/services (peu, 91%)",
-       "subscore": 0.906,
-       "contribution": 2.719
-      },
-      {
-       "kind": "temps_acces",
-       "label": "≤ 4h30 porte-à-porte depuis Paris",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "~2h55 porte-à-porte depuis Paris (max 4h)",
-       "subscore": 0.633,
-       "contribution": 1.9
-      },
-      {
-       "kind": "fiber",
-       "label": "Fibre (télétravail)",
-       "weight": 2.0,
-       "status": "ok",
-       "detail": "92% des locaux de la commune éligibles (à vérifier pour ce bien)",
-       "subscore": 0.92,
-       "contribution": 1.84
-      },
-      {
-       "kind": "tranquillite",
-       "label": "Calme, sans vis-à-vis, hors lotissement",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "rien de signalé",
-       "subscore": 0.5,
-       "contribution": 1.5
-      },
-      {
-       "kind": "relief_mountain",
-       "label": "Montagne / relief",
-       "weight": 5.0,
-       "status": "ok",
-       "detail": "altitude 203.4 m (réf montagne 800 m)",
-       "subscore": 0.254,
-       "contribution": 1.271
-      },
-      {
-       "kind": "surface_habitable",
-       "label": "≥ 90 m² habitables",
-       "weight": 1.0,
-       "status": "ok",
-       "detail": "99 m² habitables (souhait ≥ 90 m²)",
-       "subscore": 1.0,
-       "contribution": 1.0
-      },
-      {
-       "kind": "ski",
-       "label": "Station de ski à proximité",
-       "weight": 2.0,
-       "status": "ok",
-       "detail": "pas de remontée de ski à proximité",
-       "subscore": 0.15,
-       "contribution": 0.3
-      },
-      {
-       "kind": "near_city",
-       "label": "Accessible depuis Marseille",
-       "weight": 2.0,
-       "status": "ok",
-       "detail": "270 km de Marseille",
-       "subscore": 0.099,
-       "contribution": 0.197
-      },
-      {
-       "kind": "near_gare",
-       "label": "Proche d'une gare",
-       "weight": 2.0,
-       "status": "ok",
-       "detail": "gare de Culoz à 24.3 km",
-       "subscore": 0.0,
-       "contribution": 0.0
-      },
-      {
-       "kind": "near_corridor",
-       "label": "Axe Paris-Marseille",
-       "weight": 1.0,
-       "status": "ok",
-       "detail": "53 km de l'axe Paris – Marseille",
-       "subscore": 0.0,
-       "contribution": 0.0
-      },
-      {
-       "kind": "rapport_qualite_prix",
-       "label": "Rapport qualité/prix (vs prix du secteur)",
-       "weight": 5.0,
-       "status": "n/a",
-       "detail": "prix, surface bâtie ou référence de secteur manquante",
-       "subscore": null
-      },
-      {
-       "kind": "ensoleillement",
-       "label": "Exposition / soleil d'hiver",
-       "weight": 4.0,
-       "status": "pending",
-       "detail": "ensoleillement non mesuré (relief non échantillonné)",
-       "subscore": null
-      },
-      {
-       "kind": "attractivite_airbnb",
-       "label": "Attractivité locative saisonnière (Airbnb)",
-       "weight": 4.0,
-       "status": "pending",
-       "detail": "attractivité locative non mesurée (réchauffage)",
-       "subscore": null
-      },
-      {
-       "kind": "exigence",
-       "label": "Rapport qualité/prix mesuré (requis au-dessus de 78)",
-       "weight": 0,
-       "status": "ko",
-       "subscore": null,
-       "detail": "plafonné à 78 (score 79.3) — manque : Rapport qualité/prix (vs prix du secteur)"
-      }
-     ]
-    }
-   },
-   "viager": false,
-   "residence_tourisme": false,
-   "zone": "Avant-pays savoyard",
-   "zone_temoin": true,
-   "is_favori": false,
-   "favori_note": null,
-   "n_photos_source": 12,
-   "photos": [
-    "photos/bienici_netty-company53557rig-house-25012/0.jpg",
-    "photos/bienici_netty-company53557rig-house-25012/1.jpg",
-    "photos/bienici_netty-company53557rig-house-25012/2.jpg",
-    "photos/bienici_netty-company53557rig-house-25012/3.jpg",
-    "photos/bienici_netty-company53557rig-house-25012/4.jpg",
-    "photos/bienici_netty-company53557rig-house-25012/5.jpg",
-    "photos/bienici_netty-company53557rig-house-25012/6.jpg",
-    "photos/bienici_netty-company53557rig-house-25012/7.jpg",
-    "photos/bienici_netty-company53557rig-house-25012/8.jpg",
-    "photos/bienici_netty-company53557rig-house-25012/9.jpg",
-    "photos/bienici_netty-company53557rig-house-25012/10.jpg",
-    "photos/bienici_netty-company53557rig-house-25012/11.jpg"
    ]
   },
   {
@@ -47617,6 +46736,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -48052,6 +47172,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -48412,6 +47533,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -48781,6 +47903,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -49277,6 +48400,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": "Baronnies",
    "zone_temoin": true,
    "is_favori": false,
@@ -49647,6 +48771,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -50013,6 +49138,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -50516,6 +49642,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": "Alpes d'Azur",
    "zone_temoin": true,
    "is_favori": false,
@@ -50885,6 +50012,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -51369,6 +50497,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": "Léman",
    "zone_temoin": true,
    "is_favori": false,
@@ -51741,6 +50870,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -52124,6 +51254,7 @@
    },
    "viager": true,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -52562,6 +51693,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -52925,6 +52057,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -52942,484 +52075,6 @@
     "photos/leboncoin_3207047820/8.jpg",
     "photos/leboncoin_3207047820/9.jpg",
     "photos/leboncoin_3207047820/10.jpg"
-   ]
-  },
-  {
-   "condition": "habitable",
-   "niveau_travaux": 0,
-   "nuisances": [],
-   "nature_score": 0,
-   "nature_exception": false,
-   "constructible": false,
-   "est_zone_au": false,
-   "zone_urba": "N",
-   "altitude": 1026.1,
-   "rail_time_min": 214,
-   "risques": [],
-   "prix_m2_secteur": 2060.7,
-   "ecart_prix_pct": -41.8,
-   "pollution_eau_score": 0.5,
-   "eau_potable_conforme": false,
-   "pollutions": [],
-   "age_median": null,
-   "part_gauche": null,
-   "population_commune": 7154,
-   "isolement_score": 0.086,
-   "price_decreased": false,
-   "id": 6291,
-   "source": "seloger",
-   "external_id": "25PZCJ513947",
-   "type_bien": "maison",
-   "prix": 180000.0,
-   "nb_chambres": 3,
-   "nb_pieces": 4,
-   "surface_terrain": 710.0,
-   "surface_bati": 150.0,
-   "commune": "Ugine",
-   "code_postal": "73400",
-   "code_commune": "73303",
-   "departement": "73",
-   "latitude": 45.7796,
-   "longitude": 6.425,
-   "url": "https://www.seloger.com/annonces/achat/maison/ugine-73/251132001.htm",
-   "description": "SOUS COMPROMIS Maison familiale à Ugine – 150 m² habitables + jardin Située sur la commune d'Ugine, cette maison de ville des années 1920 (type T6) offre un beau potentiel pour qui souhaite rénover e...",
-   "dpe_classe": "g",
-   "features": [
-    "jardin"
-   ],
-   "score": 67.7,
-   "score_details": [
-    {
-     "key": "prix",
-     "label": "Prix & opportunité",
-     "score": 96.4,
-     "status": "ok",
-     "subpillars": [
-      {
-       "key": "niveau_prix",
-       "label": "Niveau de prix (€/m²)",
-       "status": "ok",
-       "detail": "1200 €/m² habitable (repère : 1200–3500)",
-       "subscore": 1.0,
-       "weight": 0.562,
-       "contribution": 56.2
-      },
-      {
-       "key": "affaire",
-       "label": "Affaire vs marché",
-       "status": "ok",
-       "detail": "-42% vs marché local",
-       "subscore": 0.918,
-       "weight": 0.437,
-       "contribution": 40.1
-      },
-      {
-       "key": "baisse_prix",
-       "label": "Négociation (baisse)",
-       "status": "n/a",
-       "detail": "pas de baisse constatée",
-       "subscore": null,
-       "weight": 0.0,
-       "contribution": 0.0
-      }
-     ],
-     "weight": 0.3,
-     "contribution": 28.9
-    },
-    {
-     "key": "risques",
-     "label": "Risques & nuisances",
-     "score": 82.4,
-     "status": "ok",
-     "subpillars": [
-      {
-       "key": "risques_naturels",
-       "label": "Risques naturels/techno",
-       "status": "ok",
-       "detail": "aucun risque recensé",
-       "subscore": 1.0,
-       "weight": 0.353,
-       "contribution": 35.3
-      },
-      {
-       "key": "pollution_eau",
-       "label": "Pollution / qualité de l'eau",
-       "status": "ok",
-       "detail": "eau NON conforme",
-       "subscore": 0.5,
-       "weight": 0.353,
-       "contribution": 17.6
-      },
-      {
-       "key": "nuisances_proximite",
-       "label": "Nuisances de proximité",
-       "status": "ok",
-       "detail": "aucune nuisance signalée",
-       "subscore": 1.0,
-       "weight": 0.294,
-       "contribution": 29.4
-      },
-      {
-       "key": "aerien",
-       "label": "Nuisances aériennes (PEB)",
-       "status": "pending",
-       "detail": "PEB / servitudes aéro",
-       "subscore": null,
-       "weight": 0.0,
-       "contribution": 0.0
-      }
-     ],
-     "weight": 0.15,
-     "contribution": 12.4
-    },
-    {
-     "key": "cadre",
-     "label": "Cadre & nature",
-     "score": 45.0,
-     "status": "ok",
-     "subpillars": [
-      {
-       "key": "nature",
-       "label": "Qualité nature",
-       "status": "ok",
-       "detail": "score nature 0",
-       "subscore": 0.5,
-       "weight": 0.5,
-       "contribution": 25.0
-      },
-      {
-       "key": "exception",
-       "label": "Caractère d'exception",
-       "status": "ok",
-       "detail": "ordinaire",
-       "subscore": 0.4,
-       "weight": 0.3,
-       "contribution": 12.0
-      },
-      {
-       "key": "authenticite",
-       "label": "Authenticité / cachet",
-       "status": "ok",
-       "detail": "non précisé",
-       "subscore": 0.4,
-       "weight": 0.2,
-       "contribution": 8.0
-      }
-     ],
-     "weight": 0.2,
-     "contribution": 9.0
-    },
-    {
-     "key": "etat",
-     "label": "État & travaux",
-     "score": 100.0,
-     "status": "ok",
-     "subpillars": [
-      {
-       "key": "travaux",
-       "label": "Niveau de travaux",
-       "status": "ok",
-       "detail": "habitable",
-       "subscore": 1.0,
-       "weight": 1.0,
-       "contribution": 100.0
-      }
-     ],
-     "weight": 0.07,
-     "contribution": 7.0
-    },
-    {
-     "key": "foncier",
-     "label": "Foncier & constructibilité",
-     "score": 30.5,
-     "status": "ok",
-     "subpillars": [
-      {
-       "key": "zonage",
-       "label": "Zonage / constructibilité",
-       "status": "ok",
-       "detail": "zone N",
-       "subscore": 0.1,
-       "weight": 0.6,
-       "contribution": 6.0
-      },
-      {
-       "key": "terrain",
-       "label": "Présence de terrain",
-       "status": "ok",
-       "detail": "710 m²",
-       "subscore": 0.613,
-       "weight": 0.4,
-       "contribution": 24.5
-      }
-     ],
-     "weight": 0.2,
-     "contribution": 6.1
-    },
-    {
-     "key": "accessibilite",
-     "label": "Accessibilité & services",
-     "score": 54.6,
-     "status": "ok",
-     "subpillars": [
-      {
-       "key": "train",
-       "label": "Trajet train",
-       "status": "ok",
-       "detail": "~3h59 porte-à-porte (Paris)",
-       "subscore": 0.29,
-       "weight": 0.5,
-       "contribution": 14.5
-      },
-      {
-       "key": "gare",
-       "label": "Proximité gare",
-       "status": "ok",
-       "detail": "gare de Albertville à 11.9 km",
-       "subscore": 0.603,
-       "weight": 0.25,
-       "contribution": 15.1
-      },
-      {
-       "key": "fibre",
-       "label": "Fibre",
-       "status": "ok",
-       "detail": "fibre",
-       "subscore": 1.0,
-       "weight": 0.25,
-       "contribution": 25.0
-      }
-     ],
-     "weight": 0.08,
-     "contribution": 4.4
-    }
-   ],
-   "scores_by_set": {
-    "1": {
-     "match_score": 83.7,
-     "details": [
-      {
-       "kind": "rapport_qualite_prix",
-       "label": "Rapport qualité/prix (vs prix du secteur)",
-       "weight": 5.0,
-       "status": "ok",
-       "detail": "1200 €/m² — -42 % du secteur (2061 €/m²)",
-       "subscore": 1.0,
-       "contribution": 5.0
-      },
-      {
-       "kind": "relief_mountain",
-       "label": "Montagne / relief",
-       "weight": 5.0,
-       "status": "ok",
-       "detail": "altitude 1026.1 m (réf montagne 800 m)",
-       "subscore": 1.0,
-       "contribution": 5.0
-      },
-      {
-       "kind": "chambres_min",
-       "label": "3 chambres minimum",
-       "weight": 4.0,
-       "status": "ok",
-       "detail": "3 ch. (min 3)",
-       "subscore": 1.0,
-       "contribution": 4.0
-      },
-      {
-       "kind": "logement_compact",
-       "label": "Format maison de retrait (3 à 5 chambres, pas immense)",
-       "weight": 4.0,
-       "status": "ok",
-       "detail": "3 chambres (≤ 4, format recherché)",
-       "subscore": 1.0,
-       "contribution": 4.0
-      },
-      {
-       "kind": "light_works",
-       "label": "Peu de travaux (rafraîchir oui, rénovation complète non)",
-       "weight": 4.0,
-       "status": "ok",
-       "detail": "état : habitable de suite",
-       "subscore": 1.0,
-       "contribution": 4.0
-      },
-      {
-       "kind": "jardin",
-       "label": "Jardin (requis)",
-       "weight": 4.0,
-       "status": "ok",
-       "detail": "jardin de 710 m² (requis ≥ 300 m²)",
-       "subscore": 1.0,
-       "contribution": 4.0
-      },
-      {
-       "kind": "budget",
-       "label": "Prix entre 180 000 € et 250 000 €",
-       "weight": 4.0,
-       "status": "ok",
-       "detail": "180000€ — 72% du budget 250000€ (haut de fourchette)",
-       "subscore": 0.987,
-       "contribution": 3.947
-      },
-      {
-       "kind": "ensoleillement",
-       "label": "Exposition / soleil d'hiver",
-       "weight": 4.0,
-       "status": "ok",
-       "detail": "6h44 de soleil le 21 décembre · versant sud-ouest à 20° · horizon sud barré à -1°",
-       "subscore": 0.967,
-       "contribution": 3.866
-      },
-      {
-       "kind": "attractivite_airbnb",
-       "label": "Attractivité locative saisonnière (Airbnb)",
-       "weight": 4.0,
-       "status": "ok",
-       "detail": "ski à 2.5 km · lac à 6.1 km · 8 hébergements touristiques (5 km) · 2 restaurants/cafés (3 km) · 64 sites (10 km) — quatre saisons",
-       "subscore": 0.775,
-       "contribution": 3.1
-      },
-      {
-       "kind": "hiking",
-       "label": "Randonnées au départ",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "65 sentiers/itinéraires à proximité",
-       "subscore": 1.0,
-       "contribution": 3.0
-      },
-      {
-       "kind": "nuisance_sonore",
-       "label": "Loin d'une route passante / autoroute / rail",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "aucune route passante, autoroute ni voie ferrée à proximité",
-       "subscore": 1.0,
-       "contribution": 3.0
-      },
-      {
-       "kind": "village_vivant",
-       "label": "Village vivant (ni désert, ni ville)",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "6 commerces/services (peu, 81%)",
-       "subscore": 0.812,
-       "contribution": 2.438
-      },
-      {
-       "kind": "has_terrain",
-       "label": "Grand terrain (≥ 1 000 m²)",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "710 m² (souhait ≥ 1000 m²)",
-       "subscore": 0.71,
-       "contribution": 2.13
-      },
-      {
-       "kind": "cachet",
-       "label": "Cachet (caractère, pas de pavillon)",
-       "weight": 4.0,
-       "status": "ok",
-       "detail": "rien de signalé",
-       "subscore": 0.5,
-       "contribution": 2.0
-      },
-      {
-       "kind": "fiber",
-       "label": "Fibre (télétravail)",
-       "weight": 2.0,
-       "status": "ok",
-       "detail": "96% des locaux de la commune éligibles (à vérifier pour ce bien)",
-       "subscore": 0.96,
-       "contribution": 1.92
-      },
-      {
-       "kind": "ski",
-       "label": "Station de ski à proximité",
-       "weight": 2.0,
-       "status": "ok",
-       "detail": "remontée de ski à 2.8 km",
-       "subscore": 0.907,
-       "contribution": 1.813
-      },
-      {
-       "kind": "tranquillite",
-       "label": "Calme, sans vis-à-vis, hors lotissement",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "rien de signalé",
-       "subscore": 0.5,
-       "contribution": 1.5
-      },
-      {
-       "kind": "coin_nature",
-       "label": "Coin de nature (eau, bois, vue dégagée)",
-       "weight": 4.0,
-       "status": "ok",
-       "detail": "en hauteur (1026 m)",
-       "subscore": 0.333,
-       "contribution": 1.333
-      },
-      {
-       "kind": "surface_habitable",
-       "label": "≥ 90 m² habitables",
-       "weight": 1.0,
-       "status": "ok",
-       "detail": "150 m² habitables (souhait ≥ 90 m²)",
-       "subscore": 1.0,
-       "contribution": 1.0
-      },
-      {
-       "kind": "temps_acces",
-       "label": "≤ 4h30 porte-à-porte depuis Paris",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "~3h59 porte-à-porte depuis Paris (max 4h)",
-       "subscore": 0.207,
-       "contribution": 0.62
-      },
-      {
-       "kind": "near_gare",
-       "label": "Proche d'une gare",
-       "weight": 2.0,
-       "status": "ok",
-       "detail": "gare de Albertville à 11.9 km",
-       "subscore": 0.207,
-       "contribution": 0.413
-      },
-      {
-       "kind": "near_city",
-       "label": "Accessible depuis Marseille",
-       "weight": 2.0,
-       "status": "ok",
-       "detail": "288 km de Marseille",
-       "subscore": 0.038,
-       "contribution": 0.077
-      },
-      {
-       "kind": "near_corridor",
-       "label": "Axe Paris-Marseille",
-       "weight": 1.0,
-       "status": "ok",
-       "detail": "123 km de l'axe Paris – Marseille",
-       "subscore": 0.0,
-       "contribution": 0.0
-      }
-     ]
-    }
-   },
-   "viager": false,
-   "residence_tourisme": false,
-   "zone": "Val d'Arly",
-   "zone_temoin": false,
-   "is_favori": false,
-   "favori_note": null,
-   "n_photos_source": 4,
-   "photos": [
-    "photos/seloger_25PZCJ513947/0.jpg",
-    "photos/seloger_25PZCJ513947/1.jpg",
-    "photos/seloger_25PZCJ513947/2.jpg",
-    "photos/seloger_25PZCJ513947/3.jpg"
    ]
   },
   {
@@ -53898,6 +52553,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": "Vercors isérois",
    "zone_temoin": true,
    "is_favori": false,
@@ -54269,6 +52925,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -54628,6 +53285,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -54983,6 +53641,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -55353,6 +54012,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -55716,6 +54376,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -56085,6 +54746,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -56458,6 +55120,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -56818,6 +55481,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -56835,8 +55499,8 @@
    ]
   },
   {
-   "condition": "habitable",
-   "niveau_travaux": 0,
+   "condition": "renover",
+   "niveau_travaux": 2,
    "nuisances": [],
    "nature_score": 3,
    "nature_exception": false,
@@ -56884,7 +55548,7 @@
     "terrasse",
     "jardin"
    ],
-   "score": 64.5,
+   "score": 62.4,
    "score_details": [
     {
      "key": "prix",
@@ -57007,25 +55671,6 @@
      "contribution": 14.5
     },
     {
-     "key": "etat",
-     "label": "État & travaux",
-     "score": 100.0,
-     "status": "ok",
-     "subpillars": [
-      {
-       "key": "travaux",
-       "label": "Niveau de travaux",
-       "status": "ok",
-       "detail": "habitable",
-       "subscore": 1.0,
-       "weight": 1.0,
-       "contribution": 100.0
-      }
-     ],
-     "weight": 0.07,
-     "contribution": 7.0
-    },
-    {
      "key": "foncier",
      "label": "Foncier & constructibilité",
      "score": 31.0,
@@ -57052,6 +55697,25 @@
      ],
      "weight": 0.2,
      "contribution": 6.2
+    },
+    {
+     "key": "etat",
+     "label": "État & travaux",
+     "score": 70.0,
+     "status": "ok",
+     "subpillars": [
+      {
+       "key": "travaux",
+       "label": "Niveau de travaux",
+       "status": "ok",
+       "detail": "renover",
+       "subscore": 0.7,
+       "weight": 1.0,
+       "contribution": 70.0
+      }
+     ],
+     "weight": 0.07,
+     "contribution": 4.9
     },
     {
      "key": "accessibilite",
@@ -57123,15 +55787,6 @@
        "contribution": 4.0
       },
       {
-       "kind": "light_works",
-       "label": "Peu de travaux (rafraîchir oui, rénovation complète non)",
-       "weight": 4.0,
-       "status": "ok",
-       "detail": "état : habitable de suite",
-       "subscore": 1.0,
-       "contribution": 4.0
-      },
-      {
        "kind": "jardin",
        "label": "Jardin (requis)",
        "weight": 4.0,
@@ -57148,6 +55803,15 @@
        "detail": "220000€ — 88% du budget 250000€ (haut de fourchette)",
        "subscore": 0.88,
        "contribution": 3.52
+      },
+      {
+       "kind": "light_works",
+       "label": "Peu de travaux (rafraîchir oui, rénovation complète non)",
+       "weight": 4.0,
+       "status": "ok",
+       "detail": "état : à rénover",
+       "subscore": 0.85,
+       "contribution": 3.4
       },
       {
        "kind": "cachet",
@@ -57306,13 +55970,14 @@
        "weight": 0,
        "status": "ko",
        "subscore": null,
-       "detail": "plafonné à 78 (score 81.8) — manque : Rapport qualité/prix (vs prix du secteur)"
+       "detail": "plafonné à 78 (score 80.5) — manque : Rapport qualité/prix (vs prix du secteur)"
       }
      ]
     }
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": "Maurienne",
    "zone_temoin": true,
    "is_favori": false,
@@ -57809,6 +56474,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": "Faucigny-Grand Massif",
    "zone_temoin": true,
    "is_favori": false,
@@ -58294,6 +56960,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": "Champsaur-Valgaudemar",
    "zone_temoin": true,
    "is_favori": false,
@@ -58725,6 +57392,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -59080,6 +57748,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -59449,6 +58118,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -59812,6 +58482,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -60173,6 +58844,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -60540,6 +59212,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -60905,6 +59578,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -61260,6 +59934,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -61624,6 +60299,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -62113,6 +60789,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": "Mercantour-Vésubie",
    "zone_temoin": true,
    "is_favori": false,
@@ -62478,6 +61155,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -62842,6 +61520,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -63204,6 +61883,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -63563,6 +62243,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -63932,6 +62613,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -64304,6 +62986,7 @@
    },
    "viager": false,
    "residence_tourisme": true,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -64667,6 +63350,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -65025,6 +63709,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -65394,6 +64079,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -65761,6 +64447,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -66118,6 +64805,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -66477,6 +65165,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -66844,6 +65533,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -67208,6 +65898,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -67563,6 +66254,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -67923,6 +66615,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -68284,6 +66977,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -68647,6 +67341,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -69008,6 +67703,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -69372,6 +68068,7 @@
    },
    "viager": false,
    "residence_tourisme": false,
+   "sous_compromis": false,
    "zone": null,
    "zone_temoin": false,
    "is_favori": false,
@@ -69382,12 +68079,13 @@
  ],
  "searches": [],
  "stats": {
-  "n_biens": 175,
+  "n_biens": 172,
   "n_sets": 3,
   "n_searches": 0,
   "n_viager": 128,
   "n_residence_tourisme": 16,
-  "n_mobilhome": 29,
+  "n_mobilhome": 30,
+  "n_sous_compromis": 59,
   "n_temoins_zone": 18
  }
 }

@@ -430,6 +430,8 @@ repli silencieux.
 | Scores incohérents avec le code | `data.json` exporté avant un recalibrage du scoring | ré-exporter après tout changement de `scoring.py`/`preferences.py` |
 | Une correction de `classify.py` ne change rien sur le site | `condition`/`niveau_travaux` sont des **colonnes**, écrites une fois à la collecte ; l'export les relit sans reclasser | `python scripts/reclasser.py --dry-run` puis sans `--dry-run`, avant de ré-exporter |
 | Des ruines et des mobil-homes en haut du classement | Un prix très bas est noté comme une bonne affaire par `budget` **et** par `rapport_qualite_prix` (poids 5) : deux critères sur trois du haut du barème récompensent le défaut qu'ils devraient signaler | plancher de prix dans `budget` (`budget_min`) **et** palier au niveau du panier ; le défaut d'un bien bon marché n'est jamais écrit dans l'annonce, aucun critère mesuré ne le rattrape |
+| Un mot-clé matche à l'intérieur d'un autre mot | Les mots-clés d'état se cherchaient en **sous-chaîne** : « renove » se trouve dans « renover », donc « pour qui souhaite rénover » était lu comme « rénové » et le bien déclaré habitable (Ugine, 180 000 €, publiée comme pépite à 83,7) | frontières de mots (`\b`) sur toute la table de mots-clés ; ajouter aussi les verbes seuls (`renover`, `rehabiliter`), sinon « afin de LA réhabiliter » ne matche plus rien |
+| Un verdict d'état rendu sur une demi-annonce | Les cartes de la SERP SeLoger tronquent la description à ~200 signes, parfois au milieu du mot qui décide — 1 140 biens en base, dont 1 111 SeLoger | une troncature ne peut que **cacher** de la sévérité, jamais en inventer : sur un texte coupé, seuls les verdicts sévères (gros travaux, ruine) sont retenus, les autres repassent à « état inconnu ». La vraie réparation serait d'aller lire la fiche du bien |
 | Une annonce annonce 4 pièces dans 35 m² | Le repli « pièces − 1 » du critère de chambres ne recoupait rien : il accordait 3 chambres à un mobil-home | `m2_min_par_piece` (20 m² par pièce, communs compris) borne l'estimation par la surface |
 | Un critère au poids fort à `pending` sur la moitié du lot | `pending` est **exclu** du score, pas compté zéro : un bien non mesuré monte au lieu de descendre | réchauffer (§4) ; et poser un palier « critère mesuré » comme le fait le set 1 pour le rapport qualité/prix et l'attractivité |
 
@@ -642,7 +644,7 @@ ou hors sujet — monte au classement :
 | 78 | une attractivité locative mesurée | Même raison, pour le critère le plus cher à relever (~5 s Overpass par point, donc réchauffé sur les seuls candidats). Seuil 0 : on exige le relevé, pas une bonne note. Un bien dans un coin sans tourisme reste recevable ; ce qu'on refuse, c'est qu'il passe devant un autre parce qu'on ne l'a pas regardé. |
 | 85 | une nature ou un relief avérés | Un critère jamais mesuré ne prouve rien. |
 
-**Trois types de biens sont conservés mais plafonnés très bas** (facteur 0,15 à 0,2 sur
+**Quatre types de biens sont conservés mais plafonnés très bas** (facteur 0,15 à 0,2 sur
 le match), parce que le prix affiché ne décrit pas ce qu'on achète : le **viager /
 nue-propriété** (le prix est le bouquet, le bien reste occupé), la **résidence de
 tourisme** sous bail commercial (jouissance restreinte, gestion imposée), et le
@@ -652,7 +654,13 @@ perte). Le troisième a été ajouté le 1er septembre après qu'un « chalet de
 4 pièces de 35 m² situé au camping "la motte flottante" », 75 000 €, soit entré dans les
 pépites à 81,3. Détection sur le texte : « camping » seul ne suffit pas — « à 2 km d'un
 camping » est un argument de voisinage —, il faut que le bien soit *dans* le camping ou
-qu'il se nomme lui-même. 29 biens concernés sur les 7 086 en base.
+qu'il se nomme lui-même. 30 biens concernés sur les 7 086 en base.
+
+Le quatrième est le bien **déjà sous compromis / sous offre** : il n'est plus à vendre,
+et le montrer au groupe est pire qu'un viager — il n'y a même pas de décision à prendre.
+Motif volontairement étroit : « vendu » seul attrape « vendu meublé », « vendu avec
+locataire en place », « vendu par notre partenaire foncier », soit 260 faux positifs
+contre 75 vraies annonces retirées du marché. 59 biens concernés.
 
 **Les agences de la zone** (`set_ids: [1]`) : Agence Cévenole, Bauges Immobilier,
 Christine Miranda, Espaces Atypiques Drôme-Ardèche, Diois Immobilier, Orpi Ain Agences.
