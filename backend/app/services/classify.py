@@ -4,6 +4,15 @@ Une ruine et un bien « à rénover » n'impliquent pas le même volume de trava
 on utilise une échelle ordinale (du plus léger au plus lourd) et on retient le
 niveau le plus sévère mentionné, en neutralisant d'abord les négations
 (« aucun travaux », « sans travaux »...).
+
+Deux niveaux de lecture, et le second existe parce que le premier a laissé passer
+une ruine en tête de classement (Jarrier, 73, notée 89,4) :
+
+- les MOTS-CLÉS, balayés du plus sévère au moins sévère ;
+- les RÈGLES, qui lisent la nature du bien mis en vente. « Grange à rénover » n'est
+  pas un chantier de second œuvre : c'est une construction complète — planchers,
+  isolation, réseaux, ouvertures — dans une enveloppe existante. Le mot-clé
+  « à rénover » la rangeait avec la maison qui a besoin d'une cuisine.
 """
 
 from __future__ import annotations
@@ -37,7 +46,7 @@ _KEYWORDS: list[tuple[str, list[str]]] = [
             "effondre",
             "ecroule",
             "insalubre",
-            "hors d'eau hors d'air a refaire",
+            "hors d eau hors d air a refaire",
         ],
     ),
     (
@@ -53,6 +62,30 @@ _KEYWORDS: list[tuple[str, list[str]]] = [
             "a restaurer entierement",
             "tout a refaire",
             "travaux importants",
+            # « À rénover ENTIÈREMENT » : le mot-clé « a renover » seul rangeait la
+            # formule avec le rafraîchissement (0,85, donc admissible), alors qu'elle
+            # dit exactement ce que le groupe refuse. Vécu sur la grange de Jarrier
+            # (73), 190 m², 142 k€, notée 89,4 et publiée comme pépite.
+            "a renover entierement",
+            "a renover integralement",
+            "a renover de fond en comble",
+            "entierement a renover",
+            "renover entierement",
+            "renovation integrale",
+            "renovation de fond en comble",
+            "de fond en comble",
+            "a reprendre entierement",
+            "a amenager entierement",
+            "tout est a faire",
+            # Enveloppe close, intérieur vide : le second œuvre reste ENTIER.
+            "hors d eau hors d air",
+            # L'annonce dit elle-même que le bien n'est pas un logement.
+            "n est pas habitable",
+            "pas habitable en l etat",
+            "non habitable en l etat",
+            "inhabitable en l etat",
+            "impropre a l habitation",
+            "non habitable en etat",
         ],
     ),
     (
@@ -139,10 +172,117 @@ _NEGATIONS = [
 ]
 
 
+# --- Règle « coquille » : ce qui est mis en vente n'est pas un logement ----------------
+#
+# Une grange, un hangar, une étable « à rénover » ou « à aménager » ne demandent pas le
+# chantier d'une maison à rénover : il faut créer les planchers, l'isolation, les
+# réseaux, les ouvertures, souvent la charpente. Les mots-clés ne voyaient que
+# « à rénover » et rangeaient le bâtiment agricole avec la maison qui a besoin d'une
+# cuisine — la grange de Jarrier (73) est ainsi montée à 89,4 et a été publiée comme
+# pépite alors que le set exige « pas de rénovation complète ».
+#
+# Trois garde-fous, tous mesurés sur le lot (218 bascules, dont 4 fausses au premier
+# jet) :
+#
+# 1. La coquille doit être CE QU'ON VEND. « Maison de village avec grange attenante »
+#    parle d'une maison : le mot « maison » y vient avant « grange », et c'est ce que
+#    teste `_position`.
+# 2. Il faut une intention de conversion EXPLICITE (« à rénover », « à aménager »).
+#    « Potentiel », « projet » et « travaux » ont d'abord été acceptés : un corps de
+#    ferme habitable vanté pour son « potentiel d'aménagement moderne » basculait alors
+#    en gros travaux.
+# 3. Frontières de mots. Sans elles, « ancien moulinage à rafraîchir » matchait
+#    « ancien moulin ».
+_COQUILLES = (
+    "grange", "hangar", "etable", "ecurie", "bergerie", "sechoir", "fenil", "mazot",
+    "batiment agricole", "corps de ferme", "ancienne ferme", "chalet d alpage",
+)
+# « moulin » a été retiré : `iad France - Audrey Moulin vous propose: Charmante Maison
+# de Campagne à rénover` faisait passer une maison pour une coquille, le patronyme de
+# l'agent arrivant avant le mot « maison ». Le préambule d'agence est désormais coupé
+# (`_sans_preambule`), mais un nom de famille reste un nom de famille : un moulin se
+# vend trop rarement pour valoir ce risque.
+# Mots qui désignent un logement : s'ils viennent AVANT la coquille, c'est un logement
+# qui a une grange, pas une grange qu'on vend.
+_LOGEMENTS = ("maison", "villa", "appartement", "pavillon", "longere", "mas",
+              "propriete", "demeure", "habitation", "logement", "chalet")
+# La coquille est déjà un logement : la règle ne doit pas se déclencher. Bornes de mot
+# pour que « renove » n'attrape pas « renover » (le piège inverse de celui qu'on corrige).
+_DEJA_CONVERTI = re.compile(
+    r"\b(?:renove(?:e|s|es)?|rehabilite(?:e|s|es)?|restauree?s?|amenagee?s?|"
+    r"transformee?s?|convertie?s?|habitable de suite|habitable immediatement)\b")
+# Ce qui reste à faire, et seulement dit explicitement.
+_A_CONVERTIR = re.compile(
+    r"\ba (?:renover|amenager|restaurer|rehabiliter|transformer|convertir|finir|terminer)\b"
+    r"|\bamenageable\b|\ba usage d habitation a creer\b")
+
+
+def _mots(text: str, mots) -> re.Pattern:
+    return re.compile(r"\b(?:" + "|".join(re.escape(m) for m in mots) + r")\b")
+
+
+_RE_COQUILLES = _mots("", _COQUILLES)
+_RE_LOGEMENTS = _mots("", _LOGEMENTS)
+
+
+def _position(text: str, motif: re.Pattern) -> int | None:
+    """Index de la première occurrence, None si aucune."""
+    m = motif.search(text)
+    return m.start() if m else None
+
+
+# Préambule d'agence : « iad France - Céline Chapuis vous propose: ... ». Il précède
+# le bien et fausse le test de position (le premier mot du texte n'est plus la nature
+# de ce qu'on vend mais le nom du mandataire).
+_PREAMBULE = re.compile(r"^.{0,110}?vous (?:propose|presente)\s*:?\s*")
+
+
+def _sans_preambule(text: str) -> str:
+    m = _PREAMBULE.match(text)
+    if not m:
+        return text
+    # On ne coupe que si le préambule ne dit RIEN du bien. « Maison 4 pièces 90 m² —
+    # Queige, à quelques kilomètres d'Albertville [...] je vous propose » commence par
+    # la nature du bien : la couper faisait passer une maison pour une grange.
+    tete = m.group(0)
+    if _RE_LOGEMENTS.search(tete) or _RE_COQUILLES.search(tete):
+        return text
+    return text[m.end():]
+
+
+# Distance maximale entre la coquille et ce qu'on veut en faire. « Grange à rénover »
+# les colle ; « ancienne ferme édifiée en 1871 [...] 164 m² habitables [...] les
+# dépendances représentent un potentiel d'aménagement » les sépare de 500 signes et
+# décrit une maison habitable dont les annexes sont à reprendre. Sans cette fenêtre, la
+# règle lisait la première et la dernière phrase d'une annonce comme une seule.
+_FENETRE = 80
+
+
+def regle_coquille(text: str) -> bool:
+    """Le bien mis en vente est-il une coquille à convertir (grange, hangar, étable) ?"""
+    text = _sans_preambule(text)
+    if _DEJA_CONVERTI.search(text):
+        return False
+    pos_logement = _position(text, _RE_LOGEMENTS)
+    for m in _RE_COQUILLES.finditer(text):
+        # La coquille doit être ce qu'on vend, pas une annexe citée après le logement.
+        if pos_logement is not None and m.start() > pos_logement:
+            break
+        fenetre = text[max(0, m.start() - _FENETRE):m.end() + _FENETRE]
+        if _A_CONVERTIR.search(fenetre):
+            return True
+    return False
+
+
 def _normalize(text: str) -> str:
     text = unicodedata.normalize("NFKD", text)
     text = "".join(c for c in text if not unicodedata.combining(c))
     text = text.lower()
+    # Les apostrophes deviennent des espaces : « n'est pas habitable » et « n est pas
+    # habitable » doivent se lire pareil, et les annonces mélangent ' et ’ (le second
+    # survit à la décomposition NFKD, le premier non — deux textes indiscernables à
+    # l'œil ne matchaient donc pas les mêmes mots-clés).
+    text = re.sub(r"[\u2018\u2019\u02bc'`\u00b4]", " ", text)
     return re.sub(r"\s+", " ", text)
 
 
@@ -163,9 +303,21 @@ def classify(*parts: str | None) -> dict:
             negated = True
             text = text.replace(neg, " ")
 
+    trouve = None
     for condition, keywords in _KEYWORDS:
         if any(kw in text for kw in keywords):
-            return {"condition": condition, "niveau_travaux": NIVEAU[condition]}
+            trouve = condition
+            break
+
+    # La règle « coquille » s'ajoute aux mots-clés au lieu de les remplacer, et on garde
+    # le niveau LE PLUS SÉVÈRE des deux : une grange décrite comme ruine reste une ruine,
+    # une grange « à rénover » cesse d'être un simple chantier de rénovation.
+    if regle_coquille(text):
+        if trouve is None or NIVEAU[trouve] < NIVEAU[GROS_TRAVAUX]:
+            trouve = GROS_TRAVAUX
+
+    if trouve is not None:
+        return {"condition": trouve, "niveau_travaux": NIVEAU[trouve]}
 
     if negated:
         return {"condition": HABITABLE, "niveau_travaux": NIVEAU[HABITABLE]}

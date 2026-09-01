@@ -443,3 +443,54 @@ def appliquer(items: list, *, profil: str = "littoral", max_km: float | None = 1
     log(f"  -> {len(restants)} biens à enrichir sur {depart} collectés "
         f"({depart - len(restants)} évités, ~{(depart - len(restants)) * 2.3 / 60:.0f} min économisées)")
     return restants
+
+# --------------------------------------------------------------------------- #
+# L'entonnoir appliqué au RÉCHAUFFAGE
+# --------------------------------------------------------------------------- #
+# Deux critères du set têtard coûtent une mesure à part, trop chère pour le catalogue :
+# l'ensoleillement (87 altitudes IGN, ~5 s) et l'attractivité locative (une requête
+# Overpass sur cinq rayons, ~5 s). 5 300 biens × 5 s font sept heures — pour un panier
+# d'une quinzaine de pépites et d'un témoin par massif.
+#
+# Le même raisonnement qu'aux étages précédents s'applique donc : filtrer avant de payer.
+# On mesure le haut du classement de chaque zone, plus tout ce qui dépasse un plancher.
+def candidats_par_zone(rows: list, zones: list[dict], *, par_zone: int = 25,
+                       score_min: float = 70.0, log=print) -> list:
+    """Les biens qui méritent une mesure chère : top-N par zone + tout ce qui perce.
+
+    Le tri se fait sur `Listing.score` (score d'investissement) et non sur le
+    `match_score` du set : ce dernier dépend justement du critère qu'on s'apprête à
+    mesurer, la sélection tournerait en rond.
+    """
+    from .geo import haversine_km
+
+    par_zone_rows: dict[str, list] = {}
+    hors_zone = []
+    for r in rows:
+        proche, dmin = None, None
+        for z in zones:
+            d = haversine_km(r.latitude, r.longitude, z["lat"], z["lon"])
+            if d <= z.get("rayon_km", 30) and (dmin is None or d < dmin):
+                proche, dmin = z.get("nom"), d
+        (par_zone_rows.setdefault(proche, []) if proche else hors_zone).append(r)
+
+    retenus: list = []
+    for nom, lot in sorted(par_zone_rows.items()):
+        lot.sort(key=lambda r: (getattr(r, "score", None) is None, -(getattr(r, "score", None) or 0)))
+        garde = lot[:par_zone]
+        # Ce qui dépasse le plancher est gardé EN PLUS du quota : une zone qui concentre
+        # les bonnes affaires ne doit pas être tronquée à N.
+        garde += [r for r in lot[par_zone:] if (getattr(r, "score", None) or 0) >= score_min]
+        retenus.extend(garde)
+        log(f"  {nom:28s} {len(lot):5d} biens -> {len(garde)} mesurés")
+    # Un bien qui ne tombe dans aucune zone n'est pas pour autant hors sujet : les zones
+    # sont des foyers de 30 km, et deux des quinze pépites publiées (Anneyron, Hauterives)
+    # tombent entre deux massifs. Sans cette reprise, elles ne seraient jamais mesurées,
+    # donc plafonnées par le palier — écartées faute d'avoir été regardées, ce qui est
+    # exactement ce que le palier est censé empêcher.
+    perces = [r for r in hors_zone if (getattr(r, "score", None) or 0) >= score_min]
+    retenus.extend(perces)
+    if hors_zone:
+        log(f"  {'(hors zone)':28s} {len(hors_zone):5d} biens -> {len(perces)} mesurés "
+            f"(ceux qui dépassent {score_min:g})")
+    return retenus

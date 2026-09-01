@@ -45,6 +45,7 @@ PREFERENCE_KINDS = [
     "cachet",
     "tension_locative",
     "ski",
+    "attractivite_airbnb",
     "population_jeune",
     "orientation_gauche",
     # Dépendent d'un provider d'enrichissement (Lot A) :
@@ -635,6 +636,18 @@ def _eval_one(item, kind: str, params: dict):
         km = round(d / 1000, 1)
         max_km = params.get("max_km", 30)
         return _clamp(1 - km / max_km), "ok", f"remontée de ski à {km} km"
+
+    if kind == "attractivite_airbnb":
+        # « L'attractivité Airbnb comme un critère important. » Mesurée, pas lue dans
+        # l'annonce : une annonce écrit « idéal investissement locatif » exactement comme
+        # elle écrit « plein sud », c'est-à-dire sans l'avoir vérifié. Le barème est dans
+        # `services/tourisme.py` ; ici on lit ce que l'échantillonnage OSM a relevé.
+        from .tourisme import noter, resumer
+
+        note = noter(flags)
+        if note is None:
+            return None, "pending", "attractivité locative non mesurée (réchauffage)"
+        return note["note"], "ok", resumer(flags, note)
 
     if kind == "population_jeune":
         v = flags.get("pop_jeune_score")

@@ -583,6 +583,112 @@ def _soleil(lat: float, lon: float, cache: dict, *, live: bool = False) -> dict:
     return {}
 
 
+# --- Attractivité locative saisonnière (« Airbnb ») ----------------------------------
+# Ce qu'un logement peut se louer à la semaine ici : la remontée mécanique (l'hiver), le
+# lac et les sites (l'été), l'hébergement touristique déjà installé (le marché existe) et
+# les restaurants (ce dont un locataire a besoin sur place). Le barème vit dans
+# `services/tourisme.py`, pur et testable ; ici on ne fait que l'échantillonnage OSM.
+#
+# Même contrat que la mer et le soleil : une requête Overpass par point, ~5 s, donc
+# CACHE SEUL à l'export et réchauffage à part (`scripts/warm_tourisme.py`). Le piège est
+# le même partout ici — sans réchauffage le critère sort en `pending`, il est alors
+# *exclu* du score au lieu de le baisser, et rien ne le dit.
+_TOURISME_CACHE = os.path.join(os.path.dirname(__file__), "..", "..", "data", "tourisme_cache.json")
+# Surface minimale d'un plan d'eau pour compter comme « lac ». Sans ce seuil, la mare de
+# 20 m² du hameau d'à côté valait le lac d'Annecy : autour de Beaufort, Overpass rend
+# 72 plans d'eau dont 70 sont des retenues d'alpage.
+_LAC_MIN_HA = 5.0
+_HEBERGEMENTS = ("hotel", "guest_house", "chalet", "apartment", "hostel", "motel",
+                 "camp_site", "alpine_hut", "wilderness_hut")
+_ATTRACTIONS = ("attraction", "viewpoint", "museum", "theme_park")
+_RESTOS = ("restaurant", "cafe", "bar", "pub")
+
+
+def _load_tourisme_cache() -> dict:
+    try:
+        with open(_TOURISME_CACHE, encoding="utf-8") as fh:
+            return json.load(fh)
+    except Exception:
+        return {}
+
+
+def _bbox_ha(bb: dict) -> float:
+    h = haversine_km(bb["minlat"], bb["minlon"], bb["maxlat"], bb["minlon"]) * 1000
+    w = haversine_km(bb["minlat"], bb["minlon"], bb["minlat"], bb["maxlon"]) * 1000
+    return h * w / 10000
+
+
+def _dist_bbox_m(lat: float, lon: float, bb: dict) -> int:
+    """Distance au rectangle englobant (0 si le point est dedans).
+
+    Pour un lac de 10 000 ha, le CENTRE est à 10 km du rivage : mesurer la distance au
+    centroïde faisait passer Aix-les-Bains pour une commune sans lac. Le rectangle est
+    une approximation grossière du rivage, mais du bon côté de l'erreur.
+    """
+    la = min(max(lat, bb["minlat"]), bb["maxlat"])
+    lo = min(max(lon, bb["minlon"]), bb["maxlon"])
+    return round(haversine_km(lat, lon, la, lo) * 1000)
+
+
+def _query_tourisme(lat: float, lon: float) -> dict | None:
+    q = (f'[out:json][timeout:90];('
+         f'nwr(around:5000,{lat},{lon})[tourism~"^({"|".join(_HEBERGEMENTS)})$"];'
+         f'nwr(around:3000,{lat},{lon})[amenity~"^({"|".join(_RESTOS)})$"];'
+         f'nwr(around:10000,{lat},{lon})[tourism~"^({"|".join(_ATTRACTIONS)})$"];'
+         f'way(around:25000,{lat},{lon})[aerialway~"^(gondola|chair_lift|cable_car|mixed_lift)$"];'
+         f'nwr(around:12000,{lat},{lon})[natural=water][water~"^(lake|reservoir)$"];'
+         f');out tags bb 1500;')
+    try:
+        data = urllib.parse.urlencode({"data": q}).encode()
+        req = urllib.request.Request(_OVERPASS, data=data, headers={"User-Agent": _UA_OVERPASS})
+        with urllib.request.urlopen(req, timeout=120) as r:
+            payload = json.loads(r.read())
+    except Exception:
+        return None
+    heb = restos = attractions = 0
+    ski = lac = None
+    for el in payload.get("elements", []):
+        t = el.get("tags", {})
+        bb = el.get("bounds")
+        pos = ({"minlat": el["lat"], "maxlat": el["lat"], "minlon": el["lon"], "maxlon": el["lon"]}
+               if el.get("lat") is not None else bb)
+        if t.get("tourism") in _HEBERGEMENTS:
+            heb += 1
+        elif t.get("amenity") in _RESTOS:
+            restos += 1
+        elif t.get("tourism") in _ATTRACTIONS:
+            attractions += 1
+        elif t.get("aerialway") and pos:
+            d = _dist_bbox_m(lat, lon, pos)
+            ski = d if ski is None else min(ski, d)
+        elif t.get("natural") == "water" and bb and _bbox_ha(bb) >= _LAC_MIN_HA:
+            d = _dist_bbox_m(lat, lon, bb)
+            lac = d if lac is None else min(lac, d)
+    return {"tour_hebergements": heb, "tour_restos": restos, "tour_attractions": attractions,
+            "tour_dist_remontee_m": ski, "tour_dist_lac_m": lac, "tour_checked": True}
+
+
+def _tourisme(lat: float, lon: float, cache: dict, *, live: bool = False) -> dict:
+    """Cache-only par défaut (lecture rapide à l'export) ; live=True pour le réchauffage."""
+    if lat is None or lon is None:
+        return {}
+    key = f"{round(lat, 4)},{round(lon, 4)}"
+    if key in cache:
+        return cache[key]
+    if not live:
+        return {}
+    res = _query_tourisme(lat, lon)
+    if res is not None:
+        cache[key] = res
+        try:
+            with open(_TOURISME_CACHE, "w", encoding="utf-8") as fh:
+                json.dump(cache, fh)
+        except Exception:
+            pass
+        return res
+    return {}
+
+
 # Optimisation : galerie web -> 1280 px max suffit ; JPEG progressif qualité 78.
 _MAX_DIM = 1280
 _JPEG_QUALITY = 78
@@ -838,9 +944,70 @@ def _dedupe_rows(rows: list, log=None, preserver: set | None = None) -> list:
     return gardes
 
 
+def _zone_de(row, zones: list[dict] | None) -> str | None:
+    """Zone de comparaison à laquelle ce bien appartient : la plus proche, si elle
+    l'atteint. Partition de Voronoï bornée par le rayon, donc un bien et un seul par
+    zone — et rien pour les biens qui tombent entre deux massifs."""
+    if not zones or row.latitude is None or row.longitude is None:
+        return None
+    proche, dmin = None, None
+    for z in zones:
+        d = haversine_km(row.latitude, row.longitude, z["lat"], z["lon"])
+        if d <= z.get("rayon_km", 30) and (dmin is None or d < dmin):
+            proche, dmin = z.get("nom"), d
+    return proche
+
+
+def _meilleurs_par_zone(prepares: list, planchers: dict, log=None) -> set:
+    """La clé du bien le mieux noté de CHAQUE zone, pour les sets qui le demandent.
+
+    Publier le haut du panier, et lui seul, ne montre qu'une chose : les secteurs où le
+    budget achète quelque chose. Le groupe n'a alors aucun moyen de voir ce que 250 k€
+    donnent — ou ne donnent pas — en Tarentaise, au bord du Léman ou dans le Queyras. Un
+    témoin par zone rend la comparaison possible ; c'est ce qui a été demandé le
+    31 août, « même si son score est bas ».
+
+    « Bas » n'est pas « n'importe quoi » : le témoin doit DÉPASSER le plancher du set,
+    70 par défaut — c'est-à-dire avoir passé les trois paliers qui s'appliquent là
+    (dans le budget, pas de rénovation complète, un jardin). Une zone dont rien ne
+    dépasse ce plancher n'a pas de témoin, et cette absence est elle-même la réponse.
+    """
+    meilleurs: dict = {}
+    zones_vues: dict = {}
+    for prep in prepares:
+        for set_id, plancher in planchers.items():
+            if prep["member"] and set_id not in prep["member"]:
+                continue
+            zone = (prep["zones"] or {}).get(set_id)
+            if not zone:
+                continue
+            zones_vues.setdefault(set_id, set()).add(zone)
+            sc = (prep["scores_by_set"].get(str(set_id)) or {}).get("match_score")
+            # DÉPASSER le plancher, pas l'atteindre — et la nuance décide.
+            # `appliquer_exigences` ramène un bien recalé au palier EXACT : une ruine
+            # hors budget et sans jardin sort à 70,0 tout rond. Un témoin choisi avec
+            # « >= 70 » serait donc, dans les zones pauvres, précisément le bien que les
+            # paliers viennent d'écarter. Avec « > 70 », le témoin a forcément passé les
+            # trois paliers de 70 : dans le budget, pas de rénovation complète, un jardin.
+            if not isinstance(sc, (int, float)) or sc <= plancher:
+                continue
+            cle = (set_id, zone)
+            if cle not in meilleurs or sc > meilleurs[cle][0]:
+                meilleurs[cle] = (sc, prep["cle"])
+    if log:
+        for set_id, vues in zones_vues.items():
+            retenues = {z for (sid, z) in meilleurs if sid == set_id}
+            vides = sorted(vues - retenues)
+            log(f"témoins de zone (set {set_id}) : {len(retenues)} zones publiées"
+                + (f" · {len(vides)} sans rien au-dessus de {planchers[set_id]:g} : "
+                   + ", ".join(vides) if vides else ""))
+    return {cle for _, cle in meilleurs.values()}
+
+
 def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = False,
                   min_match_score: float | None = None, primary_set_id: int | None = None,
-                  pepites: dict | None = None, conserver: dict | None = None) -> dict:
+                  pepites: dict | None = None, conserver: dict | None = None,
+                  meilleur_par_zone: dict | None = None) -> dict:
     """Construit le dataset statique. Si download_photos, écrit les images sous out_dir.
 
     Mode « pépites » (optionnel), deux écritures équivalentes :
@@ -849,6 +1016,10 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
       leur haut du panier depuis la même base.
 
     Les biens des sets non resserrés sont préservés.
+
+    `meilleur_par_zone={set_id: plancher}` : publie EN PLUS le meilleur bien de chaque
+    zone déclarée par le set, même sous le seuil des pépites, à condition qu'il tienne le
+    plancher. Sert à comparer les régions entre elles (voir `_meilleurs_par_zone`).
     """
     sets = (
         db.query(FilterSet)
@@ -857,6 +1028,10 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
     )
     seuils = _seuils_pepites(min_match_score, primary_set_id, pepites)
     set_zones: dict[int, dict] = {}
+    # Zones de COMPARAISON (massifs), à ne pas confondre avec `set_zones` (le filtre
+    # géographique du set). Les premières servent à publier un témoin par région, la
+    # seconde à écarter les biens hors périmètre.
+    set_comparaison: dict[int, list] = {}
     # Sous-sets par parent : un bien du set parent appartient à ses sous-sets, qui n'en
     # changent que la pondération. Exiger qu'il les liste explicitement dans `set_ids`
     # laissait 1 708 biens invisibles pour le sous-set « Léo » — donc un sous-set vide
@@ -873,6 +1048,7 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
         set_prefs[fs.id] = prefs
         set_exigences[fs.id] = resolved.get("exigences") or []
         set_zones[fs.id] = resolved.get("zone") or {}
+        set_comparaison[fs.id] = resolved.get("zones") or []
         if fs.parent_id:
             enfants.setdefault(fs.parent_id, set()).add(fs.id)
         # property_types persisté pour le round-trip seed->export (sinon un set terrain
@@ -895,13 +1071,16 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
         os.makedirs(photos_dir, exist_ok=True)
 
     biens_out = []
+    prepares: list[dict] = []
     n_viager = 0
+    n_temoins = 0
     n_resid = 0
     infra_cache = _load_infra_cache()
     poi_cache = _load_poi_cache()
     relief_cache = _load_relief_cache()
     sea_cache = _load_sea_cache()
     soleil_cache = _load_soleil_cache()
+    tourisme_cache = _load_tourisme_cache()
     fibre_lut = _load_fibre_lut()
     tension_lut = _load_tension_lut()
     rows = (
@@ -936,11 +1115,12 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
         relief = _relief_prominence(row.latitude, row.longitude, relief_cache)
         sea = _sea_distance(row.latitude, row.longitude, sea_cache)  # cache-only (réchauffé à part)
         soleil = _soleil(row.latitude, row.longitude, soleil_cache)  # idem : réchauffé à part
+        tourisme = _tourisme(row.latitude, row.longitude, tourisme_cache)  # idem
         feats = list(row.features or [])
         for e in _detect_equipements(row.description):
             if e not in feats:
                 feats.append(e)
-        extra = {**infra, **poi, **relief, **sea, **soleil,
+        extra = {**infra, **poi, **relief, **sea, **soleil, **tourisme,
                  **_fibre_flags(row.code_commune, fibre_lut),
                  **_tension_flags(row.commune, tension_lut),
                  "features": feats, "pavillon_neuf": _detect_pavillon_neuf(row.description)}
@@ -978,10 +1158,32 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
                                    "weight": 0, "status": "ko", "subscore": 0, "detail": pdetail})
             scores_by_set[str(fs_id)] = {"match_score": match, "details": details}
 
-        # Mode pépites : on saute les biens sous le seuil de leur set (autres sets gardés).
-        if (seuils or conserver) and not _passes_pepites_gate(
-                scores_by_set, member, seuils, conserver, (row.source, row.external_id)):
+        prepares.append({
+            "row": row, "cle": (row.source, row.external_id), "member": member,
+            "scores_by_set": scores_by_set, "feats": feats,
+            "score": row_score, "score_details": row_score_details,
+            "viager": is_viager, "residence_tourisme": is_resid,
+            "zones": {fs_id: _zone_de(row, z) for fs_id, z in set_comparaison.items() if z},
+        })
+
+    # --- Sélection : le seuil des pépites, PLUS un témoin par zone ---------------------
+    # Deux passes et non une seule, parce que « le meilleur bien de chaque zone » n'est
+    # pas une décision qui se prend bien par bien : il faut avoir vu toute la zone.
+    temoins = _meilleurs_par_zone(prepares, meilleur_par_zone or {},
+                                  log=lambda m: print(m, flush=True)) if meilleur_par_zone else set()
+    n_temoins = 0
+    for prep in prepares:
+        row, scores_by_set = prep["row"], prep["scores_by_set"]
+        passe = not (seuils or conserver) or _passes_pepites_gate(
+            scores_by_set, prep["member"], seuils, conserver, prep["cle"])
+        temoin = (not passe) and prep["cle"] in temoins
+        if not (passe or temoin):
             continue
+        if temoin:
+            n_temoins += 1
+        feats, row_score, row_score_details = prep["feats"], prep["score"], prep["score_details"]
+        is_viager, is_resid = prep["viager"], prep["residence_tourisme"]
+        zone = next((z for z in prep["zones"].values() if z), None)
 
         sv = saved.get((row.source, row.external_id))
         photos = _download_photos(row, photos_dir, "photos") if (download_photos and photos_dir) else []
@@ -1002,6 +1204,10 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
             "scores_by_set": scores_by_set,
             "viager": is_viager,
             "residence_tourisme": is_resid,
+            # Zone de comparaison (massif) et statut de témoin : publié parce qu'il est
+            # le meilleur de sa région, pas parce qu'il tient le seuil des pépites.
+            "zone": zone,
+            "zone_temoin": temoin,
             "is_favori": sv is not None,
             "favori_note": sv.note if sv else None,
             "n_photos_source": len(_photo_urls(row)),
@@ -1024,13 +1230,15 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
         "biens": biens_out,
         "searches": searches_out,
         "stats": {"n_biens": len(biens_out), "n_sets": len(sets_out),
-                  "n_searches": len(searches_out), "n_viager": n_viager, "n_residence_tourisme": n_resid},
+                  "n_searches": len(searches_out), "n_viager": n_viager,
+                  "n_residence_tourisme": n_resid, "n_temoins_zone": n_temoins},
     }
 
 
 def export_to_dir(db, out_dir: str, *, download_photos: bool = True,
                   min_match_score: float | None = None, primary_set_id: int | None = None,
-                  pepites: dict | None = None, conserver: dict | None = None) -> dict:
+                  pepites: dict | None = None, conserver: dict | None = None,
+                  meilleur_par_zone: dict | None = None) -> dict:
     """Écrit out_dir/data.json (+ photos/) et renvoie les stats.
 
     `min_match_score`/`primary_set_id`/`pepites` : voir build_dataset (mode « pépites »).
@@ -1038,7 +1246,8 @@ def export_to_dir(db, out_dir: str, *, download_photos: bool = True,
     os.makedirs(out_dir, exist_ok=True)
     data = build_dataset(db, out_dir=out_dir, download_photos=download_photos,
                          min_match_score=min_match_score, primary_set_id=primary_set_id,
-                         pepites=pepites, conserver=conserver)
+                         pepites=pepites, conserver=conserver,
+                         meilleur_par_zone=meilleur_par_zone)
     # Écriture ATOMIQUE : fichier temporaire puis renommage. `open(..., "w")` tronque
     # puis écrit en flux — deux exports concurrents (une collecte lancée d'un côté, un
     # ré-export de l'autre) s'entrelacent alors dans le même fichier et produisent un
@@ -1077,6 +1286,13 @@ if __name__ == "__main__":  # python -m app.services.export_static [out_dir]
         if ":" in morceau:
             sid, seuil = morceau.split(":", 1)
             pepites[int(sid.strip())] = float(seuil.strip())
+    # Un témoin par zone, en plus des pépites : EXPORT_MEILLEUR_ZONE="1:70"
+    # (le meilleur bien de chaque massif, s'il atteint 70 — cf. _meilleurs_par_zone).
+    meilleur_zone = {}
+    for morceau in (os.environ.get("EXPORT_MEILLEUR_ZONE") or "").split(","):
+        if ":" in morceau:
+            sid, plancher = morceau.split(":", 1)
+            meilleur_zone[int(sid.strip())] = float(plancher.strip())
     # Republier un set à l'identique : EXPORT_CONSERVER="4:../data/data.json"
     conserver = {}
     for morceau in (os.environ.get("EXPORT_CONSERVER") or "").split(","):
@@ -1085,5 +1301,6 @@ if __name__ == "__main__":  # python -m app.services.export_static [out_dir]
             conserver[int(sid.strip())] = _biens_publies(chemin.strip())
     stats = export_to_dir(SessionLocal(), out, download_photos=not no_photos,
                           min_match_score=min_score, primary_set_id=primary,
-                          pepites=pepites or None, conserver=conserver or None)
+                          pepites=pepites or None, conserver=conserver or None,
+                          meilleur_par_zone=meilleur_zone or None)
     print(f"Export -> {out}/data.json : {stats}")

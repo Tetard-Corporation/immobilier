@@ -35,10 +35,20 @@ async function boot() {
   }).join("");
   setSel.value = currentSetId;
 
+  // Les témoins de zone sont comptés à part : ce sont des biens publiés pour comparer
+  // les massifs, pas des pépites, et les mélanger au total prêterait à confusion.
+  const nTemoins = DATA.stats.n_temoins_zone || 0;
   $("#meta").textContent =
-    `${DATA.stats.n_biens} biens · ${DATA.stats.n_searches} recherches · snapshot ${new Date(DATA.generated_at).toLocaleString("fr-FR")}`;
+    `${DATA.stats.n_biens} biens${nTemoins ? ` (dont ${nTemoins} témoins de massif)` : ""}`
+    + ` · ${DATA.stats.n_searches} recherches · snapshot ${new Date(DATA.generated_at).toLocaleString("fr-FR")}`;
 
-  setSel.addEventListener("change", (e) => { currentSetId = e.target.value; withLoader(render); });
+  remplirMassifs();
+  setSel.addEventListener("change", (e) => {
+    currentSetId = e.target.value;
+    remplirMassifs();
+    withLoader(render);
+  });
+  $("#zoneSelect").addEventListener("change", render);
   $("#sortSelect").addEventListener("change", render);
   $("#favOnly").addEventListener("change", render);
   $("#hideRated").addEventListener("change", render);
@@ -74,6 +84,19 @@ async function boot() {
   hideLoader();
 }
 
+// Le sélecteur de massif est reconstruit à chaque changement de set : les zones sont
+// déclarées par le set, et le set breton n'en a pas.
+function remplirMassifs() {
+  const sel = $("#zoneSelect");
+  const zones = [...new Set((DATA.biens || [])
+    .filter((b) => matchOf(b, currentSetId) != null && b.zone)
+    .map((b) => b.zone))].sort((a, b) => a.localeCompare(b, "fr"));
+  sel.innerHTML = `<option value="">Tous</option>`
+    + zones.map((z) => `<option value="${z}">${z}</option>`).join("");
+  sel.value = "";
+  sel.closest(".ctl").classList.toggle("hidden", zones.length === 0);
+}
+
 // --- score helpers ------------------------------------------------------
 function matchOf(bien, setId) {
   const s = (bien.scores_by_set || {})[String(setId)];
@@ -105,6 +128,10 @@ function visibleBiens() {
     // set courant (= qui ont un score pour ce set). Ainsi le set "Pauline" (Finistère)
     // n'affiche pas les biens montagne de têtard, et inversement.
     if (matchOf(b, currentSetId) == null) return false;
+    // Massif : sert à comparer les régions entre elles (« qu'est-ce que 250 k€ donnent
+    // en Tarentaise, dans le Queyras, dans l'Ubaye ? »).
+    const massif = $("#zoneSelect").value;
+    if (massif && b.zone !== massif) return false;
     // Favoris : perso (Supabase) si identifié, sinon repli sur les favoris curatés du dataset.
     if (favOnly) {
       const fav = Votes.voter ? Votes.isFavori(voteKey(b)) : b.is_favori;
@@ -161,6 +188,9 @@ function badges(bien) {
   const parts = [];
   if (m != null) parts.push(`<span class="badge match" title="Match du set">🎯 ${fix1(m)}</span>`);
   if (bien.score != null) parts.push(`<span class="badge score" title="Score d'investissement">📈 ${fix1(bien.score)}</span>`);
+  // Témoin de zone : publié parce qu'il est le meilleur de son massif, pas parce qu'il
+  // tient le seuil des pépites. Sans ce badge, son score bas passerait pour une erreur.
+  if (bien.zone_temoin) parts.push(`<span class="badge temoin" title="Meilleur bien de ce massif à ce budget — publié pour la comparaison entre régions, pas parce qu'il atteint le seuil">⛰ témoin</span>`);
   return `<div class="badges">${parts.join("")}</div>`;
 }
 function favBtn(b) {
@@ -187,7 +217,7 @@ function cardHTML(b, idx) {
         <div class="body-main">
           <div class="price">${euros(b.prix)}</div>
           <h3>${b.commune || "?"} <span class="sub">(${b.departement || "—"})</span></h3>
-          <div class="sub">${b.type_bien || "bien"} · ${b.nb_chambres ?? "?"} ch · terrain ${b.surface_terrain != null ? b.surface_terrain + " m²" : "—"}</div>
+          <div class="sub">${b.zone ? `⛰ ${b.zone} · ` : ""}${b.type_bien || "bien"} · ${b.nb_chambres ?? "?"} ch · terrain ${b.surface_terrain != null ? b.surface_terrain + " m²" : "—"}</div>
           <div class="chips">${(b.features || []).slice(0, 6).map((f) => `<span class="chip">${featLabel(f)}</span>`).join("")}</div>
           ${starsRow(b)}
         </div>

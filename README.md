@@ -35,8 +35,11 @@ mais avec des **filtres avancés**, des **jeux de filtres réutilisables**, des
   `backend/app/services/soleil.py` et `scripts/warm_ensoleillement.py`) ; temps de trajet
   train (estimation **sans clé** ; clé Navitia/SNCF optionnelle pour les horaires réels), **qualité de l'eau/pollution** (Hub'Eau : pesticides,
   nitrates, PFAS), **profil socio** (âge médian, orientation politique → préférences
-  `population_jeune`/`orientation_gauche`). Alimente filtres, préférences et score.
-  État via `GET /api/enrichment/status`.
+  `population_jeune`/`orientation_gauche`) ; **attractivité locative saisonnière**
+  (« Airbnb » : remontée mécanique, lac, hébergement touristique et restauration relevés
+  sur OpenStreetMap — ce qu'un logement peut se louer à la semaine, mesuré et non lu dans
+  l'annonce ; voir `backend/app/services/tourisme.py` et `scripts/warm_tourisme.py`).
+  Alimente filtres, préférences et score. État via `GET /api/enrichment/status`.
 - **Jeux de filtres** (`FilterSet`) réutilisables.
 - **Recherches fréquentes** (`SavedSearch`) + scheduler + **détection des nouveautés**
   (badge in-app, marquage « tout vu », historique des runs).
