@@ -617,21 +617,25 @@ def test_tetard_prefere_le_petit_bien_place_au_grand_mal_place():
     placé » — et « 5 chambres ça reste ok » : le grand n'est pas exclu, il est départagé
     par le placement (soleil, nature, relief, calme), pas par sa taille."""
     prefs, exigences = _tetard()
-    # Les deux biens sont au MÊME prix au m² que leur secteur : sans ça, le grand gagne
-    # sur `rapport_qualite_prix` (poids 5) par sa seule surface, et le test ne parlerait
-    # plus de placement mais d'affaire. Ne restent en jeu que la taille et le cadre.
-    commun = dict(type_bien="maison", surface_terrain=900,
-                  flags={"condition": "habitable", "prix_m2_secteur": 1000})
+    # Les deux biens sont au MÊME PRIX et au même prix au m² que LEUR secteur : sans ça,
+    # `budget` (le set préfère le milieu de sa fourchette) ou `rapport_qualite_prix`
+    # (poids 5) décideraient à la place du placement, et le test ne parlerait plus de ce
+    # qu'il annonce. Ne restent en jeu que la taille et le cadre.
+    PRIX = 200_000
+    commun = dict(type_bien="maison", surface_terrain=900, prix=PRIX)
+    etat = {"condition": "habitable"}
+    bien_place = {"soleil_hiver_h": 7.5, "exposition_deg": 180, "pente_deg": 20,
+                  "exposition": "sud", "altitude": 850,
+                  "features": ["eau", "vue_panoramique"]}
+    mal_place = {"soleil_hiver_h": 0.5, "exposition_deg": 0, "pente_deg": 20,
+                 "exposition": "nord", "altitude": 300, "features": []}
 
-    petit_bien_place = _listing(**{**commun, "nb_chambres": 3, "surface_bati": 95,
-                                   "prix": 95_000})
-    petit_bien_place.flags |= {"soleil_hiver_h": 7.5, "exposition_deg": 180, "pente_deg": 20,
-                               "exposition": "sud", "altitude": 850,
-                               "features": ["eau", "vue_panoramique"]}
-    grand_mal_place = _listing(**{**commun, "nb_chambres": 5, "surface_bati": 190,
-                                  "prix": 190_000})
-    grand_mal_place.flags |= {"soleil_hiver_h": 0.5, "exposition_deg": 0, "pente_deg": 20,
-                              "exposition": "nord", "altitude": 300, "features": []}
+    petit_bien_place = _listing(**commun, nb_chambres=3, surface_bati=95,
+                                flags={**etat, "prix_m2_secteur": PRIX / 95})
+    petit_bien_place.flags |= bien_place
+    grand_mal_place = _listing(**commun, nb_chambres=5, surface_bati=190,
+                               flags={**etat, "prix_m2_secteur": PRIX / 190})
+    grand_mal_place.flags |= mal_place
 
     petit = evaluate(petit_bien_place, prefs, exigences)[0]
     grand = evaluate(grand_mal_place, prefs, exigences)[0]
@@ -639,10 +643,73 @@ def test_tetard_prefere_le_petit_bien_place_au_grand_mal_place():
 
     # …et le grand n'est pas écarté pour sa taille : à placement égal, cinq chambres
     # restent recevables (aucun palier ne le plafonne).
-    grand_bien_place = _listing(**{**commun, "nb_chambres": 5, "surface_bati": 190,
-                                   "prix": 190_000})
-    grand_bien_place.flags |= dict(petit_bien_place.flags)
+    grand_bien_place = _listing(**commun, nb_chambres=5, surface_bati=190,
+                                flags={**etat, "prix_m2_secteur": PRIX / 190})
+    grand_bien_place.flags |= bien_place
     note, details = evaluate(grand_bien_place, prefs, exigences)
     plafonne = [d for d in details if d.get("status") == "ko"
                 and "Format maison de retrait" in (d.get("label") or "")]
     assert not plafonne
+
+
+# --- Le prix plancher : « pas de secret quand un bien est à 100 ou 150 k€ » -----------
+
+class _Bien:
+    """Objet minimal accepté par `_eval_one`."""
+
+    def __init__(self, **kw):
+        self.prix = self.nb_chambres = self.nb_pieces = self.surface_bati = None
+        self.flags = {}
+        self.__dict__.update(kw)
+
+
+_FOURCHETTE = {"budget_max": 250000, "budget_min": 180000}
+
+
+def test_budget_cesse_de_recompenser_le_bon_marche():
+    from app.services.preferences import _eval_one
+
+    def note(prix):
+        return _eval_one(_Bien(prix=float(prix)), "budget", _FOURCHETTE)[0]
+
+    # Dans la fourchette : plein score. En dessous : la note redescend.
+    assert note(200000) > 0.9
+    assert note(180000) > 0.9
+    assert note(170000) < 0.79        # sous le plancher, le palier de prix mord
+    assert note(135000) < note(170000)
+    assert note(75000) < note(135000)
+    # Non nulle : c'est un a priori très fort, pas une preuve.
+    assert note(75000) > 0.1
+
+
+def test_le_plancher_est_un_seuil_pas_une_pente():
+    """Sans cran net, un bien à 179 000 € notait encore 1,0 et le palier de prix ne
+    mordait qu'à partir de 158 000 € — pas là où il est écrit."""
+    from app.services.preferences import _eval_one
+
+    juste_dessous = _eval_one(_Bien(prix=179999.0), "budget", _FOURCHETTE)[0]
+    juste_dessus = _eval_one(_Bien(prix=180001.0), "budget", _FOURCHETTE)[0]
+    assert juste_dessous < 0.79 <= juste_dessus
+
+
+def test_sans_plancher_le_comportement_historique_est_preserve():
+    from app.services.preferences import _eval_one
+
+    assert _eval_one(_Bien(prix=75000.0), "budget", {"budget_max": 250000})[0] == 1.0
+
+
+def test_les_pieces_annoncees_sont_recoupees_par_la_surface():
+    """« Chalet de montagne de 4 pièces de 35 m² situé au camping » : le repli
+    « pièces - 1 » lui accordait 3 chambres, donc le palier de capacité d'accueil."""
+    from app.services.preferences import _eval_one
+
+    params = {"min": 3, "m2_min_par_piece": 20}
+    mobilhome = _Bien(nb_pieces=4, surface_bati=35.0)
+    note, statut, detail = _eval_one(mobilhome, "chambres_min", params)
+    assert note < 0.5 and "tenables" in detail
+
+    # Une vraie maison de 4 pièces n'est pas touchée.
+    vraie = _Bien(nb_pieces=4, surface_bati=95.0)
+    assert _eval_one(vraie, "chambres_min", params)[0] == 1.0
+    # Ni celle qui donne ses chambres directement.
+    assert _eval_one(_Bien(nb_chambres=3, surface_bati=60.0), "chambres_min", params)[0] == 1.0

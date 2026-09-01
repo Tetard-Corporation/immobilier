@@ -429,6 +429,8 @@ repli silencieux.
 | Critères commerces/calme/rando en « pending » | export fait avec `EXPORT_NO_LIVE_OVERPASS=1` et cache froid | étape 4 puis ré-export (étape 5) |
 | Scores incohérents avec le code | `data.json` exporté avant un recalibrage du scoring | ré-exporter après tout changement de `scoring.py`/`preferences.py` |
 | Une correction de `classify.py` ne change rien sur le site | `condition`/`niveau_travaux` sont des **colonnes**, écrites une fois à la collecte ; l'export les relit sans reclasser | `python scripts/reclasser.py --dry-run` puis sans `--dry-run`, avant de ré-exporter |
+| Des ruines et des mobil-homes en haut du classement | Un prix très bas est noté comme une bonne affaire par `budget` **et** par `rapport_qualite_prix` (poids 5) : deux critères sur trois du haut du barème récompensent le défaut qu'ils devraient signaler | plancher de prix dans `budget` (`budget_min`) **et** palier au niveau du panier ; le défaut d'un bien bon marché n'est jamais écrit dans l'annonce, aucun critère mesuré ne le rattrape |
+| Une annonce annonce 4 pièces dans 35 m² | Le repli « pièces − 1 » du critère de chambres ne recoupait rien : il accordait 3 chambres à un mobil-home | `m2_min_par_piece` (20 m² par pièce, communs compris) borne l'estimation par la surface |
 | Un critère au poids fort à `pending` sur la moitié du lot | `pending` est **exclu** du score, pas compté zéro : un bien non mesuré monte au lieu de descendre | réchauffer (§4) ; et poser un palier « critère mesuré » comme le fait le set 1 pour le rapport qualité/prix et l'attractivité |
 
 ---
@@ -603,6 +605,14 @@ vaut pour son prix, et ce qu'on a devant la porte :
   Heures de soleil direct au 21 décembre, orientation et pente du versant : mesuré sur
   les pivots, le fond des gorges de l'Arly reçoit **0 h**, l'adret de Maurienne **6 h**,
   à altitude et prix au m² comparables. Demande le cache réchauffé (§4).
+- **`budget`** (poids 4) — une **fourchette**, 180 à 250 k€, et non un plafond.
+  « Pas de secret : quand un bien est à 100 ou 150 k€, c'est qu'il y a un problème ;
+  a priori on n'aura rien qui nous intéresse en dessous de 180 k€ » (1er septembre). Le
+  critère notait auparavant 1,0 tout ce qui passait sous 70 % du budget : le bon marché
+  était un avantage, et un mobil-home à 75 000 € marquait autant qu'une maison à
+  175 000 €. Sous le plancher la note tombe d'un cran net (0,78) puis décroît jusqu'à
+  0,15 à mi-plancher. Le plancher **ne filtre pas la collecte** : le meilleur bien d'un
+  massif pauvre reste une information.
 - **`attractivite_airbnb`** (poids 4) — ce que le bien peut se louer à la semaine, mesuré
   et non lu dans l'annonce (« idéal investissement locatif » y est un argument de vente).
   Quatre relevés OSM : remontée mécanique (l'hiver), lac et sites (l'été), hébergement
@@ -628,8 +638,21 @@ ou hors sujet — monte au classement :
 | 75 | trois chambres avérées | Sinon une maison d'une seule pièce finit deuxième. |
 | 85 | un format de maison de retrait | Le plafond que le set n'avait pas, et il ne ferme la porte qu'à l'immense : 0,7 sur `logement_compact` laisse passer 5 chambres (0,75) et arrête à 6 (0,375), ou ~210 m² quand les chambres manquent. Palier haut (85, pas 78) parce que « 5 chambres ça reste ok » : ce n'est qu'en tête de classement que le format cesse d'être négociable. |
 | 78 | un rapport qualité/prix mesuré | Sans surface bâtie il n'y a rien à comparer, et le bien montait précisément parce qu'il était peu mesuré. |
+| 78 | un prix ≥ 180 k€ | Le pendant BAS du plafond budgétaire, et il tient au même raisonnement : un prix est un palier, pas un poids. Le problème d'un bien à 130 k€ n'est jamais écrit dans l'annonce — c'est pourquoi aucun critère mesuré ne le rattrape, et pourquoi le rapport qualité/prix (poids 5) le récompense au contraire : à 739 €/m² contre 1 462 dans le secteur, une maison coupée en deux logements au bout d'un chemin note 1,0. Palier haut (78) et non 70 : sous 180 k€ un bien peut rester le **témoin** de son massif — c'est même l'information que les témoins servent à donner. Ce qu'on refuse, c'est qu'il monte dans le panier. |
 | 78 | une attractivité locative mesurée | Même raison, pour le critère le plus cher à relever (~5 s Overpass par point, donc réchauffé sur les seuls candidats). Seuil 0 : on exige le relevé, pas une bonne note. Un bien dans un coin sans tourisme reste recevable ; ce qu'on refuse, c'est qu'il passe devant un autre parce qu'on ne l'a pas regardé. |
 | 85 | une nature ou un relief avérés | Un critère jamais mesuré ne prouve rien. |
+
+**Trois types de biens sont conservés mais plafonnés très bas** (facteur 0,15 à 0,2 sur
+le match), parce que le prix affiché ne décrit pas ce qu'on achète : le **viager /
+nue-propriété** (le prix est le bouquet, le bien reste occupé), la **résidence de
+tourisme** sous bail commercial (jouissance restreinte, gestion imposée), et le
+**mobil-home / emplacement de camping** — habitation légère de loisirs, parc résidentiel
+de loisirs (on n'achète pas le sol, l'occupation est saisonnière, la revente se fait à
+perte). Le troisième a été ajouté le 1er septembre après qu'un « chalet de montagne de
+4 pièces de 35 m² situé au camping "la motte flottante" », 75 000 €, soit entré dans les
+pépites à 81,3. Détection sur le texte : « camping » seul ne suffit pas — « à 2 km d'un
+camping » est un argument de voisinage —, il faut que le bien soit *dans* le camping ou
+qu'il se nomme lui-même. 29 biens concernés sur les 7 086 en base.
 
 **Les agences de la zone** (`set_ids: [1]`) : Agence Cévenole, Bauges Immobilier,
 Christine Miranda, Espaces Atypiques Drôme-Ardèche, Diois Immobilier, Orpi Ain Agences.

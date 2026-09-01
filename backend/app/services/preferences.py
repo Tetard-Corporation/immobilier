@@ -60,6 +60,19 @@ _PENDING_KINDS = {"rail_time_from", "fiber", "relief_mountain", "hiking"}
 # affaire » (1.0), et note obtenue en consommant exactement 100 % du budget.
 _BUDGET_CONFORT = 0.70
 _BUDGET_LIMITE = 0.80
+# Prix PLANCHER : en dessous, la note redescend. « Pas de secret : quand un bien est à
+# 100 ou 150 k€, c'est qu'il y a un problème » — un problème que l'annonce ne nomme
+# jamais (emplacement, mitoyenneté, humidité, second œuvre entier, bail). Sans ce
+# plancher, le critère budget récompensait le bon marché : à 250 k€ de plafond, tout ce
+# qui était sous 175 k€ prenait 1,0, et un mobil-home à 75 000 € marquait autant qu'une
+# maison à 175 000 €.
+# Le plancher est un SEUIL, pas une pente : franchir 180 000 € par le bas fait tomber la
+# note d'un cran net (0,78 juste en dessous contre 0,99 juste au-dessus), puis elle
+# décroît jusqu'à 0,15 à mi-plancher. Sans ce cran, un bien à 179 000 € notait encore
+# 1,0 et le palier de prix ne mordait qu'à partir de 158 000 € — pas là où il est écrit.
+# Minimum non nul (0,15) : c'est un a priori très fort, pas une preuve.
+_BUDGET_SOUS_PLANCHER = 0.78
+_BUDGET_PLANCHER_MIN = 0.15
 # Note obtenue au seuil « cher » du €/m² de terrain ; au-delà la note continue de
 # décroître en 1/prix (un terrain au prix parisien tombe vers 0).
 _CHER_FLOOR = 0.25
@@ -157,6 +170,14 @@ def _eval_one(item, kind: str, params: dict):
         budget = params.get("budget_max") or (params.get("apport", 0) * params.get("levier", 4))
         if not budget:
             return None, "n/a", "budget non défini"
+        # Plancher : en dessous, un prix n'est plus une bonne affaire mais un signal.
+        plancher = params.get("budget_min")
+        if plancher and item.prix < plancher:
+            bas = plancher / 2.0
+            part = _clamp((item.prix - bas) / (plancher - bas))
+            sub = _BUDGET_PLANCHER_MIN + (_BUDGET_SOUS_PLANCHER - _BUDGET_PLANCHER_MIN) * part
+            return sub, "ok", (f"{int(item.prix)}€ — sous le plancher de {int(plancher)}€ "
+                               f"(un prix de ce niveau cache en général un défaut)")
         ratio = item.prix / budget
         if ratio <= _BUDGET_CONFORT:
             # On cherche la bonne affaire, pas le bien qui « rentre tout juste » : le
@@ -181,6 +202,19 @@ def _eval_one(item, kind: str, params: dict):
             pieces = getattr(item, "nb_pieces", None)
             if pieces:
                 nb, source = max(1, int(pieces) - 1), "ch. estimées (pièces - 1)"
+                # Recoupement par la surface : une annonce peut annoncer 4 pièces dans
+                # 35 m². Vécu — un mobil-home de camping à 75 000 € est ainsi entré dans
+                # les pépites avec « 3 chambres estimées », c'est-à-dire en franchissant
+                # le palier de capacité d'accueil sans avoir la surface de les loger.
+                # 20 m² par pièce, part des communs comprise : large, mais assez pour
+                # rendre impossible ce que l'annonce prétendait.
+                surface = getattr(item, "surface_bati", None)
+                plafond_m2 = params.get("m2_min_par_piece", 20)
+                if surface and plafond_m2:
+                    tenable = max(1, int(surface // plafond_m2) - 1)
+                    if tenable < nb:
+                        nb = tenable
+                        source = f"ch. tenables dans {int(surface)} m² (l'annonce en annonce plus)"
         if nb is None:
             # Dernier repli : la surface habitable, à raison d'une chambre par tranche.
             s = getattr(item, "surface_bati", None)
