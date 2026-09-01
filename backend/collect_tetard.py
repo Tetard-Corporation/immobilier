@@ -71,14 +71,32 @@ SET_DESC = ("Maison de retrait entre copains — Alpes et Préalpes, à l'EST de
             "porte — mais un village vivant autour. ≤ 250 k€.")
 
 PRIX_MAX = 250_000
+# « Pas de secret : quand un bien est à 100 ou 150 k€, c'est qu'il y a un problème ;
+# a priori on n'aura rien qui nous intéresse en dessous de 180 k€. » (1er septembre)
+#
+# Le plancher n'est pas un filtre de collecte — on continue de ramasser sous 180 k€,
+# parce que le meilleur bien d'un massif pauvre reste une information (cf. ZONES). Il
+# agit à deux endroits : le critère budget cesse de récompenser le bon marché, et un
+# palier ferme le haut du classement.
+PRIX_MIN = 180_000
 
 # Pondérations 1-5. Deux critères mènent le classement : ce que le bien vaut pour son prix,
 # et ce qu'on a devant la porte.
 PREFERENCES = [
     {"kind": "rapport_qualite_prix", "weight": 5, "label": "Rapport qualité/prix (vs prix du secteur)",
      "params": {"bon": 0.75, "cher": 1.7}},
-    {"kind": "budget", "weight": 4, "label": "Budget ≤ 250 000 €", "params": {"budget_max": PRIX_MAX}},
-    {"kind": "chambres_min", "weight": 4, "label": "3 chambres minimum", "params": {"min": 3}},
+    # Une FOURCHETTE, et non un plafond. Le critère notait 1,0 tout ce qui passait sous
+    # 70 % du budget : un mobil-home à 75 000 € y marquait autant qu'une maison à
+    # 175 000 €, et le bon marché devenait un avantage. En dessous du plancher la note
+    # redescend jusqu'à 0,15 à mi-plancher (90 k€) — fort, mais non nul : c'est un
+    # a priori, pas une preuve.
+    {"kind": "budget", "weight": 4, "label": "Prix entre 180 000 € et 250 000 €",
+     "params": {"budget_max": PRIX_MAX, "budget_min": PRIX_MIN}},
+    # `m2_min_par_piece` : le garde-fou du repli « pièces - 1 ». Une annonce peut
+    # annoncer 4 pièces dans 35 m² — c'est ce qui a fait entrer un mobil-home de camping
+    # dans les pépites avec « 3 chambres estimées ».
+    {"kind": "chambres_min", "weight": 4, "label": "3 chambres minimum",
+     "params": {"min": 3, "m2_min_par_piece": 20}},
     # Le pendant du plancher de chambres. Ce que le groupe a précisé le 30 août : « 5
     # chambres ça reste ok, mais je ne veux pas qu'on survalorise les biens grands — un
     # bien plus petit avec 3 chambres, bien placé, vaut mieux qu'un grand mal placé. »
@@ -225,6 +243,25 @@ EXIGENCES = [
         "requires": ["jardin"],
         "mode": "all",
         "min_subscore": 0.5,
+    },
+    {
+        # Le pendant BAS du plafond budgétaire, et il tient au même raisonnement : un
+        # prix est un palier, pas un poids. « Pas de secret : quand un bien est à 100 ou
+        # 150 k€, c'est qu'il y a un problème. » Ce problème n'est jamais écrit dans
+        # l'annonce — c'est précisément pourquoi aucun critère mesuré ne le rattrape, et
+        # pourquoi le rapport qualité/prix (poids 5) le récompense au contraire : à
+        # 739 €/m² contre 1 462 dans le secteur, une maison coupée en deux logements au
+        # bout d'un chemin note 1,0.
+        #
+        # Le palier est haut (78) et non 70 : sous 180 k€ un bien peut rester le meilleur
+        # de son massif — c'est même l'information que les témoins de zone servent à
+        # donner (98 k€ dans le Champsaur, 108 k€ à Bourg-Saint-Maurice). Ce qu'on refuse,
+        # c'est qu'il monte dans le panier des pépites.
+        "above": 78,
+        "label": "Prix qui ne cache rien (≥ 180 000 €, requis au-dessus de 78)",
+        "requires": ["budget"],
+        "mode": "all",
+        "min_subscore": 0.79,  # = au-dessus du plancher (sous 180 k€ la note tombe à 0,78 max)
     },
     {
         "above": 75,
