@@ -80,6 +80,7 @@ async function boot() {
     currentSetId = e.target.value;
     remplirMassifs();
     remplirPoidsSelect();   // les poids sont propres à un set : la lentille se recharge
+    if (poidsOuvert) renderPoidsPanel();   // ...et le panneau, qui montre CE set
     withLoader(render);
   });
   $("#poidsSelect").addEventListener("change", (e) => {
