@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-09-01T20:59:26.144017+00:00",
+ "generated_at": "2026-09-01T21:02:59.947661+00:00",
  "criteres": {
   "familles": [
    {
@@ -849,8 +849,8 @@
     },
     {
      "kind": "no_vis_a_vis",
-     "label": "Sans vis-à-vis",
-     "weight": 3,
+     "label": "Sans vis-à-vis (mention annonce)",
+     "weight": 1,
      "params": {},
      "id": "no_vis_a_vis",
      "couverture": 0.054
@@ -22936,7 +22936,7 @@
    ],
    "scores_by_set": {
     "4": {
-     "match_score": 71.9,
+     "match_score": 70.0,
      "details": [
       {
        "kind": "budget",
@@ -22973,15 +22973,6 @@
        "detail": "85 €/m² de terrain",
        "subscore": 0.921,
        "contribution": 3.683
-      },
-      {
-       "kind": "no_vis_a_vis",
-       "label": "Sans vis-à-vis",
-       "weight": 3.0,
-       "status": "ok",
-       "detail": "sans vis-à-vis",
-       "subscore": 1.0,
-       "contribution": 3.0
       },
       {
        "kind": "has_terrain",
@@ -23036,6 +23027,15 @@
        "detail": "autoroute 586 m",
        "subscore": 0.671,
        "contribution": 1.342
+      },
+      {
+       "kind": "no_vis_a_vis",
+       "label": "Sans vis-à-vis (mention annonce)",
+       "weight": 1.0,
+       "status": "ok",
+       "detail": "sans vis-à-vis",
+       "subscore": 1.0,
+       "contribution": 1.0
       },
       {
        "kind": "distance_mer",
@@ -24625,8 +24625,8 @@
       },
       {
        "kind": "no_vis_a_vis",
-       "label": "Sans vis-à-vis",
-       "weight": 3.0,
+       "label": "Sans vis-à-vis (mention annonce)",
+       "weight": 1.0,
        "status": "n/a",
        "detail": "vis-à-vis non précisé (ignoré)",
        "subscore": null
@@ -28979,8 +28979,8 @@
       },
       {
        "kind": "no_vis_a_vis",
-       "label": "Sans vis-à-vis",
-       "weight": 3.0,
+       "label": "Sans vis-à-vis (mention annonce)",
+       "weight": 1.0,
        "status": "n/a",
        "detail": "vis-à-vis non précisé (ignoré)",
        "subscore": null
@@ -35304,8 +35304,8 @@
       },
       {
        "kind": "no_vis_a_vis",
-       "label": "Sans vis-à-vis",
-       "weight": 3.0,
+       "label": "Sans vis-à-vis (mention annonce)",
+       "weight": 1.0,
        "status": "n/a",
        "detail": "vis-à-vis non précisé (ignoré)",
        "subscore": null
@@ -39150,8 +39150,8 @@
       },
       {
        "kind": "no_vis_a_vis",
-       "label": "Sans vis-à-vis",
-       "weight": 3.0,
+       "label": "Sans vis-à-vis (mention annonce)",
+       "weight": 1.0,
        "status": "n/a",
        "detail": "vis-à-vis non précisé (ignoré)",
        "subscore": null
@@ -44300,8 +44300,8 @@
       },
       {
        "kind": "no_vis_a_vis",
-       "label": "Sans vis-à-vis",
-       "weight": 3.0,
+       "label": "Sans vis-à-vis (mention annonce)",
+       "weight": 1.0,
        "status": "n/a",
        "detail": "vis-à-vis non précisé (ignoré)",
        "subscore": null
@@ -48146,8 +48146,8 @@
       },
       {
        "kind": "no_vis_a_vis",
-       "label": "Sans vis-à-vis",
-       "weight": 3.0,
+       "label": "Sans vis-à-vis (mention annonce)",
+       "weight": 1.0,
        "status": "n/a",
        "detail": "vis-à-vis non précisé (ignoré)",
        "subscore": null
@@ -48985,8 +48985,8 @@
       },
       {
        "kind": "no_vis_a_vis",
-       "label": "Sans vis-à-vis",
-       "weight": 3.0,
+       "label": "Sans vis-à-vis (mention annonce)",
+       "weight": 1.0,
        "status": "n/a",
        "detail": "vis-à-vis non précisé (ignoré)",
        "subscore": null
@@ -53496,8 +53496,8 @@
       },
       {
        "kind": "no_vis_a_vis",
-       "label": "Sans vis-à-vis",
-       "weight": 3.0,
+       "label": "Sans vis-à-vis (mention annonce)",
+       "weight": 1.0,
        "status": "n/a",
        "detail": "vis-à-vis non précisé (ignoré)",
        "subscore": null
@@ -58290,8 +58290,8 @@
       },
       {
        "kind": "no_vis_a_vis",
-       "label": "Sans vis-à-vis",
-       "weight": 3.0,
+       "label": "Sans vis-à-vis (mention annonce)",
+       "weight": 1.0,
        "status": "n/a",
        "detail": "vis-à-vis non précisé (ignoré)",
        "subscore": null
@@ -64376,8 +64376,8 @@
       },
       {
        "kind": "no_vis_a_vis",
-       "label": "Sans vis-à-vis",
-       "weight": 3.0,
+       "label": "Sans vis-à-vis (mention annonce)",
+       "weight": 1.0,
        "status": "n/a",
        "detail": "vis-à-vis non précisé (ignoré)",
        "subscore": null

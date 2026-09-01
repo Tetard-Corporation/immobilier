@@ -60,7 +60,9 @@ PREFERENCES = [
     {"kind": "prix_m2_terrain", "weight": 4, "label": "Rapport qualité/prix (€/m² terrain)", "params": {"bon": 60, "cher": 300}},
     {"kind": "nature_exception", "weight": 4, "label": "Nature d'exception", "params": {}},
     {"kind": "feature", "weight": 3, "label": "Isolé / sauvage", "params": {"name": "isole"}},
-    {"kind": "no_vis_a_vis", "weight": 3, "label": "Sans vis-à-vis", "params": {}},
+    # Même lecture-dans-l'annonce que les `feature` : 5 % des annonces le disent, et
+    # l'absence de mention vaut n/a. À poids 3, on payait la formulation de l'agence.
+    {"kind": "no_vis_a_vis", "weight": 1, "label": "Sans vis-à-vis (mention annonce)", "params": {}},
     # Sans seuil, « avec terrain » notait 1,00 dès un mètre carré : 1,00 pour les 89 %
     # de biens qui ont une surface, écart-type 0,00 — trois points de poids qui ne
     # classaient rien. 500 m² est le repère d'une parcelle où poser une tiny house avec

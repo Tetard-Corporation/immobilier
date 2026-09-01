@@ -210,7 +210,11 @@ pas (le palier descend à 0,6, « à rénover » passe toujours), la note devien
 | Vue (mention annonce) | 4 → **2** | 9 % | 0,00 | |
 | En hauteur (mention annonce) | 2 → **1** | 2 % | 0,00 | `en_hauteur_geo` mesure la proéminence sur 100 % |
 | Charme / cachet | 3 → **2** | 20 % | 0,00 | |
+| Sans vis-à-vis | 3 → **1** | 5 % | 0,32 | Même lecture-dans-l'annonce ; l'absence de mention vaut n/a |
 | Avec terrain | 3 → **3** | 89 % | 0,00 | Notait 1,00 dès un m² : seuil ajouté à 500 m² |
+
+Après correction, il ne reste **aucun** critère à écart-type nul pesant plus de 2, sur
+aucun des trois sets — et le set têtard n'en a plus un seul.
 
 Un critère `feature` est présent ou absent : quand il est absent il vaut `n/a`, donc il
 sort du dénominateur. Il ne peut donc **que** faire monter celui dont l'annonce a employé
