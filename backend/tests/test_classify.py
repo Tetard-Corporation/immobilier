@@ -126,3 +126,55 @@ def test_apostrophes_typographiques_lues_comme_les_droites():
     droite = classify("Ce bien n'est pas habitable en l'état")
     courbe = classify("Ce bien n’est pas habitable en l’état")
     assert droite == courbe == {"condition": GROS_TRAVAUX, "niveau_travaux": 3}
+
+
+# --- Ugine, 180 000 € : « souhaite rénover e… » lu comme « rénové » ------------------
+#
+# Deux défauts se sont additionnés sur la même annonce, publiée comme pépite à 83,7 :
+# les mots-clés se cherchaient en SOUS-CHAÎNE (« renove » se trouve dans « renover »),
+# et la description était COUPÉE à 200 signes par la carte de la SERP SeLoger, juste
+# avant le mot qui décide.
+
+def test_renover_ne_se_lit_pas_comme_renove():
+    # Le verbe à l'infinitif contient le participe passé. Sans frontières de mots, une
+    # maison de 1920 « pour qui souhaite rénover » était déclarée habitable.
+    assert classify("Cette maison de 1920 offre un beau potentiel pour qui souhaite "
+                    "rénover et aménager")["condition"] == RENOVER
+    # …sans casser le cas inverse, qui est bien un bien rénové.
+    assert classify("Maison entièrement rénovée, habitable de suite")["condition"] == HABITABLE
+    assert classify("Une maison mitoyenne rénovée récemment, belles prestations")["condition"] == HABITABLE
+
+
+def test_texte_tronque_ne_prouve_pas_l_absence_de_travaux():
+    """Une troncature ne peut pas inventer une mention de travaux, seulement en cacher
+    une : un verdict léger rendu sur un texte coupé ne vaut donc rien."""
+    complet = "Belle maison en très bon état, proche des commerces"
+    assert classify(complet)["condition"] == HABITABLE
+    assert classify(complet + "...")["condition"] is None
+    assert classify(complet + "…")["condition"] is None
+    assert classify("Maison à rénover, travaux à prévoir...")["condition"] is None
+
+
+def test_les_verdicts_severes_survivent_a_la_troncature():
+    # Eux sont déjà au bout de l'échelle : la suite du texte ne peut pas les aggraver.
+    assert classify("Grange à rénover entièrement, hameau de Mollard-Rocher...")["condition"] == GROS_TRAVAUX
+    assert classify("Ancienne bâtisse en ruine, à reconstruire…")["condition"] == RUINE
+
+
+def test_ugine_bout_en_bout():
+    res = classify("SOUS COMPROMIS Maison familiale à Ugine – 150 m² habitables + jardin "
+                   "Située sur la commune d'Ugine, cette maison de ville des années 1920 "
+                   "(type T6) offre un beau potentiel pour qui souhaite rénover e...",
+                   "Ugine (73400)")
+    assert res["condition"] is None   # et non « habitable »
+
+
+def test_verbes_a_l_infinitif_comptent_comme_leur_niveau():
+    # « afin de LA réhabiliter » : avec les frontières de mots, « a rehabiliter » ne
+    # matche plus, et le bien serait repassé en état inconnu.
+    assert classify("Un projet d'architecte afin de la réhabiliter en une seule "
+                    "habitation")["condition"] == GROS_TRAVAUX
+
+
+def test_negation_rien_a_renover():
+    assert classify("Maison en parfait état, plus rien à rénover")["condition"] == HABITABLE

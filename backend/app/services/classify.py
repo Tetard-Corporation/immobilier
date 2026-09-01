@@ -59,6 +59,11 @@ _KEYWORDS: list[tuple[str, list[str]]] = [
             "renovation complete",
             "renovation totale",
             "a rehabiliter",
+            # Le verbe seul, comme « renover » plus bas : « un projet établi par un
+            # cabinet d'architecte afin de LA réhabiliter en une seule habitation ». Avec
+            # les frontières de mots, « a rehabiliter » ne matche plus dans « la
+            # réhabiliter », et le bien repassait en état inconnu.
+            "rehabiliter",
             "a restaurer entierement",
             "tout a refaire",
             "travaux importants",
@@ -92,6 +97,11 @@ _KEYWORDS: list[tuple[str, list[str]]] = [
         RENOVER,
         [
             "a renover",
+            # Le verbe seul : « pour qui souhaite rénover », « il reste à rénover la
+            # cave ». Sans lui, une annonce qui parle de rénovation sans écrire « à
+            # rénover » tombait au niveau suivant — et « renove » y matchait à l'intérieur
+            # de « renover », d'où un verdict *habitable*.
+            "renover",
             "a restaurer",
             "renovation",
             "rehabilitation",
@@ -169,6 +179,8 @@ _NEGATIONS = [
     "pas de travaux",
     "aucuns travaux",
     "ni travaux",
+    "rien a renover",
+    "plus rien a renover",
 ]
 
 
@@ -274,6 +286,16 @@ def regle_coquille(text: str) -> bool:
     return False
 
 
+# Les mots-clés se cherchent avec des FRONTIÈRES DE MOTS, pas en sous-chaîne.
+# « souhaite rénover » contient « renove » : une maison de 1920 dont l'annonce dit
+# « offre un beau potentiel pour qui souhaite rénover » a ainsi été déclarée *habitable*
+# (Ugine, 180 000 €, notée 83,7 et publiée comme pépite). Le mot-clé de rafraîchissement
+# ne pouvait pas la rattraper — il vient d'un niveau moins sévère et le balayage s'arrête
+# au premier niveau qui matche.
+_MOTIFS = [(condition, re.compile(r"\b(?:" + "|".join(re.escape(k) for k in kws) + r")\b"))
+           for condition, kws in _KEYWORDS]
+
+
 def _normalize(text: str) -> str:
     text = unicodedata.normalize("NFKD", text)
     text = "".join(c for c in text if not unicodedata.combining(c))
@@ -286,12 +308,22 @@ def _normalize(text: str) -> str:
     return re.sub(r"\s+", " ", text)
 
 
+# Fin de texte coupée : les portails tronquent leurs cartes de liste (SeLoger s'arrête à
+# ~200 signes) et signalent la coupe par une ellipse.
+_TRONQUE_RE = re.compile(r"(?:\.{3}|…)[\s\"'»)\]]*$")
+
+
+def est_tronque(*parts: str | None) -> bool:
+    return any(p and _TRONQUE_RE.search(p.rstrip()) for p in parts)
+
+
 def classify(*parts: str | None) -> dict:
     """Analyse titre/description et renvoie {'condition': str|None, 'niveau_travaux': int|None}.
 
     `condition` vaut None si aucun indice n'est trouvé (état inconnu).
     """
-    text = _normalize(" ".join(p for p in parts if p))
+    brut = [p for p in parts if p]
+    text = _normalize(" ".join(brut))
     if not text:
         return {"condition": None, "niveau_travaux": None}
 
@@ -304,8 +336,8 @@ def classify(*parts: str | None) -> dict:
             text = text.replace(neg, " ")
 
     trouve = None
-    for condition, keywords in _KEYWORDS:
-        if any(kw in text for kw in keywords):
+    for condition, motif in _MOTIFS:
+        if motif.search(text):
             trouve = condition
             break
 
@@ -316,9 +348,26 @@ def classify(*parts: str | None) -> dict:
         if trouve is None or NIVEAU[trouve] < NIVEAU[GROS_TRAVAUX]:
             trouve = GROS_TRAVAUX
 
+    if trouve is None and negated:
+        trouve = HABITABLE
+
+    # Un texte COUPÉ ne donne qu'une BORNE INFÉRIEURE : la troncature ne peut pas
+    # inventer une mention de travaux, seulement en cacher une. Un verdict léger rendu
+    # sur un texte coupé ne prouve donc rien — c'est ainsi qu'une maison de 1920 dont
+    # l'annonce s'arrête sur « souhaite rénover e… » a été déclarée habitable (Ugine,
+    # 180 000 €, publiée comme pépite).
+    #
+    # On ne garde donc, sur un texte tronqué, que les verdicts SÉVÈRES : eux sont déjà au
+    # bout de l'échelle, la suite du texte ne peut pas les aggraver. Les autres repassent
+    # à « état inconnu », et le set applique alors sa règle — un bien dont on ignore
+    # l'état ne se juge pas, exactement comme un bien sans photo.
+    #
+    # 1 111 des 1 140 descriptions tronquées viennent des cartes de la SERP SeLoger, qui
+    # s'arrêtent à ~200 signes. La vraie réparation est d'aller lire la fiche du bien ;
+    # en attendant, mieux vaut ignorer l'état que le sous-estimer.
+    if trouve is not None and NIVEAU[trouve] < NIVEAU[GROS_TRAVAUX] and est_tronque(*brut):
+        return {"condition": None, "niveau_travaux": None}
+
     if trouve is not None:
         return {"condition": trouve, "niveau_travaux": NIVEAU[trouve]}
-
-    if negated:
-        return {"condition": HABITABLE, "niveau_travaux": NIVEAU[HABITABLE]}
     return {"condition": None, "niveau_travaux": None}

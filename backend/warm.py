@@ -1,5 +1,5 @@
-"""Réchauffe en PARALLÈLE les caches Overpass (poi/infra) + télécharge les photos,
-pour que l'export qui suit ne fasse que des cache/disk hits (rapide).
+"""Réchauffe en PARALLÈLE les caches Overpass (poi/infra) et relief (IGN) + télécharge
+les photos, pour que l'export qui suit ne fasse que des cache/disk hits (rapide).
 Ne touche pas à la DB (lecture seule)."""
 from __future__ import annotations
 
@@ -16,6 +16,11 @@ from app.services import export_static as E
 # — comme _query_poi/_query_overpass avalent l'exception — les résultats sont perdus
 # EN SILENCE. Vécu : 1046 requêtes à 4 workers, zéro entrée de cache en plus.
 WORKERS = int(os.environ.get("WARM_WORKERS", "2"))
+# Le relief vient de l'API altimétrique de l'IGN, pas d'Overpass : elle n'a pas la limite
+# de 2 slots, mais elle est LENTE (~11 s pour les 9 points d'une couronne). Laisser
+# l'export l'interroger en série est le piège qui l'a fait tourner une heure sans rien
+# écrire : 431 points manquants × 11 s, et un `data.json` écrit seulement à la fin.
+RELIEF_WORKERS = int(os.environ.get("WARM_RELIEF_WORKERS", "6"))
 # Nb de tentatives par point avant d'abandonner (back-off progressif entre chaque).
 TRIES = int(os.environ.get("WARM_TRIES", "3"))
 DATA_DIR = os.path.join(os.path.dirname(__file__), "..", "data")
@@ -38,6 +43,50 @@ def _write_atomic(path: str, payload: dict) -> None:
 def _flush(poi: dict, infra: dict) -> None:
     _write_atomic(E._POI_CACHE, poi)
     _write_atomic(E._INFRA_CACHE, infra)
+
+
+def _warm_relief(rows) -> None:
+    """Proéminence IGN des points encore absents du cache, en parallèle."""
+    cache = E._load_relief_cache()
+    besoin = {_key(r): (r.latitude, r.longitude) for r in rows if _key(r) not in cache}
+    print(f"\nRelief (IGN) : {len(besoin)} points à requêter "
+          f"({RELIEF_WORKERS} workers)...", flush=True)
+    if not besoin:
+        return
+    t0 = time.time()
+    done = abandonnes = 0
+
+    def q(item):
+        k, (lat, lon) = item
+        return k, _retry_simple(E._query_prominence, lat, lon)
+
+    with ThreadPoolExecutor(max_workers=RELIEF_WORKERS) as ex:
+        for f in as_completed([ex.submit(q, it) for it in besoin.items()]):
+            k, res = f.result()
+            if res is not None:
+                cache[k] = res
+            else:
+                abandonnes += 1
+            done += 1
+            if done % 50 == 0:
+                _write_atomic(E._RELIEF_CACHE, cache)
+                print(f"  relief {done}/{len(besoin)} ({time.time()-t0:.0f}s, cache écrit)",
+                      flush=True)
+    _write_atomic(E._RELIEF_CACHE, cache)
+    print(f"relief écrit ({len(cache)} points) en {time.time()-t0:.0f}s", flush=True)
+    if abandonnes:
+        print(f"⚠ {abandonnes} points de relief abandonnés (IGN injoignable). "
+              f"Relancer warm.py : les points en cache ne sont pas re-demandés.", flush=True)
+
+
+def _retry_simple(fn, lat, lon, tries: int = 3):
+    for attempt in range(tries):
+        res = fn(lat, lon)
+        if res is not None:
+            return res
+        if attempt < tries - 1:
+            time.sleep(2 * (attempt + 1))
+    return None
 
 
 def main():
@@ -105,6 +154,8 @@ def main():
         print(f"⚠ {failed['poi']} POI et {failed['infra']} INFRA abandonnés après "
               f"{TRIES} tentatives (Overpass saturé). Relancer warm.py : les points "
               f"déjà en cache ne sont pas re-demandés.", flush=True)
+
+    _warm_relief(rows)
 
     # Photos en parallèle (skip viagers : ils seront exclus de l'export)
     photo_rows = [r for r in rows if not E._detect_viager(r.description, r.adresse)]

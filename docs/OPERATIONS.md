@@ -184,6 +184,7 @@ biens d'exception, où le budget ne serait plus un critère éliminatoire.
 SCRAPER_RATE_LIMIT_MS=3000 EXPORT_NO_LIVE_OVERPASS=1 python collect_leboncoin.py
 SCRAPER_RATE_LIMIT_MS=3000 EXPORT_NO_LIVE_OVERPASS=1 python collect_seloger.py
 EXPORT_NO_LIVE_OVERPASS=1 python collect_littoral.py
+EXPORT_NO_LIVE_OVERPASS=1 python collect_tetard.py     # bienici + notaires + paruvendu
 ```
 
 Trois réglages qui ne sont pas décoratifs :
@@ -197,6 +198,25 @@ Trois réglages qui ne sont pas décoratifs :
   tard). `data/data.json` est la **source de vérité durable** ; la base SQLite est un
   store de travail que la collecte suivante peut réinitialiser. Un bien collecté mais pas
   exporté n'existe pas.
+
+**Puis compléter ce que les portails n'ont pas donné**, avant de réchauffer :
+
+```bash
+python scripts/completer.py --dry-run     # ce qui serait rempli, sans écrire
+python scripts/completer.py
+```
+
+Les sources ne donnent pas les mêmes champs, et aucune ne les donne toujours. Le script
+remplit les trous de `nb_chambres`, `nb_pieces`, `surface_terrain` et `surface_bati` à
+partir de la charge brute de la source puis du **texte** de l'annonce
+(`services/completion.py`, justesse mesurée dans son en-tête). Il ne corrige jamais une
+valeur donnée par la source, et il est idempotent.
+
+C'est le pendant de `reclasser.py` pour les champs structurels : ce sont des COLONNES,
+l'export les relit telles quelles, donc une correction du pipeline de lecture ne
+s'applique d'elle-même qu'aux biens collectés APRÈS elle. Nouvelle collecte : la
+complétion se fait toute seule (`services/enrich.annotate`), le script n'est utile que
+pour rattraper la base.
 
 ### 4. Réchauffer les caches Overpass
 
@@ -429,7 +449,11 @@ repli silencieux.
 | Critères commerces/calme/rando en « pending » | export fait avec `EXPORT_NO_LIVE_OVERPASS=1` et cache froid | étape 4 puis ré-export (étape 5) |
 | Scores incohérents avec le code | `data.json` exporté avant un recalibrage du scoring | ré-exporter après tout changement de `scoring.py`/`preferences.py` |
 | Une correction de `classify.py` ne change rien sur le site | `condition`/`niveau_travaux` sont des **colonnes**, écrites une fois à la collecte ; l'export les relit sans reclasser | `python scripts/reclasser.py --dry-run` puis sans `--dry-run`, avant de ré-exporter |
+| « ? ch · terrain — » sur la moitié des biens publiés | Deux causes qui s'additionnent : un champ que le connecteur **ne lisait pas** (Leboncoin publie `bedrooms` dans ses attributs ; les 2 698 biens leboncoin sont tous entrés sans chambres), et aucun repli sur le **texte** de l'annonce, qui donne souvent le compte en toutes lettres | `services/completion.py` lit chambres / pièces / terrain / surface dans le texte à la collecte ; pour les biens **déjà en base**, `python scripts/completer.py --dry-run` puis sans, avant de ré-exporter |
+| « terrain — » sur un appartement | Le site confondait « pas de terrain » (une donnée) et « terrain inconnu » (une lacune) | trois états distincts sur la carte : `terrain 788 m²`, `sans terrain`, `terrain ?` |
 | Des ruines et des mobil-homes en haut du classement | Un prix très bas est noté comme une bonne affaire par `budget` **et** par `rapport_qualite_prix` (poids 5) : deux critères sur trois du haut du barème récompensent le défaut qu'ils devraient signaler | plancher de prix dans `budget` (`budget_min`) **et** palier au niveau du panier ; le défaut d'un bien bon marché n'est jamais écrit dans l'annonce, aucun critère mesuré ne le rattrape |
+| Un mot-clé matche à l'intérieur d'un autre mot | Les mots-clés d'état se cherchaient en **sous-chaîne** : « renove » se trouve dans « renover », donc « pour qui souhaite rénover » était lu comme « rénové » et le bien déclaré habitable (Ugine, 180 000 €, publiée comme pépite à 83,7) | frontières de mots (`\b`) sur toute la table de mots-clés ; ajouter aussi les verbes seuls (`renover`, `rehabiliter`), sinon « afin de LA réhabiliter » ne matche plus rien |
+| Un verdict d'état rendu sur une demi-annonce | Les cartes de la SERP SeLoger tronquent la description à ~200 signes, parfois au milieu du mot qui décide — 1 140 biens en base, dont 1 111 SeLoger | une troncature ne peut que **cacher** de la sévérité, jamais en inventer : sur un texte coupé, seuls les verdicts sévères (gros travaux, ruine) sont retenus, les autres repassent à « état inconnu ». La vraie réparation serait d'aller lire la fiche du bien |
 | Une annonce annonce 4 pièces dans 35 m² | Le repli « pièces − 1 » du critère de chambres ne recoupait rien : il accordait 3 chambres à un mobil-home | `m2_min_par_piece` (20 m² par pièce, communs compris) borne l'estimation par la surface |
 | Un critère au poids fort à `pending` sur la moitié du lot | `pending` est **exclu** du score, pas compté zéro : un bien non mesuré monte au lieu de descendre | réchauffer (§4) ; et poser un palier « critère mesuré » comme le fait le set 1 pour le rapport qualité/prix et l'attractivité |
 
@@ -541,8 +565,30 @@ Maison de retrait entre copains — Alpes et Préalpes à l'est de l'axe Lyon-Va
 est, Isère, Savoie, Haute-Savoie, Hautes-Alpes, Ain), à moins de **4h30** porte-à-porte de
 Paris, **budget ≤ 250 k€** (600 k€, puis 450 k€, puis 300 k€ en août 2026).
 
-Quatre sources : **bienici** (pivots montagne, sans cookie), **leboncoin** et **seloger**
-(cookie Datadome, §2), et six **agences** de la zone (`agences.yaml`).
+Sources : **bienici** (pivots montagne, sans cookie), **notaires** et **paruvendu**
+(sans clé ni cookie, collectés par département — voir plus bas), **leboncoin** et
+**seloger** (cookie Datadome, §2), et douze **agences** de la zone (`agences.yaml`).
+
+**Notaires et Paruvendu sont dans `collect_tetard.py` depuis le 1er septembre.** Mesuré
+sur la zone : 386 maisons ≤ 250 k€, dont **185 absentes de la base** — l'inventaire
+notarial (successions, adjudications, biens ruraux) ne passe pas par les portails. Ils
+se collectent par département (`DEPARTEMENTS`, dérivé des `PIVOTS`), pas par pivot :
+aucune des deux API ne cherche autour d'un point. `--sans-portails-publics` les coupe.
+
+⚠️ **Ni l'un ni l'autre ne donne de coordonnées**, et c'est ce qui les rendait
+inexploitables. Sans point, `est_a_lest_du_rhone` renvoie `None` et l'étage altitude de
+l'entonnoir n'a rien à mesurer : les 182 biens d'un premier essai sont **tous** passés
+par garde-fou, et le classement « montagne » remontait Pierrelatte, Valence et Donzère —
+la vallée du Rhône, à 100 m et du mauvais côté de l'axe. `services.enrich.annotate` pose
+désormais le **centroïde communal** (`geo_communes.coords_for_commune`, cache disque,
+zéro appel réseau) et marque le bien `position_commune` : le massif est juste, le point
+ne l'est pas. Après correctif : 180 biens géocodés sur 185, 31 écartés à l'ouest de
+l'axe, 7 sous 250 m — l'entonnoir tranche.
+
+Un piège de nommage au passage : **Notaires publie les communes sans leur article**
+(« Échelles » pour Les Échelles, « Voulte-sur-Rhône » pour La Voulte-sur-Rhône). Neuf
+pour cent des communes alpines commencent par un article ; l'index les enregistre sous
+les deux formes, un vrai nom primant toujours sur un alias.
 
 ```bash
 python backend/collect_tetard.py                 # collecte + enrichissement + export
@@ -642,7 +688,7 @@ ou hors sujet — monte au classement :
 | 78 | une attractivité locative mesurée | Même raison, pour le critère le plus cher à relever (~5 s Overpass par point, donc réchauffé sur les seuls candidats). Seuil 0 : on exige le relevé, pas une bonne note. Un bien dans un coin sans tourisme reste recevable ; ce qu'on refuse, c'est qu'il passe devant un autre parce qu'on ne l'a pas regardé. |
 | 85 | une nature ou un relief avérés | Un critère jamais mesuré ne prouve rien. |
 
-**Trois types de biens sont conservés mais plafonnés très bas** (facteur 0,15 à 0,2 sur
+**Quatre types de biens sont conservés mais plafonnés très bas** (facteur 0,15 à 0,2 sur
 le match), parce que le prix affiché ne décrit pas ce qu'on achète : le **viager /
 nue-propriété** (le prix est le bouquet, le bien reste occupé), la **résidence de
 tourisme** sous bail commercial (jouissance restreinte, gestion imposée), et le
@@ -652,7 +698,13 @@ perte). Le troisième a été ajouté le 1er septembre après qu'un « chalet de
 4 pièces de 35 m² situé au camping "la motte flottante" », 75 000 €, soit entré dans les
 pépites à 81,3. Détection sur le texte : « camping » seul ne suffit pas — « à 2 km d'un
 camping » est un argument de voisinage —, il faut que le bien soit *dans* le camping ou
-qu'il se nomme lui-même. 29 biens concernés sur les 7 086 en base.
+qu'il se nomme lui-même. 30 biens concernés sur les 7 086 en base.
+
+Le quatrième est le bien **déjà sous compromis / sous offre** : il n'est plus à vendre,
+et le montrer au groupe est pire qu'un viager — il n'y a même pas de décision à prendre.
+Motif volontairement étroit : « vendu » seul attrape « vendu meublé », « vendu avec
+locataire en place », « vendu par notre partenaire foncier », soit 260 faux positifs
+contre 75 vraies annonces retirées du marché. 59 biens concernés.
 
 **Les agences de la zone** (`set_ids: [1]`) : Agence Cévenole, Bauges Immobilier,
 Christine Miranda, Espaces Atypiques Drôme-Ardèche, Diois Immobilier, Orpi Ain Agences.

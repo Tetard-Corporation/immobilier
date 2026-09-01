@@ -331,3 +331,23 @@ def test_export_publie_les_temoins_en_plus_des_pepites(client, tmp_path):
     assert publies["beau-2"]["zone"] == "Beaufortain"
     assert publies["quey-1"]["zone"] == "Queyras"
     assert all(b["zone_temoin"] for b in publies.values())
+
+
+def test_sous_compromis_detecte_sans_attraper_vendu_meuble():
+    """Un bien sous compromis n'est plus à vendre : le montrer au groupe est pire qu'un
+    viager, il n'y a même pas de décision à prendre. Le motif est étroit — « vendu »
+    seul attrape « vendu meublé » et « vendu avec locataire en place »."""
+    from app.services.export_static import _detect_sous_compromis
+
+    for texte in ("SOUS COMPROMIS Maison familiale à Ugine",
+                  "*** SOUS OFFRE *** Charmante maison de ville",
+                  "Sous compromis : très bien située, entre la basilique et les haras",
+                  "EXCLUSIF. DEJA SOUS COMPROMIS !!",
+                  "Offre acceptée, visites suspendues"):
+        assert _detect_sous_compromis(texte), texte
+
+    for texte in ("VENDU AVEC LOCATAIRE EN PLACE, 489 euros de loyer",
+                  "Les atouts : appartement refait à neuf, vendu meublé",
+                  "Terrain proposé et vendu par notre partenaire foncier",
+                  "La maison est vendue avec ses meubles"):
+        assert not _detect_sous_compromis(texte), texte

@@ -14,6 +14,8 @@ _AD = {
     "attributes": [
         {"key": "real_estate_type", "value": "3"},
         {"key": "land_plot_surface", "value": "800"},
+        {"key": "bedrooms", "value": "3"},
+        {"key": "rooms", "value": "5"},
         {"key": "square", "value": ""},
         {"key": "energy_rate", "value": "D"},
     ],
@@ -29,6 +31,11 @@ def test_normalisation():
     assert item.prix == 85000
     assert item.surface_terrain == 800
     assert item.surface_bati is None  # "" -> None
+    # `bedrooms` n'était pas lu : les 2 698 biens leboncoin de la base sont entrés sans
+    # nombre de chambres, et le set leur appliquait alors son repli « pièces - 1 »
+    # — exact 46 % du temps, surestimé une fois sur deux.
+    assert item.nb_pieces == 5
+    assert item.nb_chambres == 3
     assert item.code_postal == "33700"
     assert item.departement == "33"
     assert item.latitude == 44.83 and item.longitude == -0.65

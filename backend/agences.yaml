@@ -75,3 +75,51 @@ agences:
     departements: [22, 29, 56, 35]
     sites:
       - https://www.groupe-mercure.fr/agences/agence-mercure-bretagne/
+
+  # --- Cœur alpin du set (1er septembre) -----------------------------------------
+  # Les six agences ci-dessous comblent le trou mesuré : la base ne contenait AUCUN
+  # bien d'agence en Isère, en Haute-Savoie ni dans les Hautes-Alpes — c'est-à-dire
+  # dans la majorité des massifs que le set vise (Oisans, Vercors, Trièves, Maurienne,
+  # Beaufortain, Dévoluy). Les agences existantes couvraient 01, 26, 73-Bauges, plus
+  # 07/42/43 qui sont à l'ouest de l'axe Lyon-Valence.
+  # Toutes sondées par `scripts/probe_agence.py` : voie D, 6 biens sur 6 avec commune.
+  # `departements` est la zone RÉELLE de l'agence, pas celle du set : c'est ce champ
+  # qui écarte les biens qu'un lien de rubrique ramènerait d'ailleurs.
+  - nom: "Immobilière Olivier"    # Oisans : Bourg-d'Oisans, Allemond, Vaujany, Ornon (38)
+    set_ids: [1]
+    departements: [38]
+    sites:
+      - https://immobiliere-olivier.fr/fr/
+  - nom: "Orpi Agence Alpine"     # plateau du Vercors : Villard-de-Lans, Autrans, Méaudre (38)
+    set_ids: [1]
+    departements: [38]
+    sites:
+      - https://www.orpi.com/vercors/
+  - nom: "Rambaud Immobilier"     # vallée de la Maurienne : La Chambre, Saint-Rémy, Valloire (73)
+    set_ids: [1]
+    departements: [73]
+    sites:
+      - https://www.rambaud.immo/agence-st-jean/a-vendre/1
+  - nom: "Ardesia"                # Saint-Jean-de-Maurienne et basse Maurienne (73)
+    set_ids: [1]
+    departements: [73]
+    sites:
+      - https://www.ardesia.immo/vente/1-st-jean-de-maurienne/1
+  - nom: "Agence du Beaufortain"  # Beaufort, Arêches, Queige, Albertville (73)
+    set_ids: [1]
+    departements: [73]
+    sites:
+      - https://www.immobilier-beaufortain.com/vente+immobilier.html
+  - nom: "Trassud Immobilier"     # Gap, Dévoluy, Champsaur (05)
+    set_ids: [1]
+    departements: [5]
+    sites:
+      - https://www.trassudimmo.fr/
+  # Écartées au sondage, et pourquoi — pour ne pas les re-tester dans six mois :
+  #   dufosseimmobilier.com  : 6 biens sur 6 rattachés à « Tassin-la-Demi-Lune »,
+  #                            l'adresse de l'agence elle-même et non celle du bien.
+  #   baud-immobilier.com, alpes-immobilier05.fr, visita.immo : liste rendue en
+  #                            JavaScript, aucun lien de fiche à suivre.
+  #   bevel-immobilier.fr    : 3 biens, aucun avec commune.
+  #   immo-oisans.com        : 2 biens, aucun avec commune.
+  #   agencerepublic.fr      : serveur en time-out.

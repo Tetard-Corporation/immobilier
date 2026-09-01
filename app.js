@@ -217,7 +217,7 @@ function cardHTML(b, idx) {
         <div class="body-main">
           <div class="price">${euros(b.prix)}</div>
           <h3>${b.commune || "?"} <span class="sub">(${b.departement || "—"})</span></h3>
-          <div class="sub">${b.zone ? `⛰ ${b.zone} · ` : ""}${b.type_bien || "bien"} · ${b.nb_chambres ?? "?"} ch · terrain ${b.surface_terrain != null ? b.surface_terrain + " m²" : "—"}</div>
+          <div class="sub">${b.zone ? `⛰ ${b.zone} · ` : ""}${b.type_bien || "bien"} · ${faits(b)}</div>
           <div class="chips">${(b.features || []).slice(0, 6).map((f) => `<span class="chip">${featLabel(f)}</span>`).join("")}</div>
           ${starsRow(b)}
         </div>
@@ -476,6 +476,13 @@ const FEATURE_LABELS = {
   cheminee: "Cheminée / poêle", terrasse: "Terrasse", garage: "Garage", piscine: "Piscine",
   jardin: "Jardin", ensoleille: "Exposé / ensoleillé",
 };
+// État du bâti : le volume de travaux, tel que `services/classify` le lit dans
+// l'annonce. Affiché parce que le groupe le demande en premier — et parce que
+// « on ne sait pas » est une réponse, pas un blanc à cacher.
+const CONDITION_LABELS = {
+  habitable: "Habitable", rafraichir: "À rafraîchir", renover: "À rénover",
+  gros_travaux: "Gros travaux", ruine: "Ruine",
+};
 const RISK_LABELS = {
   inondation: "Inondation", remonteeNappe: "Remontée de nappe", seisme: "Séisme",
   retraitGonflementArgile: "Retrait-gonflement argiles", radon: "Radon",
@@ -485,6 +492,37 @@ const RISK_LABELS = {
   canalisationsMatieresDangereuses: "Canalisation matières dangereuses",
 };
 const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+
+// --- Ligne de faits d'un bien : chambres · terrain · travaux ---------------
+// Un champ vide veut dire deux choses très différentes, et la carte les affichait
+// pareil (« terrain — »). Trois cas, donc : la valeur, l'absence CONSTATÉE
+// (« sans terrain » : l'appartement de Morlaix n'en a pas, l'annonce le dit), et
+// l'inconnu (« terrain ? »). Un champ SANS OBJET pour ce type de bien — les chambres
+// d'un terrain à bâtir — ne s'affiche pas du tout : « ? ch » sur une parcelle se lit
+// comme une donnée manquante alors qu'il n'y a rien à connaître.
+const A_DES_PIECES = new Set(["maison", "appartement", "immeuble"]);
+const conditionLabel = (b) => CONDITION_LABELS[b.condition] || (b.condition ? cap(b.condition) : null);
+function faits(b, { pieces = false } = {}) {
+  const out = [];
+  if (A_DES_PIECES.has(b.type_bien)) {
+    out.push(`${b.nb_chambres ?? "?"} ch`);
+    if (pieces) out.push(`${b.nb_pieces ?? "?"} p`);
+  }
+  if (b.surface_terrain != null) {
+    // Sur une parcelle, le type du bien est déjà écrit juste avant : « terrain ·
+    // terrain 969 m² » répète le mot pour rien.
+    const quoi = b.type_bien === "terrain" ? "" : "terrain ";
+    out.push(b.surface_terrain === 0 ? "sans terrain"
+      : `${quoi}${Number(b.surface_terrain).toLocaleString("fr-FR")} m²`);
+  } else if (b.type_bien !== "appartement") {
+    // Sur un appartement, l'absence de terrain est la règle : ne pas la signaler
+    // comme une lacune. Sur une maison ou un terrain, elle en est une.
+    out.push("terrain ?");
+  }
+  const etat = conditionLabel(b);
+  if (etat) out.push(etat);
+  return out.join(" · ");
+}
 const featLabel = (f) => FEATURE_LABELS[f] || cap(String(f).replace(/_/g, " "));
 const riskLabel = (r) => RISK_LABELS[r] || cap(String(r).replace(/([A-Z])/g, " $1"));
 function critLabel(key) {
@@ -644,9 +682,8 @@ function openModal(bien) {
     <button class="modal-close" id="mclose">×</button>
     <h2>${bien.commune || "?"} <span class="sub">(${bien.departement || "—"})</span></h2>
     <div class="price" style="color:var(--accent);font-weight:700;font-size:18px">${euros(bien.prix)}</div>
-    <div class="sub">${bien.type_bien || "bien"} · ${bien.nb_chambres ?? "?"} ch · ${bien.nb_pieces ?? "?"} p ·
-      terrain ${bien.surface_terrain != null ? bien.surface_terrain + " m²" : "—"} ·
-      ${bien.altitude != null ? Math.round(bien.altitude) + " m alt." : ""}</div>
+    <div class="sub">${bien.type_bien || "bien"} · ${faits(bien, { pieces: true })}${
+      bien.altitude != null ? ` · ${Math.round(bien.altitude)} m alt.` : ""}</div>
     <div class="modal-gallery galwrap${(bien.photos || []).length ? " has-photos" : ""}" style="position:relative">${gallery(bien, true)}</div>
     ${bien.description ? `<p class="descr">${escHtml(htmlToText(bien.description))}</p>` : ""}
 
@@ -692,6 +729,7 @@ function infoGrid(bien) {
   const items = [
     ["Code postal", bien.code_postal],
     ["Surface bâtie", bien.surface_bati != null ? bien.surface_bati + " m²" : null],
+    ["Travaux", conditionLabel(bien) || "état non précisé par l'annonce"],
     ["DPE", bien.dpe_classe],
     ["Population commune", bien.population_commune != null ? bien.population_commune + " hab." : null],
     ["Isolement", bien.isolement_score != null ? Math.round(bien.isolement_score * 100) + " %" : null],
