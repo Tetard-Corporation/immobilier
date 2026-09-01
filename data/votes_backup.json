@@ -1,8 +1,16 @@
 {
- "backed_up_at": "2026-08-31T10:52:59.875354+00:00",
+ "backed_up_at": "2026-09-01T09:25:41.078415+00:00",
  "source_url": "https://jmmflsrlegttdnxpidmo.supabase.co",
- "count": 20,
+ "count": 22,
  "votes": [
+  {
+   "bien_id": "bienici__ag311656-519488597",
+   "voter": "Léo",
+   "criterion": "invest:État & travaux",
+   "stars": 1,
+   "comment": "ruines",
+   "updated_at": "2026-09-01T07:25:11.709+00:00"
+  },
   {
    "bien_id": "bienici__ag340369-495933680",
    "voter": "Léo",
@@ -154,6 +162,14 @@
    "stars": 1,
    "comment": "pas de charme et le terrain est petit, le long d'une route",
    "updated_at": "2026-08-28T10:28:00.278+00:00"
+  },
+  {
+   "bien_id": "seloger__25PZCJ513947",
+   "voter": "Léo",
+   "criterion": "invest:État & travaux",
+   "stars": 1,
+   "comment": "ruine",
+   "updated_at": "2026-09-01T07:46:27.934+00:00"
   },
   {
    "bien_id": "seloger__263A2WSH1U34",
