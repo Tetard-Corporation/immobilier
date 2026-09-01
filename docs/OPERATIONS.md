@@ -198,6 +198,25 @@ Trois réglages qui ne sont pas décoratifs :
   store de travail que la collecte suivante peut réinitialiser. Un bien collecté mais pas
   exporté n'existe pas.
 
+**Puis compléter ce que les portails n'ont pas donné**, avant de réchauffer :
+
+```bash
+python scripts/completer.py --dry-run     # ce qui serait rempli, sans écrire
+python scripts/completer.py
+```
+
+Les sources ne donnent pas les mêmes champs, et aucune ne les donne toujours. Le script
+remplit les trous de `nb_chambres`, `nb_pieces`, `surface_terrain` et `surface_bati` à
+partir de la charge brute de la source puis du **texte** de l'annonce
+(`services/completion.py`, justesse mesurée dans son en-tête). Il ne corrige jamais une
+valeur donnée par la source, et il est idempotent.
+
+C'est le pendant de `reclasser.py` pour les champs structurels : ce sont des COLONNES,
+l'export les relit telles quelles, donc une correction du pipeline de lecture ne
+s'applique d'elle-même qu'aux biens collectés APRÈS elle. Nouvelle collecte : la
+complétion se fait toute seule (`services/enrich.annotate`), le script n'est utile que
+pour rattraper la base.
+
 ### 4. Réchauffer les caches Overpass
 
 ```bash
@@ -429,6 +448,8 @@ repli silencieux.
 | Critères commerces/calme/rando en « pending » | export fait avec `EXPORT_NO_LIVE_OVERPASS=1` et cache froid | étape 4 puis ré-export (étape 5) |
 | Scores incohérents avec le code | `data.json` exporté avant un recalibrage du scoring | ré-exporter après tout changement de `scoring.py`/`preferences.py` |
 | Une correction de `classify.py` ne change rien sur le site | `condition`/`niveau_travaux` sont des **colonnes**, écrites une fois à la collecte ; l'export les relit sans reclasser | `python scripts/reclasser.py --dry-run` puis sans `--dry-run`, avant de ré-exporter |
+| « ? ch · terrain — » sur la moitié des biens publiés | Deux causes qui s'additionnent : un champ que le connecteur **ne lisait pas** (Leboncoin publie `bedrooms` dans ses attributs ; les 2 698 biens leboncoin sont tous entrés sans chambres), et aucun repli sur le **texte** de l'annonce, qui donne souvent le compte en toutes lettres | `services/completion.py` lit chambres / pièces / terrain / surface dans le texte à la collecte ; pour les biens **déjà en base**, `python scripts/completer.py --dry-run` puis sans, avant de ré-exporter |
+| « terrain — » sur un appartement | Le site confondait « pas de terrain » (une donnée) et « terrain inconnu » (une lacune) | trois états distincts sur la carte : `terrain 788 m²`, `sans terrain`, `terrain ?` |
 | Des ruines et des mobil-homes en haut du classement | Un prix très bas est noté comme une bonne affaire par `budget` **et** par `rapport_qualite_prix` (poids 5) : deux critères sur trois du haut du barème récompensent le défaut qu'ils devraient signaler | plancher de prix dans `budget` (`budget_min`) **et** palier au niveau du panier ; le défaut d'un bien bon marché n'est jamais écrit dans l'annonce, aucun critère mesuré ne le rattrape |
 | Un mot-clé matche à l'intérieur d'un autre mot | Les mots-clés d'état se cherchaient en **sous-chaîne** : « renove » se trouve dans « renover », donc « pour qui souhaite rénover » était lu comme « rénové » et le bien déclaré habitable (Ugine, 180 000 €, publiée comme pépite à 83,7) | frontières de mots (`\b`) sur toute la table de mots-clés ; ajouter aussi les verbes seuls (`renover`, `rehabiliter`), sinon « afin de LA réhabiliter » ne matche plus rien |
 | Un verdict d'état rendu sur une demi-annonce | Les cartes de la SERP SeLoger tronquent la description à ~200 signes, parfois au milieu du mot qui décide — 1 140 biens en base, dont 1 111 SeLoger | une troncature ne peut que **cacher** de la sévérité, jamais en inventer : sur un texte coupé, seuls les verdicts sévères (gros travaux, ruine) sont retenus, les autres repassent à « état inconnu ». La vraie réparation serait d'aller lire la fiche du bien |
