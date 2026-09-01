@@ -16,11 +16,12 @@
 // Sur les critères dont l'entrée est exportée bien par bien, chacun peut donc aussi
 // régler le SEUIL (voir mesures.js) — et là, le sous-score est recalculé.
 //
-// Stockage : la table `votes` existante, sous un bien fictif `__poids__:<set>` — un
-// « vote » par (set, personne, critère). Aucune migration SQL à faire, et les poids sont
-// partagés par le même canal que les notes. La contrainte SQL interdisant stars=0,
-// « ignorer » est stocké en `stars = null` (une ligne existe : c'est un choix, pas un
-// silence). Les scripts qui lisent la table doivent écarter `bien_id like '__poids__%'`.
+// Stockage : la table `votes` existante, sous un bien fictif `__poids__:<set>` — une
+// ligne par (set, personne, critère), qui porte le poids dans `stars` et les seuils dans
+// `comment` (JSON). Aucune migration SQL à faire, et les réglages se partagent par le
+// canal déjà en place pour les notes. La contrainte SQL interdisant stars=0, « ignorer »
+// est stocké en `stars = null` (une ligne existe : c'est un choix, pas un silence).
+// Les scripts qui lisent la table doivent écarter `bien_id like '__poids__%'`.
 const Poids = (() => {
   const NIVEAUX = [0, 1, 2, 3, 4, 5];
   const LIBELLES = {
