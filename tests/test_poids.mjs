@@ -84,7 +84,8 @@ t("« ignorer » stocké en stars null", cache[Poids.bienId(set.id)].relief_moun
 t("0 relu comme 0", ex.relief_mountain["Léo"] === 0);
 t("5 relu comme 5", ex.ensoleillement["Léo"] === 5);
 const mien = Poids.pour(set, "Léo");
-t("critère non réglé = poids du set", mien.budget === 4);
+const poidsDuSet = (id) => Number(set.preferences.find((p) => Poids.cle(p) === id).weight);
+t("critère non réglé = poids du set", mien.budget === poidsDuSet("budget"));
 t("critère réglé = mon poids", mien.relief_mountain === 0 && mien.ensoleillement === 5);
 t("participants", JSON.stringify(Poids.participants(set, Votes.users)) === '["Léo"]');
 
@@ -103,7 +104,7 @@ const prox = Poids.proximites(set, Votes.users);
 t("proximité calculée", prox.length === 1 && prox[0].n === 2 && Math.abs(prox[0].proximite - (1 - 3 / 5)) < 1e-9);
 const g = Poids.groupe(set, Votes.users);
 t("groupe : moyenne sur critère réglé", g.relief_mountain === 2.5);
-t("groupe : poids du set sinon", g.jardin === 4);
+t("groupe : poids du set sinon", g.jardin === poidsDuSet("jardin"));
 
 // 6. Tout ignorer = plus de classement (même convention que le backend).
 const rien = Object.fromEntries(Object.keys(Poids.defauts(set)).map((k) => [k, 0]));

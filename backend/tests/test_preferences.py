@@ -749,3 +749,30 @@ def test_risques_et_eau_reprennent_la_mesure_du_score_investissement():
     propre = _listing(flags={"pollution_eau_score": 1.0, "eau_potable_conforme": True})
     assert evaluate(sale, q)[1][0]["subscore"] < evaluate(propre, q)[1][0]["subscore"]
     assert "NON conforme" in evaluate(sale, q)[1][0]["detail"]
+
+
+def test_hiking_note_la_densite_de_sentiers_pas_leur_presence():
+    # Avant : 1,00 dès qu'il y avait un sentier -> 94 % des biens à égalité.
+    p = [Preference(kind="hiking", params={"peu": 10, "beaucoup": 200})]
+    sous = lambda item: evaluate(item, p)[1][0]["subscore"]  # noqa: E731
+    rare = _listing(flags={"randonnee": True, "rando_count": 15})
+    dense = _listing(flags={"randonnee": True, "rando_count": 190})
+    assert sous(rare) < 0.2 < sous(dense)
+    # Sans comptage, la donnée ne sait dire que oui/non : on garde le repli.
+    assert sous(_listing(flags={"randonnee": True})) == 1.0
+    assert sous(_listing(flags={"randonnee": False})) == 0.3
+    # Les repères appartiennent au set : le littoral compte plus de sentiers.
+    cotier = [Preference(kind="hiking", params={"peu": 20, "beaucoup": 250})]
+    assert evaluate(dense, cotier)[1][0]["subscore"] < sous(dense)
+
+
+def test_a_renover_ne_vaut_plus_presque_habitable():
+    p = [Preference(kind="light_works")]
+    sous = lambda cond: evaluate(_listing(flags={"condition": cond}), p)[1][0]["subscore"]  # noqa: E731
+    assert sous("habitable") == 1.0
+    assert sous("rafraichir") == 1.0
+    # 0,65 : une rénovation coûte. Et surtout la note ne colle plus au seuil du palier
+    # (0,6), donc une erreur de classement ne le traverse plus d'un centième.
+    assert sous("renover") == 0.65
+    assert sous("gros_travaux") < sous("renover")
+    assert sous("ruine") < sous("gros_travaux")

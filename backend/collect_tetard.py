@@ -95,7 +95,11 @@ PREFERENCES = [
     # `m2_min_par_piece` : le garde-fou du repli « pièces - 1 ». Une annonce peut
     # annoncer 4 pièces dans 35 m² — c'est ce qui a fait entrer un mobil-home de camping
     # dans les pépites avec « 3 chambres estimées ».
-    {"kind": "chambres_min", "weight": 4, "label": "3 chambres minimum",
+    # Poids 2 et non 4 : le palier « capacité d'accueil prouvée » (75) rend déjà le
+    # minimum NON négociable. Une fois ce palier passé, le critère ne départage presque
+    # plus — écart-type 0,16 pour une moyenne de 0,92 sur les 597 biens au-dessus de 70.
+    # Ce qu'il pesait en plus ne classait pas, il gonflait tous les scores.
+    {"kind": "chambres_min", "weight": 2, "label": "3 chambres minimum",
      "params": {"min": 3, "m2_min_par_piece": 20}},
     # Le pendant du plancher de chambres. Ce que le groupe a précisé le 30 août : « 5
     # chambres ça reste ok, mais je ne veux pas qu'on survalorise les biens grands — un
@@ -108,12 +112,16 @@ PREFERENCES = [
     # au m² qui les départagent : c'est exactement ce qui a été demandé.
     # (`m2_ok`/`m2_max` : le repli quand l'annonce ne donne pas les chambres. Calé pour
     # dire la même chose que le barème par chambres — 170 m² pleins, 190 m² à 0,85.)
-    {"kind": "logement_compact", "weight": 4, "label": "Format maison de retrait (3 à 5 chambres, pas immense)",
+    # Même raison : le palier « format » (85) ferme la porte aux maisons immenses, et
+    # au-dessus de 70 le critère vaut 0,96 de moyenne pour un écart-type de 0,13.
+    {"kind": "logement_compact", "weight": 2, "label": "Format maison de retrait (3 à 5 chambres, pas immense)",
      "params": {"ideal": 4, "max": 5, "m2_ok": 170, "m2_max": 300}},
     # « Un peu de travaux possible, mais pas une rénovation complète » : le critère garde
     # sa forme (habitable 1,0 · à rafraîchir 1,0 · à rénover 0,85 · gros travaux 0,4 ·
     # ruine 0,1), c'est le PALIER qui s'ouvre d'un cran, à 0,85.
-    {"kind": "light_works", "weight": 4, "label": "Peu de travaux (rafraîchir oui, rénovation complète non)", "params": {}},
+    # Poids 3 : le palier travaux (70) porte l'exigence ; la note, elle, redevient
+    # discriminante maintenant que « à rénover » vaut 0,65 et non 0,85.
+    {"kind": "light_works", "weight": 3, "label": "Peu de travaux (rafraîchir oui, rénovation complète non)", "params": {}},
     # Le DPE dit ce que `light_works` ne dit pas : `light_works` lit l'état du bâti dans
     # l'annonce (habitable / à rafraîchir / à rénover), le DPE lit ce que le bien coûtera
     # à chauffer. Une maison « habitable » classée G est habitable ET une passoire : deux
@@ -142,7 +150,10 @@ PREFERENCES = [
     # « Jardin requis » : un PLANCHER, distinct du souhait de grand terrain ci-dessous.
     # Seuil bas (300 m²), et une annonce qui décrit un extérieur sans en donner la surface
     # note 0,7 — assez pour passer le palier, pas assez pour valoir un jardin mesuré.
-    {"kind": "jardin", "weight": 4, "label": "Jardin (requis)", "params": {"min_surface": 300}},
+    # Le palier « jardin requis » (70) fait tout le travail : au-dessus, le critère vaut
+    # 0,96 de moyenne pour un écart-type de 0,11 — il ne distingue plus deux candidats.
+    # Poids 2, et c'est `has_terrain` (écart-type 0,30) qui départage sur la surface.
+    {"kind": "jardin", "weight": 2, "label": "Jardin (requis)", "params": {"min_surface": 300}},
     # « L'attractivité Airbnb comme un critère important » (31 août). Poids 4 : le rang
     # des critères qui décident sans dominer — budget, travaux, jardin, ensoleillement —
     # et non 5, réservé au rapport qualité/prix et au relief. Une maison de retrait entre
@@ -178,7 +189,12 @@ PREFERENCES = [
     # ville » marquaient pourtant le maximum sur ce critère.
     {"kind": "village_vivant", "weight": 3, "label": "Village vivant (ni désert, ni ville)",
      "params": {"vivant": 8, "ideal": 25, "ville": 120}},
-    {"kind": "hiking", "weight": 3, "label": "Randonnées au départ", "params": {}},
+    # Le critère notait 1,00 pour 94 % des biens (écart-type 0,02) : il ne départageait
+    # personne et satisfaisait à lui seul le palier « nature ou montagne avérée », qui ne
+    # plafonnait donc jamais rien. La donnée existe pourtant — 1 à 300 sentiers relevés,
+    # médiane 88. Le critère lit maintenant la DENSITÉ, entre les déciles mesurés.
+    {"kind": "hiking", "weight": 3, "label": "Randonnées au départ",
+     "params": {"peu": 10, "beaucoup": 200}},
     # 4h30 et non 4h : le groupe a demandé le Beaufortain, mesuré à 4h10 porte-à-porte
     # (Val d'Arly 4h06 ; Albertville, elle, passe à 3h57). Laisser le plafond à 4h aurait
     # donné 0 sur ce critère à la moitié de la zone qu'on vient d'ajouter — collecter une
@@ -187,7 +203,10 @@ PREFERENCES = [
     {"kind": "temps_acces", "weight": 3, "label": "≤ 4h30 porte-à-porte depuis Paris",
      "params": {"max_minutes": 270}},
     # Isolement neutralisé : le groupe veut le calme, pas le bout du monde.
-    {"kind": "tranquillite", "weight": 3, "label": "Calme, sans vis-à-vis, hors lotissement",
+    # Poids 2 : ce critère LIT le calme dans l'annonce (écart-type 0,12) quand
+    # `nuisance_sonore` le MESURE sur les routes et les voies ferrées (écart-type 0,43).
+    # Les deux disent la même chose ; on paie surtout celui qui la mesure.
+    {"kind": "tranquillite", "weight": 2, "label": "Calme, sans vis-à-vis, hors lotissement",
      "params": {"poids_isolement": 0, "poids_densite": 0}},
     # Bruit monté à 3, et il compte désormais les routes passantes : deux biens notés 1★
     # « le long d'une route nationale », que le critère ne voyait pas.
@@ -201,7 +220,11 @@ PREFERENCES = [
     {"kind": "surface_habitable", "weight": 1, "label": "≥ 90 m² habitables", "params": {"min": 90}},
     {"kind": "near_gare", "weight": 2, "label": "Proche d'une gare", "params": {"max_km": 15}},
     {"kind": "fiber", "weight": 2, "label": "Fibre (télétravail)", "params": {}},
-    {"kind": "ski", "weight": 2, "label": "Station de ski à proximité", "params": {"max_km": 30}},
+    # Poids 1 : l'attractivité saisonnière (poids 4) est calculée à 80 % sur la présence
+    # d'une remontée mécanique — c'est ce que ce critère mesure. Corrélation 0,80 entre
+    # les deux : à 2 + 4, le ski pesait 6 dans un set où le maximum est 5. Il reste à 1
+    # parce qu'il est relevé sur 98 % des biens quand l'attractivité ne l'est que sur 47 %.
+    {"kind": "ski", "weight": 1, "label": "Station de ski à proximité", "params": {"max_km": 30}},
     {"kind": "near_city", "weight": 2, "label": "Accessible depuis Marseille",
      "params": {"ville": "Marseille", "max_km": 300}},
     {"kind": "near_corridor", "weight": 1, "label": "Axe Paris-Marseille",
@@ -249,7 +272,13 @@ EXIGENCES = [
         "label": "Habitable, à rafraîchir ou à rénover (requis au-dessus de 70)",
         "requires": ["light_works"],
         "mode": "all",
-        "min_subscore": 0.85,
+        # 0,6 et non 0,85 : la note de « à rénover » est passée de 0,85 à 0,65 (elle
+        # disait qu'une rénovation vaut presque une maison habitable). L'admissibilité
+        # est inchangée — habitable 1,0 · à rafraîchir 1,0 · à rénover 0,65 passent,
+        # gros travaux 0,4 et ruine 0,1 restent écartés — mais le seuil ne colle plus
+        # à la note du cas douteux : une erreur de classement ne traverse plus d'un
+        # centième.
+        "min_subscore": 0.6,
     },
     {
         # « Jardin requis ». Sans palier, un bien sans extérieur restait éligible : le

@@ -816,9 +816,11 @@ function renderCritPopup() {
   const set = setCourant();
   const pref = section === "match" && set
     ? (set.preferences || []).find((p) => (p.label || p.kind) === key) : null;
+  const couvPref = pref && pref.couverture != null
+    ? ` Mesuré sur ${Math.round(pref.couverture * 100)} % du catalogue du set.` : "";
   const poidsBloc = pref && Votes.voter
     ? `<div class="myvote pw"><span>Ton poids</span>${echellePoids(Poids.cle(pref), Poids.pour(set, Votes.voter)[Poids.cle(pref)])}</div>
-       <div class="detailtxt">∅ ignorer · 1 accessoire · 5 essentiel — poids par défaut : ${pref.weight}.</div>
+       <div class="detailtxt">∅ ignorer · 1 accessoire · 5 essentiel — poids par défaut : ${pref.weight}.${couvPref}</div>
        ${champsSeuil(pref, Poids.paramsPour(set, Votes.voter))}`
     : "";
   const pending = document.getElementById("critComment") ? document.getElementById("critComment").value : null;
@@ -1043,6 +1045,13 @@ function echellePoids(key, w) {
 // Seuil personnel d'un critère : « 4 chambres minimum » plutôt que « 3 ». N'existe que
 // pour les critères dont l'entrée est exportée bien par bien (cf. mesures.js) — ailleurs,
 // le sous-score ne se recalcule pas dans le navigateur et le seuil reste celui du set.
+// Sur quoi porte le pourcentage : le catalogue du set quand l'export l'a calculé, la
+// sélection publiée sinon. La nuance compte — 48 % de 2 873 biens n'est pas 48 % de 170.
+const couvTitre = (set) => set.n_catalogue
+  ? `Part du catalogue du set (${set.n_catalogue} biens) sur laquelle ce critère est réellement mesuré. `
+    + `Un critère non mesuré n'est pas pénalisé : le bien est classé sans lui.`
+  : `Part des biens publiés sur laquelle ce critère est réellement mesuré.`;
+
 function champsSeuil(pref, mesPar) {
   const id = Poids.cle(pref);
   const champs = Mesures.champs(id);
@@ -1140,7 +1149,8 @@ function renderPoidsPanel() {
     // La couverture n'est pas un détail technique : un critère mesuré sur la moitié du
     // catalogue classe l'autre moitié sans lui. Signalée dès qu'elle passe sous 80 %.
     const cv = couv[key];
-    const alerte = cv != null && cv < 0.8 ? ` <span class="couv">mesuré sur ${Math.round(cv * 100)} % des biens</span>` : "";
+    const alerte = cv != null && cv < 0.8
+      ? ` <span class="couv" title="${escAttr(couvTitre(set))}">mesuré sur ${Math.round(cv * 100)} % des biens</span>` : "";
     return `<div class="prow${w !== Number(p.weight) ? " modif" : ""}">
       <div class="pname" title="${escAttr(Poids.quoi(p, reg))}">${escHtml(p.label || p.kind)}<span class="detailtxt"> — ${infos.join(" · ")}</span>${alerte}</div>
       ${champsSeuil(p, mesSeuils)}

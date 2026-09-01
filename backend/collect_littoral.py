@@ -36,21 +36,37 @@ SET_DESC = ("Terrain/maison d'exception en bord de mer breton — sud (Ploemeur/
 PRIX_MAX = 400_000
 
 # Pondérations 1-5. Front de mer priorisé (l'archétype : posé dans les rochers).
+# Six critères de ce set notaient 1,00 à tout le monde (écart-type 0,00) : ceux qui LISENT
+# un mot dans l'annonce. Un critère `feature` est présent ou absent — quand il est absent
+# il est `n/a`, donc retiré du dénominateur, si bien qu'il ne peut QUE faire monter celui
+# dont l'annonce a employé le mot. « Bord de mer » pesait 5 pour 3 % des biens, quand
+# `distance_mer` mesure la même chose sur 100 % : parmi les 19 biens réellement au bord de
+# l'eau, 3 seulement le disent dans leur annonce. On ne supprime pas ces critères — une
+# annonce qui le dit reste un signal — mais ils passent de 5 à 1 : un mot ne doit pas
+# valoir plus qu'une mesure.
 PREFERENCES = [
     {"kind": "budget", "weight": 5, "label": "Budget ≤ 400 000 €", "params": {"budget_max": PRIX_MAX}},
-    {"kind": "feature", "weight": 5, "label": "Bord de mer / première ligne", "params": {"name": "bord_de_mer"}},
+    {"kind": "feature", "weight": 1, "label": "Bord de mer / première ligne (mention annonce)", "params": {"name": "bord_de_mer"}},
     {"kind": "distance_mer", "weight": 5, "label": "Proximité mer (distance réelle)", "params": {"proche": 300, "loin": 3000}},
     {"kind": "constructible", "weight": 5, "label": "Terrain constructible (tiny house)", "params": {}},
-    {"kind": "feature", "weight": 4, "label": "Bord d'eau (rivière / étang / ria)", "params": {"name": "bord_eau"}},
+    # Relevé sur 0 % des biens du set : le mot n'apparaît jamais. Poids 1 en attendant
+    # une mesure (le trait d'eau intérieur n'est pas encore enrichi).
+    {"kind": "feature", "weight": 1, "label": "Bord d'eau (rivière / étang / ria)", "params": {"name": "bord_eau"}},
     {"kind": "en_hauteur_geo", "weight": 4, "label": "Surélevé / position dominante (relief réel)", "params": {}},
-    {"kind": "feature", "weight": 4, "label": "Vue (mer / dégagée)", "params": {"name": "vue"}},
-    {"kind": "feature", "weight": 2, "label": "En hauteur (mention annonce)", "params": {"name": "en_hauteur"}},
+    {"kind": "feature", "weight": 2, "label": "Vue (mention annonce)", "params": {"name": "vue"}},
+    # 2 % des annonces le disent ; `en_hauteur_geo` mesure la proéminence réelle sur
+    # 100 % des biens, avec un écart-type de 0,31.
+    {"kind": "feature", "weight": 1, "label": "En hauteur (mention annonce)", "params": {"name": "en_hauteur"}},
     {"kind": "prix_m2_terrain", "weight": 4, "label": "Rapport qualité/prix (€/m² terrain)", "params": {"bon": 60, "cher": 300}},
     {"kind": "nature_exception", "weight": 4, "label": "Nature d'exception", "params": {}},
     {"kind": "feature", "weight": 3, "label": "Isolé / sauvage", "params": {"name": "isole"}},
     {"kind": "no_vis_a_vis", "weight": 3, "label": "Sans vis-à-vis", "params": {}},
-    {"kind": "has_terrain", "weight": 3, "label": "Avec terrain", "params": {}},
-    {"kind": "authentic", "weight": 3, "label": "Charme / cachet", "params": {}},
+    # Sans seuil, « avec terrain » notait 1,00 dès un mètre carré : 1,00 pour les 89 %
+    # de biens qui ont une surface, écart-type 0,00 — trois points de poids qui ne
+    # classaient rien. 500 m² est le repère d'une parcelle où poser une tiny house avec
+    # du recul ; en dessous la note descend au prorata.
+    {"kind": "has_terrain", "weight": 3, "label": "Terrain (≥ 500 m²)", "params": {"min_surface": 500}},
+    {"kind": "authentic", "weight": 2, "label": "Charme / cachet", "params": {}},
     # Sur le littoral, l'aléa EST le sujet : submersion marine et recul du trait de côte
     # décident de ce qu'on pourra encore construire (et assurer) dans vingt ans. Mesuré
     # depuis toujours pour le score d'investissement, jamais dans le match du set — donc
@@ -60,7 +76,11 @@ PREFERENCES = [
     # Le set mêle terrains et maisons : sur un terrain le DPE n'existe pas, le critère y
     # est simplement `n/a` — donc neutre, et non pénalisant.
     {"kind": "dpe", "weight": 2, "label": "Performance énergétique (DPE)", "params": {}},
-    {"kind": "hiking", "weight": 2, "label": "Sentiers côtiers / randonnées", "params": {}},
+    # Densité de sentiers et non présence : sur le littoral aussi le critère notait 1,00
+    # à tout le monde. Repères plus hauts qu'en montagne — le GR34 fait grimper les
+    # comptages (médiane 115 sur ce set contre 88 sur têtard).
+    {"kind": "hiking", "weight": 2, "label": "Sentiers côtiers / randonnées",
+     "params": {"peu": 20, "beaucoup": 250}},
     {"kind": "nuisance_sonore", "weight": 2, "label": "Calme (loin autoroute/rail)", "params": {"min_m": 150, "ref_m": 800}},
     {"kind": "fiber", "weight": 2, "label": "Fibre (télétravail)", "params": {}},
     {"kind": "commerces", "weight": 2, "label": "Commerces/services à proximité", "params": {"ref": 15}},

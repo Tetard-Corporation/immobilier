@@ -64,6 +64,14 @@ PREFERENCE_KINDS = [
 ]
 
 _PENDING_KINDS = {"rail_time_from", "fiber", "relief_mountain", "hiking"}
+# Randonnée : la donnée est un NOMBRE de sentiers relevés autour du bien (1 à 300 sur la
+# zone têtard, médiane 88), et le critère n'en faisait qu'un oui/non — donc 1,00 pour
+# 94 % des biens, écart-type 0,02. Il ne départageait personne : il remontait seulement
+# tous les scores, et il satisfaisait à lui seul le palier « nature ou montagne avérée »,
+# qui ne plafonnait donc jamais rien. En montagne, ce qui distingue deux villages n'est
+# pas d'avoir des sentiers, c'est leur densité. Repères = les déciles mesurés.
+_RANDO_PEU = 10
+_RANDO_BEAUCOUP = 200
 # DPE : la classe énergie, renseignée par 81 % des annonces du set têtard. Le barème n'est
 # pas linéaire, parce que le coût ne l'est pas : F et G sont des passoires — interdites à
 # la location (G depuis 2025, F en 2028) et donc porteuses d'un chantier que le prix
@@ -115,7 +123,17 @@ _POIDS_DUREE = 0.7
 # Pente à partir de laquelle l'orientation du versant compte pleinement. En dessous, le
 # terrain est trop plat pour que « exposé sud » veuille dire quelque chose.
 _PENTE_PLEINE = 20.0
-_LIGHT_OK = {"habitable": 1.0, "rafraichir": 1.0, "renover": 0.85, "gros_travaux": 0.4, "ruine": 0.1}
+# Volume de travaux. « à rénover » valait 0,85 — c'est-à-dire presque autant qu'une maison
+# habitable — sur un critère qui s'appelle « peu de travaux, rénovation complète non ».
+# La note contredisait son propre libellé, et comme le palier exigeait exactement 0,85,
+# les 20 % de biens rangés en « à rénover » passaient tous, à la virgule près : la moindre
+# erreur de classement traversait le filtre (une ruine notée 1★ par le groupe y est passée
+# avec 0,85 sur ce critère).
+#
+# On sépare donc les deux rôles. L'ADMISSIBILITÉ ne bouge pas — le groupe a tranché le
+# 30 août que « à rénover » reste acceptable, le palier descend à 0,6 pour le dire. La
+# NOTE, elle, redevient honnête : une rénovation coûte, elle ne vaut pas « habitable ».
+_LIGHT_OK = {"habitable": 1.0, "rafraichir": 1.0, "renover": 0.65, "gros_travaux": 0.4, "ruine": 0.1}
 _COND_LABELS = {
     "habitable": "habitable de suite", "rafraichir": "à rafraîchir", "renover": "à rénover",
     "gros_travaux": "gros travaux", "ruine": "ruine / à reconstruire",
@@ -750,8 +768,13 @@ def _eval_one(item, kind: str, params: dict):
             return _clamp((val or 0) / ref), "ok", f"altitude {val} m (réf montagne {ref} m)"
         if kind == "hiking":
             n = flags.get("rando_count")
-            detail = f"{n} sentiers/itinéraires à proximité" if n is not None else ("sentiers à proximité" if val else "peu de sentiers")
-            return (1.0 if val else 0.3), "ok", detail
+            if n is None:
+                # Sans comptage, la donnée ne sait dire que oui/non.
+                return (1.0 if val else 0.3), "ok", ("sentiers à proximité" if val else "peu de sentiers")
+            peu = params.get("peu", _RANDO_PEU)
+            beaucoup = params.get("beaucoup", _RANDO_BEAUCOUP)
+            sub = _clamp((n - peu) / (beaucoup - peu)) if beaucoup > peu else (1.0 if n >= beaucoup else 0.0)
+            return sub, "ok", f"{n} sentiers/itinéraires à proximité (repères {peu} à {beaucoup})"
 
     return None, "n/a", "inconnu"
 

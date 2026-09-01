@@ -1231,6 +1231,38 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
             "zones": {fs_id: _zone_de(row, z) for fs_id, z in set_comparaison.items() if z},
         })
 
+    # --- Couverture de mesure, par set et par critère ----------------------------------
+    # « Ce critère est-il seulement mesuré ? » est la première question à se poser avant
+    # de lui donner un poids : `evaluate` renormalise sur les critères notés, donc un
+    # critère mesuré sur la moitié du catalogue laisse l'autre moitié être jugée sans lui.
+    # La part se calcule sur le CATALOGUE du set (tout ce qu'il peut classer) et non sur
+    # la sélection publiée — un panier de trente pépites ne répondrait pas à la question.
+    couverture: dict[int, dict[str, int]] = {}
+    n_catalogue: dict[int, int] = {}
+    for prep in prepares:
+        for fs_id_str, sc in prep["scores_by_set"].items():
+            fs_id = int(fs_id_str)
+            if sc.get("match_score") is None:
+                continue
+            n_catalogue[fs_id] = n_catalogue.get(fs_id, 0) + 1
+            vus = couverture.setdefault(fs_id, {})
+            for det in sc.get("details") or []:
+                if det.get("kind") in ("exigence", "disqualifiant"):
+                    continue
+                if det.get("status") == "ok" and det.get("subscore") is not None:
+                    # Rattachement par le LIBELLÉ : c'est la seule chose que la ligne de
+                    # détail porte, et le `kind` ne suffit pas (cinq `feature` distinctes
+                    # dans le set breton).
+                    cle_det = det.get("label") or det.get("kind")
+                    vus[cle_det] = vus.get(cle_det, 0) + 1
+    for fs in sets_out:
+        n = n_catalogue.get(fs["id"], 0)
+        vus = couverture.get(fs["id"], {})
+        for pref in fs["preferences"]:
+            mesures = vus.get(pref["label"]) if pref.get("label") else None
+            pref["couverture"] = round(mesures / n, 3) if (n and mesures is not None) else (0.0 if n else None)
+        fs["n_catalogue"] = n
+
     # --- Sélection : le seuil des pépites, PLUS un témoin par zone ---------------------
     # Deux passes et non une seule, parce que « le meilleur bien de chaque zone » n'est
     # pas une décision qui se prend bien par bien : il faut avoir vu toute la zone.

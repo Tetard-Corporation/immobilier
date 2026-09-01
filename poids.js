@@ -389,6 +389,15 @@ const Poids = (() => {
   const _couv = new Map();
   function couverture(biens, set) {
     if (_couv.has(set.id)) return _couv.get(set.id);
+    // Depuis que l'export la calcule, la couverture voyage AVEC le critère : elle porte
+    // alors sur tout le catalogue du set (des milliers de biens) et non sur la seule
+    // sélection publiée. Le calcul local ne sert plus qu'aux instantanés d'avant.
+    if ((set.preferences || []).some((p) => p.couverture != null)) {
+      const out = {};
+      for (const p of set.preferences || []) out[cle(p)] = p.couverture;
+      _couv.set(set.id, out);
+      return out;
+    }
     const ix = index(set);
     const vus = {}, mesures = {};
     let n = 0;
