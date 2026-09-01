@@ -509,8 +509,11 @@ function faits(b, { pieces = false } = {}) {
     if (pieces) out.push(`${b.nb_pieces ?? "?"} p`);
   }
   if (b.surface_terrain != null) {
+    // Sur une parcelle, le type du bien est déjà écrit juste avant : « terrain ·
+    // terrain 969 m² » répète le mot pour rien.
+    const quoi = b.type_bien === "terrain" ? "" : "terrain ";
     out.push(b.surface_terrain === 0 ? "sans terrain"
-      : `terrain ${Number(b.surface_terrain).toLocaleString("fr-FR")} m²`);
+      : `${quoi}${Number(b.surface_terrain).toLocaleString("fr-FR")} m²`);
   } else if (b.type_bien !== "appartement") {
     // Sur un appartement, l'absence de terrain est la règle : ne pas la signaler
     // comme une lacune. Sur une maison ou un terrain, elle en est une.
