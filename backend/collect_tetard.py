@@ -444,7 +444,7 @@ def _collecter_portails_publics(collected: dict, existing: set,
     from app.sources.paruvendu import ParuvenduSource
 
     deps = departements or DEPARTEMENTS
-    for src, nom, pages in ((NotairesSource(), "notaires", 6), (ParuvenduSource(), "paruvendu", 4)):
+    for src, nom, pages in ((NotairesSource(), "notaires", 8), (ParuvenduSource(), "paruvendu", 10)):
         neufs = vus = 0
         for dep in deps:
             for page in range(1, pages + 1):
@@ -453,9 +453,11 @@ def _collecter_portails_publics(collected: dict, existing: set,
                 try:
                     items = src.search(crit).items
                 except Exception as e:  # noqa: BLE001
-                    # L'API notaires répond 400 au-delà de la dernière page : c'est la
-                    # fin du département, pas une panne. On passe au suivant.
-                    if "400" not in str(e):
+                    # Fin de pagination, pas panne : notaires répond 400 au-delà de la
+                    # dernière page, paruvendu 404. Le plafond `pages` doit rester
+                    # au-dessus du nombre réel de pages, sinon c'est LUI qui tronque —
+                    # et une troncature ressemble trait pour trait à un département vide.
+                    if not any(code in str(e) for code in ("400", "404")):
                         print(f"  [{nom} {dep}] KO: {type(e).__name__}: {str(e)[:60]}", flush=True)
                     break
                 if not items:
