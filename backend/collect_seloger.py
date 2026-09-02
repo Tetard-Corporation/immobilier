@@ -32,7 +32,7 @@ from app.seed import seed_from_data_json, seed_if_empty
 from app.services.geo_communes import communes_for_postcode
 from app.services.search import upsert_listing
 from app.sources.scraper import ScraperBlocked
-from app.sources.seloger import SeLogerSource
+from app.sources.seloger import ABSENT, SeLogerSource
 from collect_leboncoin import PLOEMEUR_ZIPS, TETARD_ZIPS
 
 # Mêmes zones que la collecte Leboncoin, pour que les sets restent comparables.
@@ -79,6 +79,8 @@ def resolve_places(src: SeLogerSource, zips: list[str]) -> tuple[list[dict], dic
     centres: dict[str, dict] = {}
     vus: set[str] = set()
     sans_id: list[str] = []
+    budget = _BUDGET_RESOLUTION
+    epuise = False
     for cp in zips:
         communes = communes_for_postcode(cp)
         if not communes:
@@ -92,17 +94,52 @@ def resolve_places(src: SeLogerSource, zips: list[str]) -> tuple[list[dict], dic
             if commune.get("lat") is not None:
                 centres[nom] = {"lat": commune["lat"], "lon": commune["lon"],
                                 "code": commune["code"]}
-            pid = src.place_id(nom, cp[:2])
+            deja = src.place_id_en_cache(nom, cp[:2])
+            if deja is ABSENT:
+                if epuise or budget <= 0:
+                    epuise = True
+                    continue          # hors budget : ce sera pour la prochaine passe
+                budget -= 1
+                try:
+                    pid = src.place_id(nom, cp[:2])
+                except ScraperBlocked as e:
+                    # Ne PAS continuer : sans cookie valide, chaque commune suivante
+                    # serait comptée « sans placeId » alors qu'on est simplement bloqué.
+                    print(f"\n  BLOQUÉ à la résolution ({nom}) : {str(e)[:70]}", flush=True)
+                    print("  cookie à régénérer : python scripts/datadome_cookies.py "
+                          "--site seloger", flush=True)
+                    print(f"  {len(places)} communes résolues avant le blocage — elles "
+                          "sont en cache, la relance repart de là.", flush=True)
+                    epuise = True
+                    continue
+            else:
+                pid = deja
             if pid:
                 places.append({"place_id": pid, "nom": nom,
                                "population": commune.get("population") or 0})
             else:
+                # `pid` vaut None uniquement après une réponse de SeLoger, jamais après
+                # un blocage (qui fait `continue`) ni hors budget : cette commune n'est
+                # réellement pas indexée.
                 sans_id.append(f"{nom} ({cp})")
     if sans_id:
-        print(f"  {len(sans_id)} commune(s) sans placeId SeLoger : "
+        print(f"  {len(sans_id)} commune(s) que SeLoger n'indexe pas (vérifié, en cache) : "
               f"{', '.join(sans_id[:8])}{'…' if len(sans_id) > 8 else ''}", flush=True)
+    if epuise:
+        restantes = len(vus) - len(places) - len(sans_id)
+        print(f"\n  ⚠ RÉSOLUTION INCOMPLÈTE : ~{max(restantes, 0)} commune(s) pas encore "
+              f"résolues. Relancer pour en faire une tranche de plus (le cache est "
+              f"permanent, rien n'est redemandé deux fois).", flush=True)
     return places, centres
 
+
+# Nombre de communes NOUVELLES résolues par passage. Chaque résolution est une requête
+# SeLoger, et `docs/OPERATIONS.md` mesure qu'environ 200 requêtes passent avant que le
+# cookie Datadome ne se brûle. Une passe unique sur les ~1 300 communes de la zone têtard
+# a tenu 175 communes puis a tout perdu : les 53 lots suivants ont été refusés, la
+# collecte a ramené zéro bien. Le cache des placeIds étant permanent, on résout donc par
+# tranches — cinq à sept passages couvrent la zone, et elle est ensuite acquise.
+_BUDGET_RESOLUTION = int(os.environ.get("SELOGER_BUDGET_RESOLUTION", "150"))
 
 # Budget de population par lot. La SERP étant paginée GLOBALEMENT pour toutes les communes
 # d'une requête, un lot dispose de `pages` × ~20 résultats à partager. Grouper au nombre de
@@ -300,7 +337,13 @@ def main() -> int:
     n = db.query(Listing).filter(Listing.source == "seloger").count()
     print(f"\nEn base : {n} biens seloger.", flush=True)
 
-    if not args.no_export:
+    # Un export réécrit data.json ET retélécharge les photos : la dernière passe a
+    # tourné 9 h 55 pour republier à l'identique, alors que la collecte avait été
+    # entièrement bloquée et n'avait ramené aucun bien. Rien de neuf, rien à exporter.
+    if not enriched:
+        print("\nAucun bien neuf : export sauté (il ne republierait que l'existant).",
+              flush=True)
+    elif not args.no_export:
         from app.services.export_static import export_to_dir
         data_dir = os.path.join(os.path.dirname(__file__), "..", "data")
         print(f"\nExport vers {os.path.abspath(data_dir)} (photos incluses)...", flush=True)

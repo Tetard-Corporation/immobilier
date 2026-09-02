@@ -95,6 +95,16 @@ def _type_from_label(title: str | None) -> str | None:
     return None
 
 
+class _Absent:
+    """Sentinelle : distingue « pas encore demandé » de « demandé, pas indexé »."""
+
+    def __repr__(self) -> str:  # pragma: no cover - confort de debug
+        return "ABSENT"
+
+
+ABSENT = _Absent()
+
+
 class SeLogerSource(ScraperSource):
     name = "seloger"
     label = "SeLoger"
@@ -144,11 +154,29 @@ class SeLogerSource(ScraperSource):
         except Exception:  # noqa: BLE001 - cache best-effort
             pass
 
+    def place_id_en_cache(self, commune: str, departement: str):
+        """Valeur en cache pour cette commune, ou `ABSENT` si elle n'a jamais été résolue.
+
+        Permet à l'appelant de distinguer trois états là où `place_id` n'en rendait que
+        deux : « SeLoger l'indexe » (un identifiant), « SeLoger ne l'indexe pas » (None,
+        vérifié et mémorisé) et « pas encore demandé » (ABSENT). Sans ce troisième cas,
+        impossible de résoudre par tranches sans redemander ce qu'on sait déjà.
+        """
+        dep = str(departement)[:3].zfill(2)
+        return self._load_places().get(f"{_slug(commune)}-{dep}", ABSENT)
+
     def place_id(self, commune: str, departement: str) -> str | None:
         """`placeId` AVIV d'une commune, via son URL SEO. Mis en cache sur disque.
 
         Le cache mémorise aussi les échecs (valeur `None`) : une commune dont l'URL
-        SEO n'existe pas ne doit pas être redemandée à chaque collecte."""
+        SEO n'existe pas ne doit pas être redemandée à chaque collecte.
+
+        ⚠ `ScraperBlocked` REMONTE, il n'est pas absorbé. « SeLoger n'indexe pas cette
+        commune » et « nous sommes bloqués » se traduisaient tous deux par `None`, et
+        l'appelant ne pouvait pas les distinguer : une résolution lancée avec un cookie
+        mort a ainsi déclaré 1 034 communes « sans placeId » — un symptôme de blocage
+        présenté comme un fait de données, alors que le cache n'en contenait qu'une
+        seule. Les erreurs HTTP ordinaires, elles, restent absorbées (transitoires)."""
         dep = str(departement)[:3].zfill(2)
         key = f"{_slug(commune)}-{dep}"
         places = self._load_places()
@@ -160,8 +188,10 @@ class SeLogerSource(ScraperSource):
             html = self._get(path, headers=self._headers()).text
             m = _PLACE_RE.search(html)
             found = (m.group(1) or m.group(2)) if m else None
-        except (ScraperBlocked, httpx.HTTPError):
-            return None  # échec transitoire : ne PAS mémoriser
+        except ScraperBlocked:
+            raise           # l'appelant DOIT savoir : ce n'est pas « commune inconnue »
+        except httpx.HTTPError:
+            return None     # échec transitoire : ne PAS mémoriser
         places[key] = found
         self._save_places(places)
         return found
