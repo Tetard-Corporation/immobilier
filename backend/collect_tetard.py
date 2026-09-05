@@ -116,6 +116,24 @@ PREFERENCES = [
     # au-dessus de 70 le critère vaut 0,96 de moyenne pour un écart-type de 0,13.
     {"kind": "logement_compact", "weight": 2, "label": "Format maison de retrait (3 à 5 chambres, pas immense)",
      "params": {"ideal": 4, "max": 5, "m2_ok": 170, "m2_max": 300}},
+    # Le contrepoids du format, et la question que `chambres_min` ne pose pas : les
+    # chambres comptent la capacité EXISTANTE, celui-ci compte celle qu'on peut se donner.
+    # Une grange attenante, des combles aménageables, une dépendance — de quoi faire une
+    # chambre commune pour le week-end où tout le monde vient, sans acheter plus grand.
+    #
+    # Les deux ne se paient pas deux fois : ces volumes ne comptent pas dans la surface
+    # habitable (corrélation mesurée avec `surface_bati` : 0,04), donc ce critère ne
+    # rachète pas ce que `logement_compact` plafonne. Barème dans `services/modulable.py`.
+    #
+    # Poids 3, et non 4 : sur les 216 biens du set au-dessus de 70 — le vivier où se
+    # choisit une pépite — son écart-type est de 0,22, contre 0,17 pour les chambres et
+    # le format et 0,10 pour le jardin, devenus des paliers déguisés en poids. Il
+    # départage donc encore une fois le palier passé, sans mener le classement : son
+    # pouvoir de discrimination (poids × écart-type) le range au milieu du tableau, juste
+    # sous « peu de travaux ». À 4, il déplacerait cinq des vingt premiers pour une
+    # préférence que le groupe n'a pas classée au-dessus du prix ni de la montagne.
+    {"kind": "espace_modulable", "weight": 3,
+     "label": "Espace modulable en dortoir (grange, combles, dépendance)", "params": {}},
     # « Un peu de travaux possible, mais pas une rénovation complète » : le critère garde
     # sa forme (habitable 1,0 · à rafraîchir 1,0 · à rénover 0,85 · gros travaux 0,4 ·
     # ruine 0,1), c'est le PALIER qui s'ouvre d'un cran, à 0,85.
@@ -311,11 +329,30 @@ EXIGENCES = [
         "min_subscore": 0.79,  # = au-dessus du plancher (sous 180 k€ la note tombe à 0,78 max)
     },
     {
+        # Le palier exigeait le minimum PLEIN du set (0,99 = 3 chambres atteintes). Il ne
+        # plafonnait donc pas seulement les biens mal mesurés, ce pour quoi il existe : il
+        # écartait mécaniquement les 1 027 maisons de 2 chambres du catalogue — 16 % —
+        # quelles que soient leur vue, leur jardin ou leur exposition. Plafonnées à 75
+        # quand le site publie à partir de 75,5, elles ne pouvaient littéralement jamais
+        # apparaître, et personne ne pouvait donc les repêcher : ce qui n'est pas exporté
+        # n'existe pas pour la pondération personnelle, qui rejoue le classement dans le
+        # navigateur sur les seuls biens publiés.
+        #
+        # Le seuil descend donc à ce que valent DEUX chambres (2/3 = 0,67 sur un minimum
+        # de 3). Ce que le palier refuse encore est exactement ce pour quoi il a été
+        # écrit : une chambre ou moins (0,33), c'est-à-dire l'annonce d'une seule pièce
+        # arrivée deuxième d'un classement qui en demandait quatre, et le mobil-home de
+        # 35 m² dont le recoupement par la surface ramène les « 3 chambres estimées » à 1.
+        #
+        # Chacun reste libre de son exigence : `chambres_min` est un des critères dont le
+        # seuil se règle par personne (mesures.js), et un seuil personnel joue aussi sur
+        # les paliers. Qui veut 3 chambres les remet à 3 dans le panneau ⚖️ et retrouve
+        # exactement le classement d'avant ; qui en veut 2 les voit enfin.
         "above": 75,
-        "label": "Capacité d'accueil prouvée (requis au-dessus de 75)",
+        "label": "Au moins 2 chambres prouvées (requis au-dessus de 75)",
         "requires": ["chambres_min"],
         "mode": "all",
-        "min_subscore": 0.99,  # = le minimum de chambres atteint, estimation comprise
+        "min_subscore": 0.66,  # = 2 chambres sur un minimum de 3 (2/3) ; 1 chambre = 0,33
     },
     {
         # Le plafond de capacité, pendant du palier précédent. Il ne ferme la porte qu'aux

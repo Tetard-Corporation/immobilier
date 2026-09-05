@@ -342,6 +342,24 @@ de retravailler : après la correction Overpass, la règle « ≥ 80 » du set b
 sélectionnait 32 biens au lieu de 12. Recouper le set de quelqu'un d'autre au passage
 n'est pas une décision qui se prend à l'export.
 
+**Élargir le panier sans multiplier les photos** — `EXPORT_PHOTOS_MIN` télécharge les
+images du seul haut du panier ; en dessous, les fichiers déjà présents restent référencés
+et le front affiche « N non téléchargées ». À 665 biens publiés, tout télécharger fait
+8 000 images pour un dossier qui pèse déjà 1 Go et qu'on ne committe pas en entier.
+```bash
+EXPORT_PEPITES="1:65" EXPORT_MEILLEUR_ZONE="1:65" EXPORT_PHOTOS_MIN=74 \
+  python -m app.services.export_static ../data
+```
+Les favoris et les témoins de massif gardent leurs photos quel que soit leur score : ce
+sont les deux biens qu'on ouvre exprès.
+
+⚠️ **Ne pas prendre 70 comme seuil.** 157 biens notent exactement 70,0 parce qu'un palier
+les y plafonne (budget, travaux, jardin) : un seuil à 70 publie d'un coup tout ce qui
+échoue à une exigence dure. Les seuils qui séparent quelque chose sont au-dessus de 70,
+ou franchement en dessous. Repères mesurés le 5 septembre : 75,5 → 20 biens · 72 → 52 ·
+65 → 665 · 25 → 3 823 (soit tout le catalogue de la zone, ~44 Mo de `data.json` : le
+front n'a pas de pagination, à ce volume il faut d'abord alléger la charge utile).
+
 **Publier le meilleur bien de chaque massif**, en plus des pépites :
 ```bash
 EXPORT_PEPITES="1:80,4:80" EXPORT_MEILLEUR_ZONE="1:70" python -m app.services.export_static ../data
@@ -406,10 +424,21 @@ catalogue complet reste dans la base SQLite : un `python -m app.services.export_
 ```bash
 pytest                       # doit rester au vert
 ```
-Committer `data/data.json` **avec** les photos qu'il référence et les caches réchauffés,
-dans le même commit : c'est un instantané cohérent. Et **ne stager que ses propres
-fichiers** si une autre session travaille en parallèle (`git add <chemins>`, jamais
-`git add -A`).
+Committer `data/data.json` **avec** les photos qu'il référence, les caches réchauffés et
+`backend/data/catalogue.jsonl`, dans le même commit : c'est un instantané cohérent. Et
+**ne stager que ses propres fichiers** si une autre session travaille en parallèle
+(`git add <chemins>`, jamais `git add -A`).
+
+**`backend/data/catalogue.jsonl` est la sauvegarde du catalogue**, écrite par l'export à
+chaque passage : les 7 540 annonces collectées, sans le payload brut ni les scores
+recalculables, mais avec les URLs de photos. 26 Mo de texte, 5,8 Mo une fois compressés
+par git, et un diff lisible d'une collecte à l'autre (tri stable, clés triées).
+
+La base SQLite, elle, ne va PAS dans git : 108 Mo, au-dessus de la limite de 100 Mo par
+fichier de GitHub, et un binaire que git ne sait pas comparer d'une version à l'autre —
+chaque collecte ajouterait 100 Mo définitifs à l'historique. C'est ce dump qui la
+remplace, et `python -m app.seed` la reconstruit avec (aller-retour vérifié : 7 540 biens
+et leur appartenance aux sets, sans perte).
 
 **Ne pas committer `data/photos/` en entier.** Le dossier pèse 1 Go et l'essentiel ne sert
 à rien : le site ne peut afficher que les biens présents dans `data.json`, donc après une
@@ -441,7 +470,7 @@ repli silencieux.
 | Tous les biens d'une agence au même prix rond | l'extracteur a lu le **décor du site** : borne d'un curseur de recherche (« Prix compris entre 0 € et 1 000 000 € »), garantie financière. Le prix retenu est le plus gros montant plausible de la page, donc le décor gagne contre le bien | corrigé (les valeurs annoncées par un intervalle sont disqualifiées) ; second filet : l'ingestion écarte tout prix répété sur la moitié d'un catalogue |
 | Des milliers de biens disparaissent après une collecte leboncoin | `seed_from_data_json()` **vide** la table et la reconstruit depuis `data.json` — qui ne contient plus que les pépites | corrigé (`seed_if_empty()` par défaut, `--reseed` pour forcer) ; vérifier le compte en base avant/après |
 | Des biens SeLoger sans aucune photo | le parseur de cartes ne lisait pas les `<img>` | corrigé ; pour les biens déjà en base, rafraîchir leur `raw` sans ré-enrichir |
-| Des biens collectés disparaissent | une collecte a appelé `seed_from_data_json()`, qui **vide** la table avant de la reconstruire depuis `data.json` | exporter à chaque collecte ; `collect_seloger.py` ne seede que si la base est vide (`--reseed` pour forcer) |
+| Des biens collectés disparaissent | une collecte a appelé `seed_from_data_json()`, qui **vide** la table avant de la reconstruire | exporter à chaque collecte ; `collect_seloger.py` ne seede que si la base est vide (`--reseed` pour forcer). Depuis le 5 septembre la reconstruction repart de `backend/data/catalogue.jsonl` (tout le catalogue) et non de `data.json` (les seuls biens publiés) : la perte est réparable |
 | `warm.py` tourne 1 h et le cache ne grossit pas | `WARM_WORKERS` > 2 → Overpass répond 406/429, les erreurs étaient avalées | rester à 2 workers ; le message `⚠ … abandonnés` signale le rendement nul |
 | Réchauffage interminable (~13 s/requête) même à 2 workers | l'instance `overpass-api.de` est saturée (44 % d'échecs) | `OVERPASS_URL=https://overpass.osm.ch/api/interpreter` (0,4 s/requête, 100 %) |
 | Redirection vers `geo.captcha-delivery.com` | cookie Datadome brûlé par une rafale | `SCRAPER_RATE_LIMIT_MS=3000` ; regénérer le cookie |

@@ -32,7 +32,9 @@ mais avec des **filtres avancés**, des **jeux de filtres réutilisables**, des
 - **Filtre avancé par préférences pondérées (ranking)** : aucune exclusion, un
   `match_score` classe les biens. Préférences géo (corridor entre villes, proximité
   gare via open data, autour d'une ville), budget/SCI, chambres (plancher **et**
-  plafond), jardin, terrain, travaux légers, **exposition / durée d'ensoleillement**,
+  plafond), **espace modulable en dortoir** (grange, combles aménageables, dépendance —
+  la capacité d'accueil qu'on peut se donner, distincte des chambres existantes),
+  jardin, terrain, travaux légers, **exposition / durée d'ensoleillement**,
   sans vis-à-vis, nature d'exception, authentique. Critères `pending` prêts à
   s'activer (trajet train, fibre, relief, randonnées). **Parseur de brief en langage
   naturel** (`POST /api/brief/parse`, IA Claude + repli heuristique).

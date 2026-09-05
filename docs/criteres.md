@@ -70,6 +70,38 @@ d'un cran qu'il rattraperait ailleurs.
 Le panneau ⚖️ affiche enfin **ce que chacun demande** — « chambres min : Léo 5, Max 2 » —
 un désaccord que le poids seul ne peut pas exprimer.
 
+### 2 ter. Ce que le seuil de publication décide, et que le poids ne rattrape pas
+
+La pondération personnelle rejoue le classement **dans le navigateur, sur les biens
+publiés**. Ce qui n'est pas exporté est donc hors d'atteinte : aucun poids, aucun seuil
+personnel ne peut faire remonter un bien absent de `data.json`. Le seuil de publication
+n'est pas un réglage d'affichage, c'est ce qui borne l'espace des choix de tout le monde.
+
+Mesuré le 5 septembre 2026 sur les 3 831 biens du set dans sa zone :
+
+| Seuil | Biens publiés | dont 2 chambres | dont ≤ 80 m² |
+|---|---|---|---|
+| 75,5 (l'ancien) | 20 | 2 | 0 |
+| 72 | 52 | 8 | 3 |
+| **65** | **665** | **111** | **71** |
+| 25 | 3 823 | 624 | 803 |
+
+Deux verrous se cumulaient et un seul était visible. Le **palier de capacité** exigeait
+les 3 chambres pleines et plafonnait à 75 les 1 027 maisons de 2 chambres du catalogue,
+soit 16 % ; le **seuil de publication** était à 75,5. Aucune ne pouvait donc apparaître,
+et le réglage personnel ne pouvait rien y faire. Le palier descend à ce que valent deux
+chambres (0,66), et le seuil à 65.
+
+Attention au chiffre 70 : **157 biens notent exactement 70,0** parce qu'un palier les y
+plafonne (budget, travaux ou jardin). Un seuil à 70 ferait entrer d'un coup tout ce qui
+échoue à une exigence dure du groupe. Les seuils qui veulent dire quelque chose sont donc
+au-dessus de 70, ou franchement en dessous.
+
+Enfin, élargir le panier n'élargit pas les photos dans les mêmes proportions :
+`EXPORT_PHOTOS_MIN` télécharge les images du seul haut du panier (plus les favoris et les
+témoins de massif). Les autres biens s'affichent sans photo, avec la mention « N non
+téléchargées » — le dossier `data/photos/` pèse déjà 1 Go et ne se committe pas en entier.
+
 ```bash
 node tests/test_poids.mjs      # le recalcul contre les scores publiés
 node tests/test_mesures.mjs    # les formules portées contre les sous-scores publiés
@@ -162,6 +194,70 @@ Effet mesuré sur les 2 873 biens du set : **+1,3 point en moyenne** (médiane +
 une eau non conforme — c'est-à-dire ce que ces critères servent à voir. Les seuils de
 pépites (`--pepites 1:78.5`) sont calibrés sur l'ancienne échelle : **+1,3 point les
 desserre légèrement**, à recalibrer au prochain resserrage.
+
+## 4 bis. L'espace modulable en dortoir
+
+Ajouté le 5 septembre 2026 au set têtard, poids **3**. Ce qu'il mesure : les volumes
+qu'une annonce décrit et qu'on peut convertir en couchages — grange, combles et sous-sol
+aménageables, dépendance, bâtiment annexe, atelier, mezzanine, pièce à aménager.
+
+**Ce que les autres critères ne disaient pas.** `chambres_min` compte la capacité qui
+existe, `logement_compact` plafonne la maison qu'on habite. Aucun des deux ne répond à la
+question du week-end où tout le monde vient : où couche-t-on dix personnes sans acheter
+plus grand ? La réponse est presque toujours un volume qui ne compte pas dans la surface
+habitable, et c'est ce qui empêche le double paiement. La corrélation mesurée entre le
+nouveau sous-score et `surface_bati` est de **0,04** : le critère ne rachète pas ce que le
+format plafonne. Avec « authentique » elle est de 0,28, une grange venant souvent avec de
+la vieille pierre sans que l'un mesure l'autre.
+
+**Le silence de l'annonce note bas au lieu de sortir du calcul.** C'est le défaut corrigé
+au §5 sur les features bretonnes : une mention absente vaut `n/a`, sort du dénominateur,
+et le critère ne peut alors que faire monter celui dont l'annonce a employé le mot. Ici
+l'annonce lue sans volume convertible note **0,20**. Bas, parce que le groupe demande un
+espace prouvé ; non nul, parce qu'un grenier existe dans beaucoup de maisons anciennes
+sans que l'annonce le cite.
+
+**Trois niveaux de preuve**, parce qu'une grange et « de beaux volumes » ne promettent pas
+la même chose. Un signal fort (grange, dépendance, combles aménageables, gîte possible)
+vaut 0,55 ; un volume réel dont rien ne dit qu'on peut y dormir (atelier, mezzanine,
+combles nus) 0,30 ; une tournure d'agence (« beaux volumes », « grande pièce ») 0,12, qui
+ne peut rien emporter seule. Un seul signal fort donne 0,64 : une grange citée en passant
+n'est pas un dortoir, une grange avec des combles aménageables, si. « Combles perdus » et
+« non aménageable » neutralisent les signaux nus. Un signal fort **absorbe** le signal nu
+qu'il contient — sans quoi « combles aménageables », qui déclenche aussi « combles »,
+vaudrait 0,85 et des combles pèseraient plus qu'une grange. La cave est volontairement
+absente : citée par 31 % des annonces, elle ne se transforme pas en chambre.
+
+Mesuré le 5 septembre 2026 sur les 3 831 biens du set dans la zone (caches seuls, sans
+appel réseau : avec l'IGN en direct, deux passes ne donnaient pas le même chiffre) :
+
+| | Mesuré |
+|---|---|
+| Couverture | **100 %** des annonces (le texte suffit, aucun enrichissement requis) |
+| Moyenne / écart-type sur le catalogue | 0,45 / **0,30** |
+| Moyenne / écart-type **au-dessus de 70** | 0,84 / **0,22** |
+| Effet sur le score | médiane **−1,4 point**, de −4,4 à +6,6 |
+| Biens au-dessus de 70 | 196 → **216** |
+| Haut du panier | **4 des 20 premiers** changent |
+
+L'écart-type au-dessus de 70 est ce qui décide du poids, et il place ce critère au milieu
+du tableau : 0,22, contre 0,43 pour le bruit et 0,10 pour le jardin. Il départage donc
+plus que les critères devenus des paliers déguisés (`chambres_min` et le format sont à
+0,17, `jardin` à 0,10) et moins que ce qui mène le classement. À poids 3, son pouvoir de
+discrimination (poids × écart-type) vaut 0,65, à égalité avec « peu de travaux » et juste
+sous « village vivant » (0,70). C'est la place que la mesure lui donne. Il ne monte pas à
+4 : il déplacerait alors cinq des vingt premiers, pour une préférence que le groupe n'a
+classée ni au-dessus du prix ni au-dessus de la montagne.
+
+**L'effet sur le panier va dans l'autre sens que la médiane.** Celle-ci baisse de 1,4
+point, parce que 48 % du catalogue n'a aucun volume à montrer et reste au socle. En haut,
+l'effet s'inverse : les biens qui ont une grange gagnent jusqu'à 6,6 points, et au seuil
+de 75,5 le panier passe de **14 à 17 biens**. Vérifier la distribution avant de republier
+(la commande est dans `docs/OPERATIONS.md` §5) plutôt que de supposer le sens de l'effet.
+
+Barème : `backend/app/services/modulable.py`. La détection tourne à l'export, comme
+`pavillon_neuf` : elle ne dépend pas de la date d'enrichissement d'une ligne, donc ajouter
+un mot au registre re-note tout le catalogue au ré-export suivant.
 
 ## 5. La normalisation appliquée
 

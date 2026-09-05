@@ -36,6 +36,7 @@ PREFERENCE_KINDS = [
     "tranquillite",
     "coin_nature",
     "logement_compact",
+    "espace_modulable",
     "nature_exception",
     "authentic",
     "pas_pavillon",
@@ -553,6 +554,24 @@ def _eval_one(item, kind: str, params: dict):
         # Au-delà : on halve à chaque chambre supplémentaire. Décroissance continue plutôt
         # qu'un mur à 0, sinon une maison de 5 chambres et une de 8 se valent.
         return _NOTE_LIMITE * 0.5 ** (ch - limite), "ok", f"{ch} {source} (trop grand, > {limite})"
+
+    if kind == "espace_modulable":
+        # Le contrepoids de `logement_compact`, et sa question complémentaire : celui-là
+        # plafonne la maison qu'on habite, celui-ci compte le volume qu'on peut convertir
+        # en couchages pour le week-end où tout le monde vient. Les deux ne se paient pas
+        # deux fois — grange, combles et dépendance ne comptent pas dans la surface
+        # habitable (corrélation mesurée avec `surface_bati` : 0,04).
+        from .modulable import noter, resumer
+
+        if "espace_modulable" not in flags:
+            # Le détecteur n'est pas passé sur ce bien (chemin live sans annotation).
+            return None, "pending", "volumes convertibles non analysés"
+        signaux = flags["espace_modulable"]
+        if signaux is None:
+            # Annonce sans texte : rien à lire n'est pas la même chose que rien à trouver.
+            # Le socle pénaliserait un bien pour un silence qui n'est pas le sien.
+            return None, "n/a", "annonce sans description (ignoré)"
+        return noter(signaux, params), "ok", resumer(signaux)
 
     if kind == "feature":
         name = params.get("name")
