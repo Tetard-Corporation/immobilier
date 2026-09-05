@@ -1,8 +1,16 @@
 {
- "backed_up_at": "2026-09-01T09:25:41.078415+00:00",
+ "backed_up_at": "2026-09-05T08:22:33.242314+00:00",
  "source_url": "https://jmmflsrlegttdnxpidmo.supabase.co",
- "count": 22,
+ "count": 27,
  "votes": [
+  {
+   "bien_id": "bienici__ag060811-535241711",
+   "voter": "Léo",
+   "criterion": "__favori__",
+   "stars": 1,
+   "comment": null,
+   "updated_at": "2026-09-01T19:21:38.186+00:00"
+  },
   {
    "bien_id": "bienici__ag311656-519488597",
    "voter": "Léo",
@@ -18,6 +26,14 @@
    "stars": 3,
    "comment": "pas beaucoup de charme et peu de terrain, quand meme du vis-à-vis, mais rapport qualité prix intéressant",
    "updated_at": "2026-08-28T10:29:14.152+00:00"
+  },
+  {
+   "bien_id": "bienici__ag743447-508435454",
+   "voter": "Léo",
+   "criterion": "__favori__",
+   "stars": 1,
+   "comment": null,
+   "updated_at": "2026-09-01T12:35:45.556+00:00"
   },
   {
    "bien_id": "bienici__apimo-86511894",
@@ -148,6 +164,14 @@
    "updated_at": "2026-08-27T11:19:46.738+00:00"
   },
   {
+   "bien_id": "leboncoin__2740089146",
+   "voter": "Léo",
+   "criterion": "__favori__",
+   "stars": 1,
+   "comment": null,
+   "updated_at": "2026-09-01T12:33:09.101+00:00"
+  },
+  {
    "bien_id": "leboncoin__3006131432",
    "voter": "Léo",
    "criterion": "__overall__",
@@ -156,12 +180,28 @@
    "updated_at": "2026-08-28T10:27:14.278+00:00"
   },
   {
+   "bien_id": "leboncoin__3102112956",
+   "voter": "Léo",
+   "criterion": "__favori__",
+   "stars": 1,
+   "comment": null,
+   "updated_at": "2026-09-01T12:34:41.199+00:00"
+  },
+  {
    "bien_id": "leboncoin__3160538824",
    "voter": "Léo",
    "criterion": "__overall__",
    "stars": 1,
    "comment": "pas de charme et le terrain est petit, le long d'une route",
    "updated_at": "2026-08-28T10:28:00.278+00:00"
+  },
+  {
+   "bien_id": "leboncoin__3223361983",
+   "voter": "Léo",
+   "criterion": "__favori__",
+   "stars": 1,
+   "comment": null,
+   "updated_at": "2026-09-01T19:19:09.824+00:00"
   },
   {
    "bien_id": "seloger__25PZCJ513947",
