@@ -28,6 +28,7 @@ except ImportError:  # pragma: no cover
 
 from ..models import FilterSet, Listing, SavedListing, SearchHistory
 from .criteres import identifiant, registre
+from .preferences import ancres_de
 from .filtersets import resolve_criteria
 from .geo import haversine_km
 from .modulable import detecter as detecter_modulable
@@ -1090,7 +1091,8 @@ def _photos_publiees(out_dir: str | None, rel_base: str = "photos") -> set[str] 
         return None
 
 
-def _rejouer_avec_apriori(details: list[dict], apriori: dict[str, float]) -> float | None:
+def _rejouer_avec_apriori(details: list[dict], apriori: dict[str, float],
+                          ancres: tuple[float, float] | None = None) -> float | None:
     """Recalcule le match en comptant les critères non mesurés à leur valeur moyenne.
 
     Même formule que `preferences.evaluate` — moyenne pondérée puis contraste — mais le
@@ -1120,12 +1122,9 @@ def _rejouer_avec_apriori(details: list[dict], apriori: dict[str, float]) -> flo
         tot += poids
     if tot <= 0:
         return None
-    return round(_contraste_export(acc / tot) * 100 * facteur, 1)
-
-
-def _contraste_export(x: float) -> float:
-    from .preferences import _ANCRE_BASSE, _ANCRE_HAUTE
-    return max(0.0, min(1.0, (x - _ANCRE_BASSE) / (_ANCRE_HAUTE - _ANCRE_BASSE)))
+    from .preferences import _contraste
+    basse, haute = ancres if ancres else (0.20, 0.90)
+    return round(_contraste(acc / tot, basse, haute) * 100 * facteur, 1)
 
 
 def _garde_detail(scores_by_set: dict, row_score: float | None, seuil: float | None) -> bool:
@@ -1371,6 +1370,7 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
     # sur le site, alors que le bien concerne les deux.
     enfants: dict[int, set] = {}
     set_prefs: dict[int, list] = {}
+    set_ancres: dict[int, tuple] = {}
     sets_out = []
     for fs in sets:
         # Préférences RÉSOLUES : un sous-set hérite des préférences de son parent
@@ -1378,6 +1378,7 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
         resolved = resolve_criteria(fs) or {}
         prefs = resolved.get("preferences") or []
         set_prefs[fs.id] = prefs
+        set_ancres[fs.id] = ancres_de(resolved)
         set_zones[fs.id] = resolved.get("zone") or {}
         set_comparaison[fs.id] = resolved.get("zones") or []
         if fs.parent_id:
@@ -1394,6 +1395,8 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
             # seed rendait au set tous les biens qu'il avait écartés, jusqu'au prochain
             # passage d'un collecteur.
             "zone": set_zones.get(fs.id) or {},
+            # Les ancres partent avec le set : le front étire le score sur la même échelle.
+            "ancres": {"basse": set_ancres[fs.id][0], "haute": set_ancres[fs.id][1]},
             "preferences": [_pref_dump(p) for p in prefs],
         })
 
@@ -1513,7 +1516,7 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
                 continue  # bien hors de ce set (ex. montagne vs Pauline) -> pas de score
             if not _dans_la_zone(row, set_zones.get(fs_id)):
                 continue  # hors de la zone géographique déclarée par le set
-            match, details = evaluate(item, prefs)
+            match, details = evaluate(item, prefs, ancres=set_ancres.get(fs_id))
             if penalty and match is not None:
                 # Pénalité forte : ce type plafonne très bas quelles que soient ses qualités.
                 factor, plabel, pdetail = penalty
@@ -1584,7 +1587,8 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
             ap = apriori_par_set.get(int(fs_id_str)) or {}
             if not ap or sc.get("match_score") is None:
                 continue
-            neuf_score = _rejouer_avec_apriori(sc.get("details") or [], ap)
+            neuf_score = _rejouer_avec_apriori(sc.get("details") or [], ap,
+                                               set_ancres.get(int(fs_id_str)))
             if neuf_score is not None:
                 sc["match_score"] = neuf_score
 

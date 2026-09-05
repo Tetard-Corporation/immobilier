@@ -430,6 +430,14 @@ def ensure_sets(db) -> None:
                 # bien n'est plus « du set » — il vient d'une autre collecte et se
                 # hissait dans le classement en marquant partout ailleurs. La marge de
                 # 20 % laisse la place à qui veut monter son propre plafond.
+                # Ancres du contraste, PROPRES à ce set. La note finale étire la
+                # moyenne pondérée entre ces deux bornes : elles disent ce que « ne rien
+                # cocher » et « tout cocher » valent ICI. Mesuré le 5 septembre 2026 sur
+                # 2 698 biens : la moyenne va de 0,42 à 0,79. Avec les ancres communes
+                # 0,20/0,90, le set n'utilisait que 53 % de l'échelle 0-100 — et son
+                # score se comparait à celui d'un autre groupe qui ne cherche pas la même
+                # chose. À revoir si le set change beaucoup de critères.
+                "ancres": {"basse": 0.40, "haute": 0.80},
                 "zone": {"est_axe_lyon_valence": True, "prix_max_membre": PRIX_MAX * 1.2}}
     fs = db.get(FilterSet, SET_ID)
     if fs is None:

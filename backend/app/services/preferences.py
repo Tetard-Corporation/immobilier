@@ -159,12 +159,32 @@ def _clamp(x: float) -> float:
 # haut (0,90 = un bien qui coche presque tout). Fixes = le score reste absolu : il ne
 # dépend que du bien et du set, pas des autres annonces du lot. Transformation monotone :
 # le classement est rigoureusement identique, seul l'étalement change.
+# Ancres PAR DÉFAUT. Chaque set déclare les siennes (`criteria["ancres"]`), parce que les
+# trois sets ne cherchent pas la même chose et n'atteignent pas les mêmes moyennes :
+# mesuré le 5 septembre 2026, têtard va de 0,42 à 0,79 de moyenne pondérée, Pauline de
+# 0,40 à 0,86, le littoral de 0,48 à 0,83. Avec une paire commune, chacun n'utilisait
+# qu'à peine la moitié de l'échelle (têtard 31→84, littoral 39→90) et les scores de deux
+# sets se comparaient sans que rien ne le justifie — ce sont des groupes différents, qui
+# ne se prêtent pas de biens.
 _ANCRE_BASSE = 0.20
 _ANCRE_HAUTE = 0.90
 
 
-def _contraste(x: float) -> float:
-    return _clamp((x - _ANCRE_BASSE) / (_ANCRE_HAUTE - _ANCRE_BASSE))
+def _contraste(x: float, basse: float = _ANCRE_BASSE, haute: float = _ANCRE_HAUTE) -> float:
+    if haute <= basse:
+        return _clamp(x)
+    return _clamp((x - basse) / (haute - basse))
+
+
+def ancres_de(criteria: dict | None) -> tuple[float, float]:
+    """Les ancres déclarées par un set, ou celles par défaut."""
+    a = (criteria or {}).get("ancres") or {}
+    try:
+        basse = float(a.get("basse", _ANCRE_BASSE))
+        haute = float(a.get("haute", _ANCRE_HAUTE))
+    except (TypeError, ValueError):
+        return _ANCRE_BASSE, _ANCRE_HAUTE
+    return (basse, haute) if haute > basse else (_ANCRE_BASSE, _ANCRE_HAUTE)
 
 
 # Tracés ferroviaires réels (hubs intermédiaires) pour les axes courants : un axe
@@ -820,7 +840,8 @@ def _eval_one(item, kind: str, params: dict):
 #  - « dans le budget », « pas de ruine » -> le sous-score du critère lui-même, qui tombe
 #    franchement (voir `_budget_sub`) et que chacun peut pondérer ou re-seuiller.
 
-def evaluate(item, preferences, apriori: dict[str, float] | None = None) -> tuple[float | None, list[dict]]:
+def evaluate(item, preferences, apriori: dict[str, float] | None = None,
+             ancres: tuple[float, float] | None = None) -> tuple[float | None, list[dict]]:
     """Calcule le match_score (0-100) et le détail par préférence.
 
     `apriori` (optionnel) : {libellé: sous-score moyen du catalogue}. Un critère NON
@@ -869,6 +890,7 @@ def evaluate(item, preferences, apriori: dict[str, float] | None = None) -> tupl
 
     if total_w == 0:
         return None, details
-    score = round(_contraste(acc / total_w) * 100, 1)
+    basse, haute = ancres if ancres else (_ANCRE_BASSE, _ANCRE_HAUTE)
+    score = round(_contraste(acc / total_w, basse, haute) * 100, 1)
     details.sort(key=lambda d: d.get("contribution", -1), reverse=True)
     return score, details

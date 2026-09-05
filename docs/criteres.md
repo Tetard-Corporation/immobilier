@@ -330,15 +330,29 @@ Conséquence directe : le seuil des pépites doit suivre, sinon le site ne publi
 (2 biens au-dessus de 78,5 contre 9 avant). **78,5 → 75,5**, ce qui redonne une quinzaine
 de pépites ; le plancher des témoins de massif passe de 70 à 65 pour la même raison.
 
-### Une question laissée ouverte : les ancres du contraste
+### Les ancres du contraste, désormais par set
 
-`_ANCRE_BASSE = 0,20` / `_ANCRE_HAUTE = 0,90` prétendent encadrer « la moyenne pondérée
-réellement atteignable ». Mesuré : sur le set têtard elle va de **0,44 à 0,81**, sur le
-littoral de 0,40 à 0,81 — la borne haute n'est jamais approchée, la borne basse jamais
-frôlée. Le score n'utilise donc que la plage 34–90. Mais le set Pauline, lui, monte à
-0,90 : une même paire d'ancres ne peut pas coller aux trois. Des ancres **par set**
-seraient le bon design ; c'est une décision de groupe, pas une correction, donc rien n'a
-été touché.
+Le score final étire la moyenne pondérée entre deux **ancres** : la valeur qui vaut 0 et
+celle qui vaut 100. Elles étaient communes aux trois sets (0,20 / 0,90) alors que les trois
+groupes ne cherchent pas la même chose et n'atteignent pas les mêmes moyennes. Résultat
+mesuré le 5 septembre 2026 : chacun n'utilisait qu'à peine la moitié de l'échelle.
+
+| Set | Moyenne pondérée réelle | Avec 0,20/0,90 | Ancres retenues | Échelle utilisée |
+|---|---|---|---|---|
+| têtard | 0,42 → 0,79 | scores 31–84 | **0,40 / 0,80** | 1–94 |
+| Pauline | 0,40 → 0,86 | scores 28–94 | **0,38 / 0,88** | 3–96 |
+| Littoral breton | 0,48 → 0,83 | scores 39–90 | **0,45 / 0,85** | 4–96 |
+
+Les ancres sont **déclarées** dans le set, pas recalculées à chaque export : le score reste
+absolu (il ne dépend que du bien et du set, jamais des autres annonces du lot). À revoir
+quand un set change beaucoup de critères. Elles partent dans `data.json` avec le set, et
+le front étire sur la même échelle.
+
+Un changement d'ancres est une transformation affine : il **ne réordonne rien**. Vérifié
+sur 180 000 paires — les seules inversions (36, soit 0,02 %) concernent des biens
+*déclassés* entre eux (viager ×0,15 contre sous compromis ×0,10), à 6-7 points de score :
+un facteur multiplie un score décalé, donc deux facteurs différents peuvent permuter tout
+en bas du classement.
 
 ## 6. Ce qui n'a pas été ajouté, et pourquoi
 
@@ -400,8 +414,9 @@ bénéfice du doute, ni une condamnation.
 Le top 50 du set contient maintenant 5 biens entre 250 et 300 k€, 6 sous le plancher de
 180 k€, 2 en gros travaux et **15 dont l'état n'est pas renseigné**. Avant, les paliers en
 laissaient passer zéro. C'est le prix d'un classement continu, et chacun peut le corriger
-pour lui — sauf sur un point : **rien ne permet aujourd'hui de dire « je ne veux pas des
-biens dont l'état est inconnu »**. L'a priori les met à la moyenne (0,80, parce que les
-annonces qui parlent de l'état parlent surtout des biens en bon état) ; un malus
-d'incertitude a été testé et ne change presque rien (15 → 12 biens). C'est une lacune
-connue, pas un oubli.
+pour lui — sauf sur un point, tranché le 5 septembre 2026 : **on ne peut pas dire « je ne
+veux pas des biens dont l'état est inconnu »**, et on s'en tient là. L'a priori les met à
+la moyenne (0,80, parce que les annonces qui parlent de l'état parlent surtout des biens en
+bon état). Un malus d'incertitude a été testé et ne change presque rien (15 biens → 12) ;
+un réglage personnel « l'inconnu vaut bas » a été proposé et écarté. Le proxy par la
+moyenne est assumé.

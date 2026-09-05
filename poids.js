@@ -31,7 +31,15 @@ const Poids = (() => {
   // Ancres du contraste, identiques au backend (services/preferences.py) : la moyenne
   // pondérée d'une vingtaine de critères se concentre au centre, on l'étire entre la
   // valeur basse et la valeur haute réellement atteignables.
+  // Ancres PAR DÉFAUT : chaque set déclare les siennes (`set.ancres`), parce que les trois
+  // groupes ne cherchent pas la même chose et n'atteignent pas les mêmes moyennes. Avec une
+  // paire commune, chacun n'utilisait que la moitié de l'échelle 0-100.
   const ANCRE_BASSE = 0.20, ANCRE_HAUTE = 0.90;
+  const ancresDe = (set) => {
+    const a = (set && set.ancres) || {};
+    const b = Number(a.basse), h = Number(a.haute);
+    return h > b ? [b, h] : [ANCRE_BASSE, ANCRE_HAUTE];
+  };
   // Lignes de détail qui ne sont pas des critères pondérables : l'exigence (plafond) et
   // le disqualifiant (viager, sous compromis…) sont des verdicts, pas des préférences.
   const HORS_CRITERES = new Set(["exigence", "disqualifiant"]);
@@ -64,7 +72,7 @@ const Poids = (() => {
   }
   const idDeDetail = (d, ix) => ix.parLabel[d.label || d.kind] || ix.parKind[d.kind] || d.kind;
   const clamp01 = (x) => Math.max(0, Math.min(1, x));
-  const contraste = (x) => clamp01((x - ANCRE_BASSE) / (ANCRE_HAUTE - ANCRE_BASSE));
+  const contraste = (x, basse = ANCRE_BASSE, haute = ANCRE_HAUTE) => clamp01((x - basse) / (haute - basse));
   const arrondi1 = (x) => Math.round(x * 10) / 10;
 
   // --- lecture des réglages ------------------------------------------------
@@ -246,7 +254,8 @@ const Poids = (() => {
       tot += w;
     }
     if (tot <= 0) return null;
-    return arrondi1(contraste(acc / tot) * 100);
+    const [basse, haute] = ancresDe(set);
+    return arrondi1(contraste(acc / tot, basse, haute) * 100);
   }
 
   // A priori par critère, tel que l'export l'a calculé sur le catalogue du set.

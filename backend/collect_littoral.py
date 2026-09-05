@@ -127,8 +127,16 @@ PIVOTS = [
 
 def ensure_set(db) -> None:
     fs = db.get(FilterSet, SET_ID)
-    criteria = {"property_types": ["terrain", "maison"], "preferences": PREFERENCES,
-}
+    criteria = {
+        "property_types": ["terrain", "maison"],
+        "preferences": PREFERENCES,
+        # Ancres du contraste, PROPRES à ce set : elles disent ce que « ne rien cocher »
+        # et « tout cocher » valent ICI. Mesuré le 5 septembre 2026 sur 819 biens, la
+        # moyenne pondérée va de 0,48 à 0,83 ; avec les ancres communes 0,20/0,90 le set
+        # n'utilisait que la moitié de l'échelle, et son score se comparait à celui d'un
+        # groupe qui ne cherche pas la même chose. À revoir si les critères changent.
+        "ancres": {"basse": 0.45, "haute": 0.85},
+    }
     if fs is None:
         db.add(FilterSet(id=SET_ID, name=SET_NAME, description=SET_DESC, criteria=criteria, parent_id=None))
     else:

@@ -781,3 +781,26 @@ def test_a_renover_ne_vaut_plus_presque_habitable():
     assert sous("renover") == 0.65
     assert sous("gros_travaux") < sous("renover")
     assert sous("ruine") < sous("gros_travaux")
+
+
+def test_ancres_par_set_etirent_sans_reordonner():
+    """Chaque set déclare l'échelle sur laquelle il étire sa moyenne pondérée.
+
+    Trois groupes qui ne cherchent pas la même chose n'atteignent pas les mêmes moyennes :
+    avec une paire d'ancres commune, chacun n'utilisait que la moitié de 0-100. Le
+    changement est une transformation AFFINE — il étire, il ne réordonne pas.
+    """
+    from app.services.preferences import ancres_de
+
+    prefs = [Preference(kind="budget", weight=4, params={"budget_max": 250000}),
+             Preference(kind="has_terrain", weight=3, params={"min_surface": 1000})]
+    biens = [_listing(type_bien="maison", prix=p, surface_terrain=t, flags={})
+             for p, t in ((120000, 2000), (180000, 900), (240000, 400), (260000, 100))]
+    large = [evaluate(b, prefs, ancres=(0.20, 0.90))[0] for b in biens]
+    serre = [evaluate(b, prefs, ancres=(0.40, 0.80))[0] for b in biens]
+    assert [i for i, _ in sorted(enumerate(large), key=lambda t: -t[1])] == \
+           [i for i, _ in sorted(enumerate(serre), key=lambda t: -t[1])]
+    assert (max(serre) - min(serre)) > (max(large) - min(large))
+    assert ancres_de({}) == (0.20, 0.90)
+    assert ancres_de({"ancres": {"basse": 0.4, "haute": 0.8}}) == (0.4, 0.8)
+    assert ancres_de({"ancres": {"basse": 0.9, "haute": 0.2}}) == (0.20, 0.90)
