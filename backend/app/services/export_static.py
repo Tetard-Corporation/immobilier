@@ -784,6 +784,77 @@ class _RowItem:
             self.flags.update(extra_flags)
 
 
+# --- Sauvegarde du catalogue --------------------------------------------------------
+# La base SQLite n'est PAS versionnable : 108 Mo, au-dessus de la limite de 100 Mo par
+# fichier de GitHub, et un binaire dont les pages bougent partout à chaque écriture — donc
+# 100 Mo ajoutés définitivement à l'historique du dépôt à chaque collecte, sans que git
+# puisse compresser d'une version à l'autre.
+#
+# Ce que `data.json` sauvegardait à sa place ne suffisait pas : il ne contient QUE les
+# biens publiés — 612 sur 7 540, soit 8 %. Le repli documenté (`--reseed`) reconstruisait
+# donc une base amputée de 92 % du catalogue, et c'est exactement le piège que le runbook
+# décrit : « des biens collectés disparaissent — une collecte a appelé
+# `seed_from_data_json()`, qui vide la table ».
+#
+# Le catalogue part donc dans un dump TEXTE, que git sait comparer d'une version à
+# l'autre : 18,6 Mo de JSONL, 4,1 Mo une fois compressés par git. On écarte les deux
+# colonnes qui ne servent pas à reconstruire — `raw` (64 Mo de payload brut) et
+# `score_details` (26 Mo, recalculés à chaque export) — en gardant du premier les seules
+# URLs de photos, sans quoi une base restaurée ne pourrait plus télécharger les images des
+# biens jamais publiés.
+_CATALOGUE = os.path.join(os.path.dirname(__file__), "..", "..", "data", "catalogue.jsonl")
+_DUMP_EXCLUS = ("raw", "score_details")
+
+
+def dump_catalogue(db, chemin: str) -> dict:
+    """Écrit la sauvegarde texte du catalogue. Renvoie {'biens': n, 'octets': n}.
+
+    Lu par `app.seed`, qui reconstruit la base avec, au lieu des seuls biens publiés.
+    Trié et à clés triées : sans ça le diff git d'une collecte à l'autre serait illisible
+    et le fichier ne se compresserait pas entre versions.
+
+    Le chemin est EXIGÉ, sans valeur par défaut. Avec une valeur par défaut pointant sur
+    le dépôt, `pytest` écrasait la sauvegarde des 7 540 biens par les 8 de sa base
+    temporaire : une bibliothèque qui écrit dans un chemin du dépôt en effet de bord finit
+    par y écrire au mauvais moment. C'est la CLI d'export qui décide où, et elle seule.
+    """
+    from sqlalchemy import select
+
+    colonnes = [c for c in Listing.__table__.columns if c.name not in _DUMP_EXCLUS]
+    # Lecture en flux par le Core et non par l'ORM : l'ORM garderait les 7 540 objets
+    # dans sa carte d'identité, `raw` compris, pour un fichier qu'on écrit ligne à ligne.
+    resultat = db.execute(
+        select(*colonnes, Listing.__table__.c.raw).execution_options(stream_results=True))
+    lignes = []
+    for row in resultat:
+        d = {}
+        for c in colonnes:
+            v = getattr(row, c.name)
+            if v is None:
+                continue
+            d[c.name] = v.isoformat() if isinstance(v, datetime) else v
+        urls = _photo_urls(row)
+        if urls:
+            d["photo_urls"] = urls
+        lignes.append(d)
+    lignes.sort(key=lambda d: (d.get("source") or "", str(d.get("external_id") or "")))
+    contenu = "".join(json.dumps(d, ensure_ascii=False, sort_keys=True) + "\n" for d in lignes)
+
+    os.makedirs(os.path.dirname(os.path.abspath(chemin)), exist_ok=True)
+    tmp = f"{chemin}.tmp-{os.getpid()}"  # atomique, comme data.json
+    try:
+        with open(tmp, "w", encoding="utf-8") as fh:
+            fh.write(contenu)
+            fh.flush()
+            os.fsync(fh.fileno())
+        os.replace(tmp, chemin)
+    except BaseException:
+        if os.path.exists(tmp):
+            os.unlink(tmp)
+        raise
+    return {"biens": len(lignes), "octets": len(contenu.encode())}
+
+
 def _pref_dump(pref) -> dict:
     """Sérialise une préférence, `id` compris : le libellé change avec les paramètres et
     d'un set à l'autre, l'id non — c'est lui qui porte les poids personnels (cf.
@@ -1379,10 +1450,14 @@ def export_to_dir(db, out_dir: str, *, download_photos: bool = True,
                   min_match_score: float | None = None, primary_set_id: int | None = None,
                   pepites: dict | None = None, conserver: dict | None = None,
                   meilleur_par_zone: dict | None = None,
-                  photos_min: float | None = None) -> dict:
+                  photos_min: float | None = None,
+                  catalogue: str | None = None) -> dict:
     """Écrit out_dir/data.json (+ photos/) et renvoie les stats.
 
     `min_match_score`/`primary_set_id`/`pepites` : voir build_dataset (mode « pépites »).
+    `catalogue` : chemin de la sauvegarde texte du catalogue (voir `dump_catalogue`).
+    Absent, aucune sauvegarde n'est écrite — c'est ce que veulent les tests, qui tournent
+    sur une base temporaire de quelques biens.
     """
     os.makedirs(out_dir, exist_ok=True)
     data = build_dataset(db, out_dir=out_dir, download_photos=download_photos,
@@ -1406,6 +1481,11 @@ def export_to_dir(db, out_dir: str, *, download_photos: bool = True,
         if os.path.exists(tmp):
             os.unlink(tmp)
         raise
+    # La sauvegarde du catalogue suit l'export, et n'est pas une commande à part : un
+    # fichier qu'il faut penser à régénérer est un fichier qui ment au bout de trois
+    # semaines. L'export est déjà le moment documenté où l'on committe.
+    if catalogue:
+        data["stats"]["catalogue"] = dump_catalogue(db, catalogue)
     return data["stats"]
 
 
@@ -1442,9 +1522,12 @@ if __name__ == "__main__":  # python -m app.services.export_static [out_dir]
             conserver[int(sid.strip())] = _biens_publies(chemin.strip())
     # Photos du HAUT du panier seulement : EXPORT_PHOTOS_MIN=75.5
     _pmin = os.environ.get("EXPORT_PHOTOS_MIN")
+    # Sauvegarde du catalogue, sauf EXPORT_NO_CATALOGUE=1 (export vers un dossier d'essai).
+    _cat = None if os.environ.get("EXPORT_NO_CATALOGUE") else _CATALOGUE
     stats = export_to_dir(SessionLocal(), out, download_photos=not no_photos,
                           min_match_score=min_score, primary_set_id=primary,
                           pepites=pepites or None, conserver=conserver or None,
                           meilleur_par_zone=meilleur_zone or None,
-                          photos_min=float(_pmin) if _pmin else None)
+                          photos_min=float(_pmin) if _pmin else None,
+                          catalogue=_cat)
     print(f"Export -> {out}/data.json : {stats}")
