@@ -283,7 +283,12 @@ const Poids = (() => {
   // critères pesés n'est mesuré sur ce bien) — même convention que le backend.
   function match(bien, set, poids, params) {
     const sb = (bien.scores_by_set || {})[String(set.id)];
-    if (!sb || sb.match_score == null) return null;
+    if (sb == null || sb.match_score == null) return null;
+    // Détail non publié : l'export ne le joint qu'aux biens au-dessus d'un seuil, parce
+    // qu'il pèse les deux tiers de data.json. On ne peut donc pas repondérer ce bien —
+    // mais le FAIRE DISPARAÎTRE serait pire : un catalogue qui rétrécit quand on change
+    // de lentille se lit comme un filtre qu'on n'a pas posé. Il garde le score du set.
+    if (!sb.details) return sb.match_score;
     const brut = agrege(bien, sb.details, set, poids, params);
     if (brut == null) return null;
     return arrondi1(brut * penalite(bien, sb, set));
