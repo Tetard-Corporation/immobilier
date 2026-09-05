@@ -21,7 +21,7 @@ for (const set of DATA.sets) {
   for (const p of set.preferences || []) parLabel[p.label || p.kind] = p;
   for (const b of DATA.biens) {
     const sb = (b.scores_by_set || {})[String(set.id)];
-    if (!sb) continue;
+    if (!sb || !Array.isArray(sb.details)) continue;   // détail non publié : rien à rejouer
     for (const d of sb.details) {
       const p = parLabel[d.label || d.kind];
       if (!p) continue;

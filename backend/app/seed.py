@@ -80,7 +80,7 @@ def seed_from_data_json(path: str = _DEFAULT) -> dict:
             description=s.get("description"),
             criteria={"property_types": s.get("property_types", ["maison"]),
                       "preferences": s.get("preferences", []),
-                      "exigences": s.get("exigences", [])},
+                      "zone": s.get("zone") or {}},
         ))
     db.commit()
 

@@ -53,7 +53,10 @@ t("recalcul fidèle au backend", pires === 0, `${pires} écarts > 0,15`);
 
 const set = DATA.sets[0];
 const sid = String(set.id);
-const biens = DATA.biens.filter((b) => (b.scores_by_set || {})[sid]?.match_score != null);
+// L'instantané publié ne joint le détail par critère qu'au-dessus d'un seuil : les autres
+// biens ne sont pas repondérables, il n'y a rien à vérifier sur eux.
+const biens = DATA.biens.filter((b) => (b.scores_by_set || {})[sid]?.match_score != null
+  && (b.scores_by_set[sid].details || []).length > 0);
 // Un bien plafonné par une exigence ou déclassé ne bouge pas quand les poids changent :
 // le plafond tient dans les deux sens, c'est la règle du backend.
 const bloque = (b) => b.scores_by_set[sid].details.some((d) => d.kind === "exigence" || d.kind === "disqualifiant");
@@ -112,7 +115,7 @@ t("tout ignorer = non classé", Poids.match(biens[0], set, rien, null) === null)
 
 // 7. Un bien déclassé (viager, sous compromis) le reste quels que soient les poids.
 for (const b of DATA.biens) {
-  const s = Object.keys(b.scores_by_set || {}).find((k) => b.scores_by_set[k].details.some((d) => d.kind === "disqualifiant"));
+  const s = Object.keys(b.scores_by_set || {}).find((k) => (b.scores_by_set[k].details || []).some((d) => d.kind === "disqualifiant"));
   if (!s) continue;
   const st = DATA.sets.find((x) => String(x.id) === s);
   t("pénalité conservée", Poids.match(b, st, Poids.pour(st, "Max"), null) < 40);

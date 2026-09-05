@@ -1389,6 +1389,11 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
             "id": fs.id, "name": fs.name, "parent_id": fs.parent_id,
             "description": fs.description,
             "property_types": ptypes or ["maison"],
+            # La ZONE part avec le set : c'est elle qui dit qui lui appartient (à l'est du
+            # Rhône, sous 300 k€). Sans elle dans data.json, une base reconstruite par le
+            # seed rendait au set tous les biens qu'il avait écartés, jusqu'au prochain
+            # passage d'un collecteur.
+            "zone": set_zones.get(fs.id) or {},
             "preferences": [_pref_dump(p) for p in prefs],
         })
 
