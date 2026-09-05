@@ -63,9 +63,9 @@ même règle finissent par diverger : trois garde-fous.
    les paramètres du set et vérifie qu'elles redonnent le sous-score exporté :
    21 949 sous-scores, **0 écart**. Une divergence se verrait là, pas dans un classement.
 
-Un seuil personnel joue aussi sur les **paliers du set** : dire « mon budget est 120 k€ »
-ramène bien un bien à 250 k€ sous le palier « dans le budget », au lieu de le pénaliser
-d'un cran qu'il rattraperait ailleurs.
+Un seuil personnel agit par la **note**, pas par une falaise : dire « mon budget est
+120 k€ » fait descendre continûment les biens trop chers, chacun à sa place, au lieu de
+les coller tous sur une même valeur (mesuré : 30 biens chers, 26 valeurs distinctes).
 
 Le panneau ⚖️ affiche enfin **ce que chacun demande** — « chambres min : Léo 5, Max 2 » —
 un désaccord que le poids seul ne peut pas exprimer.
@@ -148,10 +148,11 @@ ils décrivent ce que le groupe refuse, pas ce qui distingue deux bons candidats
 | Jardin | 77 % |
 | Qualité de l'eau | 82 % |
 
-`evaluate` renormalise sur les seuls critères mesurés : **un bien dont l'exposition n'a
-jamais été calculée n'est pas pénalisé, il est jugé sans elle.** Les paliers d'exigences
-(`EXIGENCES` dans `collect_tetard.py`) ferment cette porte en tête de classement — c'est
-exactement leur raison d'être — mais pas en dessous de 70/78/85.
+`evaluate` renormalisait sur les seuls critères mesurés : **un bien dont l'exposition
+n'avait jamais été calculée n'était pas pénalisé, il était jugé sans elle** — et il
+montait. Deux paliers d'exigences fermaient cette porte en tête de classement. Depuis le
+5 septembre 2026, c'est l'**a priori** qui la ferme partout : un critère non mesuré compte
+à la moyenne du catalogue (exportée avec le critère), ni mieux ni moins bien.
 
 La pondération personnelle rend ce point plus sensible : mettre 5 à l'exposition, c'est
 classer la moitié du catalogue sans elle. Le panneau ⚖️ affiche donc la couverture de
@@ -346,3 +347,61 @@ seraient le bon design ; c'est une décision de groupe, pas une correction, donc
   (`scripts/build_socio_dataset.py`). Un critère toujours `pending` est une case vide.
 - **Baisse de prix** : constatée sur 2 % des biens. Trop rare pour peser.
 - **Nuisances de proximité** : 14 % — et déjà lues par `tranquillite`.
+
+## 7. Les paliers retirés (5 septembre 2026)
+
+Un **palier** plafonnait le score tant qu'une exigence du set n'était pas remplie : « pas
+de jardin prouvé, tu ne dépasses pas 70 ». Neuf sur le set têtard, un sur le littoral.
+Ils ont été supprimés. Trois mesures ont emporté la décision.
+
+**Ils écrasaient le classement.** 117 biens exactement à 70,0 sur le set — et **300** sous
+un profil « montagne ». Le haut de la liste était un mur de scores identiques, où aucune
+pondération ne pouvait plus rien départager.
+
+**Ils ne protégeaient que le set.** Sous les poids de quelqu'un d'autre, le profil montagne
+avait déjà 26 biens sous le plancher de prix et 4 ruines dans son top 50 : les paliers ne
+filtraient pas ce classement-là, ils se contentaient de l'aplatir. Tant qu'ils étaient là,
+personne ne pouvait avoir un classement vraiment différent de celui du set.
+
+**Ce que la suppression rend possible**, mesuré sur cinq profils tranchés :
+
+| | avant | après |
+|---|---|---|
+| Rang déplacé par un profil | 116 à 167 places | **594 à 929 places** |
+| Top 10 conservé | 1-2 sur 10 | **0-2 sur 10** |
+| Amplitude d'un même bien | 3 → 100 | **0 → 100** |
+| Plus gros paquet à une même valeur | 117 biens | **23 biens** |
+| Valeurs distinctes dans le top 300 | 58 | **105** |
+
+### Ce qui reprend leur travail
+
+Un palier faisait deux choses très différentes. Chacune est reprise là où elle a sa place.
+
+**1. Empêcher un bien mal mesuré de monter par accident.** C'était le rôle des paliers
+« attractivité mesurée » et « rapport qualité/prix mesuré ». `evaluate` renormalisait sur
+les critères notés, donc ne pas être mesuré faisait monter. Remplacé par l'**a priori** :
+un critère non mesuré compte désormais à la **moyenne du catalogue**, calculée à l'export
+et exportée avec le critère (`preferences[].apriori`). L'inconnu vaut la moyenne — ni le
+bénéfice du doute, ni une condamnation.
+
+**2. Dire « hors budget, c'est non ».** Repris à deux endroits :
+
+- la **note du critère** : le budget tombe à zéro dès **+15 %** de dépassement (contre
+  +33 % avant), les gros travaux valent 0,4 et une ruine 0,1. Chacun peut pondérer ce
+  critère, ou poser son propre plafond — ce qu'un palier de set interdisait ;
+- l'**appartenance au set** : au-delà de 300 k€ (le budget + 20 %), un bien n'est plus
+  « du set » têtard. Ce n'est pas une note, c'est une frontière, au même titre que la zone
+  géographique. Elle existe parce que la base est partagée : 348 biens venus d'autres
+  collectes, jusqu'à 440 000 €, entraient dans têtard et se hissaient dans le haut du
+  classement en marquant sur les vingt-six autres critères.
+
+### Ce que ça coûte, honnêtement
+
+Le top 50 du set contient maintenant 5 biens entre 250 et 300 k€, 6 sous le plancher de
+180 k€, 2 en gros travaux et **15 dont l'état n'est pas renseigné**. Avant, les paliers en
+laissaient passer zéro. C'est le prix d'un classement continu, et chacun peut le corriger
+pour lui — sauf sur un point : **rien ne permet aujourd'hui de dire « je ne veux pas des
+biens dont l'état est inconnu »**. L'a priori les met à la moyenne (0,80, parce que les
+annonces qui parlent de l'état parlent surtout des biens en bon état) ; un malus
+d'incertitude a été testé et ne change presque rien (15 → 12 biens). C'est une lacune
+connue, pas un oubli.

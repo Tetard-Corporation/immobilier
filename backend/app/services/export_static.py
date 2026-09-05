@@ -280,10 +280,50 @@ _SOUS_COMPROMIS_RE = re.compile(
     r"sous\s+(?:un\s+)?(?:compromis|offre|promesse)|compromis\s+sign|promesse\s+sign|"
     r"offre\s+accept[ée]|bien\s+vendu\b|d[ée]j[àa]\s+vendu", re.I)
 _COMPROMIS_MATCH_FACTOR = 0.1  # un match de 80 tombe à 8
+_DEMANDE_MATCH_FACTOR = 0.05   # il n'y a pas de bien : le plus fort déclassement
 
 
 def _detect_sous_compromis(*texts: str | None) -> bool:
     return any(t and _SOUS_COMPROMIS_RE.search(t) for t in texts)
+
+
+# Demande d'achat : quelqu'un CHERCHE à acheter, il ne vend rien. Leboncoin ne sépare pas
+# les deux, et ces annonces portent un prix symbolique — 1 €, 200 €, 5 000 € — que le
+# score lit comme une affaire exceptionnelle. Vécu : « Cherche maison sur Veynes..
+# habitable. 70 m2..avec terrain » à 1 €, et « Je cherche une petite maison à rénover »
+# à 5 000 €, tous deux classés dans le premier tiers du set.
+#
+# Le motif exige le verbe EN TÊTE d'annonce et un chercheur au SINGULIER. « recherche »
+# au fil du texte est un mot ordinaire d'annonce de vente (« idéal pour qui recherche le
+# calme ») : 1 393 annonces de la base l'emploient ainsi. Et « NOUS recherchons » est du
+# démarchage d'agence collé en tête d'une vraie annonce — « nous recherchons activement
+# des biens sur ce secteur pour nos clients », trois biens bien à vendre. Le vendeur parle
+# à la première personne du pluriel, l'acheteur au singulier.
+_DEMANDE_ACHAT_RE = re.compile(
+    r"\A\s*(?:bonjour[\s,.!]*)?(?:(?:je\s+suis\s+)?(?:un\s+)?particulier[\s,]*)?"
+    r"(?:je\s+|j\s+)?(?:recherche|cherche)\b", re.I)
+# Prix invraisemblable pour un BÂTI. Un loyer mensuel lu comme un prix de vente, ou un
+# champ vide : « Agréable appartement » à 800 €, « chalet » à 4 000 €. Le seuil ne
+# s'applique PAS aux terrains — 6 500 € pour 4 650 m² en zone naturelle est un vrai prix,
+# et quatre annonces de la base sont dans ce cas.
+_PRIX_INVRAISEMBLABLE = 10_000
+# La règle s'applique à TOUT sauf au terrain déclaré, et non à une liste de types bâtis :
+# les biens d'agence n'ont pas de type renseigné, et une liste positive les laissait
+# passer — « Agréable appartement » à 800 € et un bien à 0 € restaient publiés.
+_TYPE_EXEMPTE_DU_PLANCHER = "terrain"
+
+
+def _detect_demande_achat(prix, type_bien: str | None, *texts: str | None) -> bool:
+    """Annonce d'ACHAT (quelqu'un cherche) ou prix qui ne peut pas être un prix de vente.
+
+    Les deux se traitent ensemble parce qu'ils produisent le même dégât : un prix
+    dérisoire que le critère budget lit comme une affaire exceptionnelle, et qui remonte
+    le bien dans le classement précisément parce qu'il n'est pas à vendre.
+    """
+    if any(t and _DEMANDE_ACHAT_RE.match(t.strip()) for t in texts):
+        return True
+    return (prix is not None and prix < _PRIX_INVRAISEMBLABLE
+            and (type_bien or "") != _TYPE_EXEMPTE_DU_PLANCHER)
 
 
 # Mobil-home, chalet de camping, habitation légère de loisirs : même problème
@@ -1009,6 +1049,16 @@ def _dans_la_zone(row, zone: dict | None) -> bool:
         # Géoloc manquante : on ne retire pas un bien sur une mesure absente.
         if cote is False:
             return False
+    # Plafond de prix d'APPARTENANCE, à ne pas confondre avec le critère budget. Le
+    # critère note un dépassement ; celui-ci dit qu'à ce prix-là, le bien n'est pas de ce
+    # set du tout. Il existe parce que la base est partagée : un bien collecté par un
+    # autre set (ou sans `set_ids`, ce qui vaut « tous les sets ») entrait dans têtard à
+    # 440 000 € pour un budget de 250 000, et se hissait dans le haut du classement en
+    # marquant sur les vingt-six autres critères. La marge au-dessus du budget est voulue
+    # — quelqu'un peut vouloir monter un peu, c'est son réglage personnel qui le dira.
+    plafond = zone.get("prix_max_membre")
+    if plafond and row.prix is not None and row.prix > float(plafond):
+        return False
     return True
 
 
@@ -1038,6 +1088,44 @@ def _photos_publiees(out_dir: str | None, rel_base: str = "photos") -> set[str] 
         return set(suivies) if suivies else None
     except Exception:  # noqa: BLE001 - git absent, dépôt absent, timeout : pas de filtre
         return None
+
+
+def _rejouer_avec_apriori(details: list[dict], apriori: dict[str, float]) -> float | None:
+    """Recalcule le match en comptant les critères non mesurés à leur valeur moyenne.
+
+    Même formule que `preferences.evaluate` — moyenne pondérée puis contraste — mais le
+    dénominateur inclut désormais les critères qu'on n'a pas su mesurer sur ce bien. Se
+    rejoue sur les détails, sans re-mesurer : c'est une renormalisation, pas une mesure.
+    """
+    acc = tot = 0.0
+    facteur = 1.0
+    for det in details:
+        if det.get("kind") == "disqualifiant":
+            facteur = float(det.get("facteur") or 1.0)
+            continue
+        if det.get("kind") == "exigence":
+            continue
+        poids = float(det.get("weight") or 0)
+        if not poids:
+            continue
+        if det.get("status") == "ok" and det.get("subscore") is not None:
+            sub = float(det["subscore"])
+        else:
+            lab = det.get("label") or det.get("kind")
+            if lab not in apriori:
+                continue
+            sub = float(apriori[lab])
+            det["apriori"] = round(sub, 3)
+        acc += poids * sub
+        tot += poids
+    if tot <= 0:
+        return None
+    return round(_contraste_export(acc / tot) * 100 * facteur, 1)
+
+
+def _contraste_export(x: float) -> float:
+    from .preferences import _ANCRE_BASSE, _ANCRE_HAUTE
+    return max(0.0, min(1.0, (x - _ANCRE_BASSE) / (_ANCRE_HAUTE - _ANCRE_BASSE)))
 
 
 def _garde_detail(scores_by_set: dict, row_score: float | None, seuil: float | None) -> bool:
@@ -1283,7 +1371,6 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
     # sur le site, alors que le bien concerne les deux.
     enfants: dict[int, set] = {}
     set_prefs: dict[int, list] = {}
-    set_exigences: dict[int, list] = {}
     sets_out = []
     for fs in sets:
         # Préférences RÉSOLUES : un sous-set hérite des préférences de son parent
@@ -1291,7 +1378,6 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
         resolved = resolve_criteria(fs) or {}
         prefs = resolved.get("preferences") or []
         set_prefs[fs.id] = prefs
-        set_exigences[fs.id] = resolved.get("exigences") or []
         set_zones[fs.id] = resolved.get("zone") or {}
         set_comparaison[fs.id] = resolved.get("zones") or []
         if fs.parent_id:
@@ -1304,9 +1390,6 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
             "description": fs.description,
             "property_types": ptypes or ["maison"],
             "preferences": [_pref_dump(p) for p in prefs],
-            # Paliers au-delà desquels certains critères deviennent obligatoires. Persisté
-            # pour le round-trip seed->export, comme property_types.
-            "exigences": set_exigences.get(fs.id) or [],
         })
 
     saved = {(s.source, s.external_id): s for s in db.query(SavedListing).all()}
@@ -1318,6 +1401,7 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
     biens_out = []
     prepares: list[dict] = []
     n_viager = 0
+    n_demande = 0
     n_mobil = 0
     n_compromis = 0
     n_temoins = 0
@@ -1347,6 +1431,10 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
         is_resid = _detect_residence_tourisme(row.description, row.adresse)
         is_mobil = _detect_mobilhome(row.description, row.adresse)
         is_compromis = _detect_sous_compromis(row.description, row.adresse)
+        is_demande = _detect_demande_achat(row.prix, row.type_bien,
+                                           row.description, row.adresse)
+        if is_demande:
+            n_demande += 1
         if is_viager:
             n_viager += 1
         if is_resid:
@@ -1355,7 +1443,13 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
             n_mobil += 1
         if is_compromis:
             n_compromis += 1
-        if is_compromis:
+        if is_demande:
+            # Tout en tête : il n'y a pas de bien. Une demande d'achat porte un prix
+            # symbolique que le critère budget lit comme une affaire exceptionnelle, et
+            # c'est précisément parce qu'elle n'est pas à vendre qu'elle remontait.
+            penalty = (_DEMANDE_MATCH_FACTOR, "Demande d'achat / prix invraisemblable",
+                       "ce n'est pas un bien à vendre — retiré du classement")
+        elif is_compromis:
             # En tête, parce qu'un bien retiré du marché n'a plus de qualités à discuter.
             penalty = (_COMPROMIS_MATCH_FACTOR, "Déjà sous compromis / sous offre",
                        "le bien n'est plus à vendre — retiré du classement")
@@ -1414,12 +1508,15 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
                 continue  # bien hors de ce set (ex. montagne vs Pauline) -> pas de score
             if not _dans_la_zone(row, set_zones.get(fs_id)):
                 continue  # hors de la zone géographique déclarée par le set
-            match, details = evaluate(item, prefs, set_exigences.get(fs_id))
+            match, details = evaluate(item, prefs)
             if penalty and match is not None:
                 # Pénalité forte : ce type plafonne très bas quelles que soient ses qualités.
                 factor, plabel, pdetail = penalty
                 match = round(match * factor, 1)
-                details.insert(0, {"kind": "disqualifiant", "label": plabel,
+                # Le FACTEUR est écrit dans le détail : la seconde passe (a priori) et le
+                # front en ont besoin, et le retrouver par division est fragile — c'est
+                # ainsi qu'un viager est ressorti à 73,7 au lieu de 11.
+                details.insert(0, {"kind": "disqualifiant", "label": plabel, "facteur": factor,
                                    "weight": 0, "status": "ko", "subscore": 0, "detail": pdetail})
             scores_by_set[str(fs_id)] = {"match_score": match, "details": details}
 
@@ -1438,6 +1535,7 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
     # La part se calcule sur le CATALOGUE du set (tout ce qu'il peut classer) et non sur
     # la sélection publiée — un panier de trente pépites ne répondrait pas à la question.
     couverture: dict[int, dict[str, int]] = {}
+    somme: dict[int, dict[str, float]] = {}
     n_catalogue: dict[int, int] = {}
     for prep in prepares:
         for fs_id_str, sc in prep["scores_by_set"].items():
@@ -1455,13 +1553,35 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
                     # dans le set breton).
                     cle_det = det.get("label") or det.get("kind")
                     vus[cle_det] = vus.get(cle_det, 0) + 1
+                    som = somme.setdefault(fs_id, {})
+                    som[cle_det] = som.get(cle_det, 0.0) + float(det["subscore"])
+    apriori_par_set: dict[int, dict[str, float]] = {}
     for fs in sets_out:
         n = n_catalogue.get(fs["id"], 0)
         vus = couverture.get(fs["id"], {})
+        som = somme.get(fs["id"], {})
+        ap = apriori_par_set.setdefault(fs["id"], {})
         for pref in fs["preferences"]:
-            mesures = vus.get(pref["label"]) if pref.get("label") else None
+            lab = pref.get("label")
+            mesures = vus.get(lab) if lab else None
             pref["couverture"] = round(mesures / n, 3) if (n and mesures is not None) else (0.0 if n else None)
+            # Sous-score moyen du catalogue : ce que vaut « on ne sait pas ». Exporté avec
+            # le critère, pour que le front rejoue exactement le même calcul.
+            if lab and mesures:
+                ap[lab] = round(som.get(lab, 0.0) / mesures, 4)
+                pref["apriori"] = ap[lab]
         fs["n_catalogue"] = n
+
+    # Deuxième passe : le score tient compte des critères NON mesurés, à l'a priori. Il se
+    # rejoue à partir des détails déjà calculés — inutile de re-mesurer quoi que ce soit.
+    for prep in prepares:
+        for fs_id_str, sc in prep["scores_by_set"].items():
+            ap = apriori_par_set.get(int(fs_id_str)) or {}
+            if not ap or sc.get("match_score") is None:
+                continue
+            neuf_score = _rejouer_avec_apriori(sc.get("details") or [], ap)
+            if neuf_score is not None:
+                sc["match_score"] = neuf_score
 
     # --- Sélection : le seuil des pépites, PLUS un témoin par zone ---------------------
     # Deux passes et non une seule, parce que « le meilleur bien de chaque zone » n'est
@@ -1553,6 +1673,7 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
                   "n_searches": len(searches_out), "n_viager": n_viager,
                   "n_residence_tourisme": n_resid, "n_mobilhome": n_mobil,
                   "n_sous_compromis": n_compromis,
+                  "n_demande_achat": n_demande,
                   "n_temoins_zone": n_temoins},
     }
 

@@ -82,6 +82,8 @@ _DPE_ECHELLE = {"A": 1.0, "B": 0.95, "C": 0.85, "D": 0.70, "E": 0.50, "F": 0.25,
 # affaire » (1.0), et note obtenue en consommant exactement 100 % du budget.
 _BUDGET_CONFORT = 0.70
 _BUDGET_LIMITE = 0.80
+# Dépassement à partir duquel la note budget vaut zéro.
+_BUDGET_DEPASSEMENT_NUL = 0.15
 # Prix PLANCHER : en dessous, la note redescend. « Pas de secret : quand un bien est à
 # 100 ou 150 k€, c'est qu'il y a un problème » — un problème que l'annonce ne nomme
 # jamais (emplacement, mitoyenneté, humidité, second œuvre entier, bail). Sans ce
@@ -218,10 +220,14 @@ def _eval_one(item, kind: str, params: dict):
         if ratio <= 1.0:
             sub = 1.0 - (ratio - _BUDGET_CONFORT) / (1.0 - _BUDGET_CONFORT) * (1.0 - _BUDGET_LIMITE)
             return sub, "ok", f"{int(item.prix)}€ — {round(ratio * 100)}% du budget {int(budget)}€ (haut de fourchette)"
-        # Hors budget = quasi rédhibitoire (retour récurrent du groupe) -> pénalité forte :
-        # +10% ~70%, +20% ~40%, +33% et plus ~0% de la note « au budget ».
+        # Hors budget = quasi rédhibitoire (retour récurrent du groupe). C'était un PALIER
+        # qui le disait — plafond à 70 tant que le budget n'était pas tenu. Les paliers
+        # ayant été retirés (ils aplatissaient le classement de tout le monde), la note
+        # doit le porter seule : elle tombe à zéro dès +15 % au lieu de +33 %.
+        # +5 % -> 0,53 · +10 % -> 0,27 · +15 % et au-delà -> 0.
         over = ratio - 1.0
-        return _BUDGET_LIMITE * _clamp(1 - over * 3), "ok", f"{int(item.prix)}€ > budget {int(budget)}€ (+{round(over * 100)}%, hors budget)"
+        return _BUDGET_LIMITE * _clamp(1 - over / _BUDGET_DEPASSEMENT_NUL), "ok", \
+            f"{int(item.prix)}€ > budget {int(budget)}€ (+{round(over * 100)}%, hors budget)"
 
     if kind == "chambres_min":
         mn = params.get("min", 1)
@@ -798,67 +804,34 @@ def _eval_one(item, kind: str, params: dict):
     return None, "n/a", "inconnu"
 
 
-def _exigence_remplie(exig: dict, par_kind: dict) -> tuple[bool, str]:
-    """Une exigence est-elle satisfaite ? Renvoie (ok, explication)."""
-    requis = exig.get("requires") or []
-    seuil = float(exig.get("min_subscore", 0.5))
-    mode = exig.get("mode", "any")
+# Les PALIERS ont été retirés le 5 septembre 2026. Ils plafonnaient un bien au palier
+# quand une exigence n'était pas remplie — « pas de jardin prouvé, tu ne dépasses pas 70 ».
+# Deux raisons de les supprimer, mesurées sur le catalogue têtard (3 046 biens) :
+#
+#  - ils écrasaient le classement : 127 biens exactement à la même valeur pour le set,
+#    300 pour un profil « montagne » — un mur de scores identiques en haut de la liste ;
+#  - ils ne protégeaient QUE le set. Sous les poids de quelqu'un d'autre, le même profil
+#    montagne avait déjà 26 biens sous le plancher de prix et 4 ruines dans son top 50 :
+#    les paliers ne filtraient pas, ils aplatissaient. Tant qu'ils étaient là, personne
+#    ne pouvait avoir un classement vraiment différent de celui du set.
+#
+# Ce qu'ils portaient est repris ailleurs, à sa place :
+#  - « critère mesuré exigé » -> l'a priori de `evaluate` (l'inconnu vaut la moyenne) ;
+#  - « dans le budget », « pas de ruine » -> le sous-score du critère lui-même, qui tombe
+#    franchement (voir `_budget_sub`) et que chacun peut pondérer ou re-seuiller.
 
-    remplis, manquants = [], []
-    for kind in requis:
-        d = par_kind.get(kind)
-        etiquette = (d or {}).get("label") or kind
-        if d and d.get("status") == "ok" and (d.get("subscore") or 0) >= seuil:
-            remplis.append(etiquette)
-        else:
-            # Un critère jamais mesuré (pending / n/a) ne peut pas valider une exigence :
-            # sans la mesure, rien ne prouve que le bien la remplit.
-            manquants.append(etiquette)
-
-    if mode == "all":
-        return (not manquants), ", ".join(manquants)
-    return (bool(remplis)), ", ".join(manquants)
-
-
-def appliquer_exigences(score: float | None, details: list[dict],
-                        exigences: list[dict] | None) -> tuple[float | None, list[dict]]:
-    """Plafonne le score tant qu'une exigence de palier n'est pas remplie.
-
-    Un bien mal mesuré peut monter très haut par accident : `evaluate` renormalise sur les
-    seuls critères notés, donc un bien dont trois critères sur dix-huit sont mesurés est
-    jugé sur ces trois-là. Les paliers hauts servent à dire « au-delà de ce score, tel
-    critère n'est plus optionnel » — sans mesure de la vue mer, un bien ne peut plus
-    prétendre au haut du classement.
-
-    Chaque exigence : {"above": 90, "requires": [kinds], "mode": "any"|"all",
-    "min_subscore": 0.5, "label": "..."}. Le score est ramené au palier, jamais annulé.
-    """
-    if score is None or not exigences:
-        return score, details
-    par_kind = {d.get("kind"): d for d in details}
-    for exig in sorted(exigences, key=lambda e: float(e.get("above", 0))):
-        palier = float(exig.get("above", 0))
-        if score <= palier:
-            continue
-        ok, manquants = _exigence_remplie(exig, par_kind)
-        if ok:
-            continue
-        etiquette = exig.get("label") or f"Requis au-dessus de {palier:g}"
-        details.append({
-            "kind": "exigence", "label": etiquette, "weight": 0, "status": "ko",
-            "subscore": None,
-            "detail": f"plafonné à {palier:g} (score {score:g}) — manque : {manquants}"
-                      if manquants else f"plafonné à {palier:g} (score {score:g})",
-        })
-        score = palier
-    return score, details
-
-
-def evaluate(item, preferences, exigences: list[dict] | None = None) -> tuple[float | None, list[dict]]:
+def evaluate(item, preferences, apriori: dict[str, float] | None = None) -> tuple[float | None, list[dict]]:
     """Calcule le match_score (0-100) et le détail par préférence.
 
-    `exigences` (optionnel) : paliers au-delà desquels certains critères deviennent
-    obligatoires — voir `appliquer_exigences`.
+    `apriori` (optionnel) : {libellé: sous-score moyen du catalogue}. Un critère NON
+    MESURÉ sur ce bien reçoit cette valeur au lieu d'être retiré du dénominateur.
+
+    C'est structurel, pas cosmétique. Sans a priori, `evaluate` renormalise sur les seuls
+    critères notés : un bien dont l'exposition n'a jamais été calculée est jugé sans elle,
+    donc sur un critère de poids 4 en moins — et il MONTE. Ne pas être mesuré devenait un
+    avantage, que les paliers « attractivité mesurée » et « rapport qualité/prix mesuré »
+    rattrapaient par une falaise. L'a priori le traite à la source : l'inconnu vaut la
+    moyenne, ni mieux ni moins bien.
     """
     if not preferences:
         return None, []
@@ -886,10 +859,16 @@ def evaluate(item, preferences, exigences: list[dict] | None = None) -> tuple[fl
             total_w += weight
             acc += weight * sub
             entry["contribution"] = round((weight * sub), 3)
+        elif apriori is not None and (label or kind) in apriori:
+            # Non mesuré : il compte quand même, à la valeur moyenne du catalogue.
+            defaut = float(apriori[label or kind])
+            total_w += weight
+            acc += weight * defaut
+            entry["apriori"] = round(defaut, 3)
         details.append(entry)
 
     if total_w == 0:
         return None, details
     score = round(_contraste(acc / total_w) * 100, 1)
     details.sort(key=lambda d: d.get("contribution", -1), reverse=True)
-    return appliquer_exigences(score, details, exigences)
+    return score, details

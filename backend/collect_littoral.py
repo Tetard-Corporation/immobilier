@@ -96,15 +96,15 @@ PREFERENCES = [
 # mesuré (mer à moins de ~1 km, subscore ≥ 0,6), soit l'annonce le dit explicitement
 # (bord de mer, bord d'eau, vue). Un bien qui ne remplit rien de tout cela est ramené à 90 :
 # il reste une pépite, il cesse d'être en tête.
-EXIGENCES = [
-    {
-        "above": 90,
-        "label": "Vue ou contact avec l'eau (requis au-dessus de 90)",
-        "requires": ["distance_mer", "bord_de_mer", "bord_eau", "vue"],
-        "mode": "any",
-        "min_subscore": 0.6,
-    },
-]
+# Les PALIERS ont été retirés le 5 septembre 2026 : ils plafonnaient un bien tant qu'une
+# exigence n'était pas remplie. Mesuré sur le catalogue, ils collaient 127 biens du set
+# (et 300 sous un profil « montagne ») exactement à la même valeur, et ils s'appliquaient
+# à la lentille de CHACUN — personne ne pouvait donc avoir un classement vraiment
+# différent. Ce qu'ils exigeaient est passé dans les critères eux-mêmes : la note budget
+# tombe à zéro dès +15 % de dépassement, celle des travaux à 0,4 pour de gros travaux et
+# 0,1 pour une ruine, et un critère non mesuré vaut désormais la moyenne du catalogue au
+# lieu de disparaître du calcul (cf. `evaluate(..., apriori=)`).
+
 
 # Pivots côtiers. Le sud (Ploemeur) est DÉJÀ largement en base -> on met le NORD
 # (Côte de Granit Rose, l'archétype front-de-mer) EN PREMIER pour qu'il ne soit pas
@@ -128,7 +128,7 @@ PIVOTS = [
 def ensure_set(db) -> None:
     fs = db.get(FilterSet, SET_ID)
     criteria = {"property_types": ["terrain", "maison"], "preferences": PREFERENCES,
-                "exigences": EXIGENCES}
+}
     if fs is None:
         db.add(FilterSet(id=SET_ID, name=SET_NAME, description=SET_DESC, criteria=criteria, parent_id=None))
     else:

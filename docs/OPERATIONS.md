@@ -353,10 +353,10 @@ EXPORT_PEPITES="1:65" EXPORT_MEILLEUR_ZONE="1:65" EXPORT_PHOTOS_MIN=74 \
 Les favoris et les témoins de massif gardent leurs photos quel que soit leur score : ce
 sont les deux biens qu'on ouvre exprès.
 
-⚠️ **Ne pas prendre 70 comme seuil.** 157 biens notent exactement 70,0 parce qu'un palier
-les y plafonne (budget, travaux, jardin) : un seuil à 70 publie d'un coup tout ce qui
-échoue à une exigence dure. Les seuils qui séparent quelque chose sont au-dessus de 70,
-ou franchement en dessous. Repères mesurés le 5 septembre : 75,5 → 20 biens · 72 → 52 ·
+⚠️ **L'avertissement « ne pas prendre 70 » ne vaut plus.** Il existait parce que les
+paliers ramenaient 157 biens exactement à 70,0 ; ils ont été retirés le 5 septembre 2026
+et le classement n'a plus de marche artificielle — le plus gros paquet de biens à une même
+valeur est passé de 117 à 23. N'importe quel seuil sépare désormais quelque chose. Repères mesurés le 5 septembre : 75,5 → 20 biens · 72 → 52 ·
 65 → 665 · 25 → 3 823 (soit tout le catalogue de la zone, ~44 Mo de `data.json` : le
 front n'a pas de pagination, à ce volume il faut d'abord alléger la charge utile).
 

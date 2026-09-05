@@ -342,13 +342,6 @@ function badges(bien) {
   if (bien.score != null) parts.push(`<span class="badge score" title="Score d'investissement">📈 ${fix1(bien.score)}</span>`);
   // Témoin de zone : publié parce qu'il est le meilleur de son massif, pas parce qu'il
   // tient le seuil des pépites. Sans ce badge, son score bas passerait pour une erreur.
-  // Plafonné par une exigence : son score est ramené au palier et n'en bougera pas, quels
-  // que soient les poids. Sans ce badge, la file de biens tous à 78,0 se lit comme un bug.
-  const plafond = (sb.details || []).find((d) => d.kind === "exigence");
-  if (plafond) {
-    parts.push(`<span class="badge plafond" title="${escAttr((plafond.label || "Exigence non remplie") + " — " + (plafond.detail || ""))}">`
-      + `⌐ plafonné</span>`);
-  }
   if (bien.zone_temoin) parts.push(`<span class="badge temoin" title="Meilleur bien de ce massif à ce budget — publié pour la comparaison entre régions, pas parce qu'il atteint le seuil">⛰ témoin</span>`);
   return `<div class="badges">${parts.join("")}</div>`;
 }

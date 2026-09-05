@@ -255,157 +255,15 @@ PREFERENCES = [
 # notés est donc jugé sur ceux-là, et peut monter très haut sans qu'on sache combien de
 # monde il loge. C'est exactement ce qui s'est produit : une annonce d'une seule pièce
 # deuxième d'un classement qui demandait quatre chambres.
-EXIGENCES = [
-    {
-        # « Grand max 250 k€ » est un PLAFOND, pas une préférence. Le critère budget, lui,
-        # est pondéré : il pénalise le dépassement sans l'exclure, et un bien excellent
-        # partout ailleurs le compense sans peine. Mesuré : à 450 k€ de plafond, sept des
-        # treize pépites étaient au-dessus de 300 k€, jusqu'à 417 k€ ; au plafond de
-        # 300 k€, six des quatorze pépites publiées dépassaient encore 250 k€.
-        # Le palier est bas (70) pour que le hors-budget sorte franchement du panier.
-        "above": 70,
-        "label": "Dans le budget (requis au-dessus de 70)",
-        "requires": ["budget"],
-        "mode": "all",
-        "min_subscore": 0.79,  # = prix ≤ budget (la note au plafond exact vaut 0,80)
-    },
-    {
-        # « Pas de gros travaux » est un PLANCHER, au même titre que le budget. Le critère
-        # `light_works` étant pondéré, une ruine bien placée et bon marché se rattrapait
-        # ailleurs.
-        #
-        # Le seuil s'ouvre d'un cran, de 0,95 à 0,85 : « un peu de travaux possible, mais
-        # pas une rénovation complète ». Passent donc habitable (1,0), à rafraîchir (1,0)
-        # et à rénover (0,85) ; restent écartés les gros travaux (0,4) et la ruine (0,1).
-        # Le tour précédent avait rangé « à rénover » du côté des gros travaux ; le groupe
-        # est revenu dessus. La distinction tient : `classify` réserve gros_travaux aux
-        # formules « rénovation complète / totale / lourde », « gros œuvre », « tout à
-        # refaire », « travaux importants » — c'est-à-dire exactement la rénovation
-        # complète que le groupe refuse, et non le chantier de second œuvre qu'il accepte.
-        #
-        # L'état non renseigné ne valide pas — c'est 45 % des annonces, donc le palier
-        # coûte cher. C'est assumé : sur un site fait pour voter, un bien dont on ignore
-        # l'état ne se juge pas, exactement comme un bien sans photo.
-        "above": 70,
-        "label": "Habitable, à rafraîchir ou à rénover (requis au-dessus de 70)",
-        "requires": ["light_works"],
-        "mode": "all",
-        # 0,6 et non 0,85 : la note de « à rénover » est passée de 0,85 à 0,65 (elle
-        # disait qu'une rénovation vaut presque une maison habitable). L'admissibilité
-        # est inchangée — habitable 1,0 · à rafraîchir 1,0 · à rénover 0,65 passent,
-        # gros travaux 0,4 et ruine 0,1 restent écartés — mais le seuil ne colle plus
-        # à la note du cas douteux : une erreur de classement ne traverse plus d'un
-        # centième.
-        "min_subscore": 0.6,
-    },
-    {
-        # « Jardin requis ». Sans palier, un bien sans extérieur restait éligible : le
-        # critère terrain était pondéré, donc rattrapable. Seuil 0,5 = environ 110 m²
-        # mesurés, ou un extérieur décrit dans l'annonce sans surface (0,7). Ne rien
-        # prouver du tout vaut `n/a`, et `n/a` ne remplit pas une exigence.
-        "above": 70,
-        "label": "Jardin (requis au-dessus de 70)",
-        "requires": ["jardin"],
-        "mode": "all",
-        "min_subscore": 0.5,
-    },
-    {
-        # Le pendant BAS du plafond budgétaire, et il tient au même raisonnement : un
-        # prix est un palier, pas un poids. « Pas de secret : quand un bien est à 100 ou
-        # 150 k€, c'est qu'il y a un problème. » Ce problème n'est jamais écrit dans
-        # l'annonce — c'est précisément pourquoi aucun critère mesuré ne le rattrape, et
-        # pourquoi le rapport qualité/prix (poids 5) le récompense au contraire : à
-        # 739 €/m² contre 1 462 dans le secteur, une maison coupée en deux logements au
-        # bout d'un chemin note 1,0.
-        #
-        # Le palier est haut (78) et non 70 : sous 180 k€ un bien peut rester le meilleur
-        # de son massif — c'est même l'information que les témoins de zone servent à
-        # donner (98 k€ dans le Champsaur, 108 k€ à Bourg-Saint-Maurice). Ce qu'on refuse,
-        # c'est qu'il monte dans le panier des pépites.
-        "above": 78,
-        "label": "Prix qui ne cache rien (≥ 180 000 €, requis au-dessus de 78)",
-        "requires": ["budget"],
-        "mode": "all",
-        "min_subscore": 0.79,  # = au-dessus du plancher (sous 180 k€ la note tombe à 0,78 max)
-    },
-    {
-        # Le palier exigeait le minimum PLEIN du set (0,99 = 3 chambres atteintes). Il ne
-        # plafonnait donc pas seulement les biens mal mesurés, ce pour quoi il existe : il
-        # écartait mécaniquement les 1 027 maisons de 2 chambres du catalogue — 16 % —
-        # quelles que soient leur vue, leur jardin ou leur exposition. Plafonnées à 75
-        # quand le site publie à partir de 75,5, elles ne pouvaient littéralement jamais
-        # apparaître, et personne ne pouvait donc les repêcher : ce qui n'est pas exporté
-        # n'existe pas pour la pondération personnelle, qui rejoue le classement dans le
-        # navigateur sur les seuls biens publiés.
-        #
-        # Le seuil descend donc à ce que valent DEUX chambres (2/3 = 0,67 sur un minimum
-        # de 3). Ce que le palier refuse encore est exactement ce pour quoi il a été
-        # écrit : une chambre ou moins (0,33), c'est-à-dire l'annonce d'une seule pièce
-        # arrivée deuxième d'un classement qui en demandait quatre, et le mobil-home de
-        # 35 m² dont le recoupement par la surface ramène les « 3 chambres estimées » à 1.
-        #
-        # Chacun reste libre de son exigence : `chambres_min` est un des critères dont le
-        # seuil se règle par personne (mesures.js), et un seuil personnel joue aussi sur
-        # les paliers. Qui veut 3 chambres les remet à 3 dans le panneau ⚖️ et retrouve
-        # exactement le classement d'avant ; qui en veut 2 les voit enfin.
-        "above": 75,
-        "label": "Au moins 2 chambres prouvées (requis au-dessus de 75)",
-        "requires": ["chambres_min"],
-        "mode": "all",
-        "min_subscore": 0.66,  # = 2 chambres sur un minimum de 3 (2/3) ; 1 chambre = 0,33
-    },
-    {
-        # Le plafond de capacité, pendant du palier précédent. Il ne ferme la porte qu'aux
-        # maisons vraiment immenses : 0,7 sur le barème de `logement_compact` laisse
-        # passer jusqu'à 5 chambres (0,75) et arrête à 6 (0,375). Quand les chambres
-        # manquent, le barème bascule sur la surface habitable et 0,7 vaut ~210 m².
-        #
-        # Le palier est haut (85) et non 78 : « 5 chambres ça reste ok » veut dire qu'un
-        # grand bien excellent partout ailleurs a le droit de bien figurer. Ce n'est
-        # qu'en tête de classement — là où on désigne LA maison de retrait — que le
-        # format cesse d'être négociable.
-        "above": 85,
-        "label": "Format maison de retrait (requis au-dessus de 85)",
-        "requires": ["logement_compact"],
-        "mode": "all",
-        "min_subscore": 0.7,
-    },
-    {
-        # Une pépite est une bonne affaire PROUVÉE. Sans surface bâtie il n'y a pas de prix
-        # au m², donc rien à comparer au secteur — et le bien monte précisément parce qu'il
-        # est peu mesuré. Le palier ferme cette porte.
-        "above": 78,
-        "label": "Rapport qualité/prix mesuré (requis au-dessus de 78)",
-        "requires": ["rapport_qualite_prix"],
-        "mode": "all",
-        "min_subscore": 0.5,
-    },
-    {
-        # Le pendant du palier « rapport qualité/prix mesuré », pour la même raison et
-        # avec la même forme : `evaluate` renormalise sur les seuls critères mesurés, si
-        # bien qu'un bien dont l'attractivité locative n'a jamais été relevée n'est pas
-        # pénalisé — il est jugé sans elle, donc sur un critère de poids 4 en moins, et
-        # il monte. Le réchauffage Overpass coûte ~5 s par point : on ne mesure pas les
-        # 5 300 biens du set, on mesure les candidats (cf. scripts/warm_tourisme.py).
-        # Ce palier ferme la porte que ce choix ouvrirait.
-        #
-        # Seuil à 0 : on exige la MESURE, pas une bonne note. Une maison de retrait dans
-        # un coin sans tourisme reste une maison de retrait valable ; ce qu'on refuse,
-        # c'est qu'elle passe devant une autre parce qu'on ne l'a pas regardée.
-        "above": 78,
-        "label": "Attractivité locative mesurée (requise au-dessus de 78)",
-        "requires": ["attractivite_airbnb"],
-        "mode": "all",
-        "min_subscore": 0.0,
-    },
-    {
-        "above": 85,
-        "label": "Nature ou montagne avérée (requis au-dessus de 85)",
-        "requires": ["coin_nature", "relief_mountain", "hiking"],
-        "mode": "any",
-        "min_subscore": 0.6,
-    },
-]
+# Les PALIERS ont été retirés le 5 septembre 2026 : ils plafonnaient un bien tant qu'une
+# exigence n'était pas remplie. Mesuré sur le catalogue, ils collaient 127 biens du set
+# (et 300 sous un profil « montagne ») exactement à la même valeur, et ils s'appliquaient
+# à la lentille de CHACUN — personne ne pouvait donc avoir un classement vraiment
+# différent. Ce qu'ils exigeaient est passé dans les critères eux-mêmes : la note budget
+# tombe à zéro dès +15 % de dépassement, celle des travaux à 0,4 pour de gros travaux et
+# 0,1 pour une ruine, et un critère non mesuré vaut désormais la moyenne du catalogue au
+# lieu de disparaître du calcul (cf. `evaluate(..., apriori=)`).
+
 
 # Pivots de collecte : les parties MONTAGNE des départements déjà couverts par le set
 # (26, 07, 73, 01, 43, 42). La zone ne change pas ; ce sont les points de départ qui
@@ -562,21 +420,24 @@ def _collecter_portails_publics(collected: dict, existing: set,
 
 def ensure_sets(db) -> None:
     criteria = {"property_types": ["maison"], "preferences": PREFERENCES,
-                "exigences": EXIGENCES,
                 # Zones de comparaison : l'export publie le meilleur bien de chacune,
                 # même sous le seuil des pépites (cf. ZONES).
                 "zones": ZONES,
                 # La zone appartient au set : elle se réapplique à chaque export sans
                 # qu'il faille repasser sur la base, et un bien collecté à l'ouest par
                 # une future recherche est écarté tout seul.
-                "zone": {"est_axe_lyon_valence": True}}
+                # `prix_max_membre` : le budget du set est 250 k€ ; au-delà de 300 k€ un
+                # bien n'est plus « du set » — il vient d'une autre collecte et se
+                # hissait dans le classement en marquant partout ailleurs. La marge de
+                # 20 % laisse la place à qui veut monter son propre plafond.
+                "zone": {"est_axe_lyon_valence": True, "prix_max_membre": PRIX_MAX * 1.2}}
     fs = db.get(FilterSet, SET_ID)
     if fs is None:
         db.add(FilterSet(id=SET_ID, name=SET_NAME, description=SET_DESC, criteria=criteria))
     else:
         fs.name, fs.description, fs.criteria = SET_NAME, SET_DESC, criteria
     db.commit()
-    print(f"Set prêt : « {SET_NAME} » ({len(PREFERENCES)} critères, {len(EXIGENCES)} paliers, "
+    print(f"Set prêt : « {SET_NAME} » ({len(PREFERENCES)} critères, "
           f"{len(ZONES)} zones, ≤{PRIX_MAX // 1000}k, est du Rhône).", flush=True)
 
 

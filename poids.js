@@ -214,69 +214,69 @@ const Poids = (() => {
 
   // --- recalcul du match ---------------------------------------------------
   // Reproduit `services/preferences.evaluate` : moyenne des sous-scores MESURÉS pondérée
-  // par les poids, étirée entre les deux ancres, puis plafonnée par les exigences du set.
+  // par les poids, étirée entre les deux ancres. Un critère non mesuré compte à sa
+  // moyenne de catalogue au lieu de sortir du dénominateur (cf. `aprioris`).
   function agrege(bien, details, set, poids, params) {
     let acc = 0, tot = 0;
     const ix = index(set);
-    // Sous-scores refaits avec les seuils personnels : ils servent AUSSI aux paliers du
-    // set. Dire « mon budget est 150 k€ » doit vraiment plafonner un bien à 250 k€ —
-    // sinon le seuil ne pèserait que dans la moyenne, où il se rattrape ailleurs.
-    const remesures = {};
+    const apr = aprioris(set);
     for (const d of details) {
       if (HORS_CRITERES.has(d.kind)) continue;
-      if (d.status !== "ok" || d.subscore == null) continue;
       const k = idDeDetail(d, ix);
       const w = poids && poids[k] !== undefined ? Number(poids[k]) : Number(d.weight || 0);
       if (!(w > 0)) continue;   // poids 0 = critère ignoré : il sort de la moyenne
-      // Seuil personnel : on re-mesure. Sinon — et c'est le cas par défaut — on garde
-      // le sous-score du backend, qui reste la seule autorité.
-      let sub = d.subscore;
-      if (params && params[k]) {
-        const remesure = Mesures.subscore(k, bien, params[k]);
-        if (remesure != null) { sub = remesure; remesures[d.kind] = sub; }
+      let sub;
+      if (d.status === "ok" && d.subscore != null) {
+        // Seuil personnel : on re-mesure. Sinon — et c'est le cas par défaut — on garde
+        // le sous-score du backend, qui reste la seule autorité.
+        sub = d.subscore;
+        if (params && params[k]) {
+          const remesure = Mesures.subscore(k, bien, params[k]);
+          if (remesure != null) sub = remesure;
+        }
+      } else if (apr[k] !== undefined) {
+        // Critère NON mesuré sur ce bien : il vaut la moyenne du catalogue, calculée à
+        // l'export. Sans ça il sortirait du dénominateur, et ne pas être mesuré ferait
+        // monter le bien — c'est ce que les paliers « mesuré » rattrapaient autrefois.
+        sub = apr[k];
+      } else {
+        continue;
       }
       acc += w * sub;
       tot += w;
     }
     if (tot <= 0) return null;
-    return exigences(arrondi1(contraste(acc / tot) * 100), details, set.exigences, remesures);
+    return arrondi1(contraste(acc / tot) * 100);
   }
 
-  // Paliers du set : au-delà d'un certain score, certains critères ne sont plus
-  // optionnels (cf. `appliquer_exigences`). Le score est ramené au palier, jamais annulé.
-  function exigences(score, details, exigs, remesures) {
-    if (score == null || !exigs || !exigs.length) return score;
-    const parKind = {};
-    for (const d of details) parKind[d.kind] = d;   // le dernier gagne, comme côté Python
-    for (const k of Object.keys(remesures || {})) {
-      if (parKind[k]) parKind[k] = { ...parKind[k], subscore: remesures[k] };
+  // A priori par critère, tel que l'export l'a calculé sur le catalogue du set.
+  const _apr = new Map();
+  function aprioris(set) {
+    let a = _apr.get(set.id);
+    if (!a) {
+      a = {};
+      for (const p of set.preferences || []) if (p.apriori != null) a[cle(p)] = Number(p.apriori);
+      _apr.set(set.id, a);
     }
-    for (const e of [...exigs].sort((a, b) => Number(a.above || 0) - Number(b.above || 0))) {
-      const palier = Number(e.above || 0);
-      if (score <= palier || remplie(e, parKind)) continue;
-      score = palier;
-    }
-    return score;
+    return a;
   }
-  function remplie(exig, parKind) {
-    const seuil = exig.min_subscore != null ? Number(exig.min_subscore) : 0.5;
-    let remplis = 0, manquants = 0;
-    for (const k of (exig.requires || [])) {
-      const d = parKind[k];
-      if (d && d.status === "ok" && (d.subscore || 0) >= seuil) remplis++;
-      else manquants++;   // un critère non mesuré ne peut pas valider une exigence
-    }
-    return (exig.mode || "any") === "all" ? manquants === 0 : remplis > 0;
-  }
+
+  // Les PALIERS ont été retirés du moteur le 5 septembre 2026 : ils plafonnaient le score
+  // tant qu'une exigence du set n'était pas remplie, ce qui collait des centaines de biens
+  // à la même valeur et s'imposait à la lentille de chacun. Ce qu'ils portaient est passé
+  // dans les critères (note du budget, note des travaux) et dans l'a priori ci-dessus.
 
   // Pénalité des biens déclassés (viager, sous compromis, mobil-home…) : le facteur
   // n'est pas exporté, on le retrouve comme le rapport entre le match publié et le match
   // recalculé aux poids du set — puis on l'applique au match personnalisé.
   function penalite(bien, sb, set) {
-    if (!sb.details.some((d) => d.kind === "disqualifiant")) return 1;
+    const d = sb.details.find((x) => x.kind === "disqualifiant");
+    if (!d) return 1;
+    // Le facteur est exporté avec le détail. Repli pour les instantanés antérieurs :
+    // le rapport entre le match publié et le match recalculé aux poids du set.
+    if (d.facteur != null) return Number(d.facteur);
     const ref = agrege(bien, sb.details, set, null, null);
-    if (!ref) return 1;
-    return Math.min(1, sb.match_score / ref);
+    return ref ? Math.min(1, sb.match_score / ref) : 1;
   }
 
   // Match d'un bien recalculé avec des poids donnés. null = non évaluable (aucun des

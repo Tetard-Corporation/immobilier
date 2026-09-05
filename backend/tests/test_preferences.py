@@ -337,15 +337,14 @@ def test_distance_mer():
 
 
 # --------------------------------------------------------------------------- #
-# Exigences de palier : au-delà d'un score, certains critères deviennent requis.
+# Ce qui remplace les paliers, retirés le 5 septembre 2026.
+#
+# Un palier plafonnait le score tant qu'une exigence n'était pas remplie. Il faisait deux
+# choses très différentes : (1) empêcher un bien mal mesuré de monter par accident, et
+# (2) dire « hors budget, c'est non ». La première est reprise par l'a priori, la seconde
+# par la note du critère lui-même. Les tests ci-dessous vérifient que l'INTENTION tient
+# toujours, sans plafond — donc sans écraser le classement de qui pondère autrement.
 # --------------------------------------------------------------------------- #
-_EXIG_EAU = [{
-    "above": 90,
-    "label": "Vue ou contact avec l'eau",
-    "requires": ["distance_mer", "bord_de_mer", "vue"],
-    "mode": "any",
-    "min_subscore": 0.6,
-}]
 
 
 def _prefs_haut(poids_mer=5):
@@ -355,51 +354,61 @@ def _prefs_haut(poids_mer=5):
                        params={"proche": 300, "loin": 3000})]
 
 
-def _score_haut(flags, poids_mer=5, exigences=_EXIG_EAU):
-    """Un bien qui score très haut sur les critères mesurés (donc au-dessus de 90).
-
-    `poids_mer` faible = le score vient d'ailleurs (budget, terrain) : c'est le cas que
-    les paliers visent, celui où un bien monte haut sans rien prouver sur l'eau.
-    """
+def _score_haut(flags, poids_mer=5, apriori=None):
     item = _listing(prix=50000, surface_terrain=2000, flags=flags)
-    return evaluate(item, _prefs_haut(poids_mer), exigences)
+    return evaluate(item, _prefs_haut(poids_mer), apriori)
 
 
-def test_exigence_laisse_passer_le_bien_qui_la_remplit():
-    score, details = _score_haut({"dist_mer_m": 200})
-    assert score > 90
-    assert not [d for d in details if d["kind"] == "exigence"]
-
-
-def test_exigence_plafonne_le_bien_loin_de_l_eau():
-    """Score porté par le budget et le terrain, mer mesurée mais lointaine -> plafonné."""
+def test_plus_aucun_plafond_dans_le_detail():
+    """Le score n'est plus ramené à un palier : il n'y a plus de ligne « exigence »."""
     score, details = _score_haut({"dist_mer_m": 3500}, poids_mer=1)
-    assert score == 90
-    cap = [d for d in details if d["kind"] == "exigence"]
-    assert cap and cap[0]["status"] == "ko" and "plafonné à 90" in cap[0]["detail"]
-
-
-def test_exigence_non_validee_par_un_critere_jamais_mesure():
-    """Sans mesure, rien ne prouve que le bien voit l'eau : le palier doit tenir."""
-    score, details = _score_haut({})  # dist_mer_m absent -> statut n/a
-    assert score == 90
-    assert [d for d in details if d["kind"] == "exigence"]
-
-
-def test_exigence_ignoree_sous_le_palier():
-    """Un bien à 70 n'est pas concerné : l'exigence ne s'applique qu'au-dessus de 90."""
-    pref = [Preference(kind="budget", weight=5, params={"budget_max": 100000})]
-    item = _listing(prix=115000, flags={})  # hors budget -> score bas
-    score, details = evaluate(item, pref, _EXIG_EAU)
-    assert score is not None and score < 90
     assert not [d for d in details if d["kind"] == "exigence"]
+    assert score > 90   # ce bien était plafonné à 90 ; il ne l'est plus
 
 
-def test_sans_exigences_le_score_est_inchange():
-    """Le plafond ne doit exister que si le set le déclare : les autres sets ne bougent pas."""
-    avec, _ = _score_haut({"dist_mer_m": 3500}, poids_mer=1)
-    sans, _ = _score_haut({"dist_mer_m": 3500}, poids_mer=1, exigences=None)
-    assert avec == 90 and sans > 90
+def test_le_critere_seul_departage_le_bien_loin_de_l_eau():
+    """Sans plafond, c'est le POIDS du critère qui fait la différence — et il la fait."""
+    proche, _ = _score_haut({"dist_mer_m": 200}, poids_mer=5)
+    loin, _ = _score_haut({"dist_mer_m": 3500}, poids_mer=5)
+    assert loin < proche
+    # Et quelqu'un qui ne pondère presque pas la mer obtient un classement différent :
+    # c'est précisément ce que le plafond interdisait à tout le monde.
+    loin_indifferent, _ = _score_haut({"dist_mer_m": 3500}, poids_mer=1)
+    assert loin_indifferent > loin
+
+
+def test_un_critere_non_mesure_vaut_la_moyenne_du_catalogue():
+    """Le job structurel des paliers « mesuré » : ne pas monter parce qu'on ignore.
+
+    Sans a priori, le bien dont la mer n'est pas mesurée est jugé sans elle — donc sur
+    ses seuls bons critères, et il monte. Avec, l'inconnu vaut la moyenne du catalogue.
+    """
+    sans, details_sans = _score_haut({})            # dist_mer_m absent -> n/a
+    avec, details_avec = _score_haut({}, apriori={"distance_mer": 0.3})
+    assert avec < sans
+    ligne = [d for d in details_avec if d["kind"] == "distance_mer"][0]
+    assert ligne["status"] != "ok" and ligne["apriori"] == 0.3
+    # Un bien qui MESURE une mer lointaine (0,1) reste en dessous de l'inconnu (0,3) :
+    # l'a priori ne récompense pas l'ignorance, il la met à la moyenne.
+    mesure_mauvaise, _ = _score_haut({"dist_mer_m": 3500}, apriori={"distance_mer": 0.3})
+    assert mesure_mauvaise < avec
+
+
+def test_hors_budget_tombe_a_zero_des_quinze_pour_cent():
+    """« Hors budget, c'est non » était un palier ; c'est maintenant la note elle-même."""
+    p = [Preference(kind="budget", params={"budget_max": 200000})]
+    sous = lambda prix: evaluate(_listing(prix=prix, flags={}), p)[1][0]["subscore"]  # noqa: E731
+    assert sous(140000) == 1.0            # bien en dessous : plein score
+    assert sous(200000) == 0.80           # pile au plafond
+    assert sous(215000) == 0.4            # +7,5 % : la moitié du chemin vers zéro
+    assert sous(230000) == 0.0            # +15 % : la note est à zéro
+    assert sous(300000) == 0.0
+
+
+def test_gros_travaux_et_ruine_restent_derriere_sans_plafond():
+    p = [Preference(kind="light_works")]
+    sous = lambda cond: evaluate(_listing(flags={"condition": cond}), p)[1][0]["subscore"]  # noqa: E731
+    assert sous("ruine") < sous("gros_travaux") < sous("renover") < sous("habitable")
 
 
 def test_chambres_min_toujours_mesure():
@@ -465,29 +474,21 @@ def test_tranquillite_sans_isolement():
     assert sub(sans_iso, {"pavillon_neuf": True})[0] < sub(sans_iso, {})[0]
 
 
-def test_palier_travaux_ecarte_les_gros_travaux_et_l_etat_inconnu():
-    """« Pas de gros travaux » est un plancher, pas une préférence : `light_works` étant
-    pondéré, une ruine bien placée et bon marché se rattrapait ailleurs. L'état non
-    renseigné (45 % des annonces) ne valide pas non plus le palier — un bien dont on
-    ignore l'état ne se juge pas, exactement comme un bien sans photo."""
-    from app.services.preferences import appliquer_exigences
-
-    exig = [{"above": 70, "requires": ["light_works"], "mode": "all",
-             "min_subscore": 0.85, "label": "Pas de gros travaux"}]
-
-    def plafonne(subscore, status="ok"):
-        details = [{"kind": "light_works", "label": "Peu de travaux",
-                    "status": status, "subscore": subscore}]
-        return appliquer_exigences(88.0, details, exig)[0]
-
-    assert plafonne(1.0) == 88.0     # habitable / à rafraîchir : passe
-    assert plafonne(0.85) == 88.0    # à rénover : passe tout juste
-    assert plafonne(0.4) == 70.0     # gros travaux : plafonné
-    assert plafonne(0.1) == 70.0     # ruine : plafonnée
-    assert plafonne(None, "n/a") == 70.0   # état inconnu : ne prouve rien
-    # Sous le palier, l'exigence ne s'applique pas : elle trie le haut du panier.
-    assert appliquer_exigences(65.0, [{"kind": "light_works", "status": "n/a",
-                                       "subscore": None}], exig)[0] == 65.0
+def test_etat_inconnu_ne_vaut_plus_mieux_que_mesure():
+    """« Pas de gros travaux » était un plancher tenu par un palier. Sans palier, deux
+    choses le portent : la note (ruine 0,1, gros travaux 0,4) et surtout l'a priori —
+    l'état n'est renseigné que sur 59 % des annonces, et ne pas le connaître ne doit pas
+    valoir mieux que le connaître mauvais."""
+    prefs = [Preference(kind="light_works", weight=4),
+             Preference(kind="budget", weight=4, params={"budget_max": 250000})]
+    ap = {"light_works": 0.75}          # moyenne du catalogue
+    note = lambda cond: evaluate(_listing(type_bien="maison", prix=150000,  # noqa: E731
+                                          flags={"condition": cond} if cond else {}), prefs, ap)[0]
+    assert note("habitable") > note(None) > note("gros_travaux") > note("ruine")
+    # Sans a priori, l'état inconnu sortait du calcul : le bien était jugé sur son seul
+    # budget et montait au niveau d'un bien habitable. C'est ce trou qu'on ferme.
+    sans_ap = evaluate(_listing(type_bien="maison", prix=150000, flags={}), prefs)[0]
+    assert sans_ap > note(None)
 
 
 def test_village_vivant_penalise_la_ville_autant_que_le_desert():
@@ -589,15 +590,19 @@ def test_jardin_exige_l_exterieur_sans_punir_l_annonce_muette():
     assert evaluate(muet, p)[1][0]["status"] == "n/a"
 
 
-def test_palier_jardin_plafonne_le_bien_sans_exterieur():
-    exigences = [{"above": 70, "label": "Jardin requis", "requires": ["jardin"],
-                  "mode": "all", "min_subscore": 0.5}]
+def test_sans_exterieur_prouve_le_bien_passe_derriere():
+    """« Jardin requis » ne plafonne plus : le bien sans extérieur prouvé prend la valeur
+    moyenne du catalogue sur ce critère, ce qui le place derrière celui qui l'a."""
     prefs = [Preference(kind="jardin", weight=4, params={"min_surface": 300}),
              Preference(kind="budget", weight=4, params={"budget_max": 250000})]
+    ap = {"jardin": 0.6}
     avec = _listing(type_bien="maison", prix=150000, surface_terrain=900, flags={})
     sans = _listing(type_bien="maison", prix=150000, flags={"features": []})
-    assert evaluate(avec, prefs, exigences)[0] > 70
-    assert evaluate(sans, prefs, exigences)[0] <= 70
+    assert evaluate(sans, prefs, ap)[0] < evaluate(avec, prefs, ap)[0]
+    # Et celui qui ne veut pas de jardin peut le dire : son classement, lui, change.
+    indifferent = [Preference(kind="jardin", weight=0, params={"min_surface": 300}),
+                   Preference(kind="budget", weight=4, params={"budget_max": 250000})]
+    assert evaluate(sans, indifferent, ap)[0] == evaluate(avec, indifferent, ap)[0]
 
 
 def _tetard():
@@ -609,7 +614,7 @@ def _tetard():
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
     import collect_tetard
 
-    return collect_tetard.PREFERENCES, collect_tetard.EXIGENCES
+    return collect_tetard.PREFERENCES, None
 
 
 def test_tetard_prefere_le_petit_bien_place_au_grand_mal_place():

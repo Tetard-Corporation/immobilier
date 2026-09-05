@@ -250,10 +250,10 @@ def test_un_seul_temoin_par_zone_le_mieux_note():
 
 
 def test_un_bien_plafonne_pile_au_plancher_ne_peut_pas_etre_temoin():
-    """`appliquer_exigences` ramène un bien recalé au palier EXACT : une ruine hors
-    budget et sans jardin sort à 70,0 tout rond. Choisir le témoin avec « >= 70 »
-    désignerait donc, dans les zones pauvres, le bien que les paliers viennent
-    d'écarter — un cas vu sur les Aravis (grange en gros travaux, 70,0)."""
+    """Le plancher est STRICT (« > » et non « >= »). La règle vient des paliers, qui
+    ramenaient un bien recalé au palier exact : une ruine hors budget sortait à 70,0 tout
+    rond et devenait témoin des Aravis. Les paliers ont été retirés, la règle reste — un
+    bien pile au plancher n'est pas au-dessus."""
     from app.services.export_static import _meilleurs_par_zone
 
     plafonne = _prep(("bienici", "ruine"), "Aravis", 70.0)
@@ -263,9 +263,9 @@ def test_un_bien_plafonne_pile_au_plancher_ne_peut_pas_etre_temoin():
 
 
 def test_une_zone_sans_rien_au_dessus_du_plancher_n_a_pas_de_temoin():
-    """« Même si son score est bas » n'est pas « n'importe quoi » : sous 70, le bien a
-    raté un palier — hors budget, rénovation complète, ou pas de jardin. Une zone qui
-    n'a rien au-dessus reste vide, et cette absence est elle-même la réponse."""
+    """« Même si son score est bas » n'est pas « n'importe quoi » : sous le plancher, le
+    bien est trop faible pour représenter son massif. Une zone qui n'a rien au-dessus
+    reste vide, et cette absence est elle-même la réponse."""
     from app.services.export_static import _meilleurs_par_zone
 
     lignes = []

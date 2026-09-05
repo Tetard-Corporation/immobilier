@@ -160,17 +160,45 @@ if (prefCh) {
   t("effacer un seuil rend la main au set", Poids.paramsPour(set, "Timothé").chambres_min === undefined);
 }
 
-// 9. Un seuil personnel joue AUSSI sur les paliers du set : le palier « dans le budget »
-//    doit plafonner un bien que MON budget ne couvre pas, pas seulement le noter moins.
+// 9. Plus aucun plafond : le seuil personnel agit par la NOTE, pas par une falaise.
+//    Un bien trop cher pour mon budget descend continûment, il ne se colle pas à 70 avec
+//    cent autres — c'est ce qui rendait deux classements personnels impossibles à
+//    distinguer.
 const prefBudget = set.preferences.find((p) => p.kind === "budget");
-const palierBudget = (set.exigences || []).find((e) => (e.requires || []).includes("budget"));
-if (prefBudget && palierBudget) {
+if (prefBudget) {
   const poids = Poids.defauts(set);
   const petitBudget = { budget: { ...prefBudget.params, budget_max: 120000, budget_min: 0 } };
-  const chers = biens.filter((b) => b.prix > 200000 && Poids.match(b, set, poids, null) > palierBudget.above).slice(0, 20);
-  const plafonnes = chers.filter((b) => Poids.match(b, set, poids, petitBudget) <= palierBudget.above);
-  console.log(`9) budget personnel à 120 k€ : ${plafonnes.length}/${chers.length} biens chers repassent sous le palier ${palierBudget.above}`);
-  t("le seuil personnel déclenche le palier du set", chers.length > 0 && plafonnes.length === chers.length);
+  // Ceux dont la note budget n'est pas DÉJÀ à zéro sous le budget du set : un bien à
+  // 299 k€ vaut déjà 0 avec les 250 k€ du set, mon plafond à 120 k€ n'y change rien.
+  const chers = biens.filter((b) => b.prix > 200000
+    && Mesures.subscore("budget", b, prefBudget.params) > 0).slice(0, 30);
+  const baisse = chers.filter((b) => Poids.match(b, set, poids, petitBudget) < Poids.match(b, set, poids, null));
+  const valeurs = new Set(chers.map((b) => Poids.match(b, set, poids, petitBudget)));
+  console.log(`9) budget personnel à 120 k€ : ${baisse.length}/${chers.length} biens chers baissent, `
+    + `${valeurs.size} valeurs distinctes (aucun plateau)`);
+  t("un seuil personnel fait baisser sans plafonner", baisse.length === chers.length);
+  t("et ne colle pas les biens sur une même valeur", valeurs.size > chers.length * 0.5);
+  t("plus aucune ligne de plafond dans les détails",
+    !biens.some((b) => (b.scores_by_set[sid].details || []).some((d) => d.kind === "exigence")));
+}
+
+// 9 bis. Un critère non mesuré compte à l'a priori du catalogue, il ne disparaît plus.
+const avecApriori = set.preferences.filter((p) => p.apriori != null);
+if (avecApriori.length) {
+  const p = avecApriori.find((x) => (x.couverture ?? 1) < 0.9) || avecApriori[0];
+  const id = Poids.cle(p);
+  const nonMesure = biens.filter((b) => (b.scores_by_set[sid].details || [])
+    .some((d) => Poids.cle(p) === id && (d.label || d.kind) === (p.label || p.kind) && d.status !== "ok"));
+  console.log(`9 bis) « ${p.label} » : a priori ${p.apriori}, non mesuré sur ${nonMesure.length} biens publiés`);
+  t("l'a priori est exporté avec le critère", typeof p.apriori === "number" && p.apriori > 0);
+  if (nonMesure.length) {
+    // Ignorer ce critère change le score d'un bien où il n'est PAS mesuré : preuve qu'il
+    // comptait quand même. Avant l'a priori, il était absent du calcul et l'ignorer ne
+    // changeait rien — c'est exactement le trou que les paliers « mesuré » bouchaient.
+    const b = nonMesure[0];
+    const sans = Poids.match(b, set, { ...Poids.defauts(set), [id]: 0 }, null);
+    t("un critère non mesuré pèse quand même", sans !== Poids.match(b, set, Poids.defauts(set), null));
+  }
 }
 
 // 10. Les critères non portés n'offrent pas de seuil (leur mesure ne se rejoue pas ici).

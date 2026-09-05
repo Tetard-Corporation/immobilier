@@ -45,6 +45,7 @@ const Mesures = (() => {
   // --- constantes reprises du backend (services/preferences.py) --------------
   const BUDGET_CONFORT = 0.70;     // sous ce ratio du budget, note pleine
   const BUDGET_LIMITE = 0.80;      // note obtenue en consommant exactement le budget
+  const BUDGET_DEPASSEMENT_NUL = 0.15;   // dépassement à partir duquel la note vaut zéro
   const BUDGET_PLANCHER_MIN = 0.15;   // note à mi-plancher (un prix trop bas cache un défaut)
   const BUDGET_SOUS_PLANCHER = 0.78;  // note juste sous le plancher
   const NOTE_LIMITE = 0.75;        // logement_compact : décote entre l'idéal et la limite
@@ -67,7 +68,7 @@ const Mesures = (() => {
       const ratio = b.prix / budget;
       if (ratio <= BUDGET_CONFORT) return 1.0;
       if (ratio <= 1.0) return 1.0 - (ratio - BUDGET_CONFORT) / (1.0 - BUDGET_CONFORT) * (1.0 - BUDGET_LIMITE);
-      return BUDGET_LIMITE * clamp(1 - (ratio - 1.0) * 3);
+      return BUDGET_LIMITE * clamp(1 - (ratio - 1.0) / BUDGET_DEPASSEMENT_NUL);
     },
 
     chambres_min(b, p) {
