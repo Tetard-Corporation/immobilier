@@ -211,3 +211,78 @@ def harvest_detail_links(html: str, base_url: str, max_links: int = 40) -> list[
         vus.setdefault(url, _ressemblance_fiche(chemin))
     classes = sorted(vus, key=lambda u: -vus[u])
     return classes[:max_links]
+
+
+# --- Pagination des pages de liste -------------------------------------------- #
+# Une seule page de liste était lue par agence, sans jamais paginer. Le plafond ne se
+# voyait pas : Orpi Ain Agences avait exactement 40 biens en base — la valeur du cap de
+# `harvest_detail_links`, pas son stock — et Diois Immobilier 10 quand son site en
+# annonce 45. Un site qui ne rend que sa première page ressemble à un petit site.
+#
+# On ne code rien par agence : la page suivante se reconnaît à ce qu'elle est LA MÊME URL
+# à un nombre près. On remplace donc les suites de chiffres par un joker et on compare les
+# gabarits — « /vente/1 » et « /vente/2 » ont le même, « /vente/1 » et « /agence/3 » non.
+_CHIFFRES = re.compile(r"\d+")
+_REL_NEXT = re.compile(
+    r'<(?:a|link)\b[^>]*\brel=["\']?next["\']?[^>]*\bhref=["\']([^"\'#]+)["\']'
+    r'|<(?:a|link)\b[^>]*\bhref=["\']([^"\'#]+)["\'][^>]*\brel=["\']?next["\']?',
+    re.I,
+)
+# Un lien de page ne doit pas être confondu avec une fiche : « /annonce/1234 » a le même
+# gabarit que « /annonce/1235 ». On exige donc que le nombre reste petit.
+_PAGE_MAX = 60
+
+
+def _gabarit(url: str) -> tuple[str, str, tuple[int, ...]]:
+    """(chemin, requête) avec les nombres remplacés par un joker, + les nombres."""
+    p = urlparse(url)
+    nombres = tuple(int(n) for n in _CHIFFRES.findall(p.path + "?" + (p.query or "")))
+    return (_CHIFFRES.sub("#", p.path), _CHIFFRES.sub("#", p.query or ""), nombres)
+
+
+def pagination_links(html: str, base_url: str, max_pages: int = 8) -> list[str]:
+    """Pages de liste suivantes, dans l'ordre. Vide si le site ne pagine pas.
+
+    Trois signaux, du plus fiable au moins : `rel="next"`, puis les liens dont le gabarit
+    est identique à celui de la page courante avec un nombre plus grand, puis — quand la
+    page courante ne porte aucun nombre — ceux qui ajoutent un simple paramètre de page.
+    """
+    hote = (urlparse(base_url).hostname or "").removeprefix("www.")
+    chemin_ref, query_ref, nombres_ref = _gabarit(base_url)
+
+    candidats: dict[str, tuple[int, ...]] = {}
+    for m in _REL_NEXT.finditer(html or ""):
+        href = m.group(1) or m.group(2)
+        if href:
+            candidats[urljoin(base_url, href)] = ()
+
+    for href in _A_HREF.findall(html or ""):
+        url = urljoin(base_url, href)
+        p = urlparse(url)
+        if p.scheme not in ("http", "https"):
+            continue
+        if (p.hostname or "").removeprefix("www.") != hote:
+            continue
+        if url.rstrip("/") == base_url.rstrip("/"):
+            continue
+        chemin, query, nombres = _gabarit(url)
+        if chemin != chemin_ref:
+            continue
+        if nombres_ref:
+            # Même gabarit, mêmes nombres sauf un, plus grand : c'est une page.
+            if query != query_ref or len(nombres) != len(nombres_ref):
+                continue
+            diff = [i for i, (a, b) in enumerate(zip(nombres_ref, nombres)) if a != b]
+            if len(diff) != 1 or nombres[diff[0]] <= nombres_ref[diff[0]]:
+                continue
+            if nombres[diff[0]] > _PAGE_MAX:
+                continue
+        else:
+            # La page courante n'a aucun nombre : seule une requête de pagination compte.
+            if not query or query == query_ref or len(nombres) != 1 or nombres[0] > _PAGE_MAX:
+                continue
+            if not re.search(r"(page|pag|p|start|offset|debut)=", p.query or "", re.I):
+                continue
+        candidats[url] = nombres
+
+    return sorted(candidats, key=lambda u: (candidats[u] or (0,)))[:max_pages]
