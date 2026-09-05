@@ -319,11 +319,36 @@ function gallery(bien, _full = false) {
 
 function badges(bien) {
   const m = matchOf(bien, currentSetId);
+  const sb = (bien.scores_by_set || {})[String(currentSetId)] || {};
   const parts = [];
-  if (m != null) parts.push(`<span class="badge match" title="Match du set">🎯 ${fix1(m)}</span>`);
+  if (m != null) {
+    // Sous lentille, le nombre seul ne dit pas si la pondération a fait quelque chose :
+    // +0,5 sur un badge à la décimale ne se voit pas, et on conclut que rien n'a bougé.
+    // On affiche donc l'ÉCART au score du set, qui est la question posée.
+    const ecart = lensPoids && sb.match_score != null ? m - sb.match_score : 0;
+    // Un bien dont l'export n'a pas publié le détail par critère ne PEUT pas être
+    // repondéré : il garde le score du set. Le dire, plutôt que de le laisser croire
+    // que les poids sont sans effet.
+    const fige = !!lensPoids && !sb.details;
+    const quoi = fige
+      ? `Score du set — ce bien n'a pas le détail par critère (non publié en dessous du seuil), il ne peut pas être repondéré`
+      : lensPoids ? `Match recalculé avec ${lensNom()}` : "Match du set";
+    parts.push(`<span class="badge match${fige ? " fige" : ""}" title="${escAttr(quoi)}">🎯 ${fix1(m)}</span>`);
+    if (Math.abs(ecart) >= 0.05) {
+      parts.push(`<span class="badge delta ${ecart > 0 ? "up" : "down"}" title="Écart au classement du set">`
+        + `${ecart > 0 ? "+" : "−"}${fix1(Math.abs(ecart))}</span>`);
+    }
+  }
   if (bien.score != null) parts.push(`<span class="badge score" title="Score d'investissement">📈 ${fix1(bien.score)}</span>`);
   // Témoin de zone : publié parce qu'il est le meilleur de son massif, pas parce qu'il
   // tient le seuil des pépites. Sans ce badge, son score bas passerait pour une erreur.
+  // Plafonné par une exigence : son score est ramené au palier et n'en bougera pas, quels
+  // que soient les poids. Sans ce badge, la file de biens tous à 78,0 se lit comme un bug.
+  const plafond = (sb.details || []).find((d) => d.kind === "exigence");
+  if (plafond) {
+    parts.push(`<span class="badge plafond" title="${escAttr((plafond.label || "Exigence non remplie") + " — " + (plafond.detail || ""))}">`
+      + `⌐ plafonné</span>`);
+  }
   if (bien.zone_temoin) parts.push(`<span class="badge temoin" title="Meilleur bien de ce massif à ce budget — publié pour la comparaison entre régions, pas parce qu'il atteint le seuil">⛰ témoin</span>`);
   return `<div class="badges">${parts.join("")}</div>`;
 }
@@ -1237,13 +1262,23 @@ function renderPoidsPanel() {
       + `${escHtml(x.a)} ↔ ${escHtml(x.b)} <b>${Math.round(x.proximite * 100)} %</b></span>`).join("")}</div>`
     : "";
 
+  // Combien de biens tes poids peuvent-ils réellement déplacer ? L'export ne joint le
+  // détail par critère qu'au-dessus d'un seuil ; en dessous, le bien garde le score du
+  // set. Sans ce compte, on règle ses poids en croyant agir sur tout le catalogue.
+  const duSet = (DATA.biens || []).filter((b) => ((b.scores_by_set || {})[String(set.id)] || {}).match_score != null);
+  const repondN = duSet.filter((b) => (b.scores_by_set[String(set.id)].details || []).length).length;
+  const repondText = duSet.length
+    ? `<b>${repondN} des ${duSet.length} biens publiés</b> sont repondérables`
+      + (repondN < duSet.length ? ` (les autres n'ont pas le détail par critère et gardent le score du set)` : "")
+    : "aucun bien publié";
   const alerteLocale = Votes.backend === "local"
     ? `<p class="detailtxt">⚠ Supabase n'est pas configuré : tes poids restent sur ce navigateur, le groupe ne les voit pas.</p>`
     : "";
   card.innerHTML = `
     <button class="modal-close" id="poidsClose">×</button>
     <h2>⚖️ Poids des critères</h2>
-    <p class="sub detailtxt">Set « ${escHtml(set.name)} » · ${(set.preferences || []).length} critères.
+    <p class="sub detailtxt">Set « ${escHtml(set.name)} » · ${(set.preferences || []).length} critères ·
+      ${repondText}.
       Les poids ne changent ni la collecte ni les mesures : ils reclassent les biens déjà là.</p>
     ${alerteLocale}
     <div class="section-title">Tes poids</div>

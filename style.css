@@ -125,6 +125,13 @@ select {
   background: rgba(0,0,0,.55); color: #fff;
 }
 .badge.match { background: var(--accent); color: #04210f; }
+/* Bien non repondérable (détail par critère non publié) : le badge s'éteint au lieu de
+   faire croire que les poids n'ont servi à rien. */
+.badge.match.fige { background: #2f6b4a; color: #cfe9db; }
+.badge.delta { background: var(--card2); border: 1px solid var(--line); font-variant-numeric: tabular-nums; }
+.badge.delta.up { color: var(--accent); border-color: var(--accent); }
+.badge.delta.down { color: var(--bad); border-color: var(--bad); }
+.badge.plafond { background: var(--card2); color: var(--warn); border: 1px solid var(--warn); }
 .badge.score { background: var(--accent2); color: #032331; }
 /* Témoin de zone : le meilleur bien de son massif, publié même sous le seuil. */
 .badge.temoin { background: #7c5cff; color: #fff; }
