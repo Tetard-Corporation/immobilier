@@ -137,6 +137,10 @@ _PENTE_PLEINE = 20.0
 # 30 août que « à rénover » reste acceptable, le palier descend à 0,6 pour le dire. La
 # NOTE, elle, redevient honnête : une rénovation coûte, elle ne vaut pas « habitable ».
 _LIGHT_OK = {"habitable": 1.0, "rafraichir": 1.0, "renover": 0.65, "gros_travaux": 0.4, "ruine": 0.1}
+# Du plus léger au plus lourd : sert au seuil `min_etat` (« pas en dessous de ça »).
+_NIVEAU_ETAT = {"habitable": 0, "rafraichir": 1, "renover": 2, "gros_travaux": 3, "ruine": 4}
+# Ce qui reste d'une note quand le bien passe sous le seuil demandé (état, DPE).
+_SOUS_SEUIL = 0.25
 _COND_LABELS = {
     "habitable": "habitable de suite", "rafraichir": "à rafraîchir", "renover": "à rénover",
     "gros_travaux": "gros travaux", "ruine": "ruine / à reconstruire",
@@ -414,7 +418,21 @@ def _eval_one(item, kind: str, params: dict):
         cond = flags.get("condition")
         if cond is None:
             return None, "n/a", "état inconnu"
-        return _LIGHT_OK.get(cond, 0.6), "ok", f"état : {_COND_LABELS.get(cond, cond)}"
+        note = _LIGHT_OK.get(cond, 0.6)
+        # SEUIL, optionnel : « en dessous de cet état, pour moi c'est non ». Une moyenne
+        # sur vingt-sept critères ne peut pas couler un bien excellent partout ailleurs —
+        # une grange à aménager à 1 030 m avec 1,5 ha sortait 18e malgré sa note de 0,4.
+        # Le palier du set faisait ce travail ; il a été retiré parce qu'il s'imposait à
+        # tout le monde. Le seuil, lui, appartient à celui qui le pose : le groupe pour le
+        # set, chacun pour sa lentille.
+        seuil = params.get("min_etat")
+        if seuil in _LIGHT_OK and _NIVEAU_ETAT.get(cond, 9) > _NIVEAU_ETAT.get(seuil, 9):
+            # La note du BIEN s'effondre, pas celle du seuil : sinon un seuil plus strict
+            # produirait une pénalité plus douce (« à rafraîchir » vaut 1,0, « à rénover »
+            # 0,65 — le plancher aurait été plus haut avec le seuil le plus exigeant).
+            note = note * _SOUS_SEUIL
+            return note, "ok", f"état : {_COND_LABELS.get(cond, cond)} (sous ton seuil : {_COND_LABELS.get(seuil, seuil)})"
+        return note, "ok", f"état : {_COND_LABELS.get(cond, cond)}"
 
     if kind == "dpe":
         classe = (getattr(item, "dpe_classe", None) or flags.get("dpe_classe") or "")
@@ -422,6 +440,9 @@ def _eval_one(item, kind: str, params: dict):
         if classe not in _DPE_ECHELLE:
             return None, "n/a", "DPE non renseigné"
         sub = _DPE_ECHELLE[classe]
+        seuil = str(params.get("min_classe") or "").strip().upper()[:1]
+        if seuil in _DPE_ECHELLE and classe > seuil:
+            sub *= _SOUS_SEUIL
         quoi = ("passoire thermique" if classe in ("F", "G")
                 else "performant" if classe in ("A", "B") else "correct")
         return sub, "ok", f"DPE {classe} — {quoi}"

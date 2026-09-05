@@ -804,3 +804,37 @@ def test_ancres_par_set_etirent_sans_reordonner():
     assert ancres_de({}) == (0.20, 0.90)
     assert ancres_de({"ancres": {"basse": 0.4, "haute": 0.8}}) == (0.4, 0.8)
     assert ancres_de({"ancres": {"basse": 0.9, "haute": 0.2}}) == (0.20, 0.90)
+
+
+def test_seuil_d_etat_effondre_la_note_sans_plafonner():
+    """« En dessous de cet état, pour moi c'est non » — sans plafond commun.
+
+    Une moyenne sur vingt-sept critères ne peut pas couler un bien excellent partout
+    ailleurs : la grange de Saint-Andéol, à 1 030 m avec 1,5 ha, sortait 18e malgré une
+    note de travaux à 0,4. Le seuil appartient à celui qui le pose — le groupe pour le
+    set, chacun pour sa lentille.
+    """
+    sans = [Preference(kind="light_works")]
+    avec = [Preference(kind="light_works", params={"min_etat": "renover"})]
+    note = lambda prefs, cond: evaluate(  # noqa: E731
+        _listing(flags={"condition": cond}), prefs)[1][0]["subscore"]
+    # Au-dessus du seuil : rien ne change.
+    for cond in ("habitable", "rafraichir", "renover"):
+        assert note(avec, cond) == note(sans, cond)
+    # En dessous : la note du BIEN est divisée par quatre.
+    assert note(avec, "gros_travaux") == note(sans, "gros_travaux") * 0.25
+    assert note(avec, "ruine") == note(sans, "ruine") * 0.25
+    # Un seuil plus strict ne peut pas être plus DOUX (le piège de la première version :
+    # la pénalité dépendait de la note du seuil, or « à rafraîchir » vaut plus que
+    # « à rénover »).
+    strict = [Preference(kind="light_works", params={"min_etat": "habitable"})]
+    assert note(strict, "gros_travaux") <= note(avec, "gros_travaux")
+
+
+def test_seuil_dpe_meme_regle():
+    sans = [Preference(kind="dpe")]
+    avec = [Preference(kind="dpe", params={"min_classe": "D"})]
+    note = lambda prefs, c: evaluate(_listing(dpe_classe=c, flags={}), prefs)[1][0]["subscore"]  # noqa: E731
+    assert note(avec, "C") == note(sans, "C")
+    assert note(avec, "D") == note(sans, "D")
+    assert note(avec, "G") == note(sans, "G") * 0.25

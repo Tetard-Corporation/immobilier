@@ -95,11 +95,12 @@ PREFERENCES = [
     # `m2_min_par_piece` : le garde-fou du repli « pièces - 1 ». Une annonce peut
     # annoncer 4 pièces dans 35 m² — c'est ce qui a fait entrer un mobil-home de camping
     # dans les pépites avec « 3 chambres estimées ».
-    # Poids 2 et non 4 : le palier « capacité d'accueil prouvée » (75) rend déjà le
-    # minimum NON négociable. Une fois ce palier passé, le critère ne départage presque
-    # plus — écart-type 0,16 pour une moyenne de 0,92 sur les 597 biens au-dessus de 70.
-    # Ce qu'il pesait en plus ne classait pas, il gonflait tous les scores.
-    {"kind": "chambres_min", "weight": 2, "label": "3 chambres minimum",
+    # Poids rendu à 4 le 5 septembre 2026. Il avait été baissé au motif que le PALIER
+    # portait l'exigence — les paliers ont été retirés depuis, et ce critère s'est
+    # retrouvé à la fois peu pondéré et sans garde-fou. Son écart-type reste faible en
+    # haut de classement (la plupart des candidats le remplissent) : ce poids ne sert pas
+    # à départager, il sert à faire payer les rares qui échouent.
+    {"kind": "chambres_min", "weight": 4, "label": "3 chambres minimum",
      "params": {"min": 3, "m2_min_par_piece": 20}},
     # Le pendant du plancher de chambres. Ce que le groupe a précisé le 30 août : « 5
     # chambres ça reste ok, mais je ne veux pas qu'on survalorise les biens grands — un
@@ -112,9 +113,12 @@ PREFERENCES = [
     # au m² qui les départagent : c'est exactement ce qui a été demandé.
     # (`m2_ok`/`m2_max` : le repli quand l'annonce ne donne pas les chambres. Calé pour
     # dire la même chose que le barème par chambres — 170 m² pleins, 190 m² à 0,85.)
-    # Même raison : le palier « format » (85) ferme la porte aux maisons immenses, et
-    # au-dessus de 70 le critère vaut 0,96 de moyenne pour un écart-type de 0,13.
-    {"kind": "logement_compact", "weight": 2, "label": "Format maison de retrait (3 à 5 chambres, pas immense)",
+    # Poids rendu à 4 le 5 septembre 2026. Il avait été baissé au motif que le PALIER
+    # portait l'exigence — les paliers ont été retirés depuis, et ce critère s'est
+    # retrouvé à la fois peu pondéré et sans garde-fou. Son écart-type reste faible en
+    # haut de classement (la plupart des candidats le remplissent) : ce poids ne sert pas
+    # à départager, il sert à faire payer les rares qui échouent.
+    {"kind": "logement_compact", "weight": 4, "label": "Format maison de retrait (3 à 5 chambres, pas immense)",
      "params": {"ideal": 4, "max": 5, "m2_ok": 170, "m2_max": 300}},
     # Le contrepoids du format, et la question que `chambres_min` ne pose pas : les
     # chambres comptent la capacité EXISTANTE, celui-ci compte celle qu'on peut se donner.
@@ -137,9 +141,18 @@ PREFERENCES = [
     # « Un peu de travaux possible, mais pas une rénovation complète » : le critère garde
     # sa forme (habitable 1,0 · à rafraîchir 1,0 · à rénover 0,85 · gros travaux 0,4 ·
     # ruine 0,1), c'est le PALIER qui s'ouvre d'un cran, à 0,85.
-    # Poids 3 : le palier travaux (70) porte l'exigence ; la note, elle, redevient
-    # discriminante maintenant que « à rénover » vaut 0,65 et non 0,85.
-    {"kind": "light_works", "weight": 3, "label": "Peu de travaux (rafraîchir oui, rénovation complète non)", "params": {}},
+    # Poids rendu à 4 : le palier travaux a été retiré, et c'est désormais la seule
+    # chose qui distingue une maison habitable d'une grange à aménager. Mesuré sur la
+    # grange de Saint-Andéol (« prévoir beaucoup de travaux pour aménager en habitation »,
+    # sortie 1re à 94/100 tant qu'elle passait pour habitable) : à poids 3 elle reste 17e,
+    # à poids 4 elle descend encore. Barème : habitable 1,0 · à rafraîchir 1,0 ·
+    # à rénover 0,65 · gros travaux 0,4 · ruine 0,1.
+    # `min_etat` : le set le dit dans sa propre description — « un peu de travaux possible
+    # mais pas une rénovation complète ». En dessous de « à rénover », la note du bien est
+    # divisée par quatre. Ce n'est PAS un plafond : le bien garde son classement, il paie
+    # ce qu'il coûte, et qui veut un chantier n'a qu'à baisser ce seuil pour lui.
+    {"kind": "light_works", "weight": 4, "label": "Peu de travaux (rafraîchir oui, rénovation complète non)",
+     "params": {"min_etat": "renover"}},
     # Le DPE dit ce que `light_works` ne dit pas : `light_works` lit l'état du bâti dans
     # l'annonce (habitable / à rafraîchir / à rénover), le DPE lit ce que le bien coûtera
     # à chauffer. Une maison « habitable » classée G est habitable ET une passoire : deux
@@ -168,10 +181,12 @@ PREFERENCES = [
     # « Jardin requis » : un PLANCHER, distinct du souhait de grand terrain ci-dessous.
     # Seuil bas (300 m²), et une annonce qui décrit un extérieur sans en donner la surface
     # note 0,7 — assez pour passer le palier, pas assez pour valoir un jardin mesuré.
-    # Le palier « jardin requis » (70) fait tout le travail : au-dessus, le critère vaut
-    # 0,96 de moyenne pour un écart-type de 0,11 — il ne distingue plus deux candidats.
-    # Poids 2, et c'est `has_terrain` (écart-type 0,30) qui départage sur la surface.
-    {"kind": "jardin", "weight": 2, "label": "Jardin (requis)", "params": {"min_surface": 300}},
+    # Poids rendu à 4 le 5 septembre 2026. Il avait été baissé au motif que le PALIER
+    # portait l'exigence — les paliers ont été retirés depuis, et ce critère s'est
+    # retrouvé à la fois peu pondéré et sans garde-fou. Son écart-type reste faible en
+    # haut de classement (la plupart des candidats le remplissent) : ce poids ne sert pas
+    # à départager, il sert à faire payer les rares qui échouent.
+    {"kind": "jardin", "weight": 4, "label": "Jardin (requis)", "params": {"min_surface": 300}},
     # « L'attractivité Airbnb comme un critère important » (31 août). Poids 4 : le rang
     # des critères qui décident sans dominer — budget, travaux, jardin, ensoleillement —
     # et non 5, réservé au rapport qualité/prix et au relief. Une maison de retrait entre

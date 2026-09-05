@@ -178,3 +178,29 @@ def test_verbes_a_l_infinitif_comptent_comme_leur_niveau():
 
 def test_negation_rien_a_renover():
     assert classify("Maison en parfait état, plus rien à rénover")["condition"] == HABITABLE
+
+
+def test_bon_etat_d_une_charpente_n_est_pas_un_bien_habitable():
+    """« Charpente en bon état » qualifie la charpente, pas le logement.
+
+    Saint-Andéol, 140 000 € : « Construction en pierre [...] Charpente en bon état.
+    Prévoir beaucoup de travaux pour aménager en habitation. » Le mot-clé « bon etat »
+    matchait et le bien sortait « habitable de suite », premier du classement à 94/100.
+    """
+    annonce = ("Une maison avec grange et écurie. Construction en pierre et toiture tuile "
+               "mécanique. Charpente en bon état. Prévoir beaucoup de travaux pour "
+               "aménager en habitation.")
+    assert classify(annonce)["condition"] == "gros_travaux"
+    # Le « bon état » qui parle bien du BIEN n'est pas touché.
+    assert classify("Maison en bon état, rien à prévoir.")["condition"] == "habitable"
+    assert classify("Maison en bon état général, habitable de suite.")["condition"] == "habitable"
+    # Neutraliser la mention ne doit pas avaler ce qui la précède.
+    assert classify("Toiture à refaire et murs en bon état.")["condition"] != "habitable"
+
+
+def test_les_travaux_annonces_sans_le_mot_renover():
+    """Une annonce dit ce qu'il faut faire, rarement « à rénover »."""
+    assert classify("Prévoir beaucoup de travaux.")["condition"] == "gros_travaux"
+    assert classify("Bâtiment à aménager en habitation.")["condition"] == "gros_travaux"
+    assert classify("Quelques travaux à prévoir.")["condition"] == "renover"
+    assert classify("Des travaux sont à prévoir dans les chambres.")["condition"] == "renover"

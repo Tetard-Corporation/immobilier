@@ -230,7 +230,13 @@ _PIECES = re.compile(rf"\b(\d{{1,2}}|{_MOT_RE})\s+(?:{_ADJ}){{0,2}}pieces?\b")
 _PIECES_FICHE = re.compile(
     r"\bpieces?\s*\(?s?\)?\s*[:=]\s*(\d{1,2})\b(?!\s*m\s*(?:2|²))")
 # Nomenclature française : T3 / F3 / type 3 = 3 pièces.
-_TYPE_TF = re.compile(r"\b[tf]\s?(\d)\b|\btype\s+(\d)\b")
+# « T3 », « T-3 », « F 3 », « type 3 » — et jusqu'à deux chiffres : les titres Orpi
+# annoncent « T-17 » sur un immeuble, et le motif à un seul chiffre les laissait passer.
+# Le tiret compte comme séparateur : c'est la forme qu'emploient Orpi et Century 21.
+_TYPE_TF = re.compile(r"\b[tf]\s?-?\s?(\d{1,2})\b|\btype\s+(\d{1,2})\b")
+# Forme des URL de recherche, gardée telle quelle comme texte par certaines agences :
+# « /vente-maisons-4pieces-26410--893.php ». Le compte y est collé au mot.
+_PIECES_SLUG = re.compile(r"(\d{1,2})\s?-?\s?pieces?\b")
 _PAS_UNE_PIECE = re.compile(_IRREEL)
 # « une pièce de vie de 36 m² » n'annonce pas un logement d'une pièce : le
 # disqualifiant vient APRÈS le compte, là où le garde d'irréel ne regarde pas.
@@ -259,6 +265,10 @@ def pieces(texte: str) -> int | None:
             return n
     for m in _TYPE_TF.finditer(texte):
         n = _compte(m.group(1) or m.group(2))
+        if n is not None and 1 <= n <= _MAX_PIECES:
+            return n
+    for m in _PIECES_SLUG.finditer(texte):
+        n = _compte(m.group(1))
         if n is not None and 1 <= n <= _MAX_PIECES:
             return n
     return None
@@ -389,14 +399,21 @@ def _plafond_chambres(lu: int, nb_pieces) -> int:
     return min(lu, max(1, int(nb_pieces) - 1))
 
 
-def completer(item) -> dict:
+def completer(item, texte_source: str | None = None) -> dict:
     """Complète les champs NULS de `item` depuis son texte, sans jamais en corriger un.
 
     `item` est un `NormalizedListing` (collecte) ou un `Listing` (base) : mêmes noms de
     champs. Renvoie `{champ: valeur}` pour ce qui a été écrit — la provenance, à
     journaliser.
+
+    `texte_source` : un texte À LIRE qu'on ne veut pas STOCKER. C'est le cas du corps
+    d'une fiche d'agence — 3 500 à 12 800 caractères de navigation où se trouvent les
+    seules mentions des chambres et du terrain, mesuré sur des fiches réelles : ni le
+    titre ni `og:description` ne les portent jamais. On y lit les champs sans en faire
+    la description du bien, qui resterait illisible sur le site.
     """
-    texte = normalize(getattr(item, "adresse", None), getattr(item, "description", None))
+    texte = normalize(texte_source) if texte_source else normalize(
+        getattr(item, "adresse", None), getattr(item, "description", None))
     if not texte:
         return {}
     ecrits: dict = {}

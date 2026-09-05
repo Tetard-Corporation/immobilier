@@ -420,3 +420,54 @@ la moyenne (0,80, parce que les annonces qui parlent de l'état parlent surtout 
 bon état). Un malus d'incertitude a été testé et ne change presque rien (15 biens → 12) ;
 un réglage personnel « l'inconnu vaut bas » a été proposé et écarté. Le proxy par la
 moyenne est assumé.
+
+## 8. Le critère état, et le seuil qui remplace le palier (5 septembre 2026)
+
+Une grange de Saint-Andéol (140 000 €, 300 m², 1,5 ha à 1 030 m) est sortie **première du
+classement à 94/100** alors que son annonce dit « prévoir beaucoup de travaux pour aménager
+en habitation ». Deux défauts se cumulaient dans `classify`.
+
+**« Charpente en bon état » était lu comme un verdict sur le bien.** Le mot-clé `bon etat`
+matchait et le bien devenait « habitable de suite », note 1,0. « En bon état » qualifie
+pourtant ce qui le précède : les mentions qui suivent un COMPOSANT (charpente, toiture,
+façade, menuiseries, chaudière…) sont désormais neutralisées avant analyse. « Maison en bon
+état » et « bon état général » ne sont pas touchés.
+
+**« Prévoir beaucoup de travaux » n'était dans aucune liste.** Une annonce dit rarement
+« gros travaux » : elle dit ce qu'il faut faire. Ajoutés : *beaucoup de travaux*, *aménager
+en habitation*, *importants travaux* (gros travaux) ; *travaux à prévoir*, *prévoir des
+travaux*, *travaux à réaliser*, *travaux nécessaires* (à rénover).
+
+Effet mesuré du seul correctif, sur 6 042 biens : **102 changent d'état, 42 vers plus
+sévère, aucun vers moins sévère.** `scripts/reclasser.py` l'a appliqué au catalogue en base
+(123 reclassements) — sans quoi la correction n'aurait valu que pour les collectes futures.
+
+### Le seuil d'état, et pourquoi le poids ne suffisait pas
+
+Corrigée en « gros travaux », la grange descend de 94,3 à 88,8 — et reste 18e. C'est la
+limite d'une moyenne : **un critère sur vingt-sept ne peut pas couler un bien excellent
+partout ailleurs** (altitude 1 030 m, 6 h de soleil au solstice, 1,5 ha, aucun risque). Et
+monter le poids ne suffit pas : ce bien *réussit* les chambres, le format et le jardin, si
+bien que rendre ces poids à 4 l'a fait *monter*.
+
+D'où un **seuil**, sur le modèle de celui du DPE : `min_etat`. En dessous de l'état
+demandé, la note du bien est **divisée par quatre**. Ce n'est pas un plafond — le bien
+garde sa place dans le classement, il paie ce qu'il coûte — et surtout il appartient à qui
+le pose : le set en déclare un, chacun peut le sien.
+
+Le set têtard déclare `min_etat: "renover"`, ce que sa propre description disait déjà :
+« un peu de travaux possible mais pas une rénovation complète ». La grange tombe alors à
+**85,1, 35e sur 2 698**, avec le détail « gros travaux (sous ton seuil : à rénover) ».
+
+⚠️ Piège rencontré en écrivant la règle : la pénalité doit s'appliquer à la note **du
+bien**, pas à celle du seuil. La première version divisait la note du seuil, si bien qu'un
+seuil plus strict produisait une pénalité plus douce — « à rafraîchir » vaut 1,0 quand
+« à rénover » vaut 0,65. Le seuil du DPE avait le même défaut ; les deux sont corrigés.
+
+### Les quatre poids rendus
+
+Chambres, format, jardin et travaux avaient été baissés de 4 à 2 ou 3 pendant la
+normalisation, au motif que **le palier portait l'exigence**. Les paliers ayant été
+retirés, ces critères se retrouvaient à la fois peu pondérés et sans garde-fou : ils sont
+revenus à 4. Leur écart-type reste faible en haut de classement — ce poids ne sert pas à
+départager les candidats, il sert à faire payer les rares qui échouent.
