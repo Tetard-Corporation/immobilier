@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import hashlib
 import logging
+import os
 import re
 import time
 from collections import Counter
@@ -21,7 +22,7 @@ from ..agences_config import load_agences_config
 from ..config import get_settings
 from ..sources.base import NormalizedListing
 from ..sources.htmlutil import json_ld_items, realestate_fields
-from .agences_parsers import harvest_detail_links, parse_site
+from .agences_parsers import harvest_detail_links, pagination_links, parse_site
 from .email_ingest import fetch_unseen
 from .enrich import annotate
 from .extract import get_extractor
@@ -194,56 +195,104 @@ def _fill_geo(nl: NormalizedListing) -> NormalizedListing:
     return nl
 
 
+# Pages de liste suivies au maximum par URL configurée. Une seule était lue jusqu'ici, et
+# le plafond ne se voyait pas : un site qui ne rend que sa première page ressemble à un
+# petit site. Orpi Ain Agences était à exactement 40 biens — la valeur du cap de récolte
+# des liens, pas son stock — et Diois Immobilier à 10 quand son site en annonce 45.
+_MAX_PAGES_LISTE = int(os.environ.get("AGENCES_MAX_PAGES", "8"))
+
+
+def _pages_de_liste(client, url: str, html: str) -> list[tuple[str, str]]:
+    """[(url, html)] de la page donnée puis de ses suivantes, tant qu'elles répondent."""
+    pages = [(url, html)]
+    vues = {url.rstrip("/")}
+    a_suivre = pagination_links(html, url, max_pages=_MAX_PAGES_LISTE)
+    while a_suivre and len(pages) < _MAX_PAGES_LISTE:
+        suivante = a_suivre.pop(0)
+        if suivante.rstrip("/") in vues:
+            continue
+        vues.add(suivante.rstrip("/"))
+        try:
+            r = client.get(suivante)
+            r.raise_for_status()
+        except Exception as exc:  # noqa: BLE001 - fin de pagination ou page absente
+            logger.info("Page de liste %s injoignable : %s", suivante, exc)
+            break
+        pages.append((suivante, r.text))
+        # Certains sites n'affichent que « page suivante » : on redécouvre à chaque pas.
+        for u in pagination_links(r.text, suivante, max_pages=_MAX_PAGES_LISTE):
+            if u.rstrip("/") not in vues and u not in a_suivre:
+                a_suivre.append(u)
+    return pages
+
+
 def scrape_sites(site_urls: list[tuple[str, str]], settings=None) -> list[NormalizedListing]:
-    """Scrape les pages d'annonces d'agences (JSON-LD prioritaire)."""
+    """Scrape les pages d'annonces d'agences (JSON-LD prioritaire), pagination comprise."""
     settings = settings or get_settings()
     items: list[NormalizedListing] = []
     with httpx.Client(headers=_UA, timeout=settings.http_timeout_seconds, follow_redirects=True) as client:
-        for agency, url in site_urls:
+        for agency, url_config in site_urls:
             try:
-                resp = client.get(url)
+                resp = client.get(url_config)
                 resp.raise_for_status()
             except Exception as exc:  # un site KO ne bloque pas les autres
-                logger.warning("Site agence injoignable %s : %s", url, exc)
+                logger.warning("Site agence injoignable %s : %s", url_config, exc)
                 continue
-            found = False
-            for obj in json_ld_items(resp.text):
-                f = realestate_fields(obj)
-                if not f or f.get("price") is None:
-                    continue
-                found = True
-                items.append(_fill_geo(_enrich_from_detail(_to_normalized(
-                    {
-                        "type_bien": None,
-                        "prix": f.get("price"),
-                        "surface_bati": f.get("surface"),
-                        "surface_terrain": None,
-                        "commune": f.get("city"),
-                        "code_postal": f.get("postal_code"),
-                        "url": urljoin(url, f.get("url") or url),
-                        "description": f.get("description") or f.get("name"),
-                    },
-                    agency,
-                ))))
-            # Pas de JSON-LD exploitable -> repli sur un parser HTML dédié à l'agence.
-            if not found:
-                for d in parse_site(url, resp.text):
-                    # On accepte un bien sans prix de carte s'il a une URL (le détail le
-                    # remplira) ; on écarte ensuite ceux dont le prix reste introuvable.
-                    if d.get("prix") is None and not d.get("url"):
-                        continue
-                    nl = _fill_geo(_enrich_from_detail(_to_normalized(d, agency)))
-                    if nl.prix is not None:
-                        items.append(nl)
-                    found = True
-            # Toujours rien -> voie générique : suivre les fiches et lire LEUR JSON-LD.
-            if not found:
-                items.extend(_scrape_via_fiches(client, agency, url, resp.text, settings))
+            pages = _pages_de_liste(client, url_config, resp.text)
+            if len(pages) > 1:
+                logger.info("%s : %s pages de liste suivies", agency, len(pages))
+            for url, page_html in pages:
+                items.extend(_biens_d_une_page(client, agency, url, page_html, settings))
     return items
 
 
+def _biens_d_une_page(client, agency: str, url: str, html: str, settings) -> list[NormalizedListing]:
+    """Les trois voies d'extraction, appliquées à UNE page de liste."""
+    items: list[NormalizedListing] = []
+    found = False
+    for obj in json_ld_items(html):
+        f = realestate_fields(obj)
+        if not f or f.get("price") is None:
+            continue
+        found = True
+        items.append(_fill_geo(_enrich_from_detail(_to_normalized(
+            {
+                "type_bien": None,
+                "prix": f.get("price"),
+                "surface_bati": f.get("surface"),
+                "surface_terrain": None,
+                "commune": f.get("city"),
+                "code_postal": f.get("postal_code"),
+                "url": urljoin(url, f.get("url") or url),
+                "description": f.get("description") or f.get("name"),
+            },
+            agency,
+        ))))
+    # Pas de JSON-LD exploitable -> repli sur un parser HTML dédié à l'agence.
+    if not found:
+        for d in parse_site(url, html):
+            # On accepte un bien sans prix de carte s'il a une URL (le détail le
+            # remplira) ; on écarte ensuite ceux dont le prix reste introuvable.
+            if d.get("prix") is None and not d.get("url"):
+                continue
+            nl = _fill_geo(_enrich_from_detail(_to_normalized(d, agency)))
+            if nl.prix is not None:
+                items.append(nl)
+            found = True
+    # Toujours rien -> voie générique : suivre les fiches et lire LEUR JSON-LD.
+    if not found:
+        items.extend(_scrape_via_fiches(client, agency, url, html, settings))
+    return items
+
+
+# Liens de fiches suivis par page de liste. 40 était un plafond atteint en pratique — et
+# indiscernable d'un site qui n'aurait que 40 biens. Une page de liste dépasse rarement
+# 60 annonces ; au-delà, c'est la pagination qui prend le relais.
+_MAX_FICHES_PAR_PAGE = int(os.environ.get("AGENCES_MAX_FICHES", "80"))
+
+
 def _scrape_via_fiches(client, agency: str, url: str, html: str, settings,
-                       cap: int = 40) -> list[NormalizedListing]:
+                       cap: int | None = None) -> list[NormalizedListing]:
     """Voie générique : la page de liste n'a pas de JSON-LD, les fiches en ont un.
 
     C'est le cas courant chez les agences locales — mesuré sur les agences bretonnes :
@@ -253,7 +302,7 @@ def _scrape_via_fiches(client, agency: str, url: str, html: str, settings,
     La récolte est permissive et le tri se fait ici : une page de rubrique ramassée par
     erreur n'a pas de JSON-LD immobilier avec prix, donc elle tombe d'elle-même.
     """
-    liens = harvest_detail_links(html, url, max_links=cap)
+    liens = harvest_detail_links(html, url, max_links=cap or _MAX_FICHES_PAR_PAGE)
     if not liens:
         return []
     delai = max(0, getattr(settings, "scraper_rate_limit_ms", 2000)) / 1000
