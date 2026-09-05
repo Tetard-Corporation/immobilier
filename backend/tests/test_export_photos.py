@@ -111,3 +111,36 @@ def test_un_seul_set_au_dessus_suffit():
 
 def test_bien_sans_aucun_score():
     assert _garde_detail({"1": {"match_score": None}}, None, 70) is False
+
+
+def test_un_bien_sans_droit_aux_photos_garde_celles_deja_publiees(tmp_path):
+    # L'intention de `telecharger=False` : ne pas appeler le réseau, sans rien perdre de
+    # ce qui était déjà publié.
+    d = _dossier(tmp_path)
+    (d / "0.jpg").write_bytes(b"x")
+    (d / "1.jpg").write_bytes(b"y")
+    perimetre = {"photos/test_x/0.jpg", "photos/test_x/1.jpg"}
+    assert _download_photos(_Row(), str(tmp_path), "photos",
+                            telecharger=False, publiees=perimetre) == [
+        "photos/test_x/0.jpg", "photos/test_x/1.jpg"]
+
+
+def test_mais_il_ne_se_sert_pas_dans_ce_que_personne_n_a_publie(tmp_path):
+    # Le disque n'est PAS le périmètre de publication : il porte les photos de tous les
+    # biens jamais collectés — 57 000 fichiers — dont le dépôt ne suit qu'une fraction.
+    # Mesuré sans ce filtre : 49 734 photos citées pour 5 636 biens, donc autant d'images
+    # cassées chez le visiteur.
+    d = _dossier(tmp_path)
+    (d / "0.jpg").write_bytes(b"x")
+    (d / "1.jpg").write_bytes(b"y")
+    perimetre = {"photos/test_x/0.jpg"}          # la seconde n'a jamais été publiée
+    assert _download_photos(_Row(), str(tmp_path), "photos",
+                            telecharger=False, publiees=perimetre) == ["photos/test_x/0.jpg"]
+
+
+def test_sans_perimetre_connu_on_ne_filtre_pas(tmp_path):
+    # Hors dépôt git, en test, sur une autre machine : mieux vaut publier une image de
+    # trop que perdre le seul exemplaire d'une photo dans un contexte qu'on ne lit pas.
+    (_dossier(tmp_path) / "0.jpg").write_bytes(b"x")
+    assert _download_photos(_Row(), str(tmp_path), "photos",
+                            telecharger=False, publiees=None) == ["photos/test_x/0.jpg"]

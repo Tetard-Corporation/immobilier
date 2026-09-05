@@ -13,6 +13,7 @@ from __future__ import annotations
 import io
 import json
 import os
+import subprocess
 import re
 import time
 import unicodedata
@@ -912,7 +913,8 @@ def _photo_urls(row: Listing) -> list[str]:
 
 
 def _download_photos(row: Listing, photos_dir: str, rel_base: str,
-                     telecharger: bool = True) -> list[str]:
+                     telecharger: bool = True,
+                     publiees: set[str] | None = None) -> list[str]:
     """Télécharge les photos en local ; renvoie les chemins relatifs (depuis data.json).
 
     `telecharger=False` : on n'appelle pas le réseau, on se contente des fichiers déjà
@@ -964,6 +966,15 @@ def _download_photos(row: Listing, photos_dir: str, rel_base: str,
                 par_indice[base] = f
         rels = [f"{rel_base}/{key}/{par_indice[b]}"
                 for b in sorted(par_indice, key=int)]
+    if not telecharger and publiees is not None:
+        # Le disque n'est PAS le périmètre de publication : il porte les photos de tous
+        # les biens jamais collectés — 57 000 fichiers, 7 Go — dont le dépôt ne suit
+        # qu'une fraction. Un bien écarté par `photos_min` garde donc les images qu'il
+        # AVAIT DÉJÀ (l'intention de `telecharger=False`), mais ne se sert pas au passage
+        # dans celles que personne n'a publiées : elles s'afficheraient cassées.
+        # Mesuré sans ce filtre : 49 734 photos citées pour 5 636 biens.
+        # `publiees=None` = périmètre inconnu (tests, usage hors dépôt) : on ne filtre pas.
+        rels = [r for r in rels if r in publiees]
     return rels
 
 
@@ -999,6 +1010,34 @@ def _dans_la_zone(row, zone: dict | None) -> bool:
         if cote is False:
             return False
     return True
+
+
+def _photos_publiees(out_dir: str | None, rel_base: str = "photos") -> set[str] | None:
+    """Les photos que le dépôt SUIT déjà, sous la forme des chemins publiés.
+
+    Sert de périmètre à `_download_photos` : un bien qui n'a pas droit au téléchargement
+    garde ses images publiées, mais ne se sert pas dans les 57 000 fichiers que le disque
+    accumule et que personne n'a commités.
+
+    Renvoie None hors dépôt git ou si la commande échoue — le filtre est alors inactif,
+    ce qui est le bon défaut : mieux vaut publier une image de trop que perdre le seul
+    exemplaire d'une photo dans un contexte qu'on ne comprend pas (tests, autre machine).
+    """
+    if not out_dir:
+        return None
+    try:
+        prefixe = os.path.basename(os.path.abspath(out_dir))  # « data »
+        sortie = subprocess.run(
+            ["git", "-C", os.path.abspath(out_dir), "ls-files", rel_base],
+            capture_output=True, text=True, timeout=60)
+        if sortie.returncode != 0:
+            return None
+        suivies = sortie.stdout.split()
+        # `git ls-files` répond en chemins relatifs au dossier interrogé : c'est déjà la
+        # forme publiée (« photos/<clé>/0.jpg »). Le préfixe ne sert qu'au message.
+        return set(suivies) if suivies else None
+    except Exception:  # noqa: BLE001 - git absent, dépôt absent, timeout : pas de filtre
+        return None
 
 
 def _garde_detail(scores_by_set: dict, row_score: float | None, seuil: float | None) -> bool:
@@ -1231,6 +1270,8 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
     if photos_min is None:
         _env = os.environ.get("EXPORT_SEUIL_PHOTOS", "").strip()
         photos_min = float(_env) if _env else None
+    # Une seule interrogation de git pour tout l'export : le périmètre déjà publié.
+    photos_publiees = _photos_publiees(out_dir)
     set_zones: dict[int, dict] = {}
     # Zones de COMPARAISON (massifs), à ne pas confondre avec `set_zones` (le filtre
     # géographique du set). Les premières servent à publier un témoin par région, la
@@ -1461,7 +1502,8 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
         # fichiers déjà sur disque restent publiés.
         meilleur = max((s.get("match_score") or 0) for s in scores_by_set.values()) if scores_by_set else 0
         telecharger = (photos_min is None or meilleur >= photos_min or temoin or sv is not None)
-        photos = (_download_photos(row, photos_dir, "photos", telecharger=telecharger)
+        photos = (_download_photos(row, photos_dir, "photos", telecharger=telecharger,
+                                   publiees=photos_publiees)
                   if (download_photos and photos_dir) else [])
         biens_out.append({
             **{c: getattr(row, c) for c in _PERSIST_FLAG_COLS},  # flags persistés (round-trip)
