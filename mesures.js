@@ -40,6 +40,8 @@ const Mesures = (() => {
     jardin: [{ cle: "min_surface", label: "jardin requis", unite: "m²", min: 0, max: 5000, pas: 50 }],
     relief_mountain: [{ cle: "ref_altitude", label: "altitude de référence", unite: "m", min: 100, max: 2500, pas: 50 }],
     dpe: [{ cle: "min_classe", label: "classe minimale", unite: "", choix: ["A", "B", "C", "D", "E", "F", "G"] }],
+    light_works: [{ cle: "min_etat", label: "état minimum", unite: "",
+                    choix: ["habitable", "rafraichir", "renover", "gros_travaux"] }],
   };
 
   // --- constantes reprises du backend (services/preferences.py) --------------
@@ -50,6 +52,9 @@ const Mesures = (() => {
   const BUDGET_SOUS_PLANCHER = 0.78;  // note juste sous le plancher
   const NOTE_LIMITE = 0.75;        // logement_compact : décote entre l'idéal et la limite
   const DPE_ECHELLE = { A: 1.0, B: 0.95, C: 0.85, D: 0.70, E: 0.50, F: 0.25, G: 0.10 };
+  const ETAT_NOTE = { habitable: 1.0, rafraichir: 1.0, renover: 0.65, gros_travaux: 0.4, ruine: 0.1 };
+  const ETAT_NIVEAU = { habitable: 0, rafraichir: 1, renover: 2, gros_travaux: 3, ruine: 4 };
+  const SOUS_SEUIL = 0.25;   // ce qui reste d'une note passée sous le seuil demandé
 
   // --- formules portées ------------------------------------------------------
   // Chacune renvoie un sous-score [0,1], ou null si la donnée manque sur ce bien
@@ -138,6 +143,19 @@ const Mesures = (() => {
       return clamp((b.altitude || 0) / ref);
     },
 
+    // « En dessous de cet état, pour moi c'est non. » Le barème ne change pas ; ce qui
+    // change, c'est l'exigence — et elle appartient à celui qui la pose.
+    light_works(b, p) {
+      const cond = b.condition;
+      if (!(cond in ETAT_NOTE)) return null;
+      const note = ETAT_NOTE[cond];
+      const seuil = p.min_etat;
+      // La note du BIEN s'effondre, pas celle du seuil : sinon un seuil plus strict
+      // donnerait une pénalité plus douce.
+      if (seuil in ETAT_NOTE && ETAT_NIVEAU[cond] > ETAT_NIVEAU[seuil]) return note * SOUS_SEUIL;
+      return note;
+    },
+
     // Le seul paramètre du DPE est un SEUIL, et il ne change pas le barème : en dessous
     // de la classe demandée, le bien tombe à la note de la classe suivante — la mesure
     // reste la même, c'est l'exigence qui bouge.
@@ -147,7 +165,7 @@ const Mesures = (() => {
       const base = DPE_ECHELLE[classe];
       const seuil = String(p.min_classe || "").trim().toUpperCase()[0];
       if (!(seuil in DPE_ECHELLE)) return base;
-      return classe <= seuil ? base : Math.min(base, DPE_ECHELLE[seuil] * 0.5);
+      return classe <= seuil ? base : base * SOUS_SEUIL;
     },
   };
 

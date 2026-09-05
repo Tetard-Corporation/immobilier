@@ -67,6 +67,17 @@ _KEYWORDS: list[tuple[str, list[str]]] = [
             "a restaurer entierement",
             "tout a refaire",
             "travaux importants",
+            # Une annonce dit rarement « gros travaux » : elle dit ce qu'il faut faire.
+            # Saint-Andéol (140 000 €, publiée à 94/100) : « Prévoir beaucoup de travaux
+            # pour aménager en habitation » — aucun mot-clé ne matchait, et le bien est
+            # sorti « habitable de suite ». Un bâtiment qu'il faut AMÉNAGER EN HABITATION
+            # n'est pas une habitation.
+            "beaucoup de travaux",
+            "amenager en habitation",
+            "amenager en logement",
+            "amenagement en habitation",
+            "a usage d habitation a creer",
+            "importants travaux",
             # « À rénover ENTIÈREMENT » : le mot-clé « a renover » seul rangeait la
             # formule avec le rafraîchissement (0,85, donc admissible), alors qu'elle
             # dit exactement ce que le groupe refuse. Vécu sur la grange de Jarrier
@@ -97,6 +108,12 @@ _KEYWORDS: list[tuple[str, list[str]]] = [
         RENOVER,
         [
             "a renover",
+            # Volume non précisé, mais ce n'est certainement pas « habitable de suite ».
+            "travaux a prevoir",
+            "travaux sont a prevoir",
+            "prevoir des travaux",
+            "travaux a realiser",
+            "travaux necessaires",
             # Le verbe seul : « pour qui souhaite rénover », « il reste à rénover la
             # cave ». Sans lui, une annonce qui parle de rénovation sans écrire « à
             # rénover » tombait au niveau suivant — et « renove » y matchait à l'intérieur
@@ -170,6 +187,23 @@ _KEYWORDS: list[tuple[str, list[str]]] = [
         ],
     ),
 ]
+
+# « En bon état » qualifie ce qui le précède. « Charpente en bon état » dans une annonce
+# qui demande ensuite « beaucoup de travaux » ne dit rien de l'habitabilité — et c'est
+# pourtant ce qui a fait sortir une grange à aménager en « habitable de suite », première
+# du classement à 94/100. On efface donc ces mentions AVANT l'analyse : elles parlent d'un
+# ouvrage, pas du logement. « Maison en bon état », « bon état général », « ensemble en
+# bon état » ne sont pas touchés — eux parlent bien du bien.
+_COMPOSANTS = (
+    "charpente", "toiture", "toit", "couverture", "facade", "facades", "mur", "murs",
+    "murs porteurs", "structure", "gros oeuvre", "menuiserie", "menuiseries", "fenetre",
+    "fenetres", "volets", "chaudiere", "poele", "cheminee", "electricite", "plomberie",
+    "assainissement", "fosse septique", "toiture et charpente", "sol", "sols", "parquet",
+    "cloture", "piscine", "terrasse", "portail", "escalier", "isolation", "zinguerie",
+)
+_RE_ETAT_PARTIEL = re.compile(
+    r"(?P<avant>\b(?:" + "|".join(_COMPOSANTS) + r")s?\b[^.;,]{0,30}?)"
+    r"\b(?:tres |parfait |excellent )?bon etat\b")
 
 # Phrases de négation à neutraliser avant analyse (évite les faux positifs).
 _NEGATIONS = [
@@ -329,6 +363,10 @@ def classify(*parts: str | None) -> dict:
 
     # Neutralise les négations : on remplace par un marqueur "habitable" explicite
     # pour éviter qu'un « aucun travaux à prévoir » ne déclenche « à rénover ».
+    # « Charpente en bon état » parle de la charpente : on retire la mention avant de
+    # chercher les mots-clés, sinon elle vaut verdict d'habitabilité pour tout le bien.
+    text = _RE_ETAT_PARTIEL.sub(lambda m: m.group("avant") + " ", text)
+
     negated = False
     for neg in _NEGATIONS:
         if neg in text:

@@ -23,6 +23,7 @@ from ..config import get_settings
 from ..sources.base import NormalizedListing
 from ..sources.htmlutil import json_ld_items, realestate_fields
 from .agences_parsers import harvest_detail_links, pagination_links, parse_site
+from .completion import completer
 from .email_ingest import fetch_unseen
 from .enrich import annotate
 from .extract import get_extractor
@@ -117,6 +118,22 @@ def _og(html: str, prop: str) -> str | None:
     m = (re.search(rf'<meta[^>]+property="{prop}"[^>]+content="([^"]+)"', html)
          or re.search(rf'<meta[^>]+content="([^"]+)"[^>]+property="{prop}"', html))
     return m.group(1) if m else None
+
+
+_SCRIPTS = re.compile(r"<(script|style|noscript)[^>]*>.*?</\1>", re.S | re.I)
+_BALISES = re.compile(r"<[^>]+>")
+
+
+def _texte_visible(html: str | None) -> str:
+    """Texte lisible d'une page, scripts et styles retirés.
+
+    Sert à LIRE les champs d'une fiche, pas à les afficher : le résultat porte encore les
+    menus et les pieds de page. Les scripts sont retirés d'abord, sinon leur contenu —
+    souvent du JSON avec des nombres — se mêlerait au texte et ferait lire n'importe quoi.
+    """
+    if not html:
+        return ""
+    return re.sub(r"\s+", " ", _BALISES.sub(" ", _SCRIPTS.sub(" ", html))).strip()
 
 
 def _enrich_from_detail(nl: NormalizedListing, html: str | None = None) -> NormalizedListing:
@@ -352,6 +369,17 @@ def _scrape_via_fiches(client, agency: str, url: str, html: str, settings,
         if lat is not None:
             nl.latitude, nl.longitude = lat, lon
         nl = _fill_geo(_enrich_from_detail(nl, page.text))
+        # Les chambres et le terrain ne sont QUE dans le corps de la fiche. Mesuré sur
+        # des fiches réelles (Beaufortain, Diois, Orpi) : le titre et `og:description`
+        # donnent les pièces au mieux, jamais les chambres ni le terrain, alors que le
+        # corps les porte à chaque fois. Sans cette lecture, 97 % des biens d'agence
+        # arrivaient sans chambres et 95 % sans terrain — donc hors course sur quatre
+        # critères du set. On lit le corps, on ne le STOCKE pas : 12 800 caractères de
+        # navigation feraient une description illisible.
+        completes = completer(nl, texte_source=_texte_visible(page.text))
+        if completes:
+            logger.debug("Agence %s : %s complété(s) depuis le corps de %s",
+                         agency, sorted(completes), lien)
         if nl.prix is not None and nl.commune:
             trouves.append(nl)
     trouves = _sans_prix_de_decor(trouves, agency)
