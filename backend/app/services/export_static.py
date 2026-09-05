@@ -13,6 +13,7 @@ from __future__ import annotations
 import io
 import json
 import os
+import subprocess
 import re
 import time
 import unicodedata
@@ -733,22 +734,37 @@ def _tourisme(lat: float, lon: float, cache: dict, *, live: bool = False) -> dic
 # Optimisation : galerie web -> 1280 px max suffit ; JPEG progressif qualité 78.
 _MAX_DIM = 1280
 _JPEG_QUALITY = 78
+# WebP 72 ≈ JPEG 78 à l'œil, pour 36 % de moins (mesuré sur 120 photos du dépôt).
+_WEBP_QUALITY = int(os.environ.get("EXPORT_WEBP_QUALITY", "72"))
 
 
-def _optimize_jpeg(data: bytes) -> bytes:
-    """Redimensionne (≤_MAX_DIM) et recompresse en JPEG ; renvoie l'original si échec."""
+def _optimize_jpeg(data: bytes) -> tuple[bytes, str]:
+    """Redimensionne (≤_MAX_DIM) et recompresse. Renvoie (octets, extension).
+
+    WebP plutôt que JPEG : mesuré sur 120 photos du dépôt, WebP à 1280 px qualité 72 pèse
+    36 % de moins que le JPEG qualité 78 produit jusqu'ici — le même gain qu'un JPEG
+    rétréci à 1024 px, mais SANS perdre de résolution. Le dépôt sert aussi de serveur au
+    site : chaque mégaoctet économisé est un mégaoctet que le visiteur ne télécharge pas.
+
+    Repli sur le JPEG si l'encodage WebP échoue ou n'apporte rien, et sur l'original si
+    Pillow n'est pas là — une photo dégradée vaut mieux qu'une photo perdue.
+    """
     if Image is None:
-        return data
+        return data, "jpg"
     try:
-        im = Image.open(io.BytesIO(data))
-        im = im.convert("RGB")  # supprime alpha/EXIF, force JPEG-compatible
+        im = Image.open(io.BytesIO(data)).convert("RGB")  # supprime alpha/EXIF
         im.thumbnail((_MAX_DIM, _MAX_DIM))  # garde le ratio, ne sur-échantillonne pas
+        buf = io.BytesIO()
+        im.save(buf, format="WEBP", quality=_WEBP_QUALITY, method=6)
+        out = buf.getvalue()
+        if out and len(out) < len(data):
+            return out, "webp"
         buf = io.BytesIO()
         im.save(buf, format="JPEG", quality=_JPEG_QUALITY, optimize=True, progressive=True)
         out = buf.getvalue()
-        return out if out and len(out) < len(data) else data
+        return (out, "jpg") if out and len(out) < len(data) else (data, "jpg")
     except Exception:
-        return data
+        return data, "jpg"
 
 
 # Une source peut livrer une valeur SENTINELLE en guise de « non renseigné » : Leboncoin
@@ -897,7 +913,8 @@ def _photo_urls(row: Listing) -> list[str]:
 
 
 def _download_photos(row: Listing, photos_dir: str, rel_base: str,
-                     telecharger: bool = True) -> list[str]:
+                     telecharger: bool = True,
+                     publiees: set[str] | None = None) -> list[str]:
     """Télécharge les photos en local ; renvoie les chemins relatifs (depuis data.json).
 
     `telecharger=False` : on n'appelle pas le réseau, on se contente des fichiers déjà
@@ -910,31 +927,54 @@ def _download_photos(row: Listing, photos_dir: str, rel_base: str,
     dest_dir = os.path.join(photos_dir, key)
     rels: list[str] = []
     for i, url in enumerate(_photo_urls(row) if telecharger else []):
-        rel = f"{rel_base}/{key}/{i}.jpg"
-        path = os.path.join(dest_dir, f"{i}.jpg")
-        if os.path.exists(path) and os.path.getsize(path) > 0:
-            rels.append(rel)
+        # Une photo déjà sur disque n'est jamais retéléchargée, quelle que soit son
+        # extension : les .jpg d'avant le passage au WebP restent valables. Les
+        # reconvertir ne gagnerait rien — git garde les anciens objets de toute façon.
+        deja = next((e for e in ("webp", "jpg")
+                     if os.path.exists(os.path.join(dest_dir, f"{i}.{e}"))
+                     and os.path.getsize(os.path.join(dest_dir, f"{i}.{e}")) > 0), None)
+        if deja:
+            rels.append(f"{rel_base}/{key}/{i}.{deja}")
             continue
         try:
-            os.makedirs(dest_dir, exist_ok=True)
             req = urllib.request.Request(url, headers={"User-Agent": _UA, "Referer": row.url or ""})
             with urllib.request.urlopen(req, timeout=20) as resp:
                 data = resp.read()
-            if data:
-                data = _optimize_jpeg(data)
-                with open(path, "wb") as fh:
-                    fh.write(data)
-                rels.append(rel)
+            if not data:
+                continue
+            data, ext = _optimize_jpeg(data)
+            os.makedirs(dest_dir, exist_ok=True)
+            with open(os.path.join(dest_dir, f"{i}.{ext}"), "wb") as fh:
+                fh.write(data)
+            rels.append(f"{rel_base}/{key}/{i}.{ext}")
         except Exception:
             continue  # photo indisponible -> on saute, sans casser l'export
     if not rels and os.path.isdir(dest_dir):
         # Pas d'URL source (ex. DB reconstruite par le seed) mais photos déjà présentes
         # sur disque -> on réutilise les fichiers locaux (pas de perte, pas de re-DL).
-        files = sorted(
-            (f for f in os.listdir(dest_dir) if f.endswith(".jpg")),
-            key=lambda f: int(f[:-4]) if f[:-4].isdigit() else 9999,
-        )
-        rels = [f"{rel_base}/{key}/{f}" for f in files]
+        # Un indice ne doit sortir QU'UNE FOIS : après une conversion, « 0.jpg » et
+        # « 0.webp » peuvent coexister, et les publier tous deux montrerait la même photo
+        # deux fois dans la galerie. Le WebP gagne, comme dans la boucle ci-dessus.
+        par_indice: dict[str, str] = {}
+        for f in os.listdir(dest_dir):
+            base, _, ext = f.rpartition(".")
+            if ext not in ("jpg", "webp") or not base.isdigit():
+                continue
+            if os.path.getsize(os.path.join(dest_dir, f)) <= 0:
+                continue        # fichier tronqué par un export interrompu
+            if ext == "webp" or base not in par_indice:
+                par_indice[base] = f
+        rels = [f"{rel_base}/{key}/{par_indice[b]}"
+                for b in sorted(par_indice, key=int)]
+    if not telecharger and publiees is not None:
+        # Le disque n'est PAS le périmètre de publication : il porte les photos de tous
+        # les biens jamais collectés — 57 000 fichiers, 7 Go — dont le dépôt ne suit
+        # qu'une fraction. Un bien écarté par `photos_min` garde donc les images qu'il
+        # AVAIT DÉJÀ (l'intention de `telecharger=False`), mais ne se sert pas au passage
+        # dans celles que personne n'a publiées : elles s'afficheraient cassées.
+        # Mesuré sans ce filtre : 49 734 photos citées pour 5 636 biens.
+        # `publiees=None` = périmètre inconnu (tests, usage hors dépôt) : on ne filtre pas.
+        rels = [r for r in rels if r in publiees]
     return rels
 
 
@@ -970,6 +1010,51 @@ def _dans_la_zone(row, zone: dict | None) -> bool:
         if cote is False:
             return False
     return True
+
+
+def _photos_publiees(out_dir: str | None, rel_base: str = "photos") -> set[str] | None:
+    """Les photos que le dépôt SUIT déjà, sous la forme des chemins publiés.
+
+    Sert de périmètre à `_download_photos` : un bien qui n'a pas droit au téléchargement
+    garde ses images publiées, mais ne se sert pas dans les 57 000 fichiers que le disque
+    accumule et que personne n'a commités.
+
+    Renvoie None hors dépôt git ou si la commande échoue — le filtre est alors inactif,
+    ce qui est le bon défaut : mieux vaut publier une image de trop que perdre le seul
+    exemplaire d'une photo dans un contexte qu'on ne comprend pas (tests, autre machine).
+    """
+    if not out_dir:
+        return None
+    try:
+        prefixe = os.path.basename(os.path.abspath(out_dir))  # « data »
+        sortie = subprocess.run(
+            ["git", "-C", os.path.abspath(out_dir), "ls-files", rel_base],
+            capture_output=True, text=True, timeout=60)
+        if sortie.returncode != 0:
+            return None
+        suivies = sortie.stdout.split()
+        # `git ls-files` répond en chemins relatifs au dossier interrogé : c'est déjà la
+        # forme publiée (« photos/<clé>/0.jpg »). Le préfixe ne sert qu'au message.
+        return set(suivies) if suivies else None
+    except Exception:  # noqa: BLE001 - git absent, dépôt absent, timeout : pas de filtre
+        return None
+
+
+def _garde_detail(scores_by_set: dict, row_score: float | None, seuil: float | None) -> bool:
+    """Ce bien mérite-t-il de publier le détail de ses critères ?
+
+    Oui dès qu'il atteint le seuil dans AU MOINS UN set — un bien peut être médiocre pour
+    têtard et bon pour le littoral. Oui aussi si le seuil n'est pas configuré : sans
+    consigne, on publie tout, comme avant.
+
+    Le seuil porte sur le MATCH du set, pas sur le score d'investissement. Les deux ne
+    mesurent pas la même chose et ne sont pas sur la même échelle : le second est élevé
+    sur des biens que le set écarte, et l'inclure retenait 2 246 biens au lieu de 806 —
+    presque aucune économie.
+    """
+    if not seuil:
+        return True
+    return any((sc.get("match_score") or -1) >= seuil for sc in scores_by_set.values())
 
 
 def _passes_pepites_gate(scores_by_set: dict, member: set, seuils: dict,
@@ -1152,7 +1237,8 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
                   min_match_score: float | None = None, primary_set_id: int | None = None,
                   pepites: dict | None = None, conserver: dict | None = None,
                   meilleur_par_zone: dict | None = None,
-                  photos_min: float | None = None) -> dict:
+                  photos_min: float | None = None,
+                  seuil_detail: float | None = None) -> dict:
     """Construit le dataset statique. Si download_photos, écrit les images sous out_dir.
 
     `photos_min` : score en dessous duquel on ne télécharge PAS les photos (les fichiers
@@ -1176,6 +1262,16 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
         .all()
     )
     seuils = _seuils_pepites(min_match_score, primary_set_id, pepites)
+    # Réglable par l'environnement pour ne pas avoir à toucher chaque appelant
+    # (collect_tetard, collect_seloger, l'API…). Absent = on publie tout le détail.
+    if seuil_detail is None:
+        _env = os.environ.get("EXPORT_SEUIL_DETAIL", "").strip()
+        seuil_detail = float(_env) if _env else None
+    if photos_min is None:
+        _env = os.environ.get("EXPORT_SEUIL_PHOTOS", "").strip()
+        photos_min = float(_env) if _env else None
+    # Une seule interrogation de git pour tout l'export : le périmètre déjà publié.
+    photos_publiees = _photos_publiees(out_dir)
     set_zones: dict[int, dict] = {}
     # Zones de COMPARAISON (massifs), à ne pas confondre avec `set_zones` (le filtre
     # géographique du set). Les premières servent à publier un témoin par région, la
@@ -1383,16 +1479,31 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
         if temoin:
             n_temoins += 1
         feats, row_score, row_score_details = prep["feats"], prep["score"], prep["score_details"]
+        # Détail des critères : publié seulement au-dessus du seuil. Le site charge
+        # data.json EN ENTIER au démarrage, et ce détail — un objet par critère, par set,
+        # avec son libellé et sa phrase explicative — pèse les deux tiers du fichier
+        # (38 Mo sur 57 pour 6 038 biens). Il sert à lire une fiche et à recalculer un
+        # score sous lentille ; sur les milliers de biens que personne n'ouvrira, c'est
+        # du poids mort. Le `match_score` et le `score`, eux, sont toujours publiés : le
+        # CLASSEMENT reste donc complet et exact pour tout le catalogue.
+        garde_detail = _garde_detail(scores_by_set, row_score, seuil_detail)
+        if not garde_detail:
+            scores_by_set = {k: {"match_score": v.get("match_score")}
+                             for k, v in scores_by_set.items()}
+            row_score_details = None
         is_viager, is_resid = prep["viager"], prep["residence_tourisme"]
         zone = next((z for z in prep["zones"].values() if z), None)
 
         sv = saved.get((row.source, row.external_id))
-        # Le téléchargement suit le HAUT du panier, pas le panier entier. Un favori et un
-        # témoin de massif y ont droit quel que soit leur score : ce sont les deux biens
-        # qu'on regarde exprès.
+        # Le téléchargement suit le HAUT du panier, pas le panier entier : les photos des
+        # 6 038 biens pèsent 7,1 Go, hors de portée d'un dépôt git qui sert aussi le site.
+        # Un favori et un témoin de massif y ont droit quel que soit leur score : ce sont
+        # les deux biens qu'on regarde exprès. Et `telecharger=False` n'efface rien — les
+        # fichiers déjà sur disque restent publiés.
         meilleur = max((s.get("match_score") or 0) for s in scores_by_set.values()) if scores_by_set else 0
         telecharger = (photos_min is None or meilleur >= photos_min or temoin or sv is not None)
-        photos = (_download_photos(row, photos_dir, "photos", telecharger=telecharger)
+        photos = (_download_photos(row, photos_dir, "photos", telecharger=telecharger,
+                                   publiees=photos_publiees)
                   if (download_photos and photos_dir) else [])
         biens_out.append({
             **{c: getattr(row, c) for c in _PERSIST_FLAG_COLS},  # flags persistés (round-trip)
@@ -1451,7 +1562,8 @@ def export_to_dir(db, out_dir: str, *, download_photos: bool = True,
                   pepites: dict | None = None, conserver: dict | None = None,
                   meilleur_par_zone: dict | None = None,
                   photos_min: float | None = None,
-                  catalogue: str | None = None) -> dict:
+                  catalogue: str | None = None,
+                  seuil_detail: float | None = None) -> dict:
     """Écrit out_dir/data.json (+ photos/) et renvoie les stats.
 
     `min_match_score`/`primary_set_id`/`pepites` : voir build_dataset (mode « pépites »).
@@ -1463,7 +1575,8 @@ def export_to_dir(db, out_dir: str, *, download_photos: bool = True,
     data = build_dataset(db, out_dir=out_dir, download_photos=download_photos,
                          min_match_score=min_match_score, primary_set_id=primary_set_id,
                          pepites=pepites, conserver=conserver,
-                         meilleur_par_zone=meilleur_par_zone, photos_min=photos_min)
+                         meilleur_par_zone=meilleur_par_zone, photos_min=photos_min,
+                         seuil_detail=seuil_detail)
     # Écriture ATOMIQUE : fichier temporaire puis renommage. `open(..., "w")` tronque
     # puis écrit en flux — deux exports concurrents (une collecte lancée d'un côté, un
     # ré-export de l'autre) s'entrelacent alors dans le même fichier et produisent un
