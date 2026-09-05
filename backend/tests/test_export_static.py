@@ -351,3 +351,25 @@ def test_sous_compromis_detecte_sans_attraper_vendu_meuble():
                   "Terrain proposé et vendu par notre partenaire foncier",
                   "La maison est vendue avec ses meubles"):
         assert not _detect_sous_compromis(texte), texte
+
+
+def test_photos_du_haut_du_panier_seulement(tmp_path):
+    """Élargir le panier ne doit pas multiplier les téléchargements dans les mêmes
+    proportions : `telecharger=False` n'appelle pas le réseau et se contente des fichiers
+    déjà présents, que le bien garde donc dans data.json."""
+    from app.models import Listing
+    from app.services.export_static import _download_photos
+
+    row = Listing(source="bienici", external_id="42",
+                  raw={"photos": ["https://exemple.invalid/introuvable.jpg"]})
+    photos_dir = tmp_path / "photos"
+    (photos_dir / "bienici_42").mkdir(parents=True)
+    (photos_dir / "bienici_42" / "0.jpg").write_bytes(b"deja-la")
+
+    # Sans téléchargement : l'URL n'est pas appelée (elle est injoignable), le fichier
+    # présent est référencé.
+    assert _download_photos(row, str(photos_dir), "photos", telecharger=False) == [
+        "photos/bienici_42/0.jpg"]
+    # Le bien qui n'a rien en local repart les mains vides, sans erreur.
+    vide = Listing(source="bienici", external_id="43", raw={"photos": ["https://exemple.invalid/x.jpg"]})
+    assert _download_photos(vide, str(photos_dir), "photos", telecharger=False) == []

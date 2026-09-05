@@ -81,3 +81,26 @@ def test_build_payload():
     assert p["filters"]["ranges"]["land_plot_surface"]["min"] == 500
     assert p["filters"]["location"]["city_zipcodes"] == [{"zipcode": "33700"}]
     assert p["limit"] == 20
+
+
+def test_valeur_sentinelle_de_chambres_laissee_a_la_porte():
+    """Leboncoin publie `999999` pour « non renseigné ». Entrée telle quelle, la valeur
+    satisfait tous les seuils de chambres et s'affiche sur la carte du bien."""
+    from app.sources.leboncoin import _chambres_plausibles
+
+    assert _chambres_plausibles(999999) is None
+    assert _chambres_plausibles(0) is None
+    assert _chambres_plausibles(None) is None
+    assert _chambres_plausibles(3) == 3
+    assert _chambres_plausibles(16) == 16  # la plus grande du catalogue
+
+
+def test_export_neutralise_une_sentinelle_deja_en_base():
+    """Corriger la source ne répare pas les 7 000 lignes déjà collectées : l'export
+    neutralise la valeur au moment de publier."""
+    from app.models import Listing
+    from app.services.export_static import _chambres
+
+    assert _chambres(Listing(nb_chambres=999999)) is None
+    assert _chambres(Listing(nb_chambres=4)) == 4
+    assert _chambres(Listing(nb_chambres=None)) is None

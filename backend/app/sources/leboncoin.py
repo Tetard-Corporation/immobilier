@@ -47,6 +47,15 @@ def _num(value) -> float | None:
         return None
 
 
+# Au-delà, c'est un code d'absence et non un logement. Large exprès : la plus grande
+# maison du catalogue en déclare 16.
+_CHAMBRES_MAX = 30
+
+
+def _chambres_plausibles(n: float | None) -> int | None:
+    return int(n) if n and 0 < n <= _CHAMBRES_MAX else None
+
+
 class LeboncoinSource(ScraperSource):
     name = "leboncoin"
     label = "Leboncoin"
@@ -127,7 +136,11 @@ class LeboncoinSource(ScraperSource):
             # et n'était pas lu : les 2 698 biens leboncoin de la base sont TOUS entrés
             # sans nombre de chambres, et le set têtard leur appliquait alors son repli
             # « pièces - 1 » — exact 46 % du temps, et surestimé une fois sur deux.
-            nb_chambres=int(_num(at.get("bedrooms"))) if _num(at.get("bedrooms")) else None,
+            # `999999` y sert de « non renseigné » (vu sur une maison de 9 pièces à
+            # Auris) : entrée telle quelle, la valeur satisfait tous les seuils de
+            # chambres et s'affiche sur la carte du bien. On la laisse à la porte, et le
+            # repli « pièces - 1 » fait son travail comme pour une annonce muette.
+            nb_chambres=_chambres_plausibles(_num(at.get("bedrooms"))),
             adresse=ad.get("subject"),
             commune=loc.get("city"),
             code_postal=loc.get("zipcode"),

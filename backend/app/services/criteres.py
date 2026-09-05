@@ -52,6 +52,9 @@ CRITERES: dict[str, tuple[str, str, str]] = {
     "chambres_min": ("bien", "Nombre de chambres", "Le nombre de chambres, avec repli sur les pièces puis la surface."),
     "logement_compact": ("bien", "Format du logement",
                          "Un plafond de taille : ne récompense jamais le grand, décote l'immense."),
+    "espace_modulable": ("bien", "Espace modulable en dortoir",
+                         "Les volumes convertibles en couchages décrits par l'annonce : grange, "
+                         "combles et sous-sol aménageables, dépendance, atelier, mezzanine."),
     "surface_habitable": ("bien", "Surface habitable", "La surface bâtie contre un plancher."),
     "light_works": ("bien", "Volume de travaux", "L'état lu dans l'annonce : habitable, à rafraîchir, à rénover, ruine."),
     "dpe": ("bien", "DPE", "La classe énergie de l'annonce ; F et G sont des passoires, à rénover pour louer."),

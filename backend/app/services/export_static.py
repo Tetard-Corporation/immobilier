@@ -29,6 +29,7 @@ from ..models import FilterSet, Listing, SavedListing, SearchHistory
 from .criteres import identifiant, registre
 from .filtersets import resolve_criteria
 from .geo import haversine_km
+from .modulable import detecter as detecter_modulable
 from .preferences import evaluate
 from .scoring import compute_score
 
@@ -750,13 +751,28 @@ def _optimize_jpeg(data: bytes) -> bytes:
         return data
 
 
+# Une source peut livrer une valeur SENTINELLE en guise de « non renseigné » : Leboncoin
+# a publié 999999 chambres pour une maison de 9 pièces à Auris. Tant que le site ne
+# publiait qu'une vingtaine de biens, personne ne la voyait ; à 600, elle s'affiche sur
+# une carte et fait douter de toute la liste. Au-delà de ce seuil, la valeur n'est pas une
+# maison mais un code d'absence : on la rend nulle, et les replis de `chambres_min`
+# (pièces - 1, puis la surface) reprennent la main comme pour n'importe quelle annonce
+# muette. Le seuil est large — la plus grande du catalogue en déclare 16.
+_CHAMBRES_PLAUSIBLES = 30
+
+
+def _chambres(row: Listing) -> int | None:
+    n = row.nb_chambres
+    return None if n is not None and not (0 <= n <= _CHAMBRES_PLAUSIBLES) else n
+
+
 class _RowItem:
     """Adapte une ligne DB Listing à l'objet `item` attendu par evaluate() (.flags)."""
 
     def __init__(self, row: Listing, extra_flags: dict | None = None):
         self.prix = row.prix
         self.type_bien = row.type_bien
-        self.nb_chambres = row.nb_chambres
+        self.nb_chambres = _chambres(row)
         self.nb_pieces = row.nb_pieces
         self.surface_terrain = row.surface_terrain
         self.surface_bati = row.surface_bati
@@ -809,12 +825,20 @@ def _photo_urls(row: Listing) -> list[str]:
     return out[:_MAX_PHOTOS]
 
 
-def _download_photos(row: Listing, photos_dir: str, rel_base: str) -> list[str]:
-    """Télécharge les photos en local ; renvoie les chemins relatifs (depuis data.json)."""
+def _download_photos(row: Listing, photos_dir: str, rel_base: str,
+                     telecharger: bool = True) -> list[str]:
+    """Télécharge les photos en local ; renvoie les chemins relatifs (depuis data.json).
+
+    `telecharger=False` : on n'appelle pas le réseau, on se contente des fichiers déjà
+    présents. Sert quand le panier publié s'élargit — à 665 biens, tout télécharger fait
+    8 000 images pour un dossier qui pèse déjà 1 Go et qu'on n'a pas le droit de committer
+    en entier. Le front sait afficher un bien sans photo : il annonce « N non
+    téléchargées » à partir de `n_photos_source`.
+    """
     key = f"{row.source}_{row.external_id}".replace("/", "_")
     dest_dir = os.path.join(photos_dir, key)
     rels: list[str] = []
-    for i, url in enumerate(_photo_urls(row)):
+    for i, url in enumerate(_photo_urls(row) if telecharger else []):
         rel = f"{rel_base}/{key}/{i}.jpg"
         path = os.path.join(dest_dir, f"{i}.jpg")
         if os.path.exists(path) and os.path.getsize(path) > 0:
@@ -1056,8 +1080,13 @@ def _meilleurs_par_zone(prepares: list, planchers: dict, log=None) -> set:
 def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = False,
                   min_match_score: float | None = None, primary_set_id: int | None = None,
                   pepites: dict | None = None, conserver: dict | None = None,
-                  meilleur_par_zone: dict | None = None) -> dict:
+                  meilleur_par_zone: dict | None = None,
+                  photos_min: float | None = None) -> dict:
     """Construit le dataset statique. Si download_photos, écrit les images sous out_dir.
+
+    `photos_min` : score en dessous duquel on ne télécharge PAS les photos (les fichiers
+    déjà présents restent référencés). Sans lui, élargir le panier multiplie les images
+    dans les mêmes proportions que les biens.
 
     Mode « pépites » (optionnel), deux écritures équivalentes :
     - `min_match_score` + `primary_set_id` : un seul set resserré ;
@@ -1188,7 +1217,11 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
         extra = {**infra, **poi, **relief, **sea, **soleil, **tourisme,
                  **_fibre_flags(row.code_commune, fibre_lut),
                  **_tension_flags(row.commune, tension_lut),
-                 "features": feats, "pavillon_neuf": _detect_pavillon_neuf(row.description)}
+                 "features": feats, "pavillon_neuf": _detect_pavillon_neuf(row.description),
+                 # Relu à l'export, comme `pavillon_neuf` : le détecteur n'a pas de
+                 # colonne en base, donc un enrichissement d'il y a trois semaines ne
+                 # bloque pas l'ajout d'un signal au registre.
+                 "espace_modulable": detecter_modulable(row.description)}
         item = _RowItem(row, extra_flags=extra)
         # Recalcule le score d'investissement à l'export à partir des flags courants
         # (le score stocké date de l'enrichissement -> ne refléterait pas les évolutions
@@ -1283,11 +1316,17 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
         zone = next((z for z in prep["zones"].values() if z), None)
 
         sv = saved.get((row.source, row.external_id))
-        photos = _download_photos(row, photos_dir, "photos") if (download_photos and photos_dir) else []
+        # Le téléchargement suit le HAUT du panier, pas le panier entier. Un favori et un
+        # témoin de massif y ont droit quel que soit leur score : ce sont les deux biens
+        # qu'on regarde exprès.
+        meilleur = max((s.get("match_score") or 0) for s in scores_by_set.values()) if scores_by_set else 0
+        telecharger = (photos_min is None or meilleur >= photos_min or temoin or sv is not None)
+        photos = (_download_photos(row, photos_dir, "photos", telecharger=telecharger)
+                  if (download_photos and photos_dir) else [])
         biens_out.append({
             **{c: getattr(row, c) for c in _PERSIST_FLAG_COLS},  # flags persistés (round-trip)
             "id": row.id, "source": row.source, "external_id": row.external_id,
-            "type_bien": row.type_bien, "prix": row.prix, "nb_chambres": row.nb_chambres,
+            "type_bien": row.type_bien, "prix": row.prix, "nb_chambres": _chambres(row),
             "nb_pieces": row.nb_pieces, "surface_terrain": row.surface_terrain,
             "surface_bati": row.surface_bati, "commune": row.commune,
             "code_postal": row.code_postal, "code_commune": row.code_commune,
@@ -1339,7 +1378,8 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
 def export_to_dir(db, out_dir: str, *, download_photos: bool = True,
                   min_match_score: float | None = None, primary_set_id: int | None = None,
                   pepites: dict | None = None, conserver: dict | None = None,
-                  meilleur_par_zone: dict | None = None) -> dict:
+                  meilleur_par_zone: dict | None = None,
+                  photos_min: float | None = None) -> dict:
     """Écrit out_dir/data.json (+ photos/) et renvoie les stats.
 
     `min_match_score`/`primary_set_id`/`pepites` : voir build_dataset (mode « pépites »).
@@ -1348,7 +1388,7 @@ def export_to_dir(db, out_dir: str, *, download_photos: bool = True,
     data = build_dataset(db, out_dir=out_dir, download_photos=download_photos,
                          min_match_score=min_match_score, primary_set_id=primary_set_id,
                          pepites=pepites, conserver=conserver,
-                         meilleur_par_zone=meilleur_par_zone)
+                         meilleur_par_zone=meilleur_par_zone, photos_min=photos_min)
     # Écriture ATOMIQUE : fichier temporaire puis renommage. `open(..., "w")` tronque
     # puis écrit en flux — deux exports concurrents (une collecte lancée d'un côté, un
     # ré-export de l'autre) s'entrelacent alors dans le même fichier et produisent un
@@ -1400,8 +1440,11 @@ if __name__ == "__main__":  # python -m app.services.export_static [out_dir]
         if ":" in morceau:
             sid, chemin = morceau.split(":", 1)
             conserver[int(sid.strip())] = _biens_publies(chemin.strip())
+    # Photos du HAUT du panier seulement : EXPORT_PHOTOS_MIN=75.5
+    _pmin = os.environ.get("EXPORT_PHOTOS_MIN")
     stats = export_to_dir(SessionLocal(), out, download_photos=not no_photos,
                           min_match_score=min_score, primary_set_id=primary,
                           pepites=pepites or None, conserver=conserver or None,
-                          meilleur_par_zone=meilleur_zone or None)
+                          meilleur_par_zone=meilleur_zone or None,
+                          photos_min=float(_pmin) if _pmin else None)
     print(f"Export -> {out}/data.json : {stats}")

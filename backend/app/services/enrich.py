@@ -25,6 +25,7 @@ from typing import TYPE_CHECKING
 from .classify import classify
 from .completion import completer
 from .geo_communes import coords_for_commune
+from .modulable import detecter as detecter_modulable
 from .quality import classify_quality
 from .scoring import compute_score
 
@@ -56,6 +57,10 @@ def annotate(item: "NormalizedListing") -> "NormalizedListing":
     texts = [item.description, item.adresse]
     flags.update(classify(*texts))
     flags.update(classify_quality(*texts))
+    # Volumes convertibles en couchages (grange, combles aménageables, dépendance…) :
+    # relevés ici pour la recherche live, et RE-relevés à l'export, qui ne dépend donc
+    # pas de la date d'enrichissement d'une ligne (cf. services/modulable.py).
+    flags["espace_modulable"] = detecter_modulable(*texts)
 
     # Score d'investissement (piliers/sous-piliers), recalculé à partir des flags.
     ctx = {

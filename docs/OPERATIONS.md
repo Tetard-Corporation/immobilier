@@ -342,6 +342,24 @@ de retravailler : après la correction Overpass, la règle « ≥ 80 » du set b
 sélectionnait 32 biens au lieu de 12. Recouper le set de quelqu'un d'autre au passage
 n'est pas une décision qui se prend à l'export.
 
+**Élargir le panier sans multiplier les photos** — `EXPORT_PHOTOS_MIN` télécharge les
+images du seul haut du panier ; en dessous, les fichiers déjà présents restent référencés
+et le front affiche « N non téléchargées ». À 665 biens publiés, tout télécharger fait
+8 000 images pour un dossier qui pèse déjà 1 Go et qu'on ne committe pas en entier.
+```bash
+EXPORT_PEPITES="1:65" EXPORT_MEILLEUR_ZONE="1:65" EXPORT_PHOTOS_MIN=74 \
+  python -m app.services.export_static ../data
+```
+Les favoris et les témoins de massif gardent leurs photos quel que soit leur score : ce
+sont les deux biens qu'on ouvre exprès.
+
+⚠️ **Ne pas prendre 70 comme seuil.** 157 biens notent exactement 70,0 parce qu'un palier
+les y plafonne (budget, travaux, jardin) : un seuil à 70 publie d'un coup tout ce qui
+échoue à une exigence dure. Les seuils qui séparent quelque chose sont au-dessus de 70,
+ou franchement en dessous. Repères mesurés le 5 septembre : 75,5 → 20 biens · 72 → 52 ·
+65 → 665 · 25 → 3 823 (soit tout le catalogue de la zone, ~44 Mo de `data.json` : le
+front n'a pas de pagination, à ce volume il faut d'abord alléger la charge utile).
+
 **Publier le meilleur bien de chaque massif**, en plus des pépites :
 ```bash
 EXPORT_PEPITES="1:80,4:80" EXPORT_MEILLEUR_ZONE="1:70" python -m app.services.export_static ../data
