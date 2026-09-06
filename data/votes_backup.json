@@ -1,8 +1,440 @@
 {
- "backed_up_at": "2026-09-05T08:22:33.242314+00:00",
+ "backed_up_at": "2026-09-06T08:40:59.923344+00:00",
  "source_url": "https://jmmflsrlegttdnxpidmo.supabase.co",
- "count": 27,
+ "count": 82,
  "votes": [
+  {
+   "bien_id": "__poids__:1",
+   "voter": "Léo",
+   "criterion": "attractivite_airbnb",
+   "stars": 4,
+   "comment": null,
+   "updated_at": "2026-09-05T11:15:53.423+00:00"
+  },
+  {
+   "bien_id": "__poids__:1",
+   "voter": "Léo",
+   "criterion": "budget",
+   "stars": 4,
+   "comment": null,
+   "updated_at": "2026-09-05T11:15:53.365+00:00"
+  },
+  {
+   "bien_id": "__poids__:1",
+   "voter": "Léo",
+   "criterion": "cachet",
+   "stars": 4,
+   "comment": null,
+   "updated_at": "2026-09-05T11:15:53.444+00:00"
+  },
+  {
+   "bien_id": "__poids__:1",
+   "voter": "Léo",
+   "criterion": "chambres_min",
+   "stars": 5,
+   "comment": "{\"min\":2}",
+   "updated_at": "2026-09-05T11:16:10.761+00:00"
+  },
+  {
+   "bien_id": "__poids__:1",
+   "voter": "Léo",
+   "criterion": "coin_nature",
+   "stars": 4,
+   "comment": null,
+   "updated_at": "2026-09-05T11:15:53.429+00:00"
+  },
+  {
+   "bien_id": "__poids__:1",
+   "voter": "Léo",
+   "criterion": "dpe",
+   "stars": 4,
+   "comment": null,
+   "updated_at": "2026-09-05T11:16:35.145+00:00"
+  },
+  {
+   "bien_id": "__poids__:1",
+   "voter": "Léo",
+   "criterion": "ensoleillement",
+   "stars": 4,
+   "comment": null,
+   "updated_at": "2026-09-05T11:15:53.414+00:00"
+  },
+  {
+   "bien_id": "__poids__:1",
+   "voter": "Léo",
+   "criterion": "espace_modulable",
+   "stars": 3,
+   "comment": null,
+   "updated_at": "2026-09-05T11:16:27.545+00:00"
+  },
+  {
+   "bien_id": "__poids__:1",
+   "voter": "Léo",
+   "criterion": "fiber",
+   "stars": 4,
+   "comment": null,
+   "updated_at": "2026-09-05T11:17:07.84+00:00"
+  },
+  {
+   "bien_id": "__poids__:1",
+   "voter": "Léo",
+   "criterion": "has_terrain",
+   "stars": 3,
+   "comment": null,
+   "updated_at": "2026-09-05T11:16:48.069+00:00"
+  },
+  {
+   "bien_id": "__poids__:1",
+   "voter": "Léo",
+   "criterion": "hiking",
+   "stars": 3,
+   "comment": null,
+   "updated_at": "2026-09-05T11:15:53.466+00:00"
+  },
+  {
+   "bien_id": "__poids__:1",
+   "voter": "Léo",
+   "criterion": "jardin",
+   "stars": 5,
+   "comment": null,
+   "updated_at": "2026-09-05T11:16:39.216+00:00"
+  },
+  {
+   "bien_id": "__poids__:1",
+   "voter": "Léo",
+   "criterion": "light_works",
+   "stars": 4,
+   "comment": null,
+   "updated_at": "2026-09-05T11:16:31.522+00:00"
+  },
+  {
+   "bien_id": "__poids__:1",
+   "voter": "Léo",
+   "criterion": "logement_compact",
+   "stars": 2,
+   "comment": null,
+   "updated_at": "2026-09-05T11:15:53.379+00:00"
+  },
+  {
+   "bien_id": "__poids__:1",
+   "voter": "Léo",
+   "criterion": "near_city",
+   "stars": 2,
+   "comment": null,
+   "updated_at": "2026-09-05T11:15:53.525+00:00"
+  },
+  {
+   "bien_id": "__poids__:1",
+   "voter": "Léo",
+   "criterion": "near_corridor",
+   "stars": 1,
+   "comment": null,
+   "updated_at": "2026-09-05T11:17:29.248+00:00"
+  },
+  {
+   "bien_id": "__poids__:1",
+   "voter": "Léo",
+   "criterion": "near_gare",
+   "stars": 4,
+   "comment": null,
+   "updated_at": "2026-09-05T11:17:18.025+00:00"
+  },
+  {
+   "bien_id": "__poids__:1",
+   "voter": "Léo",
+   "criterion": "nuisance_sonore",
+   "stars": 5,
+   "comment": null,
+   "updated_at": "2026-09-05T11:17:36.075+00:00"
+  },
+  {
+   "bien_id": "__poids__:1",
+   "voter": "Léo",
+   "criterion": "qualite_eau",
+   "stars": 2,
+   "comment": null,
+   "updated_at": "2026-09-05T11:15:53.409+00:00"
+  },
+  {
+   "bien_id": "__poids__:1",
+   "voter": "Léo",
+   "criterion": "rapport_qualite_prix",
+   "stars": 5,
+   "comment": null,
+   "updated_at": "2026-09-05T11:15:53.355+00:00"
+  },
+  {
+   "bien_id": "__poids__:1",
+   "voter": "Léo",
+   "criterion": "relief_mountain",
+   "stars": 5,
+   "comment": null,
+   "updated_at": "2026-09-05T11:15:53.437+00:00"
+  },
+  {
+   "bien_id": "__poids__:1",
+   "voter": "Léo",
+   "criterion": "risques_naturels",
+   "stars": 3,
+   "comment": null,
+   "updated_at": "2026-09-05T11:15:53.403+00:00"
+  },
+  {
+   "bien_id": "__poids__:1",
+   "voter": "Léo",
+   "criterion": "ski",
+   "stars": 1,
+   "comment": null,
+   "updated_at": "2026-09-05T11:15:53.518+00:00"
+  },
+  {
+   "bien_id": "__poids__:1",
+   "voter": "Léo",
+   "criterion": "surface_habitable",
+   "stars": 1,
+   "comment": null,
+   "updated_at": "2026-09-05T11:15:53.499+00:00"
+  },
+  {
+   "bien_id": "__poids__:1",
+   "voter": "Léo",
+   "criterion": "temps_acces",
+   "stars": 3,
+   "comment": null,
+   "updated_at": "2026-09-05T11:15:53.473+00:00"
+  },
+  {
+   "bien_id": "__poids__:1",
+   "voter": "Léo",
+   "criterion": "tranquillite",
+   "stars": 4,
+   "comment": null,
+   "updated_at": "2026-09-05T11:17:33.743+00:00"
+  },
+  {
+   "bien_id": "__poids__:1",
+   "voter": "Léo",
+   "criterion": "village_vivant",
+   "stars": 3,
+   "comment": null,
+   "updated_at": "2026-09-05T11:15:53.459+00:00"
+  },
+  {
+   "bien_id": "__poids__:1",
+   "voter": "Max",
+   "criterion": "attractivite_airbnb",
+   "stars": 4,
+   "comment": null,
+   "updated_at": "2026-09-05T13:38:45.511+00:00"
+  },
+  {
+   "bien_id": "__poids__:1",
+   "voter": "Max",
+   "criterion": "budget",
+   "stars": 4,
+   "comment": null,
+   "updated_at": "2026-09-05T13:38:45.25+00:00"
+  },
+  {
+   "bien_id": "__poids__:1",
+   "voter": "Max",
+   "criterion": "cachet",
+   "stars": 4,
+   "comment": null,
+   "updated_at": "2026-09-05T13:38:45.589+00:00"
+  },
+  {
+   "bien_id": "__poids__:1",
+   "voter": "Max",
+   "criterion": "chambres_min",
+   "stars": 2,
+   "comment": null,
+   "updated_at": "2026-09-05T13:38:45.277+00:00"
+  },
+  {
+   "bien_id": "__poids__:1",
+   "voter": "Max",
+   "criterion": "coin_nature",
+   "stars": 4,
+   "comment": null,
+   "updated_at": "2026-09-05T13:38:45.537+00:00"
+  },
+  {
+   "bien_id": "__poids__:1",
+   "voter": "Max",
+   "criterion": "dpe",
+   "stars": 3,
+   "comment": null,
+   "updated_at": "2026-09-05T13:38:45.38+00:00"
+  },
+  {
+   "bien_id": "__poids__:1",
+   "voter": "Max",
+   "criterion": "ensoleillement",
+   "stars": 4,
+   "comment": null,
+   "updated_at": "2026-09-05T13:38:45.459+00:00"
+  },
+  {
+   "bien_id": "__poids__:1",
+   "voter": "Max",
+   "criterion": "espace_modulable",
+   "stars": 3,
+   "comment": null,
+   "updated_at": "2026-09-05T13:38:45.329+00:00"
+  },
+  {
+   "bien_id": "__poids__:1",
+   "voter": "Max",
+   "criterion": "fiber",
+   "stars": 2,
+   "comment": null,
+   "updated_at": "2026-09-05T13:38:45.833+00:00"
+  },
+  {
+   "bien_id": "__poids__:1",
+   "voter": "Max",
+   "criterion": "has_terrain",
+   "stars": 3,
+   "comment": null,
+   "updated_at": "2026-09-05T13:38:45.616+00:00"
+  },
+  {
+   "bien_id": "__poids__:1",
+   "voter": "Max",
+   "criterion": "hiking",
+   "stars": 3,
+   "comment": null,
+   "updated_at": "2026-09-05T13:38:45.671+00:00"
+  },
+  {
+   "bien_id": "__poids__:1",
+   "voter": "Max",
+   "criterion": "jardin",
+   "stars": 2,
+   "comment": null,
+   "updated_at": "2026-09-05T13:38:45.485+00:00"
+  },
+  {
+   "bien_id": "__poids__:1",
+   "voter": "Max",
+   "criterion": "light_works",
+   "stars": 3,
+   "comment": null,
+   "updated_at": "2026-09-05T13:38:45.354+00:00"
+  },
+  {
+   "bien_id": "__poids__:1",
+   "voter": "Max",
+   "criterion": "logement_compact",
+   "stars": 2,
+   "comment": null,
+   "updated_at": "2026-09-05T13:38:45.303+00:00"
+  },
+  {
+   "bien_id": "__poids__:1",
+   "voter": "Max",
+   "criterion": "near_city",
+   "stars": 2,
+   "comment": null,
+   "updated_at": "2026-09-05T13:38:45.885+00:00"
+  },
+  {
+   "bien_id": "__poids__:1",
+   "voter": "Max",
+   "criterion": "near_corridor",
+   "stars": 1,
+   "comment": null,
+   "updated_at": "2026-09-05T13:38:45.911+00:00"
+  },
+  {
+   "bien_id": "__poids__:1",
+   "voter": "Max",
+   "criterion": "near_gare",
+   "stars": 2,
+   "comment": null,
+   "updated_at": "2026-09-05T13:38:45.807+00:00"
+  },
+  {
+   "bien_id": "__poids__:1",
+   "voter": "Max",
+   "criterion": "nuisance_sonore",
+   "stars": 3,
+   "comment": null,
+   "updated_at": "2026-09-05T13:38:45.756+00:00"
+  },
+  {
+   "bien_id": "__poids__:1",
+   "voter": "Max",
+   "criterion": "qualite_eau",
+   "stars": 2,
+   "comment": null,
+   "updated_at": "2026-09-05T13:38:45.432+00:00"
+  },
+  {
+   "bien_id": "__poids__:1",
+   "voter": "Max",
+   "criterion": "rapport_qualite_prix",
+   "stars": 5,
+   "comment": null,
+   "updated_at": "2026-09-05T13:38:45.225+00:00"
+  },
+  {
+   "bien_id": "__poids__:1",
+   "voter": "Max",
+   "criterion": "relief_mountain",
+   "stars": 5,
+   "comment": null,
+   "updated_at": "2026-09-05T13:38:45.563+00:00"
+  },
+  {
+   "bien_id": "__poids__:1",
+   "voter": "Max",
+   "criterion": "risques_naturels",
+   "stars": 3,
+   "comment": null,
+   "updated_at": "2026-09-05T13:38:45.405+00:00"
+  },
+  {
+   "bien_id": "__poids__:1",
+   "voter": "Max",
+   "criterion": "ski",
+   "stars": 1,
+   "comment": null,
+   "updated_at": "2026-09-05T13:38:45.859+00:00"
+  },
+  {
+   "bien_id": "__poids__:1",
+   "voter": "Max",
+   "criterion": "surface_habitable",
+   "stars": 1,
+   "comment": null,
+   "updated_at": "2026-09-05T13:38:45.782+00:00"
+  },
+  {
+   "bien_id": "__poids__:1",
+   "voter": "Max",
+   "criterion": "temps_acces",
+   "stars": 3,
+   "comment": null,
+   "updated_at": "2026-09-05T13:38:45.704+00:00"
+  },
+  {
+   "bien_id": "__poids__:1",
+   "voter": "Max",
+   "criterion": "tranquillite",
+   "stars": 2,
+   "comment": null,
+   "updated_at": "2026-09-05T13:38:45.73+00:00"
+  },
+  {
+   "bien_id": "__poids__:1",
+   "voter": "Max",
+   "criterion": "village_vivant",
+   "stars": 3,
+   "comment": null,
+   "updated_at": "2026-09-05T13:38:45.643+00:00"
+  },
   {
    "bien_id": "bienici__ag060811-535241711",
    "voter": "Léo",
@@ -90,6 +522,14 @@
    "stars": 1,
    "comment": "trop en ville",
    "updated_at": "2026-08-28T10:29:37.802+00:00"
+  },
+  {
+   "bien_id": "bienici__iad-france-2010390",
+   "voter": "Léo",
+   "criterion": "__favori__",
+   "stars": 1,
+   "comment": null,
+   "updated_at": "2026-09-05T11:19:09.813+00:00"
   },
   {
    "bien_id": "bienici__iad-france-935372",
