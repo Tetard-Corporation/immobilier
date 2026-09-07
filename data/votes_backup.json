@@ -1,8 +1,24 @@
 {
- "backed_up_at": "2026-09-06T08:40:59.923344+00:00",
+ "backed_up_at": "2026-09-07T09:22:06.100723+00:00",
  "source_url": "https://jmmflsrlegttdnxpidmo.supabase.co",
- "count": 82,
+ "count": 100,
  "votes": [
+  {
+   "bien_id": "__poids__:1",
+   "voter": "Henri",
+   "criterion": "budget",
+   "stars": 4,
+   "comment": "{\"budget_max\":23000}",
+   "updated_at": "2026-09-06T12:19:47.498+00:00"
+  },
+  {
+   "bien_id": "__poids__:1",
+   "voter": "Henri",
+   "criterion": "light_works",
+   "stars": 4,
+   "comment": "{\"min_etat\":\"rafraichir\"}",
+   "updated_at": "2026-09-06T12:22:58.254+00:00"
+  },
   {
    "bien_id": "__poids__:1",
    "voter": "Léo",
@@ -461,6 +477,14 @@
   },
   {
    "bien_id": "bienici__ag743447-508435454",
+   "voter": "Henri",
+   "criterion": "__overall__",
+   "stars": 5,
+   "comment": null,
+   "updated_at": "2026-09-06T12:43:56.155+00:00"
+  },
+  {
+   "bien_id": "bienici__ag743447-508435454",
    "voter": "Léo",
    "criterion": "__favori__",
    "stars": 1,
@@ -525,11 +549,27 @@
   },
   {
    "bien_id": "bienici__iad-france-2010390",
+   "voter": "Henri",
+   "criterion": "__overall__",
+   "stars": 3,
+   "comment": "Maison super, jardin au top, dans le budget, mais malheureusement beaucoup trop inaccesible ! 1h de route depuis la gare de Grenoble et 40min depuis St Marcelin.",
+   "updated_at": "2026-09-06T12:32:41.576+00:00"
+  },
+  {
+   "bien_id": "bienici__iad-france-2010390",
    "voter": "Léo",
    "criterion": "__favori__",
    "stars": 1,
    "comment": null,
    "updated_at": "2026-09-05T11:19:09.813+00:00"
+  },
+  {
+   "bien_id": "bienici__iad-france-917522",
+   "voter": "Henri",
+   "criterion": "__overall__",
+   "stars": 1,
+   "comment": "Magnifique mais hors-budget, c'est éliminatoire",
+   "updated_at": "2026-09-06T12:35:07.391+00:00"
   },
   {
    "bien_id": "bienici__iad-france-935372",
@@ -546,6 +586,14 @@
    "stars": 3,
    "comment": "beaucoup de charme mais pas de terrain, un doute sur la localisation",
    "updated_at": "2026-08-28T10:28:38.077+00:00"
+  },
+  {
+   "bien_id": "bienici__immo-facile-60311894",
+   "voter": "Henri",
+   "criterion": "__overall__",
+   "stars": 1,
+   "comment": "trop difficile d'accès",
+   "updated_at": "2026-09-06T12:44:17.123+00:00"
   },
   {
    "bien_id": "bienici__immo-facile-60539195",
@@ -570,6 +618,22 @@
    "stars": 4,
    "comment": null,
    "updated_at": "2026-08-27T21:40:56.245+00:00"
+  },
+  {
+   "bien_id": "bienici__netty-company51556yxm-house-12649",
+   "voter": "Henri",
+   "criterion": "__overall__",
+   "stars": 5,
+   "comment": "emplacement correct et maison nickel",
+   "updated_at": "2026-09-06T13:00:54.714+00:00"
+  },
+  {
+   "bien_id": "bienici__netty-company53718mjt-house-337",
+   "voter": "Henri",
+   "criterion": "__overall__",
+   "stars": 1,
+   "comment": null,
+   "updated_at": "2026-09-06T12:58:07.461+00:00"
   },
   {
    "bien_id": "bienici__safti-1-1552353",
@@ -620,12 +684,36 @@
    "updated_at": "2026-08-28T10:27:14.278+00:00"
   },
   {
+   "bien_id": "leboncoin__3059886121",
+   "voter": "Henri",
+   "criterion": "__overall__",
+   "stars": 1,
+   "comment": "Beaucoup trop de travaux pour envisager cet achat",
+   "updated_at": "2026-09-06T12:23:32.145+00:00"
+  },
+  {
    "bien_id": "leboncoin__3102112956",
    "voter": "Léo",
    "criterion": "__favori__",
    "stars": 1,
    "comment": null,
    "updated_at": "2026-09-01T12:34:41.199+00:00"
+  },
+  {
+   "bien_id": "leboncoin__3110150610",
+   "voter": "Henri",
+   "criterion": "__overall__",
+   "stars": 1,
+   "comment": "Beaucoup trop de travaux",
+   "updated_at": "2026-09-06T12:36:06.48+00:00"
+  },
+  {
+   "bien_id": "leboncoin__3160538824",
+   "voter": "Henri",
+   "criterion": "__overall__",
+   "stars": 3,
+   "comment": "Pas charmante mais idéalement placé et habitable",
+   "updated_at": "2026-09-06T12:57:52.962+00:00"
   },
   {
    "bien_id": "leboncoin__3160538824",
@@ -636,12 +724,68 @@
    "updated_at": "2026-08-28T10:28:00.278+00:00"
   },
   {
+   "bien_id": "leboncoin__3167839215",
+   "voter": "Henri",
+   "criterion": "__overall__",
+   "stars": 1,
+   "comment": "Trop loin, bien que la maison soit top",
+   "updated_at": "2026-09-06T12:37:58.798+00:00"
+  },
+  {
+   "bien_id": "leboncoin__3171968692",
+   "voter": "Henri",
+   "criterion": "__overall__",
+   "stars": 3,
+   "comment": "Maison super mais emplacement pas top. Je préfère les vallées savoyardes (début de la maurienne ou de la tarentaise)",
+   "updated_at": "2026-09-06T12:27:01.741+00:00"
+  },
+  {
+   "bien_id": "leboncoin__3202721158",
+   "voter": "Henri",
+   "criterion": "__favori__",
+   "stars": 1,
+   "comment": null,
+   "updated_at": "2026-09-06T12:51:10.785+00:00"
+  },
+  {
+   "bien_id": "leboncoin__3202721158",
+   "voter": "Henri",
+   "criterion": "__overall__",
+   "stars": 5,
+   "comment": "30min  de la gare de Grenoble, maison isolée avec 3 chambres à l'étage.",
+   "updated_at": "2026-09-06T12:51:42.925+00:00"
+  },
+  {
    "bien_id": "leboncoin__3223361983",
    "voter": "Léo",
    "criterion": "__favori__",
    "stars": 1,
    "comment": null,
    "updated_at": "2026-09-01T19:19:09.824+00:00"
+  },
+  {
+   "bien_id": "leboncoin__3242555863",
+   "voter": "Henri",
+   "criterion": "__overall__",
+   "stars": 3,
+   "comment": "La maison est très belle et l'emplacement parfait.  Par contre aucun jardin et un peu au dessus de notre budget",
+   "updated_at": "2026-09-06T12:47:47.535+00:00"
+  },
+  {
+   "bien_id": "leboncoin__3243935653",
+   "voter": "Henri",
+   "criterion": "__favori__",
+   "stars": 1,
+   "comment": null,
+   "updated_at": "2026-09-06T13:03:45.32+00:00"
+  },
+  {
+   "bien_id": "leboncoin__3253348718",
+   "voter": "Henri",
+   "criterion": "__favori__",
+   "stars": 1,
+   "comment": null,
+   "updated_at": "2026-09-06T13:15:03.644+00:00"
   },
   {
    "bien_id": "seloger__25PZCJ513947",
