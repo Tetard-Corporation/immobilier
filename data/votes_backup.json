@@ -1,7 +1,7 @@
 {
- "backed_up_at": "2026-09-13T09:34:14.431297+00:00",
+ "backed_up_at": "2026-09-14T09:53:27.163763+00:00",
  "source_url": "https://jmmflsrlegttdnxpidmo.supabase.co",
- "count": 100,
+ "count": 102,
  "votes": [
   {
    "bien_id": "__poids__:1",
@@ -18,6 +18,22 @@
    "stars": 4,
    "comment": "{\"min_etat\":\"rafraichir\"}",
    "updated_at": "2026-09-06T12:22:58.254+00:00"
+  },
+  {
+   "bien_id": "__poids__:1",
+   "voter": "Juliette",
+   "criterion": "budget",
+   "stars": 5,
+   "comment": "{\"budget_max\":200000}",
+   "updated_at": "2026-09-13T17:29:13.746+00:00"
+  },
+  {
+   "bien_id": "__poids__:1",
+   "voter": "Juliette",
+   "criterion": "chambres_min",
+   "stars": 3,
+   "comment": null,
+   "updated_at": "2026-09-13T17:25:14.429+00:00"
   },
   {
    "bien_id": "__poids__:1",
