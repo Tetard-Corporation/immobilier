@@ -1,7 +1,7 @@
 {
- "backed_up_at": "2026-09-14T09:53:27.163763+00:00",
+ "backed_up_at": "2026-09-15T09:27:58.749911+00:00",
  "source_url": "https://jmmflsrlegttdnxpidmo.supabase.co",
- "count": 102,
+ "count": 114,
  "votes": [
   {
    "bien_id": "__poids__:1",
@@ -271,17 +271,17 @@
    "bien_id": "__poids__:1",
    "voter": "Max",
    "criterion": "cachet",
-   "stars": 4,
+   "stars": 2,
    "comment": null,
-   "updated_at": "2026-09-05T13:38:45.589+00:00"
+   "updated_at": "2026-09-14T17:01:09.672+00:00"
   },
   {
    "bien_id": "__poids__:1",
    "voter": "Max",
    "criterion": "chambres_min",
-   "stars": 2,
-   "comment": null,
-   "updated_at": "2026-09-05T13:38:45.277+00:00"
+   "stars": 5,
+   "comment": "{\"min\":4}",
+   "updated_at": "2026-09-14T16:59:06.857+00:00"
   },
   {
    "bien_id": "__poids__:1",
@@ -289,7 +289,7 @@
    "criterion": "coin_nature",
    "stars": 4,
    "comment": null,
-   "updated_at": "2026-09-05T13:38:45.537+00:00"
+   "updated_at": "2026-09-14T17:01:41.38+00:00"
   },
   {
    "bien_id": "__poids__:1",
@@ -303,33 +303,33 @@
    "bien_id": "__poids__:1",
    "voter": "Max",
    "criterion": "ensoleillement",
-   "stars": 4,
+   "stars": 3,
    "comment": null,
-   "updated_at": "2026-09-05T13:38:45.459+00:00"
+   "updated_at": "2026-09-14T17:01:29.395+00:00"
   },
   {
    "bien_id": "__poids__:1",
    "voter": "Max",
    "criterion": "espace_modulable",
-   "stars": 3,
+   "stars": 4,
    "comment": null,
-   "updated_at": "2026-09-05T13:38:45.329+00:00"
+   "updated_at": "2026-09-14T16:59:41.341+00:00"
   },
   {
    "bien_id": "__poids__:1",
    "voter": "Max",
    "criterion": "fiber",
-   "stars": 2,
+   "stars": 4,
    "comment": null,
-   "updated_at": "2026-09-05T13:38:45.833+00:00"
+   "updated_at": "2026-09-14T17:02:06.33+00:00"
   },
   {
    "bien_id": "__poids__:1",
    "voter": "Max",
    "criterion": "has_terrain",
-   "stars": 3,
+   "stars": 2,
    "comment": null,
-   "updated_at": "2026-09-05T13:38:45.616+00:00"
+   "updated_at": "2026-09-14T17:01:16.524+00:00"
   },
   {
    "bien_id": "__poids__:1",
@@ -343,41 +343,41 @@
    "bien_id": "__poids__:1",
    "voter": "Max",
    "criterion": "jardin",
-   "stars": 2,
+   "stars": 4,
    "comment": null,
-   "updated_at": "2026-09-05T13:38:45.485+00:00"
+   "updated_at": "2026-09-14T17:01:04.204+00:00"
   },
   {
    "bien_id": "__poids__:1",
    "voter": "Max",
    "criterion": "light_works",
-   "stars": 3,
+   "stars": 4,
    "comment": null,
-   "updated_at": "2026-09-05T13:38:45.354+00:00"
+   "updated_at": "2026-09-14T17:00:05.25+00:00"
   },
   {
    "bien_id": "__poids__:1",
    "voter": "Max",
    "criterion": "logement_compact",
-   "stars": 2,
+   "stars": 3,
    "comment": null,
-   "updated_at": "2026-09-05T13:38:45.303+00:00"
+   "updated_at": "2026-09-14T16:59:22.808+00:00"
   },
   {
    "bien_id": "__poids__:1",
    "voter": "Max",
    "criterion": "near_city",
-   "stars": 2,
+   "stars": 1,
    "comment": null,
-   "updated_at": "2026-09-05T13:38:45.885+00:00"
+   "updated_at": "2026-09-14T17:02:24.624+00:00"
   },
   {
    "bien_id": "__poids__:1",
    "voter": "Max",
    "criterion": "near_corridor",
-   "stars": 1,
+   "stars": 4,
    "comment": null,
-   "updated_at": "2026-09-05T13:38:45.911+00:00"
+   "updated_at": "2026-09-14T17:02:35.425+00:00"
   },
   {
    "bien_id": "__poids__:1",
@@ -399,25 +399,25 @@
    "bien_id": "__poids__:1",
    "voter": "Max",
    "criterion": "qualite_eau",
-   "stars": 2,
+   "stars": 5,
    "comment": null,
-   "updated_at": "2026-09-05T13:38:45.432+00:00"
+   "updated_at": "2026-09-14T17:03:00.53+00:00"
   },
   {
    "bien_id": "__poids__:1",
    "voter": "Max",
    "criterion": "rapport_qualite_prix",
-   "stars": 5,
+   "stars": 4,
    "comment": null,
-   "updated_at": "2026-09-05T13:38:45.225+00:00"
+   "updated_at": "2026-09-14T17:00:13.986+00:00"
   },
   {
    "bien_id": "__poids__:1",
    "voter": "Max",
    "criterion": "relief_mountain",
-   "stars": 5,
+   "stars": 4,
    "comment": null,
-   "updated_at": "2026-09-05T13:38:45.563+00:00"
+   "updated_at": "2026-09-14T17:01:38.302+00:00"
   },
   {
    "bien_id": "__poids__:1",
@@ -431,41 +431,41 @@
    "bien_id": "__poids__:1",
    "voter": "Max",
    "criterion": "ski",
-   "stars": 1,
+   "stars": 3,
    "comment": null,
-   "updated_at": "2026-09-05T13:38:45.859+00:00"
+   "updated_at": "2026-09-14T17:01:51.794+00:00"
   },
   {
    "bien_id": "__poids__:1",
    "voter": "Max",
    "criterion": "surface_habitable",
-   "stars": 1,
+   "stars": 4,
    "comment": null,
-   "updated_at": "2026-09-05T13:38:45.782+00:00"
+   "updated_at": "2026-09-14T17:01:18.912+00:00"
   },
   {
    "bien_id": "__poids__:1",
    "voter": "Max",
    "criterion": "temps_acces",
-   "stars": 3,
+   "stars": 4,
    "comment": null,
-   "updated_at": "2026-09-05T13:38:45.704+00:00"
+   "updated_at": "2026-09-14T17:02:16.752+00:00"
   },
   {
    "bien_id": "__poids__:1",
    "voter": "Max",
    "criterion": "tranquillite",
-   "stars": 2,
+   "stars": 3,
    "comment": null,
-   "updated_at": "2026-09-05T13:38:45.73+00:00"
+   "updated_at": "2026-09-14T17:02:45.735+00:00"
   },
   {
    "bien_id": "__poids__:1",
    "voter": "Max",
    "criterion": "village_vivant",
-   "stars": 3,
+   "stars": 4,
    "comment": null,
-   "updated_at": "2026-09-05T13:38:45.643+00:00"
+   "updated_at": "2026-09-14T17:02:04.48+00:00"
   },
   {
    "bien_id": "bienici__ag060811-535241711",
@@ -508,6 +508,14 @@
    "updated_at": "2026-09-01T12:35:45.556+00:00"
   },
   {
+   "bien_id": "bienici__ag743447-508435454",
+   "voter": "Max",
+   "criterion": "__overall__",
+   "stars": 1,
+   "comment": "Annonce plus disponible, dommage",
+   "updated_at": "2026-09-14T18:13:00.257+00:00"
+  },
+  {
    "bien_id": "bienici__apimo-86511894",
    "voter": "Léo",
    "criterion": "__overall__",
@@ -530,6 +538,22 @@
    "stars": 1,
    "comment": "pas de terrain",
    "updated_at": "2026-08-28T10:30:39.303+00:00"
+  },
+  {
+   "bien_id": "bienici__hektor-agence-prima3-334",
+   "voter": "Max",
+   "criterion": "__favori__",
+   "stars": 1,
+   "comment": null,
+   "updated_at": "2026-09-14T17:21:12.311+00:00"
+  },
+  {
+   "bien_id": "bienici__hektor-agence-prima3-334",
+   "voter": "Max",
+   "criterion": "__overall__",
+   "stars": 4,
+   "comment": "J'aime beaucoup ! Mais besoin d'une voiture aussi, à 45 min de Grenoble en voiture",
+   "updated_at": "2026-09-14T17:21:03.475+00:00"
   },
   {
    "bien_id": "bienici__hektor-annonay-immobilier-1-4844",
@@ -580,6 +604,22 @@
    "updated_at": "2026-09-05T11:19:09.813+00:00"
   },
   {
+   "bien_id": "bienici__iad-france-2010390",
+   "voter": "Max",
+   "criterion": "__favori__",
+   "stars": null,
+   "comment": null,
+   "updated_at": "2026-09-14T17:06:40.773+00:00"
+  },
+  {
+   "bien_id": "bienici__iad-france-2010390",
+   "voter": "Max",
+   "criterion": "__overall__",
+   "stars": 1,
+   "comment": "Annonce plus disponible, dommage",
+   "updated_at": "2026-09-14T18:13:13.482+00:00"
+  },
+  {
    "bien_id": "bienici__iad-france-917522",
    "voter": "Henri",
    "criterion": "__overall__",
@@ -610,6 +650,14 @@
    "stars": 1,
    "comment": "trop difficile d'accès",
    "updated_at": "2026-09-06T12:44:17.123+00:00"
+  },
+  {
+   "bien_id": "bienici__immo-facile-60311894",
+   "voter": "Max",
+   "criterion": "__overall__",
+   "stars": 3,
+   "comment": "J'aime beaucoup mais 3 chambres, 4 mini c'est bien quand même pour les couples d'amis.\nBesoin d'une voiture, à 35 min depuis Grenoble",
+   "updated_at": "2026-09-14T17:26:27.044+00:00"
   },
   {
    "bien_id": "bienici__immo-facile-60539195",
@@ -740,6 +788,14 @@
    "updated_at": "2026-08-28T10:28:00.278+00:00"
   },
   {
+   "bien_id": "leboncoin__3160538824",
+   "voter": "Max",
+   "criterion": "__overall__",
+   "stars": 1,
+   "comment": "Plus dispo",
+   "updated_at": "2026-09-14T18:12:28.271+00:00"
+  },
+  {
    "bien_id": "leboncoin__3167839215",
    "voter": "Henri",
    "criterion": "__overall__",
@@ -756,6 +812,30 @@
    "updated_at": "2026-09-06T12:27:01.741+00:00"
   },
   {
+   "bien_id": "leboncoin__3171968692",
+   "voter": "Max",
+   "criterion": "__overall__",
+   "stars": 3,
+   "comment": "3 chambres bof chaud",
+   "updated_at": "2026-09-14T18:17:56.092+00:00"
+  },
+  {
+   "bien_id": "leboncoin__3183321288",
+   "voter": "Max",
+   "criterion": "__favori__",
+   "stars": 1,
+   "comment": null,
+   "updated_at": "2026-09-14T17:14:00.111+00:00"
+  },
+  {
+   "bien_id": "leboncoin__3183321288",
+   "voter": "Max",
+   "criterion": "__overall__",
+   "stars": 4,
+   "comment": "Trop bien mais il faut une voiture car à 1h de Lyon ou Saint Etienne",
+   "updated_at": "2026-09-14T17:13:48.494+00:00"
+  },
+  {
    "bien_id": "leboncoin__3202721158",
    "voter": "Henri",
    "criterion": "__favori__",
@@ -770,6 +850,14 @@
    "stars": 5,
    "comment": "30min  de la gare de Grenoble, maison isolée avec 3 chambres à l'étage.",
    "updated_at": "2026-09-06T12:51:42.925+00:00"
+  },
+  {
+   "bien_id": "leboncoin__3209019552",
+   "voter": "Max",
+   "criterion": "__overall__",
+   "stars": 1,
+   "comment": "Plus dispo",
+   "updated_at": "2026-09-14T18:12:07.742+00:00"
   },
   {
    "bien_id": "leboncoin__3223361983",
@@ -794,6 +882,14 @@
    "stars": 1,
    "comment": null,
    "updated_at": "2026-09-06T13:03:45.32+00:00"
+  },
+  {
+   "bien_id": "leboncoin__3249441984",
+   "voter": "Max",
+   "criterion": "__overall__",
+   "stars": 3,
+   "comment": "Juste 3 photos donc difficile de se projetter\n3 chambres aussi",
+   "updated_at": "2026-09-14T18:25:32.114+00:00"
   },
   {
    "bien_id": "leboncoin__3253348718",
