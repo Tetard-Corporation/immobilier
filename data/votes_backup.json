@@ -1,5 +1,5 @@
 {
- "backed_up_at": "2026-09-15T09:27:58.749911+00:00",
+ "backed_up_at": "2026-09-16T09:18:55.242856+00:00",
  "source_url": "https://jmmflsrlegttdnxpidmo.supabase.co",
  "count": 114,
  "votes": [
@@ -31,9 +31,9 @@
    "bien_id": "__poids__:1",
    "voter": "Juliette",
    "criterion": "chambres_min",
-   "stars": 3,
+   "stars": 2,
    "comment": null,
-   "updated_at": "2026-09-13T17:25:14.429+00:00"
+   "updated_at": "2026-09-15T19:43:57.758+00:00"
   },
   {
    "bien_id": "__poids__:1",
