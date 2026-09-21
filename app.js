@@ -379,6 +379,7 @@ function cardHTML(b, idx) {
           <div class="price">${euros(b.prix)}</div>
           <h3>${b.commune || "?"} <span class="sub">(${b.departement || "—"})</span></h3>
           <div class="sub">${b.zone ? `⛰ ${b.zone} · ` : ""}${b.type_bien || "bien"} · ${faits(b)}</div>
+          ${trajetLigne(b)}
           <div class="chips">${(b.features || []).slice(0, 6).map((f) => `<span class="chip">${featLabel(f)}</span>`).join("")}</div>
           ${starsRow(b)}
         </div>
@@ -679,6 +680,64 @@ function faits(b, { pieces = false } = {}) {
   if (etat) out.push(etat);
   return out.join(" · ");
 }
+// --- Accès depuis Paris : la gare, le train, puis la voiture ---------------
+// Le premier reproche du groupe porte sur l'accès, et il s'écrit toujours en DEUX temps :
+// « 1 h de route depuis la gare de Grenoble », « besoin d'une voiture, à 45 min de
+// Grenoble ». La carte le montre donc en deux temps et jamais en un total seul — un
+// porte-à-porte de 4h02 ne dit pas si la fin du trajet vaut 20 minutes ou 1h10, et c'est
+// cette fin-là qui décide. Les deux durées sont mesurées : le train par la SNCF (durée
+// moyenne observée sur la liaison), la voiture par l'itinéraire routier de l'IGN.
+const dureeHM = (min) => {
+  if (min == null) return "?";
+  const m = Math.round(min);
+  return m < 60 ? `${m} min` : `${Math.floor(m / 60)}h${String(m % 60).padStart(2, "0")}`;
+};
+const km = (v) => `${Number(v).toLocaleString("fr-FR", { maximumFractionDigits: 1 })} km`;
+
+function trajetLigne(b) {
+  const t = b.trajet_paris;
+  if (!t || !t.gare) return "";
+  const approx = t.estime ? "≈ " : "";
+  const titre = t.estime
+    ? "Trajet ESTIMÉ (jamais mesuré pour ce bien) : vol d'oiseau à 45 km/h"
+    : "Train : durée moyenne observée par la SNCF sur cette liaison. "
+      + "Voiture : itinéraire routier IGN.";
+  const p = t.proche;
+  // La gare la plus proche n'est pas celle par laquelle on arrive de Paris : c'est
+  // souvent un arrêt TER à dix minutes, qui ne dessert pas la capitale en direct.
+  const alt = p
+    ? `<span class="tr-alt">🚉 gare ${p.type} de ${escHtml(p.gare)} à ${dureeHM(p.voiture_min)}</span>`
+    : "";
+  return `<div class="trajet" title="${escAttr(titre)}">`
+    + `<span class="tr-leg">🚆 Paris → ${escHtml(t.gare)} <b>${approx}${dureeHM(t.paris_min)}</b></span>`
+    + `<span class="tr-leg">🚗 puis <b>${approx}${dureeHM(t.voiture_min)}</b>`
+    + `${t.voiture_km != null ? ` (${km(t.voiture_km)})` : ""}</span>`
+    + `<span class="tr-tot">${approx}${dureeHM(t.total_min)} porte-à-porte</span>${alt}</div>`;
+}
+
+// Version longue, pour la fiche : la même chose, mais en nommant la gare parisienne de
+// départ et la source de chaque chiffre.
+function trajetBloc(b) {
+  const t = b.trajet_paris;
+  if (!t || !t.gare) return "";
+  const src = t.estime
+    ? `<div class="tb-src">⚠ trajet non mesuré pour ce bien : estimation à vol d'oiseau, volontairement pessimiste (45 km/h).</div>`
+    : `<div class="tb-src">Train : durée moyenne observée (open data SNCF). Voiture : itinéraire routier IGN.</div>`;
+  const p = t.proche;
+  return `<div class="section-title">Accès depuis Paris</div>
+    <div class="trajet-bloc">
+      <div class="tb-row"><span class="tb-k">${escHtml(t.paris_gare || "Paris")} → ${escHtml(t.gare)}</span>
+        <span class="tb-v">${dureeHM(t.paris_min)} en train</span></div>
+      <div class="tb-row"><span class="tb-k">${escHtml(t.gare)} → le bien</span>
+        <span class="tb-v">${dureeHM(t.voiture_min)} de voiture${t.voiture_km != null ? ` · ${km(t.voiture_km)}` : ""}</span></div>
+      <div class="tb-row tb-tot"><span class="tb-k">Porte-à-porte</span>
+        <span class="tb-v">${dureeHM(t.total_min)}</span></div>
+      ${p ? `<div class="tb-row"><span class="tb-k">Gare la plus proche</span>
+        <span class="tb-v">${escHtml(p.gare)} (${p.type}) · ${dureeHM(p.voiture_min)} de voiture</span></div>` : ""}
+      ${src}
+    </div>`;
+}
+
 const featLabel = (f) => FEATURE_LABELS[f] || cap(String(f).replace(/_/g, " "));
 const riskLabel = (r) => RISK_LABELS[r] || cap(String(r).replace(/([A-Z])/g, " $1"));
 function critLabel(key) {
@@ -888,6 +947,8 @@ function openModal(bien, opts = {}) {
       bien.altitude != null ? ` · ${Math.round(bien.altitude)} m alt.` : ""}</div>
     <div class="modal-gallery galwrap${(bien.photos || []).length ? " has-photos" : ""}" style="position:relative">${gallery(bien, true)}${favBtn(bien)}</div>
     ${bien.description ? `<p class="descr">${escHtml(htmlToText(bien.description))}</p>` : ""}
+
+    ${trajetBloc(bien)}
 
     ${infoGrid(bien)}
 

@@ -54,9 +54,10 @@ réécrire dans `mesures.js` une formule qui vit dans `preferences.py`. Deux cop
 même règle finissent par diverger : trois garde-fous.
 
 1. **Seuls les critères dont l'entrée est exportée bien par bien** sont portés : budget,
-   chambres, format du logement, surface habitable, terrain, jardin, altitude, DPE. Pas
-   l'exposition, pas la distance à la gare, pas le rapport qualité/prix : ces mesures-là
-   ne se rejouent pas côté client, leurs paramètres restent ceux du set.
+   chambres, format du logement, surface habitable, terrain, jardin, DPE, et le **relief
+   alentour** (le sommet le plus haut dans les 20 km part dans `data.json` exprès pour
+   ça). Pas l'exposition, pas l'accès à la gare, pas le rapport qualité/prix : ces
+   mesures-là ne se rejouent pas côté client, leurs paramètres restent ceux du set.
 2. **La formule portée ne sert que si le seuil a été changé.** Tant qu'on garde celui du
    set, c'est le sous-score du backend qui fait foi — toujours.
 3. **`tests/test_mesures.mjs` rejoue les formules portées sur tout le catalogue** avec
@@ -134,6 +135,28 @@ de ses sous-scores. Un critère que tout le monde réussit ne classe personne.
 remonte seulement tous les scores. Quatre critères de poids 4 (format, jardin, chambres,
 travaux) sont au-dessus de 0,86 de moyenne : ce sont des **filtres déguisés en poids** —
 ils décrivent ce que le groupe refuse, pas ce qui distingue deux bons candidats.
+
+### Les exigences ne sont plus des poids
+
+Quatre d'entre eux ont cessé de peser le 21 septembre 2026 : **chambres, format du
+logement, jardin et surface habitable** sont devenus des EXIGENCES (`malus` dans la
+préférence, cf. `preferences._facteur_malus`). Un critère réussi par 92 à 97 % des biens
+ajoute à chacun presque la même chose : il ne classe personne, et il resserre l'écart
+entre les biens puisqu'une moyenne d'autant plus de termes quasi constants s'aplatit
+d'autant.
+
+Une exigence sort donc de la moyenne — la tenir ne rapporte rien — et retire un
+pourcentage du score quand elle n'est pas tenue : 45 % pour l'absence de jardin, 40 % pour
+une seule chambre, 30 % pour une maison trop grande, 15 % pour moins de 90 m².
+
+**Ce n'est pas un palier.** Un palier plafonne à une valeur FIXE, donc il empile les biens
+dessus — 117 exactement à 70,0 avant leur retrait le 5 septembre. Le malus est continu et
+multiplicatif : deux biens qui ratent la même exigence gardent l'écart que leur donnent
+les autres critères. Et le poids déclaré règle la dureté de la sanction, ce qui laisse un
+sens au réglage personnel de chacun dans le panneau ⚖️.
+
+Une exigence ne se déclenche jamais sur une **lacune** : un critère non mesuré ne pénalise
+rien. C'est la règle de tout ce barème — on ne fait pas payer ce qu'on n'a pas su lire.
 
 ### Certains critères ne sont mesurés que sur une partie du catalogue
 

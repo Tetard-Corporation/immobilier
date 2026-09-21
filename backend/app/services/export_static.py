@@ -34,6 +34,7 @@ from .geo import haversine_km
 from .modulable import detecter as detecter_modulable
 from .preferences import evaluate
 from .scoring import compute_score
+from . import trajet as _trajet
 
 # Colonnes DB dont le nom correspond 1:1 aux clés `flags` consommées par evaluate().
 # (mapping inverse de search.upsert_listing, qui écrit flags.get(<col>) -> colonne)
@@ -613,10 +614,16 @@ def _query_altitudes(points: list[tuple[float, float]]) -> list | None:
 
     Un lot manquant décalerait tous les points suivants (la mesure est positionnelle) :
     mieux vaut abandonner le point et le redemander au prochain réchauffage.
+
+    48 points par lot et non 24 : l'API en accepte au moins 50 d'un coup, mesuré (41 en
+    0,72 s, 50 en 1,06 s), et c'est l'aller-retour qui se paie, pas les points. La grille
+    de montagne (41 points) tient ainsi en UNE requête, celle d'ensoleillement (87) en
+    deux au lieu de quatre — le réchauffage du relief est passé de 2 h 50 à 45 min. Un lot
+    tronqué par le serveur est rattrapé par la vérification de longueur ci-dessous.
     """
     out: list = []
-    for i in range(0, len(points), 24):
-        lot = points[i:i + 24]
+    for i in range(0, len(points), _ALTI_PAR_LOT):
+        lot = points[i:i + _ALTI_PAR_LOT]
         lats = "|".join(str(round(a, 6)) for a, _ in lot)
         lons = "|".join(str(round(b, 6)) for _, b in lot)
         elevs = None
@@ -677,6 +684,51 @@ def _soleil(lat: float, lon: float, cache: dict, *, live: bool = False) -> dict:
 # le même partout ici — sans réchauffage le critère sort en `pending`, il est alors
 # *exclu* du score au lieu de le baisser, et rien ne le dit.
 _TOURISME_CACHE = os.path.join(os.path.dirname(__file__), "..", "..", "data", "tourisme_cache.json")
+# Montagne alentour : clé à 2 décimales (~1 km) et non 4 comme l'ensoleillement. Le plus
+# haut sommet à vingt kilomètres ne change pas d'un hameau à l'autre, alors que l'ombre
+# portée d'une crête, si. À 4 décimales, la même mesure coûterait cinq fois plus d'appels
+# pour un chiffre identique.
+_MONTAGNE_CACHE = os.path.join(os.path.dirname(__file__), "..", "..", "data", "montagne_cache.json")
+# Points par requête d'altitude — voir `_query_altitudes`.
+_ALTI_PAR_LOT = 48
+
+
+def _load_montagne_cache() -> dict:
+    try:
+        with open(_MONTAGNE_CACHE, encoding="utf-8") as fh:
+            return json.load(fh)
+    except Exception:
+        return {}
+
+
+def _query_montagne(lat: float, lon: float) -> dict | None:
+    from .montagne import mesurer, points_a_mesurer
+
+    altitudes = _query_altitudes(points_a_mesurer(lat, lon))
+    if altitudes is None:
+        return None  # échec réseau -> on ne cache pas (à réessayer)
+    return mesurer(altitudes)
+
+
+def _montagne(lat: float, lon: float, cache: dict, *, live: bool = False) -> dict:
+    """Cache-only par défaut (lecture rapide à l'export) ; live=True pour le réchauffage."""
+    if lat is None or lon is None:
+        return {}
+    key = f"{round(lat, 2)},{round(lon, 2)}"
+    if key in cache:
+        return cache[key]
+    if not live:
+        return {}
+    res = _query_montagne(lat, lon)
+    if res is not None:
+        cache[key] = res
+        try:
+            with open(_MONTAGNE_CACHE, "w", encoding="utf-8") as fh:
+                json.dump(cache, fh)
+        except Exception:
+            pass
+        return res
+    return {}
 # Surface minimale d'un plan d'eau pour compter comme « lac ». Sans ce seuil, la mare de
 # 20 m² du hameau d'à côté valait le lac d'Annecy : autour de Beaufort, Overpass rend
 # 72 plans d'eau dont 70 sont des retenues d'alpage.
@@ -920,10 +972,17 @@ def _pref_dump(pref) -> dict:
         kind, params = pref.get("kind"), pref.get("params") or {}
         out = {"kind": kind, "label": pref.get("label") or kind,
                "weight": pref.get("weight", 1.0), "params": params}
+        malus = pref.get("malus")
     else:
         kind, params = getattr(pref, "kind", None), getattr(pref, "params", {}) or {}
         out = {"kind": kind, "label": getattr(pref, "label", None),
                "weight": getattr(pref, "weight", 1.0), "params": params}
+        malus = getattr(pref, "malus", None)
+    # L'exigence part avec la préférence : le front rejoue le classement avec les poids
+    # de chacun, et sans elle sa copie du calcul ne saurait pas qu'un critère pénalise
+    # au lieu de compter (cf. poids.js `agrege`).
+    if malus:
+        out["malus"] = malus
     out["id"] = identifiant(kind, params)
     return out
 
@@ -1106,6 +1165,12 @@ def _rejouer_avec_apriori(details: list[dict], apriori: dict[str, float],
             facteur = float(det.get("facteur") or 1.0)
             continue
         if det.get("kind") == "exigence":
+            continue
+        # EXIGENCE (`malus`) : hors de la moyenne, elle n'agit que par son facteur —
+        # même traitement que le disqualifiant ci-dessus. La compter comme un poids
+        # rendrait ce recalcul différent de celui de `preferences.evaluate`.
+        if "facteur_malus" in det:
+            facteur *= float(det["facteur_malus"])
             continue
         poids = float(det.get("weight") or 0)
         if not poids:
@@ -1420,6 +1485,8 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
     sea_cache = _load_sea_cache()
     soleil_cache = _load_soleil_cache()
     tourisme_cache = _load_tourisme_cache()
+    trajet_cache = _trajet.charger_cache()
+    montagne_cache = _load_montagne_cache()
     fibre_lut = _load_fibre_lut()
     tension_lut = _load_tension_lut()
     rows = (
@@ -1479,11 +1546,20 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
         sea = _sea_distance(row.latitude, row.longitude, sea_cache)  # cache-only (réchauffé à part)
         soleil = _soleil(row.latitude, row.longitude, soleil_cache)  # idem : réchauffé à part
         tourisme = _tourisme(row.latitude, row.longitude, tourisme_cache)  # idem
+        montagne = _montagne(row.latitude, row.longitude, montagne_cache)  # idem
+        # Accès depuis Paris : train mesuré + route mesurée (scripts/warm_trajet.py).
+        # Sans entrée en cache, `repli_estime` donne une estimation PESSIMISTE — calculée
+        # sans le moindre appel réseau, donc l'enrichissement n'en est pas ralenti. Mieux
+        # vaut un chiffre conservateur pour tout le monde qu'une mesure fine pour
+        # quelques-uns et rien pour les autres.
+        acces = _trajet.acces(row.latitude, row.longitude, trajet_cache)
+        if not acces:
+            acces = _trajet.repli_estime(row.latitude, row.longitude)
         feats = list(row.features or [])
         for e in _detect_equipements(row.description):
             if e not in feats:
                 feats.append(e)
-        extra = {**infra, **poi, **relief, **sea, **soleil, **tourisme,
+        extra = {**infra, **poi, **relief, **sea, **soleil, **tourisme, **acces, **montagne,
                  **_fibre_flags(row.code_commune, fibre_lut),
                  **_tension_flags(row.commune, tension_lut),
                  "features": feats, "pavillon_neuf": _detect_pavillon_neuf(row.description),
@@ -1534,6 +1610,11 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
             "score": row_score, "score_details": row_score_details,
             "viager": is_viager, "residence_tourisme": is_resid,
             "zones": {fs_id: _zone_de(row, z) for fs_id, z in set_comparaison.items() if z},
+            # Mesures publiées telles quelles sur la fiche. Elles PASSENT PAR ICI et non
+            # par la variable de boucle : la construction de `biens_out` est une SECONDE
+            # boucle, où une variable laissée par la première garde la valeur du dernier
+            # bien — les 6 068 annonces se sont retrouvées avec la même gare d'arrivée.
+            "acces": acces, "montagne": montagne,
         })
 
     # --- Couverture de mesure, par set et par critère ----------------------------------
@@ -1646,6 +1727,19 @@ def build_dataset(db, *, out_dir: str | None = None, download_photos: bool = Fal
             "url": row.url, "description": row.description, "dpe_classe": row.dpe_classe,
             "condition": row.condition, "features": feats, "nuisances": row.nuisances,
             "altitude": row.altitude, "rail_time_min": row.rail_time_min,
+            # L'accès depuis Paris, en clair sur la carte : gare d'arrivée, temps de
+            # train mesuré, puis temps de voiture mesuré jusqu'au bien. C'est le premier
+            # reproche du groupe et il n'était écrit nulle part (cf. services/trajet.py).
+            "trajet_paris": (prep.get("acces") or {}).get("trajet_paris"),
+            # Relief alentour : publié parce que le front REJOUE le critère quand
+            # quelqu'un règle son sommet de référence (mesures.js). Sans ces champs, sa
+            # copie du calcul divergerait de celle du moteur.
+            "alt_max_20km_m": (prep.get("montagne") or {}).get("alt_max_20km_m"),
+            "amplitude_m": (prep.get("montagne") or {}).get("amplitude_m"),
+            # L'altitude LUE PAR LA MESURE, et non la colonne `altitude` de
+            # l'enrichissement : les deux viennent de l'IGN mais pas du même relevé, et
+            # le front qui rejoue le critère doit partir du même chiffre que le moteur.
+            "alt_site_m": (prep.get("montagne") or {}).get("alt_site_m"),
             "isolement_score": row.isolement_score, "population_commune": row.population_commune,
             "risques": row.risques, "score": row_score, "score_details": row_score_details,
             "scores_by_set": scores_by_set,

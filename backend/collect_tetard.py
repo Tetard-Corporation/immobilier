@@ -78,6 +78,10 @@ PRIX_MAX = 250_000
 # parce que le meilleur bien d'un massif pauvre reste une information (cf. ZONES). Il
 # agit à deux endroits : le critère budget cesse de récompenser le bon marché, et un
 # palier ferme le haut du classement.
+# Plancher de prix, retiré du barème le 21 septembre : « les coûts faibles doivent être
+# bien notés ». Il faisait tomber la note à 0,15 sous ce seuil, au motif qu'un prix aussi
+# bas cache un défaut. Ce défaut est désormais cherché là où il est écrit — l'état du bâti
+# — plutôt que deviné depuis le prix. La constante reste pour qui voudrait la remettre.
 PRIX_MIN = 180_000
 
 # Pondérations 1-5. Deux critères mènent le classement : ce que le bien vaut pour son prix,
@@ -90,8 +94,29 @@ PREFERENCES = [
     # 175 000 €, et le bon marché devenait un avantage. En dessous du plancher la note
     # redescend jusqu'à 0,15 à mi-plancher (90 k€) — fort, mais non nul : c'est un
     # a priori, pas une preuve.
-    {"kind": "budget", "weight": 4, "label": "Prix entre 180 000 € et 250 000 €",
-     "params": {"budget_max": PRIX_MAX, "budget_min": PRIX_MIN}},
+    #
+    # EXIGENCE, et ASYMÉTRIQUE — c'est ce qui la distingue des quatre autres. « Les hors
+    # budget doivent être très mal notés et les coûts faibles doivent être bien notés ;
+    # c'est la combinaison des deux scores qui est importante » (21 septembre).
+    #
+    # Le prix cesse donc de porter le score — il était compté deux fois, ici dans l'absolu
+    # et par `rapport_qualite_prix` (poids 5), la seule des deux lectures qui sache que
+    # 2 700 €/m² est cher dans le Diois et bon marché en Savoie du lac. Mais dépasser le
+    # budget coûte 60 % de la note, ce qu'aucun poids ne pouvait faire sans que le prix
+    # reprenne le dessus sur tout le reste.
+    #
+    # Le PLANCHER disparaît (`budget_min` retiré) : il faisait tomber la note à 0,15 sous
+    # 180 k€, au motif qu'« un prix de ce niveau cache en général un défaut ». Le groupe
+    # tranche l'inverse — un coût faible est une bonne nouvelle. Ce que le plancher voulait
+    # attraper est désormais attrapé là où c'est écrit : l'état du bâti, et le plafond posé
+    # sur le rapport qualité/prix d'une ruine.
+    #
+    # Le barème fait le reste du travail : sous 70 % du budget la note est pleine, à 100 %
+    # elle vaut 0,80, à +15 % elle est nulle. Le malus mord donc exactement au-dessus du
+    # budget, et nulle part ailleurs.
+    {"kind": "budget", "weight": 4, "label": "Prix sous 250 000 €",
+     "params": {"budget_max": PRIX_MAX},
+     "malus": {"seuil": 0.79, "max": 0.60}},
     # `m2_min_par_piece` : le garde-fou du repli « pièces - 1 ». Une annonce peut
     # annoncer 4 pièces dans 35 m² — c'est ce qui a fait entrer un mobil-home de camping
     # dans les pépites avec « 3 chambres estimées ».
@@ -100,8 +125,20 @@ PREFERENCES = [
     # retrouvé à la fois peu pondéré et sans garde-fou. Son écart-type reste faible en
     # haut de classement (la plupart des candidats le remplissent) : ce poids ne sert pas
     # à départager, il sert à faire payer les rares qui échouent.
+    #
+    # EXIGENCE et non poids (21 septembre). Les quatre critères marqués `malus` sont
+    # réussis par presque tout le monde — chambres 0,92 de moyenne, format 0,96, jardin
+    # 0,94, surface 0,97 — donc ils ne classent personne, et dans une moyenne pondérée ils
+    # RESSERRENT l'écart entre les biens : plus on ajoute de termes quasi constants, plus
+    # la moyenne s'aplatit. « Fais en sorte que les calculs pénalisent fortement les biens
+    # qui ne les respectent pas mais ne portent pas tout le score de ceux qui les
+    # respectent. » Ils sortent donc de la moyenne et ne gardent que la sanction, continue
+    # et multiplicative — un palier, lui, empilerait les biens sur une même valeur, ce
+    # pour quoi ils ont été retirés le 5 septembre.
     {"kind": "chambres_min", "weight": 4, "label": "3 chambres minimum",
-     "params": {"min": 3, "m2_min_par_piece": 20}},
+     "params": {"min": 3, "m2_min_par_piece": 20},
+     # 0,66 = deux chambres sur les trois demandées. Une seule chambre (0,33) coûte 20 %.
+     "malus": {"seuil": 0.66, "max": 0.40}},
     # Le pendant du plancher de chambres. Ce que le groupe a précisé le 30 août : « 5
     # chambres ça reste ok, mais je ne veux pas qu'on survalorise les biens grands — un
     # bien plus petit avec 3 chambres, bien placé, vaut mieux qu'un grand mal placé. »
@@ -119,7 +156,9 @@ PREFERENCES = [
     # haut de classement (la plupart des candidats le remplissent) : ce poids ne sert pas
     # à départager, il sert à faire payer les rares qui échouent.
     {"kind": "logement_compact", "weight": 4, "label": "Format maison de retrait (3 à 5 chambres, pas immense)",
-     "params": {"ideal": 4, "max": 5, "m2_ok": 170, "m2_max": 300}},
+     "params": {"ideal": 4, "max": 5, "m2_ok": 170, "m2_max": 300},
+     # 0,7 laisse passer jusqu'à 5 chambres (0,75) et sanctionne à 6 (0,375).
+     "malus": {"seuil": 0.7, "max": 0.30}},
     # Le contrepoids du format, et la question que `chambres_min` ne pose pas : les
     # chambres comptent la capacité EXISTANTE, celui-ci compte celle qu'on peut se donner.
     # Une grange attenante, des combles aménageables, une dépendance — de quoi faire une
@@ -186,7 +225,11 @@ PREFERENCES = [
     # retrouvé à la fois peu pondéré et sans garde-fou. Son écart-type reste faible en
     # haut de classement (la plupart des candidats le remplissent) : ce poids ne sert pas
     # à départager, il sert à faire payer les rares qui échouent.
-    {"kind": "jardin", "weight": 4, "label": "Jardin (requis)", "params": {"min_surface": 300}},
+    # 0,5 ≈ 110 m² mesurés, ou un extérieur décrit sans surface (0,7). Pas d'extérieur du
+    # tout coûte 45 % du score : c'est l'exigence la plus dure du set, et c'est voulu —
+    # « aucun jardin » revient deux fois en reproche dans les commentaires du groupe.
+    {"kind": "jardin", "weight": 4, "label": "Jardin (requis)", "params": {"min_surface": 300},
+     "malus": {"seuil": 0.5, "max": 0.45}},
     # « L'attractivité Airbnb comme un critère important » (31 août). Poids 4 : le rang
     # des critères qui décident sans dominer — budget, travaux, jardin, ensoleillement —
     # et non 5, réservé au rapport qualité/prix et au relief. Une maison de retrait entre
@@ -209,7 +252,16 @@ PREFERENCES = [
     # Relief monté à 5 : le groupe a demandé les Alpes après un premier jeu entièrement
     # posé autour de Saint-Étienne. La collecte y va désormais, mais encore faut-il que
     # le score valorise l'altitude qu'elle ramène.
-    {"kind": "relief_mountain", "weight": 5, "label": "Montagne / relief", "params": {"ref_altitude": 800}},
+    # Le critère notait l'ALTITUDE DU BIEN, ce que le groupe a corrigé le 21 septembre :
+    # « montagne / relief ne devrait pas compter l'altitude du bien mais la proximité à
+    # des montagnes ». Il note maintenant le relief ALENTOUR — le plus haut sommet à vingt
+    # kilomètres et le dénivelé qui l'en sépare (services/montagne.py). Mesuré sur les
+    # deux cas que le groupe décrit : un fond de vallée alpin passe de 0,38 à 0,93, un
+    # plateau nu à 900 m de 1,00 à 0,18. Le réglage personnel passe d'« altitude de
+    # référence » à « sommet de référence » ; `ref_altitude` ne sert plus qu'au repli des
+    # biens dont le relief alentour n'est pas encore mesuré.
+    {"kind": "relief_mountain", "weight": 5, "label": "Montagne / relief",
+     "params": {"ref_sommet": 2200, "ref_altitude": 800}},
     # Charme remonté à 4 : « pas de charme » revient trois fois en reproche (1★),
     # « charme de la bâtisse » une fois en éloge (4★).
     {"kind": "cachet", "weight": 4, "label": "Cachet (caractère, pas de pavillon)", "params": {}},
@@ -233,7 +285,17 @@ PREFERENCES = [
     # donné 0 sur ce critère à la moitié de la zone qu'on vient d'ajouter — collecter une
     # zone puis la noter zéro n'a pas de sens. Le barème reste décroissant et continue de
     # préférer le proche : 0,60 à 3h, 0,22 à 3h57, 0,13 à 4h10.
-    {"kind": "temps_acces", "weight": 3, "label": "≤ 4h30 porte-à-porte depuis Paris",
+    #
+    # Monté de 3 à 4, et il ne repose plus sur une estimation. L'accès est le premier
+    # reproche du groupe — six commentaires sur quarante et un, tous écrits en minutes de
+    # ROUTE depuis une gare : « 1 h de route depuis la gare de Grenoble » (Rencurel, 3★
+    # malgré « maison super, jardin au top, dans le budget »), « besoin d'une voiture, à
+    # 45 min de Grenoble », « il faut une voiture car à 1 h de Lyon ». Le seul 5★ motivé
+    # par l'accès dit la même chose à l'endroit : « 30 min de la gare de Grenoble ». Le
+    # trajet est maintenant mesuré des deux côtés (durées SNCF observées + itinéraire
+    # routier IGN) au lieu d'être divisé par 65 km/h à vol d'oiseau, ce qui sous-estimait
+    # la route de 23 % en moyenne.
+    {"kind": "temps_acces", "weight": 4, "label": "≤ 4h30 porte-à-porte depuis Paris",
      "params": {"max_minutes": 270}},
     # Isolement neutralisé : le groupe veut le calme, pas le bout du monde.
     # Poids 2 : ce critère LIT le calme dans l'annonce (écart-type 0,12) quand
@@ -243,15 +305,30 @@ PREFERENCES = [
      "params": {"poids_isolement": 0, "poids_densite": 0}},
     # Bruit monté à 3, et il compte désormais les routes passantes : deux biens notés 1★
     # « le long d'une route nationale », que le critère ne voyait pas.
+    # Barème resserré le 21 septembre : « 1 km d'une autoroute, ce n'est pas grave, on ne
+    # doit rien entendre ». C'était vrai du seuil haut — la note était déjà pleine à 1 km
+    # — mais pas de la pente : à 600 m le critère retirait encore la moitié des points,
+    # et la moitié d'un poids 3 se paie cher pour un bruit que personne n'entend.
     {"kind": "nuisance_sonore", "weight": 3, "label": "Loin d'une route passante / autoroute / rail",
-     "params": {"min_m": 200, "ref_m": 1000, "poids_route": 0.45}},
+     "params": {"min_m": 100, "ref_m": 600, "poids_route": 0.45}},
     # Descendu de 2 à 1, et le seuil de 100 à 90 m² : c'était le dernier endroit où la
     # taille était récompensée pour elle-même, alors que la capacité d'accueil est déjà
     # mesurée par `chambres_min`. « Un bien plus petit avec 3 chambres, bien placé, vaut
     # mieux qu'un grand mal placé » — à poids 2 sur un seuil de 100 m², un 95 m² de trois
     # chambres perdait des points qu'aucun critère de placement ne lui rendait.
-    {"kind": "surface_habitable", "weight": 1, "label": "≥ 90 m² habitables", "params": {"min": 90}},
-    {"kind": "near_gare", "weight": 2, "label": "Proche d'une gare", "params": {"max_km": 15}},
+    # Sanction douce (15 %) : le groupe a dit lui-même qu'un petit bien bien placé vaut
+    # mieux qu'un grand mal placé. Le critère notait 0,97 de moyenne pour 0,10 d'écart —
+    # il ne servait qu'à remonter tout le monde.
+    {"kind": "surface_habitable", "weight": 1, "label": "≥ 90 m² habitables", "params": {"min": 90},
+     "malus": {"seuil": 0.8, "max": 0.15}},
+    # Monté de 2 à 3, et l'unité change : des kilomètres à vol d'oiseau aux MINUTES de
+    # route jusqu'à la gare. « Il faut plus de gares et surtout les TGV » — le référentiel
+    # passe de 89 gares choisies à la main à 2 951, une gare TGV compte jusqu'à une heure
+    # de route et un arrêt TER seulement trente minutes. Le critère notait 0,17 de moyenne
+    # sur le set : il était mort. Il ne fait pas doublon avec `temps_acces`, qui mesure le
+    # trajet depuis Paris là où celui-ci mesure ce qu'on peut faire sans voiture sur place.
+    {"kind": "near_gare", "weight": 3, "label": "Proche d'une gare (TGV surtout, en minutes de route)",
+     "params": {"max_minutes": 30, "max_minutes_tgv": 60}},
     {"kind": "fiber", "weight": 2, "label": "Fibre (télétravail)", "params": {}},
     # Poids 1 : l'attractivité saisonnière (poids 4) est calculée à 80 % sur la présence
     # d'une remontée mécanique — c'est ce que ce critère mesure. Corrélation 0,80 entre
@@ -260,7 +337,11 @@ PREFERENCES = [
     {"kind": "ski", "weight": 1, "label": "Station de ski à proximité", "params": {"max_km": 30}},
     {"kind": "near_city", "weight": 2, "label": "Accessible depuis Marseille",
      "params": {"ville": "Marseille", "max_km": 300}},
-    {"kind": "near_corridor", "weight": 1, "label": "Axe Paris-Marseille",
+    # Poids ramené à 0 : « l'axe Paris-Marseille compte déjà pour les gares ». L'axe
+    # n'était qu'un substitut de l'accès ferroviaire, du temps où celui-ci n'était pas
+    # mesuré — une droite tracée sur la carte entre deux villes. Maintenant que le trajet
+    # depuis Paris est mesuré gare par gare, il double `temps_acces` sans rien ajouter.
+    {"kind": "near_corridor", "weight": 0, "label": "Axe Paris-Marseille",
      "params": {"villes": ["Paris", "Marseille"], "max_km": 40}},
 ]
 
@@ -316,6 +397,14 @@ PIVOTS = [
     ("Aravis-Bornes / Thônes", 45.881, 6.325, ["74"]),
     ("Dévoluy-Gapençais / Gap", 44.620, 5.995, ["05"]),
     ("Bugey / Hauteville-Lompnes", 45.980, 5.600, ["01"]),
+    # Demandés le 21 septembre, et tous les trois désignés par leur ACCÈS plutôt que par
+    # leur massif — « le plus accessible, par exemple, c'est les Bauges vers Chambéry à
+    # moins de trente minutes de route ». Les pivots sont posés sur les villages nommés ;
+    # c'est `near_gare`, désormais mesuré en minutes de route, qui vérifie la promesse
+    # d'accès sur chaque bien.
+    ("Bauges ouest / Montcel", 45.727, 5.950, ["73"]),           # ≤ 30 min d'Aix-les-Bains
+    ("Piémont du Vercors / Barbières", 44.951, 5.158, ["26"]),   # ≤ 30 min de Valence TGV
+    ("Valserine-Haut Jura / Bellegarde", 46.108, 5.826, ["01"]),  # ≤ 40 min de la gare
     # Demandés par le groupe (30 août) : « la zone autour d'Albertville, dans le
     # Beaufortain par exemple ». Trois pivots plutôt qu'un, parce que les rayons de
     # collecte (8/16/25 km) autour d'Albertville seul s'arrêteraient au seuil du
@@ -452,7 +541,20 @@ def ensure_sets(db) -> None:
                 # 0,20/0,90, le set n'utilisait que 53 % de l'échelle 0-100 — et son
                 # score se comparait à celui d'un autre groupe qui ne cherche pas la même
                 # chose. À revoir si le set change beaucoup de critères.
-                "ancres": {"basse": 0.40, "haute": 0.80},
+                # Recalées le 21 septembre 2026, parce que le barème a changé : quatre
+                # critères sont sortis de la moyenne (les exigences, cf. `malus`), deux
+                # sont passés à zéro, et l'accès comme la montagne sont désormais mesurés
+                # au lieu d'être estimés. La moyenne pondérée du set s'en trouve déplacée
+                # — p1 0,41, médiane 0,568, p99 0,724 sur 2 755 biens — et les anciennes
+                # ancres laissaient le haut de l'échelle inoccupé. Écart-type des scores :
+                # 17,7 avec 0,40/0,80, 20 avec celles-ci.
+                #
+                # L'ancre haute est calée sur le MAXIMUM mesuré de la moyenne pondérée
+                # (0,772) et non sur son p99 (0,726). Le percentile donnait un demi-point
+                # d'écart-type de plus, au prix de trente biens écrasés à 100,0 tout rond
+                # — exactement le mur de valeurs identiques pour lequel les paliers ont
+                # été retirés. Une échelle qui sature en haut ne classe plus son haut.
+                "ancres": {"basse": 0.40, "haute": 0.77},
                 "zone": {"est_axe_lyon_valence": True, "prix_max_membre": PRIX_MAX * 1.2}}
     fs = db.get(FilterSet, SET_ID)
     if fs is None:

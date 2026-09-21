@@ -136,7 +136,15 @@ _PENTE_PLEINE = 20.0
 # On sépare donc les deux rôles. L'ADMISSIBILITÉ ne bouge pas — le groupe a tranché le
 # 30 août que « à rénover » reste acceptable, le palier descend à 0,6 pour le dire. La
 # NOTE, elle, redevient honnête : une rénovation coûte, elle ne vaut pas « habitable ».
-_LIGHT_OK = {"habitable": 1.0, "rafraichir": 1.0, "renover": 0.65, "gros_travaux": 0.4, "ruine": 0.1}
+#
+# 21 septembre : les deux dernières notes descendent encore (0,4 → 0,2 et 0,1 → 0,0).
+# Depuis que les paliers ont sauté, la note est le SEUL endroit où l'état pèse, et elle
+# ne pesait pas : mesuré sur les 2 698 biens publiés du set, l'écart entre une maison
+# habitable et une maison à gros travaux valait 2 points sur 100 — de quoi se rattraper
+# n'importe où ailleurs. « Il reste encore des ruines avec beaucoup de travaux qui sont
+# trop bien notés. » Cinq commentaires du groupe disent la même chose (« beaucoup trop de
+# travaux pour envisager cet achat », « ruine », notée 1★ deux fois).
+_LIGHT_OK = {"habitable": 1.0, "rafraichir": 1.0, "renover": 0.6, "gros_travaux": 0.2, "ruine": 0.0}
 # Du plus léger au plus lourd : sert au seuil `min_etat` (« pas en dessous de ça »).
 _NIVEAU_ETAT = {"habitable": 0, "rafraichir": 1, "renover": 2, "gros_travaux": 3, "ruine": 4}
 # Ce qui reste d'une note quand le bien passe sous le seuil demandé (état, DPE).
@@ -145,6 +153,11 @@ _COND_LABELS = {
     "habitable": "habitable de suite", "rafraichir": "à rafraîchir", "renover": "à rénover",
     "gros_travaux": "gros travaux", "ruine": "ruine / à reconstruire",
 }
+# Plafond du rapport qualité/prix selon l'état du bâti. Un prix bas n'est une bonne
+# affaire que si ce qu'on achète tient debout : une ruine est bon marché PARCE QU'elle est
+# une ruine, et l'écart au prix du secteur ne mesure pas le chantier qui va avec. Les états
+# absents de cette table ne sont pas plafonnés — on ne pénalise pas une lacune.
+_QP_PLAFOND_ETAT = {"gros_travaux": 0.5, "ruine": 0.25}
 
 
 def _clamp(x: float) -> float:
@@ -377,6 +390,21 @@ def _eval_one(item, kind: str, params: dict):
             sub = _clamp(1 - (ratio - bon) / (cher - bon) * (1 - _CHER_FLOOR))
         ecart = round((ratio - 1) * 100)
         situe = f"+{ecart} %" if ecart > 0 else f"{ecart} %"
+        # Une ruine à moitié prix n'est pas une bonne affaire : c'est le prix d'une ruine.
+        # C'est ici que se jouait « il reste encore des ruines avec beaucoup de travaux
+        # qui sont trop bien notés » — pas dans la note de travaux, déjà divisée par
+        # quatre par le seuil d'état. Un bien à reconstruire est bon marché PARCE QU'il
+        # est à reconstruire, et le critère de tête du set (poids 5) le récompensait pour
+        # ça. Le prix du chantier n'est écrit nulle part ; ce qu'on sait, c'est que
+        # l'écart au secteur ne le mesure pas. On plafonne donc au lieu de prétendre le
+        # chiffrer, et seulement quand l'annonce DIT l'état — une lacune ne plafonne rien.
+        cond = flags.get("condition")
+        plafond = _QP_PLAFOND_ETAT.get(cond)
+        if plafond is not None and sub > plafond:
+            return (plafond, "ok",
+                    f"{round(item.prix / s)} €/m² — {situe} du secteur "
+                    f"({round(pm2)} €/m²), mais {_COND_LABELS.get(cond, cond)} : "
+                    f"le prix du chantier n'est pas dans l'écart")
         return sub, "ok", f"{round(item.prix / s)} €/m² — {situe} du secteur ({round(pm2)} €/m²)"
 
     if kind == "en_hauteur_geo":
@@ -650,6 +678,33 @@ def _eval_one(item, kind: str, params: dict):
         return _clamp(1 - dist / max_km), "ok", f"{round(dist)} km de l'axe" + (f" {axe}" if axe else "")
 
     if kind == "near_gare":
+        # Ce que le critère mesure a changé : des KILOMÈTRES à vol d'oiseau, il est passé
+        # aux MINUTES de route. C'est l'unité dans laquelle le groupe écrit ses reproches
+        # — « 1 h de route depuis la gare de Grenoble », « à 35 min depuis Grenoble » — et
+        # la seule qui vaille en montagne, où la route contourne le massif que la ligne
+        # droite traverse (mesuré : ×1,23 en moyenne, +73 min sur Annecy → Beaufort).
+        # L'ancien calcul comparait en plus à 89 gares choisies à la main ; le référentiel
+        # en compte 2 951. Voir services/trajet.py.
+        minutes = flags.get("acces_gare_min")
+        if minutes is not None:
+            trajet_p = flags.get("trajet_paris") or {}
+            proche = trajet_p.get("proche") or trajet_p
+            suffixe = " (estimé)" if flags.get("trajet_estime") else ""
+            # Deux gares, deux barèmes — « il faut plus de gares et surtout les TGV ».
+            # Une gare TGV compte jusqu'à une heure de route, un arrêt TER seulement s'il
+            # est proche : à trente minutes le TGV vaut encore la moitié des points, le
+            # TER plus rien. On garde la meilleure des deux lectures.
+            max_ter = params.get("max_minutes", 30)
+            max_tgv = params.get("max_minutes_tgv", 60)
+            tgv_min = flags.get("acces_gare_tgv_min")
+            note_ter = _clamp(1 - minutes / max_ter)
+            note_tgv = _clamp(1 - tgv_min / max_tgv) if tgv_min is not None else 0.0
+            if note_tgv >= note_ter and trajet_p.get("gare"):
+                return (note_tgv, "ok",
+                        f"gare TGV de {trajet_p['gare']} à {tgv_min} min de route{suffixe}")
+            nom, type_gare = proche.get("gare"), proche.get("type", "")
+            quoi = f"gare {type_gare} de {nom}" if nom else "gare la plus proche"
+            return (note_ter, "ok", f"{quoi} à {minutes} min de route{suffixe}")
         if item.latitude is None or item.longitude is None:
             return None, "n/a", "géoloc manquante"
         res = nearest_gare(item.latitude, item.longitude)
@@ -671,18 +726,36 @@ def _eval_one(item, kind: str, params: dict):
         return _clamp(1 - dist / params.get("max_km", 50)), "ok", f"{round(dist)} km{suffixe}"
 
     if kind == "temps_acces":
-        # Porte-à-porte depuis Paris (TGV vers le meilleur hub + voiture).
-        from .geo import porte_a_porte_min
+        # Porte-à-porte depuis Paris : train MESURÉ (durées SNCF observées) + route
+        # MESURÉE (itinéraire IGN). Le calcul précédent divisait la distance à vol
+        # d'oiseau par 65 km/h et n'avait que 9 hubs écrits à la main : il annonçait des
+        # trajets que personne ne peut faire, ce que six commentaires du groupe disaient
+        # déjà. Voir services/trajet.py.
+        from .trajet import repli_estime
 
         if item.latitude is None or item.longitude is None:
             return None, "n/a", "géoloc manquante"
-        minutes = porte_a_porte_min(item.latitude, item.longitude)
+        minutes = flags.get("porte_a_porte_min")
+        estime = bool(flags.get("trajet_estime"))
+        if minutes is None:
+            # Jamais réchauffé : repli à vol d'oiseau, mais à vitesse PESSIMISTE (45 km/h
+            # contre 65). Un bien non mesuré ne doit pas monter au classement grâce à ça.
+            repli = repli_estime(item.latitude, item.longitude)
+            minutes, estime = repli.get("porte_a_porte_min"), True
         if minutes is None:
             return None, "n/a", "trajet indéterminé"
         max_min = params.get("max_minutes", 240)
         h, m = divmod(minutes, 60)
         hmax = max_min // 60
-        return _clamp(1 - (minutes - 120) / (max_min - 120)) if max_min > 120 else (1.0 if minutes <= max_min else 0.0), "ok", f"~{h}h{m:02d} porte-à-porte depuis Paris (max {hmax}h)"
+        sub = (_clamp(1 - (minutes - 120) / (max_min - 120)) if max_min > 120
+               else (1.0 if minutes <= max_min else 0.0))
+        # Le détail porte le DÉCOUPAGE, parce que « 4h12 » ne dit pas si le problème est
+        # le train ou la fin du trajet en voiture — et c'est la voiture qui décide ici.
+        t = flags.get("trajet_paris") or {}
+        decoupe = (f" — Paris → {t['gare']} {t['paris_min']} min, puis "
+                   f"{t['voiture_min']} min de voiture") if t.get("gare") else ""
+        return sub, "ok", (f"~{h}h{m:02d} porte-à-porte depuis Paris{decoupe}"
+                           f"{' (estimé)' if estime else ''} (max {hmax}h)")
 
     if kind == "nuisance_sonore":
         # Critère "calme" : pénalise la proximité d'une autoroute/voie ferrée (bruit).
@@ -830,8 +903,33 @@ def _eval_one(item, kind: str, params: dict):
                 return _clamp(pct / 100), "ok", f"{pct}% des locaux de la commune éligibles (à vérifier pour ce bien)"
             return (1.0 if val else 0.0), "ok", "fibre" if val else "pas de fibre"
         if kind == "relief_mountain":
+            # Le relief ALENTOUR quand il a été mesuré, l'altitude du bien sinon.
+            # « Montagne / relief ne devrait pas compter l'altitude du bien mais la
+            # proximité à des montagnes » : un fond de vallée à 300 m cerné de sommets à
+            # 2 000 est à la montagne, un plateau nu à 900 m ne l'est pas. Voir
+            # services/montagne.py.
+            sommet, site = flags.get("alt_max_20km_m"), flags.get("alt_site_m")
+            if sommet is not None and site is not None:
+                from .montagne import noter as noter_montagne
+
+                note = noter_montagne(site, sommet, params.get("ref_sommet"))
+                ampl = flags.get("amplitude_m", sommet - site)
+                return (_clamp(note), "ok",
+                        f"sommet à {sommet} m dans les 20 km, {ampl} m au-dessus du bien "
+                        f"(altitude {site} m)")
+            # Relief alentour non mesuré : on note comme si le bien était le point le
+            # plus haut des environs — aucun dénivelé, aucun sommet au-dessus. C'est
+            # faux, et c'est faux DANS LE BON SENS : le repli ne peut que sous-estimer.
+            # L'ancien calcul faisait l'inverse, il donnait 1,00 à un plateau nu à 900 m.
+            if val is not None:
+                from .montagne import noter as noter_montagne
+
+                note = noter_montagne(val, val, params.get("ref_sommet"))
+                return (_clamp(note or 0.0), "ok",
+                        f"altitude {val} m — relief alentour non mesuré, noté au minimum")
             ref = params.get("ref_altitude", 600)
-            return _clamp((val or 0) / ref), "ok", f"altitude {val} m (réf montagne {ref} m)"
+            return (_clamp((val or 0) / ref), "ok",
+                    f"altitude {val} m (réf montagne {ref} m) — relief alentour non mesuré")
         if kind == "hiking":
             n = flags.get("rando_count")
             if n is None:
@@ -861,6 +959,39 @@ def _eval_one(item, kind: str, params: dict):
 #  - « dans le budget », « pas de ruine » -> le sous-score du critère lui-même, qui tombe
 #    franchement (voir `_budget_sub`) et que chacun peut pondérer ou re-seuiller.
 
+def _facteur_malus(sub: float | None, malus: dict, poids: float) -> tuple[float, float]:
+    """Facteur multiplicatif d'une EXIGENCE, et la part de score qu'elle retire.
+
+    Pourquoi une exigence n'est pas un poids. Quatre critères du set têtard sont réussis
+    par presque tout le monde — format du logement 0,96 de moyenne, jardin 0,94, chambres
+    0,92, surface habitable 0,97. Dans une moyenne pondérée, ils ajoutent à chaque bien
+    presque la même chose : ils ne classent personne et ils RESSERRENT l'écart entre les
+    biens, puisqu'une moyenne d'autant plus de termes quasi constants s'aplatit d'autant.
+    Les retirer du calcul et n'en garder que la sanction rend l'échelle aux critères qui
+    départagent vraiment.
+
+    Pourquoi pas un palier non plus. Un palier plafonne à une VALEUR FIXE, donc il empile
+    les biens dessus : 117 biens exactement à 70,0 avant leur retrait le 5 septembre. Le
+    malus est continu et MULTIPLICATIF — deux biens qui ratent la même exigence gardent
+    l'écart que leur donnent les autres critères.
+
+    `malus = {"seuil": 0.5, "max": 0.45}` : au-dessus du seuil, facteur 1 (l'exigence est
+    tenue, elle ne rapporte rien) ; en dessous, la pénalité croît jusqu'à `max` quand le
+    sous-score tombe à zéro. Le POIDS déclaré sert d'échelle : le monter durcit la
+    sanction, ce qui garde un sens au réglage personnel de chacun.
+    """
+    if sub is None:
+        return 1.0, 0.0
+    seuil = float(malus.get("seuil", 0.5))
+    maxi = float(malus.get("max", 0.3))
+    if seuil <= 0 or sub >= seuil:
+        return 1.0, 0.0
+    poids_ref = float(malus.get("poids_ref", poids) or poids or 1.0)
+    echelle = (poids / poids_ref) if poids_ref else 1.0
+    part = _clamp(maxi * echelle * (seuil - sub) / seuil)
+    return 1.0 - part, part
+
+
 def evaluate(item, preferences, apriori: dict[str, float] | None = None,
              ancres: tuple[float, float] | None = None) -> tuple[float | None, list[dict]]:
     """Calcule le match_score (0-100) et le détail par préférence.
@@ -880,6 +1011,7 @@ def evaluate(item, preferences, apriori: dict[str, float] | None = None,
     details = []
     total_w = 0.0
     acc = 0.0
+    facteur_malus = 1.0
     for pref in preferences:
         kind = getattr(pref, "kind", None) or (pref.get("kind") if isinstance(pref, dict) else None)
         weight = getattr(pref, "weight", None) if not isinstance(pref, dict) else pref.get("weight", 1.0)
@@ -887,6 +1019,7 @@ def evaluate(item, preferences, apriori: dict[str, float] | None = None,
         params = getattr(pref, "params", None) if not isinstance(pref, dict) else pref.get("params", {})
         params = params or {}
         label = getattr(pref, "label", None) if not isinstance(pref, dict) else pref.get("label")
+        malus = getattr(pref, "malus", None) if not isinstance(pref, dict) else pref.get("malus")
 
         sub, status, detail = _eval_one(item, kind, params)
         entry = {
@@ -897,6 +1030,24 @@ def evaluate(item, preferences, apriori: dict[str, float] | None = None,
             "detail": detail,
             "subscore": round(sub, 3) if sub is not None else None,
         }
+        if malus:
+            # EXIGENCE, et non poids. Voir `_facteur_malus` : le critère sort de la
+            # moyenne et ne pénalise qu'en cas d'échec.
+            entry["malus"] = malus
+            valeur = sub if (sub is not None and status == "ok") else (
+                (apriori or {}).get(label or kind))
+            f, part = _facteur_malus(valeur, malus, weight)
+            # Le facteur part avec le détail : `export_static._rejouer_avec_apriori`
+            # recalcule le score à partir des seuls détails, et sans lui il compterait
+            # l'exigence comme un poids — deux formules pour un même score finissent par
+            # diverger, et c'est le genre d'écart que personne ne va voir.
+            entry["facteur_malus"] = round(f, 4)
+            if part:
+                entry["malus_applique"] = round(part, 3)
+                entry["detail"] = f"{detail} — exigence non tenue : −{round(part * 100)} % du score"
+            facteur_malus *= f
+            details.append(entry)
+            continue
         if sub is not None and status == "ok":
             total_w += weight
             acc += weight * sub
@@ -912,6 +1063,6 @@ def evaluate(item, preferences, apriori: dict[str, float] | None = None,
     if total_w == 0:
         return None, details
     basse, haute = ancres if ancres else (_ANCRE_BASSE, _ANCRE_HAUTE)
-    score = round(_contraste(acc / total_w, basse, haute) * 100, 1)
+    score = round(_contraste(acc / total_w, basse, haute) * 100 * facteur_malus, 1)
     details.sort(key=lambda d: d.get("contribution", -1), reverse=True)
     return score, details

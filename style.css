@@ -141,6 +141,30 @@ select {
 .body h3 { margin: 0 0 2px; font-size: 16px; }
 .body .price { color: var(--accent); font-weight: 700; font-size: 17px; }
 .body .sub { color: var(--muted); font-size: 13px; margin: 4px 0; }
+/* ---------- Accès depuis Paris (carte + fiche) ----------
+   Assez visible pour se lire sans ouvrir la fiche : c'est le critère sur lequel le
+   groupe a le plus commenté, et il n'était écrit nulle part. Le découpage train / route
+   est porté par la mise en forme — la route en gras, parce que c'est elle qui décide. */
+.trajet {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px;
+  margin: 6px 0 2px; padding: 5px 8px; font-size: 12px;
+  border-radius: 8px; background: var(--card2); border: 1px solid var(--line);
+  color: var(--muted);
+}
+.trajet b { color: var(--txt); font-weight: 600; }
+.trajet .tr-tot { color: var(--accent2); font-weight: 600; }
+.trajet .tr-alt { flex-basis: 100%; font-size: 11px; opacity: .85; }
+
+.trajet-bloc { margin: 4px 0 10px; font-size: 13px; }
+.trajet-bloc .tb-row {
+  display: flex; justify-content: space-between; gap: 12px;
+  padding: 5px 0; border-bottom: 1px solid var(--line);
+}
+.trajet-bloc .tb-k { color: var(--muted); }
+.trajet-bloc .tb-v { text-align: right; }
+.trajet-bloc .tb-tot .tb-k, .trajet-bloc .tb-tot .tb-v { color: var(--accent2); font-weight: 600; }
+.trajet-bloc .tb-src { margin-top: 6px; font-size: 11px; color: var(--muted); opacity: .8; }
+
 .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
 .chip {
   font-size: 11px; padding: 2px 8px; border-radius: 999px;

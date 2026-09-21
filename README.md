@@ -43,8 +43,19 @@ mais avec des **filtres avancés**, des **jeux de filtres réutilisables**, des
   **exposition et durée d'ensoleillement** (heures de soleil direct au 21 décembre,
   orientation et pente du versant, calculées sur le modèle d'altitude IGN — le critère qui
   sépare l'adret de l'ubac et qu'aucune annonce ne donne ; voir
-  `backend/app/services/soleil.py` et `scripts/warm_ensoleillement.py`) ; temps de trajet
-  train (estimation **sans clé** ; clé Navitia/SNCF optionnelle pour les horaires réels), **qualité de l'eau/pollution** (Hub'Eau : pesticides,
+  `backend/app/services/soleil.py` et `scripts/warm_ensoleillement.py`) ;
+  **montagne alentour** (`backend/app/services/montagne.py`) : le plus haut sommet dans les
+  20 km et le dénivelé qui l'en sépare, relevés sur 41 points du modèle d'altitude IGN —
+  parce qu'être *à la* montagne n'est pas être *en* altitude. Le critère notait l'altitude
+  du bien : il donnait 1,00 à un plateau nu à 900 m et 0,38 à un village alpin de fond de
+  vallée cerné de sommets à 2 000 m (désormais 0,18 et 0,93) ;
+  **accès depuis Paris, mesuré des deux côtés** (`backend/app/services/trajet.py`) : la
+  gare d'arrivée et la durée du train viennent des durées **réellement observées** que la
+  SNCF publie par liaison, le trajet gare → bien de l'**itinéraire routier IGN**. Les deux
+  se lisent en clair sur chaque annonce, découpés. Ça remplace un calcul à vol d'oiseau qui
+  sous-estimait la route de 23 % en moyenne (jusqu'à +73 min sur Annecy → Beaufort) et ne
+  connaissait que 89 gares, contre 2 951 aujourd'hui ;
+  **qualité de l'eau/pollution** (Hub'Eau : pesticides,
   nitrates, PFAS), **profil socio** (âge médian, orientation politique → préférences
   `population_jeune`/`orientation_gauche`) ; **attractivité locative saisonnière**
   (« Airbnb » : remontée mécanique, lac, hébergement touristique et restauration relevés

@@ -84,9 +84,13 @@ CRITERES: dict[str, tuple[str, str, str]] = {
     "commerces": ("village", "Commerces à proximité", "Le nombre de commerces et services relevés autour du bien."),
     "fiber": ("village", "Fibre", "La part des locaux de la commune éligibles à la fibre (Arcep)."),
     # --- accès ---
-    "temps_acces": ("acces", "Temps d'accès", "Le temps porte-à-porte depuis la ville de départ."),
+    "temps_acces": ("acces", "Temps d'accès",
+                    "Le porte-à-porte depuis Paris : durée de train observée par la SNCF "
+                    "jusqu'à la gare, puis itinéraire routier IGN jusqu'au bien."),
     "rail_time_from": ("acces", "Trajet en train", "La durée de trajet ferroviaire depuis la ville de départ."),
-    "near_gare": ("acces", "Proximité d'une gare", "La distance à la gare la plus proche."),
+    "near_gare": ("acces", "Proximité d'une gare",
+                  "Le temps de ROUTE jusqu'à la gare la plus proche, TGV ou TER — "
+                  "et non la distance à vol d'oiseau, qui ignore le relief."),
     "near_city": ("acces", "Proximité d'une ville", "La distance à une ville donnée."),
     "near_corridor": ("acces", "Sur un axe", "La distance à un axe entre deux villes."),
     # --- calme & nuisances ---

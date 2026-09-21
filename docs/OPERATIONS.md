@@ -218,6 +218,21 @@ s'applique d'elle-même qu'aux biens collectés APRÈS elle. Nouvelle collecte :
 complétion se fait toute seule (`services/enrich.annotate`), le script n'est utile que
 pour rattraper la base.
 
+**Puis retirer les annonces qui ne sont plus en ligne :**
+```bash
+python scripts/verifier_dispo.py --dry-run --tout
+python scripts/verifier_dispo.py --tout
+```
+« Plus dispo », « Annonce plus disponible, dommage » : quatre commentaires sur
+quarante et un. Une annonce morte coûte plus cher qu'un mauvais bien — on l'ouvre, on la
+regarde, on vote, et il n'y avait rien à voir.
+
+Le script ne conclut à la disparition que sur une preuve : 404/410, redirection vers la
+page de recherche du portail, ou mention explicite dans la page. Tout le reste est gardé.
+**Leboncoin et SeLoger sont exclus par construction** : derrière Datadome, leur réponse
+parle de notre cookie, pas de l'annonce — les vérifier sans cookie valide supprimerait le
+catalogue entier de deux sources.
+
 ### 4. Réchauffer les caches Overpass
 
 ```bash
@@ -262,6 +277,52 @@ Le set 1 (« têtard ») en a **deux**, pour `ensoleillement` et `attractivite_a
 python scripts/warm_ensoleillement.py   # -> data/soleil_cache.json
 python scripts/warm_tourisme.py         # -> data/tourisme_cache.json
 ```
+
+**Et le relief ALENTOUR, qui n'est pas l'altitude du bien :**
+```bash
+python scripts/warm_montagne.py --catalogue   # -> data/montagne_cache.json
+```
+41 altitudes IGN en **une** requête groupée par point, cache indexé au **kilomètre** et
+non à la centaine de mètres : le plus haut sommet à 20 km ne change pas d'un hameau à
+l'autre, et 3 177 points suffisent là où la clé fine en demanderait 5 443. Le lot
+d'altitudes est passé de 24 à 48 points pour cette raison — c'est l'aller-retour qui se
+paie, pas les points, et la mesure est passée de 2 h 50 à 45 min. Sans lui,
+`relief_mountain` retombe sur l'altitude du bien — le calcul qui donnait **1,00 à un
+plateau nu à 900 m** et **0,38 à un village alpin de fond de vallée cerné de sommets à
+2 000 m**. Le barème mesuré rend 0,18 au premier et 0,93 au second.
+
+**Et un troisième, commun à tous les sets : l'accès depuis Paris.**
+```bash
+python scripts/build_gares_dataset.py   # une fois -> data/gares_voyageurs.csv
+python scripts/warm_trajet.py --catalogue   # -> data/trajet_cache.json
+```
+Il mesure, par bien, la gare desservie depuis Paris qui minimise le porte-à-porte (durée
+de train **réellement observée**, publiée par la SNCF liaison par liaison), le temps de
+**voiture** entre cette gare et le bien (itinéraire routier IGN), et la gare la plus
+proche — souvent un arrêt TER qui ne dessert pas Paris en direct. C'est ce que le site
+affiche sur chaque annonce, découpé, et ce que notent `temps_acces` et `near_gare`.
+
+Trois itinéraires IGN par bien (les deux meilleures gares candidates, plus la plus
+proche), sans clé, ~1,8 s par point : 5 400 points distincts font 2 h 30.
+`--catalogue` lit les points dans `data/catalogue.jsonl` au lieu de la base, à utiliser
+**pendant** une collecte pour ne pas verrouiller SQLite sous elle.
+
+⚠️ **Ne pas monter la cadence.** Le service répond **429** au-delà de quelques appels par
+seconde, et un 429 coûte plus cher qu'une attente : il déclenche une reprise temporisée,
+donc le réchauffage ralentit en accélérant. Mesuré : à huit workers sans limiteur, 22 %
+des appels échouaient et le catalogue était annoncé à 8 heures. `services/trajet.py`
+plafonne maintenant à 3 appels/s, tous fils confondus.
+
+⚠️ **L'ancien calcul ne se trompait pas de peu.** Il divisait la distance à vol d'oiseau
+par 65 km/h et ne connaissait que 9 gares écrites à la main. En montagne la route contourne
+le massif que la ligne droite traverse : mesuré sur 37 biens du set, la route demande
+**1,23 fois** le temps estimé, et jusqu'à +73 min (Annecy → Beaufort, 53 min estimées,
+126 mesurées). Six commentaires du groupe le disaient déjà — « 1 h de route depuis la gare
+de Grenoble », « besoin d'une voiture, à 45 min de Grenoble ».
+
+Sans réchauffage, les deux critères retombent sur une estimation à vol d'oiseau à 45 km/h,
+**volontairement pessimiste** : un bien non mesuré ne doit pas monter au classement pour
+n'avoir pas été regardé. L'estimation est signalée comme telle jusque sur la carte (« ≈ »).
 87 points d'altitude IGN par bien (4 requêtes groupées, ~5 s) : c'est ce qui donne les
 heures de soleil direct au 21 décembre, l'orientation et la pente du versant. Trop cher
 pour l'export d'un catalogue entier, donc **l'export lit le cache et ne mesure jamais en
@@ -312,6 +373,54 @@ len(json.load(open('data/infra_cache.json'))))"
 ```
 Si le run finit sur `⚠ N POI et M INFRA abandonnés`, relancer : `warm.py` est idempotent,
 il ne redemande pas les points déjà en cache.
+
+### 4 bis. Le ménage : ce qu'aucun set ne note ne sert à rien
+
+```bash
+python scripts/menage.py --dry-run     # ce qui partirait
+python scripts/menage.py --seuil 50
+```
+
+Le catalogue grossit à chaque collecte et ne rétrécit jamais. Ce qui ne remonte dans aucun
+set coûte du temps de mesure — chaque bien géolocalisé est un point à réchauffer — de la
+place dans la sauvegarde versionnée, et du bruit à chaque export. Le script fait tourner
+l'export **sans resserrage** pour obtenir la note qui fera foi, puis
+supprime ce qui passe sous le seuil dans TOUS les sets. Les favoris sont épargnés, et les
+biens qu'aucun set ne couvre aussi — ils ne sont pas mauvais, ils ne sont pas jugés.
+
+⚠️ **Après le réchauffage, pas avant.** Les critères d'accès et de montagne retombent sur
+une estimation quand la mesure manque, et l'estimation d'accès est volontairement
+pessimiste : faire le ménage avant de mesurer reviendrait à supprimer des biens sur un
+chiffre qu'on s'apprêtait à corriger.
+
+### 4 ter. Recaler l'étirement du score
+
+```bash
+python -m app.services.export_static /tmp/plein          # export SANS resserrage
+python scripts/calibrer_ancres.py /tmp/plein/data.json
+```
+
+Chaque set déclare ses ancres (`criteria["ancres"]`) et le score étire sa moyenne pondérée
+entre les deux. **Tout changement de barème les périme** : retirer un critère du calcul,
+en durcir un ou en ajouter déplace la moyenne, donc l'échelle. À faire après chaque tour
+de pondération, sinon le set n'utilise plus qu'une partie de 0-100.
+
+Le script propose des ancres sur des **percentiles** (p2 / p99) et non sur le minimum et
+le maximum, sinon un seul bien aberrant fixerait l'échelle de tous les autres. Il imprime
+aussi, par critère, le **pouvoir de discrimination** (poids × écart-type) : un critère que
+tous les biens réussissent ne classe personne, il ne fait que resserrer le total. Relevé
+le 21 septembre sur le set têtard — `≥ 90 m² habitables` (poids 1, moyenne 0,97, σ 0,10),
+`Calme, sans vis-à-vis` (poids 2, σ 0,12), `Format maison de retrait` (poids 4, moyenne
+0,96) : ce sont des exigences déguisées en poids, elles décrivent ce que le groupe refuse
+et ne distinguent pas deux bons candidats.
+
+⚠️ **Calibrer sur un export SANS resserrage.** Sur un `data.json` de pépites, l'ancre
+basse serait celle du seuil de publication, pas celle du catalogue.
+
+⚠️ **Les ancres restent DÉCLARÉES dans le set.** On les recale quand le barème change, pas
+à chaque export : un score doit dépendre du bien et du set, jamais des autres annonces du
+lot. Un score recalculé à chaque fois rendrait les votes du groupe incomparables d'une
+semaine à l'autre.
 
 ### 5. Export final, puis les pépites
 
@@ -485,6 +594,8 @@ repli silencieux.
 | Un verdict d'état rendu sur une demi-annonce | Les cartes de la SERP SeLoger tronquent la description à ~200 signes, parfois au milieu du mot qui décide — 1 140 biens en base, dont 1 111 SeLoger | une troncature ne peut que **cacher** de la sévérité, jamais en inventer : sur un texte coupé, seuls les verdicts sévères (gros travaux, ruine) sont retenus, les autres repassent à « état inconnu ». La vraie réparation serait d'aller lire la fiche du bien |
 | Une annonce annonce 4 pièces dans 35 m² | Le repli « pièces − 1 » du critère de chambres ne recoupait rien : il accordait 3 chambres à un mobil-home | `m2_min_par_piece` (20 m² par pièce, communs compris) borne l'estimation par la surface |
 | Un critère au poids fort à `pending` sur la moitié du lot | `pending` est **exclu** du score, pas compté zéro : un bien non mesuré monte au lieu de descendre | réchauffer (§4) ; et poser un palier « critère mesuré » comme le fait le set 1 pour le rapport qualité/prix et l'attractivité |
+| Un temps de trajet que personne ne peut faire | Les deux critères d'accès se calculaient à **vol d'oiseau** : distance / 65 km/h, sur 9 gares écrites à la main. En montagne la route contourne le massif que la ligne droite traverse — ×1,23 en moyenne, +73 min au pire. Six commentaires du groupe le disaient avant nous | `services/trajet.py` : durées de train observées (SNCF) + itinéraire routier (IGN), réchauffés par `scripts/warm_trajet.py` |
+| Des ruines encore bien notées | Depuis le retrait des paliers, la NOTE est le seul endroit où l'état pèse — et elle ne pesait pas : à 0,4 contre 1,0 sur un poids 4 dans un set qui en totalise 80, une maison à gros travaux perdait 3 points sur 100, rattrapables n'importe où ailleurs | durcir le barème plutôt que replafonner : gros travaux 0,4 → **0,2**, ruine 0,1 → **0,0**, soit 10 points d'écart avec une maison habitable. Un plafond reviendrait à empiler les biens sur une même valeur, ce pour quoi les paliers ont été retirés |
 
 ---
 

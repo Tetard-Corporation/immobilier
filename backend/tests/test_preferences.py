@@ -776,11 +776,15 @@ def test_a_renover_ne_vaut_plus_presque_habitable():
     sous = lambda cond: evaluate(_listing(flags={"condition": cond}), p)[1][0]["subscore"]  # noqa: E731
     assert sous("habitable") == 1.0
     assert sous("rafraichir") == 1.0
-    # 0,65 : une rénovation coûte. Et surtout la note ne colle plus au seuil du palier
-    # (0,6), donc une erreur de classement ne le traverse plus d'un centième.
-    assert sous("renover") == 0.65
+    # 0,6 : une rénovation coûte, elle ne vaut pas « habitable ».
+    assert sous("renover") == 0.6
     assert sous("gros_travaux") < sous("renover")
     assert sous("ruine") < sous("gros_travaux")
+    # L'écart habitable → gros travaux doit être GRAND, pas seulement ordonné. Depuis que
+    # les paliers ont sauté, la note est le seul endroit où l'état pèse : à 0,4 contre
+    # 1,0 sur un poids 4 dans un set qui totalise 80, une ruine perdait 3 points sur 100.
+    assert sous("habitable") - sous("gros_travaux") >= 0.75
+    assert sous("ruine") == 0.0
 
 
 def test_ancres_par_set_etirent_sans_reordonner():

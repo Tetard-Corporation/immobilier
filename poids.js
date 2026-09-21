@@ -224,14 +224,40 @@ const Poids = (() => {
   // Reproduit `services/preferences.evaluate` : moyenne des sous-scores MESURÉS pondérée
   // par les poids, étirée entre les deux ancres. Un critère non mesuré compte à sa
   // moyenne de catalogue au lieu de sortir du dénominateur (cf. `aprioris`).
+  // EXIGENCES : un critère que presque tout le monde réussit ne classe personne et
+  // resserre la moyenne. Il sort donc du calcul et ne garde que sa sanction, continue et
+  // multiplicative. Barème repris à l'identique de `preferences._facteur_malus` — les
+  // deux doivent rendre le même chiffre, sinon le classement affiché n'est plus celui
+  // que le moteur calcule.
+  function facteurMalus(sub, malus, poids) {
+    if (sub == null || !malus) return 1;
+    const seuil = Number(malus.seuil ?? 0.5);
+    const maxi = Number(malus.max ?? 0.3);
+    if (!(seuil > 0) || sub >= seuil) return 1;
+    const ref = Number(malus.poids_ref ?? poids) || poids || 1;
+    const part = clamp01(maxi * (poids / ref) * (seuil - sub) / seuil);
+    return 1 - part;
+  }
+
   function agrege(bien, details, set, poids, params) {
-    let acc = 0, tot = 0;
+    let acc = 0, tot = 0, facteur = 1;
     const ix = index(set);
     const apr = aprioris(set);
+    const malusDe = {};
+    for (const p of (set && set.preferences) || []) if (p.malus) malusDe[cle(p)] = p.malus;
     for (const d of details) {
       if (HORS_CRITERES.has(d.kind)) continue;
       const k = idDeDetail(d, ix);
       const w = poids && poids[k] !== undefined ? Number(poids[k]) : Number(d.weight || 0);
+      if (malusDe[k]) {
+        let s = (d.status === "ok" && d.subscore != null) ? d.subscore : apr[k];
+        if (s != null && params && params[k]) {
+          const remesure = Mesures.subscore(k, bien, params[k]);
+          if (remesure != null) s = remesure;
+        }
+        facteur *= facteurMalus(s, malusDe[k], w);
+        continue;
+      }
       if (!(w > 0)) continue;   // poids 0 = critère ignoré : il sort de la moyenne
       let sub;
       if (d.status === "ok" && d.subscore != null) {
@@ -255,7 +281,7 @@ const Poids = (() => {
     }
     if (tot <= 0) return null;
     const [basse, haute] = ancresDe(set);
-    return arrondi1(contraste(acc / tot, basse, haute) * 100);
+    return arrondi1(contraste(acc / tot, basse, haute) * 100 * facteur);
   }
 
   // A priori par critère, tel que l'export l'a calculé sur le catalogue du set.

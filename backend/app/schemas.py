@@ -22,6 +22,10 @@ class Preference(BaseModel):
     weight: float = 1.0
     params: dict = Field(default_factory=dict)
     label: str | None = None
+    # EXIGENCE plutôt que poids : `{"seuil": 0.5, "max": 0.45}`. Le critère sort de la
+    # moyenne — le respecter ne rapporte rien — et retire un pourcentage du score quand il
+    # n'est pas tenu. Voir `preferences._facteur_malus`.
+    malus: dict | None = None
 
 
 class SearchCriteria(BaseModel):

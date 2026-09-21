@@ -38,7 +38,7 @@ const Mesures = (() => {
     surface_habitable: [{ cle: "min", label: "m² min", unite: "m²", min: 10, max: 500, pas: 5 }],
     has_terrain: [{ cle: "min_surface", label: "terrain souhaité", unite: "m²", min: 0, max: 20000, pas: 100 }],
     jardin: [{ cle: "min_surface", label: "jardin requis", unite: "m²", min: 0, max: 5000, pas: 50 }],
-    relief_mountain: [{ cle: "ref_altitude", label: "altitude de référence", unite: "m", min: 100, max: 2500, pas: 50 }],
+    relief_mountain: [{ cle: "ref_sommet", label: "sommet de référence", unite: "m", min: 600, max: 4000, pas: 100 }],
     dpe: [{ cle: "min_classe", label: "classe minimale", unite: "", choix: ["A", "B", "C", "D", "E", "F", "G"] }],
     light_works: [{ cle: "min_etat", label: "état minimum", unite: "",
                     choix: ["habitable", "rafraichir", "renover", "gros_travaux"] }],
@@ -52,7 +52,11 @@ const Mesures = (() => {
   const BUDGET_SOUS_PLANCHER = 0.78;  // note juste sous le plancher
   const NOTE_LIMITE = 0.75;        // logement_compact : décote entre l'idéal et la limite
   const DPE_ECHELLE = { A: 1.0, B: 0.95, C: 0.85, D: 0.70, E: 0.50, F: 0.25, G: 0.10 };
-  const ETAT_NOTE = { habitable: 1.0, rafraichir: 1.0, renover: 0.65, gros_travaux: 0.4, ruine: 0.1 };
+  // Barème repris à l'identique de `preferences._LIGHT_OK`. Durci le 21 septembre : les
+  // deux dernières notes passent de 0,4 à 0,2 et de 0,1 à 0,0 — depuis le retrait des
+  // paliers, la note est le seul endroit où l'état pèse, et l'écart entre une maison
+  // habitable et une maison à gros travaux valait 2 points sur 100.
+  const ETAT_NOTE = { habitable: 1.0, rafraichir: 1.0, renover: 0.6, gros_travaux: 0.2, ruine: 0.0 };
   const ETAT_NIVEAU = { habitable: 0, rafraichir: 1, renover: 2, gros_travaux: 3, ruine: 4 };
   const SOUS_SEUIL = 0.25;   // ce qui reste d'une note passée sous le seuil demandé
 
@@ -135,10 +139,31 @@ const Mesures = (() => {
     },
 
     relief_mountain(b, p) {
-      // Le backend distingue « altitude jamais relevée » (pending) et « relevée sans
-      // valeur » — ce second cas vaut 0, pas « non mesuré ». On reproduit ce choix, sinon
-      // 211 biens du set têtard changeraient de note en passant par ici.
+      // Le relief ALENTOUR, pas l'altitude du bien : « ça ne devrait pas compter
+      // l'altitude du bien mais la proximité à des montagnes ». Barème repris à
+      // l'identique de backend/app/services/montagne.py — les deux doivent rendre le
+      // même chiffre, sinon le classement affiché n'est plus celui que le moteur calcule.
+      const SOMMET_COLLINE = 600, AMPLITUDE_PLEINE = 1200, POIDS_SOMMET = 0.6;
+      const altMax = nb(b.alt_max_20km_m);
+      // L'altitude de la MESURE, pas celle de l'enrichissement : même source (IGN), deux
+      // relevés, et un écart de quelques mètres suffirait à faire diverger cette copie
+      // du calcul du moteur.
+      const site = nb(b.alt_site_m) ?? nb(b.altitude);
+      if (altMax != null && site != null) {
+        const haut = Math.max(nb(p.ref_sommet) ?? 2200, SOMMET_COLLINE + 1);
+        const sommet = clamp((altMax - SOMMET_COLLINE) / (haut - SOMMET_COLLINE));
+        const ampl = clamp((altMax - site) / AMPLITUDE_PLEINE);
+        return POIDS_SOMMET * sommet + (1 - POIDS_SOMMET) * ampl;
+      }
+      // Relief alentour non mesuré : on note comme si le bien était le point le plus haut
+      // des environs — aucun dénivelé, aucun sommet au-dessus. Faux, et faux DANS LE BON
+      // SENS : le repli ne peut que sous-estimer. Même formule que le moteur, sinon les
+      // deux divergent sur les biens non mesurés (cinq écarts constatés ici).
       if (!("altitude" in b)) return null;
+      if (site != null) {
+        const haut = Math.max(nb(p.ref_sommet) ?? 2200, SOMMET_COLLINE + 1);
+        return POIDS_SOMMET * clamp((site - SOMMET_COLLINE) / (haut - SOMMET_COLLINE));
+      }
       const ref = nb(p.ref_altitude) ?? 600;
       return clamp((b.altitude || 0) / ref);
     },
