@@ -1,7 +1,7 @@
 {
- "backed_up_at": "2026-09-21T09:57:44.203734+00:00",
+ "backed_up_at": "2026-09-22T09:19:00.042002+00:00",
  "source_url": "https://jmmflsrlegttdnxpidmo.supabase.co",
- "count": 114,
+ "count": 124,
  "votes": [
   {
    "bien_id": "__poids__:1",
@@ -201,7 +201,7 @@
    "criterion": "relief_mountain",
    "stars": 5,
    "comment": null,
-   "updated_at": "2026-09-05T11:15:53.437+00:00"
+   "updated_at": "2026-09-21T19:53:36.823+00:00"
   },
   {
    "bien_id": "__poids__:1",
@@ -524,6 +524,14 @@
    "updated_at": "2026-08-28T10:30:29.418+00:00"
   },
   {
+   "bien_id": "bienici__apimo-87116990",
+   "voter": "Léo",
+   "criterion": "__overall__",
+   "stars": 1,
+   "comment": "à rénover, ne devrait pas être aussi bien noté",
+   "updated_at": "2026-09-21T20:04:29.075+00:00"
+  },
+  {
    "bien_id": "bienici__dr-house-immo-1-129358",
    "voter": "Léo",
    "criterion": "__overall__",
@@ -650,6 +658,22 @@
    "stars": 1,
    "comment": "trop difficile d'accès",
    "updated_at": "2026-09-06T12:44:17.123+00:00"
+  },
+  {
+   "bien_id": "bienici__immo-facile-60311894",
+   "voter": "Léo",
+   "criterion": "__favori__",
+   "stars": 1,
+   "comment": null,
+   "updated_at": "2026-09-21T20:05:54.88+00:00"
+  },
+  {
+   "bien_id": "bienici__immo-facile-60311894",
+   "voter": "Léo",
+   "criterion": "__overall__",
+   "stars": 2,
+   "comment": "c'est beau mais c'est loin",
+   "updated_at": "2026-09-21T20:05:40.469+00:00"
   },
   {
    "bien_id": "bienici__immo-facile-60311894",
@@ -868,6 +892,46 @@
    "updated_at": "2026-09-01T19:19:09.824+00:00"
   },
   {
+   "bien_id": "leboncoin__3233972792",
+   "voter": "Léo",
+   "criterion": "__favori__",
+   "stars": 1,
+   "comment": null,
+   "updated_at": "2026-09-21T19:50:55.77+00:00"
+  },
+  {
+   "bien_id": "leboncoin__3233972792",
+   "voter": "Léo",
+   "criterion": "__overall__",
+   "stars": 5,
+   "comment": "je comprends pas pourquoi c'est noté que 61 !!!!",
+   "updated_at": "2026-09-21T19:54:11.536+00:00"
+  },
+  {
+   "bien_id": "leboncoin__3233972792",
+   "voter": "Léo",
+   "criterion": "Loin d'une route passante / autoroute / rail",
+   "stars": 1,
+   "comment": "1km de l'autoroute c'est loin on est tranquille pour le bruit",
+   "updated_at": "2026-09-21T19:53:23.399+00:00"
+  },
+  {
+   "bien_id": "leboncoin__3233972792",
+   "voter": "Léo",
+   "criterion": "Montagne / relief",
+   "stars": 4,
+   "comment": "ça avait l'air bien quand même et pas loin des montagnes meme si le bien est pas en altitude lui",
+   "updated_at": "2026-09-21T19:53:54.585+00:00"
+  },
+  {
+   "bien_id": "leboncoin__3233972792",
+   "voter": "Léo",
+   "criterion": "Proche d'une gare",
+   "stars": null,
+   "comment": "il y a d'autres gares plus proches",
+   "updated_at": "2026-09-21T19:52:44.307+00:00"
+  },
+  {
    "bien_id": "leboncoin__3242555863",
    "voter": "Henri",
    "criterion": "__overall__",
@@ -881,7 +945,15 @@
    "criterion": "__favori__",
    "stars": 1,
    "comment": null,
-   "updated_at": "2026-09-06T13:03:45.32+00:00"
+   "updated_at": "2026-09-21T19:36:22.556+00:00"
+  },
+  {
+   "bien_id": "leboncoin__3243935653",
+   "voter": "Léo",
+   "criterion": "__favori__",
+   "stars": 1,
+   "comment": null,
+   "updated_at": "2026-09-21T19:36:37.044+00:00"
   },
   {
    "bien_id": "leboncoin__3249441984",
@@ -914,6 +986,14 @@
    "stars": 2,
    "comment": "très joli mais beaucoup de travaux j'ai l'impression",
    "updated_at": "2026-08-28T10:30:17.584+00:00"
+  },
+  {
+   "bien_id": "seloger__26NXLLIU1UR5",
+   "voter": "Léo",
+   "criterion": "__favori__",
+   "stars": null,
+   "comment": null,
+   "updated_at": "2026-09-21T19:37:11.248+00:00"
   }
  ]
 }
